@@ -9,7 +9,7 @@ class ScaffoldFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(body: body, backgroundColor: Apptheme.white),
+      child: Scaffold(body: body, backgroundColor: Apptheme.lightGray),
     );
   }
 }

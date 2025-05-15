@@ -4,7 +4,7 @@ double laptopsSize = 1024;
 double desktopsSize = 1280;
 double largeDesktopsSize = 1536;
 
-enum DeviceTypes { 
+enum DeviceType { 
   mobile,
   tablets,
   laptops,
@@ -18,10 +18,10 @@ enum DeviceTypes {
   bool get isLargeDesktops => this == largeDesktops;
 }
 
-DeviceTypes getDeviceType(double width) {
-  if (width <= mobileSize) return DeviceTypes.mobile;
-  if (width <= tabletsSize) return DeviceTypes.tablets;
-  if (width <= laptopsSize) return DeviceTypes.laptops;
-  if (width <= desktopsSize) return DeviceTypes.desktops;
-  return DeviceTypes.largeDesktops;
+DeviceType getDeviceType(double width) {
+  if (width <= mobileSize) return DeviceType.mobile;
+  if (width <= tabletsSize) return DeviceType.tablets;
+  if (width <= laptopsSize) return DeviceType.laptops;
+  if (width <= desktopsSize) return DeviceType.desktops;
+  return DeviceType.largeDesktops;
 }

@@ -16,6 +16,7 @@ class Apptheme {
   static const Color mintyAqua = Color(0xFFCCFBF1);
   static const Color mintGreen = Color(0xFF99F6E4);
   static const Color pastelBlue = Color(0xFFBFDBFE);
+  static const Color lightGray = Color(0xFFE5E7EB);
 
   static const String fontFamily = 'Inter'; //TODO bring font in
 

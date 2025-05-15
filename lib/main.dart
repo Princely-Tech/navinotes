@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/providers/index.dart';
 import 'package:navinotes/settings/app_strings.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/settings/routes.dart';
@@ -14,17 +15,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppStrings.appName,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        // primarySwatch: AppTheme.primaryColor,//TODO uncomment
-        fontFamily: Apptheme.fontFamily,
+    return CustomProviders(
+      child: MaterialApp(
+        title: AppStrings.appName,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          // primarySwatch: AppTheme.primaryColor,//TODO uncomment
+          fontFamily: Apptheme.fontFamily,
+        ),
+        initialRoute: Routes.auth,
+        // initialRoute: Routes.auth, //TODO uncomment
+        routes: routes,
+        navigatorKey: NavigationHelper.navigatorKey,
       ),
-      initialRoute: Routes.aboutMe,
-      // initialRoute: Routes.auth, //TODO uncomment
-      routes: routes,
-      navigatorKey: NavigationHelper.navigatorKey,
     );
   }
 }
