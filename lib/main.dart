@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
           // primarySwatch: AppTheme.primaryColor,//TODO uncomment
           fontFamily: Apptheme.fontFamily,
         ),
-        initialRoute: Routes.auth,
+        initialRoute: Routes.aboutMe,
         // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,

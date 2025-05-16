@@ -154,7 +154,7 @@ class AppButton extends StatelessWidget {
           child: Container(
             constraints: BoxConstraints(minHeight: minHeight),
             padding:
-                padding ?? EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                padding ?? EdgeInsets.symmetric(vertical: 12, horizontal: 15),
             clipBehavior: Clip.antiAlias,
             decoration: ShapeDecoration(
               gradient: gradient,

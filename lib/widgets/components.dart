@@ -16,7 +16,7 @@ class SVGImagePlaceHolder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Apptheme.black.withAlpha(100),
+        // color: Apptheme.black.withAlpha(100),
         shape: BoxShape.circle,
       ),
       child: SvgPicture.asset(
@@ -83,6 +83,83 @@ class ResponsiveSection extends StatelessWidget {
             return largeDesktops ?? desktops ?? laptops ?? tablets ?? mobile;
         }
       },
+    );
+  }
+}
+
+class ScrollableController extends StatelessWidget {
+  const ScrollableController({
+    super.key,
+    required this.child,
+    required this.scrollable,
+  });
+
+  final Widget child;
+  final bool scrollable;
+
+  @override
+  Widget build(BuildContext context) {
+    return scrollable ? SingleChildScrollView(child: child) : child;
+  }
+}
+
+class ExpandableController extends StatelessWidget {
+  const ExpandableController({
+    super.key,
+    required this.child,
+    required this.expandable,
+  });
+
+  final Widget child;
+  final bool expandable;
+
+  @override
+  Widget build(BuildContext context) {
+    return expandable ? Expanded(child: child) : child;
+  }
+}
+
+class Header6 extends StatelessWidget {
+  const Header6({
+    super.key,
+    required this.title,
+    this.required = false,
+    this.optional = false,
+  });
+
+  final String title;
+  final bool required;
+  final bool optional;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: title,
+            style: Apptheme.text.copyWith(
+              color: Apptheme.darkSlateGray,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          if (required)
+            TextSpan(
+              text: "*",
+              style: Apptheme.text.copyWith(
+                color: Apptheme.strongBlue,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          if (optional)
+            TextSpan(
+              text: " (optional)",
+              style: Apptheme.text.copyWith(color: Apptheme.steelMist),
+            ),
+        ],
+      ),
     );
   }
 }

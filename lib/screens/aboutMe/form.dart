@@ -1,59 +1,247 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/screens/aboutMe/vm.dart';
+import 'package:navinotes/settings/apptheme.dart';
+import 'package:navinotes/settings/images.dart';
+import 'package:navinotes/widgets/buttons.dart';
+import 'package:navinotes/widgets/components.dart';
+import 'package:navinotes/widgets/inputs.dart';
+import 'package:provider/provider.dart';
 
 class AboutMeForm extends StatelessWidget {
   const AboutMeForm({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: const Color(0xFFE5E7EB)),
-          borderRadius: BorderRadius.circular(12),
+    return Consumer<AboutMeVm>(
+      builder: (context, vm, child) {
+        return Column(
+          spacing: 30,
+          children: [
+            // Container(
+            //   width: double.infinity,
+            //   decoration: ShapeDecoration(
+            //     color: Apptheme.white,
+            //     shape: RoundedRectangleBorder(
+            //       side: BorderSide(color: Apptheme.lightGray),
+            //       borderRadius: BorderRadius.circular(12),
+            //     ),
+            //   ),
+            //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+            //   child: Form(
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       spacing: 30,
+            //       children: [_header(), _mainForm(vm)],
+            //     ),
+            //   ),
+            // ),
+            _footer(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _footer() {
+    return Container();
+  }
+
+  Widget _mainForm(AboutMeVm vm) {
+    TextStyle hintStyle = Apptheme.text.copyWith(
+      color: Apptheme.slateGray,
+      fontSize: 16,
+      height: 1.50,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 20,
+      children: [
+        CustomInputField(hintText: 'Jane Smith', label: 'Name', required: true),
+        CustomInputField(
+          hintText: 'Select your role',
+          label: 'I am a...',
+          required: true,
+          selectItems: ['Student', 'Teacher', 'Parent'],
         ),
-        shadows: [
-          BoxShadow(
-            color: Color(0x0C000000),
-            blurRadius: 2,
-            offset: Offset(0, 1),
-            spreadRadius: 0,
+        Container(
+          decoration: ShapeDecoration(
+            color: Apptheme.iceBlue,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 1, color: Apptheme.paleBlue),
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
-        ],
-      ),
-      padding: EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 25,
-        children: [
-          Column(
+          padding: EdgeInsets.all(15),
+          child: Column(
             spacing: 15,
             children: [
-              Text(
-                'Tell Us About You',
-                style: TextStyle(
-                  color: const Color(0xFF1F2937),
-                  fontSize: 24,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w700,
-                  height: 1,
-                ),
+              CustomInputField(
+                hintText: 'Enter your school or university',
+                label: 'School/University name',
+                hintStyle: hintStyle,
               ),
-              Text(
-                'Help us personalize your experience (you can skip or edit this later)',
-                style: TextStyle(
-                  color: const Color(0xFF4B5563),
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  height: 1,
-                ),
+              CustomInputField(
+                hintText: 'E.g., Computer Science, Biology',
+                label: 'Field of study/Major',
+                hintStyle: hintStyle,
               ),
-              //
+              CustomInputField(
+                hintText: 'Select your education level',
+                label: 'Education level',
+                // hintStyle: hintStyle,
+                selectItems: ['High School', 'College', 'University'],
+              ),
             ],
           ),
-        ],
-      ),
+        ),
+        _multiSelect(vm),
+        CustomInputField(
+          hintText: 'Tell us a bit more about yourself...',
+          label: 'About me',
+          hintStyle: hintStyle,
+          maxLines: 5,
+          optional: true,
+        ),
+        _profileImage(),
+      ],
+    );
+  }
+
+  Widget _profileImage() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        Header6(title: 'Profile picture', optional: true),
+        Row(
+          spacing: 15,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SVGImagePlaceHolder(imagePath: Images.logoRounded2, size: 80),
+            Flexible(
+              child: Column(
+                spacing: 4,
+                children: [
+                  AppButton.secondary(
+                    onTap: () {},
+                    text: 'Upload photo',
+                    mainAxisSize: MainAxisSize.min,
+                    minHeight: 42,
+                    color: Apptheme.coolGray,
+
+                    textColor: Apptheme.darkSlateGray,
+                    prefix: SVGImagePlaceHolder(
+                      imagePath:
+                          Images.upload, //TODO: confirm that thss looks good
+                      size: 16,
+                    ),
+                  ),
+                  Text(
+                    'PNG, JPG or GIF, max 5MB',
+                    style: Apptheme.text.copyWith(
+                      color: Apptheme.steelMist,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _multiSelect(AboutMeVm vm) {
+    return Column(
+      spacing: 7,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Header6(title: 'I\'m using this app for...', required: true),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:
+              applicationReasons.map((str) {
+                bool isSelected = vm.selectedApplicationReasons.contains(str);
+                return InkWell(
+                  onTap: () => vm.selectApplicationReason(str),
+                  child: Row(
+                    spacing: 6,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        isSelected
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
+                        color:
+                            isSelected
+                                ? Apptheme.strongBlue
+                                : Apptheme.defaultBlack,
+                      ),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 6,
+                            children: [
+                              Text(
+                                str,
+                                style: Apptheme.text.copyWith(
+                                  color: Apptheme.darkSlateGray,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              if (str == 'Other')
+                                CustomInputField(
+                                  hintText: 'Please specify',
+                                  hintStyle: Apptheme.text.copyWith(
+                                    color: Apptheme.slateGray,
+                                    fontSize: 16,
+                                    height: 1.50,
+                                  ),
+                                  fillColor: Apptheme.whisperGrey,
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _header() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 15,
+      children: [
+        Text(
+          'Tell Us About You',
+          style: TextStyle(
+            color: const Color(0xFF1F2937),
+            fontSize: 24,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+            height: 1,
+          ),
+        ),
+        Text(
+          'Help us personalize your experience (you can skip or edit this later)',
+          style: TextStyle(
+            color: const Color(0xFF4B5563),
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w400,
+            height: 1,
+          ),
+        ),
+      ],
     );
   }
 }

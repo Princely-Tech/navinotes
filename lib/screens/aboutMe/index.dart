@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/aboutMe/form.dart';
+import 'package:navinotes/screens/aboutMe/vm.dart';
+import 'package:navinotes/settings/app_strings.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/screen_dimensions.dart';
@@ -17,25 +19,48 @@ class AboutMeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (context, layoutProviderVm, child) {
+        bool mainScrollable =
+            layoutProviderVm.deviceType == DeviceType.mobile ||
+            layoutProviderVm.deviceType == DeviceType.tablets ||
+            layoutProviderVm.deviceType == DeviceType.laptops;
         return ScaffoldFrame(
-          body: Column(
-            spacing: 10,
-            children: [_appBar(context), _main(context, layoutProviderVm)],
+          body: ChangeNotifierProvider(
+            create: (context) => AboutMeVm(),
+            child: Column(
+              spacing: 10,
+              children: [
+                _appBar(context),
+                Expanded(
+                  child: ScrollableController(
+                    scrollable: mainScrollable,
+                    child: _main(context, layoutProviderVm, mainScrollable),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  Widget _main(BuildContext context, LayoutProviderVm vm) {
-    return WidthLimiter(
-      maxWidth: desktopsSize,
-      child: ResponsiveSection(
-        mobile: Column(
-          children: [
-            AboutMeForm(),
-            //
-          ],
+  Widget _main(BuildContext context, LayoutProviderVm vm, bool mainScrollable) {
+    bool canScroll = !mainScrollable;
+    Widget aboutMe = ExpandableController(
+      expandable: canScroll,
+      child: ScrollableController(scrollable: canScroll, child: AboutMeForm()),
+    );
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding),
+      child: WidthLimiter(
+        maxWidth: desktopsSize,
+        child: ResponsiveSection(
+          mobile: Column(
+            children: [
+              aboutMe,
+              //
+            ],
+          ),
         ),
       ),
     );
@@ -64,7 +89,7 @@ class AboutMeScreen extends StatelessWidget {
                     SVGImagePlaceHolder(imagePath: Images.logo, size: 30),
                     Expanded(
                       child: Text(
-                        'MindMapper',
+                        AppStrings.appName,
                         style: TextStyle(
                           color: const Color(0xFF1F2937),
                           fontSize: 20,

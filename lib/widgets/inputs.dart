@@ -3,23 +3,24 @@ import 'package:flutter_svg/svg.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/util_functions.dart';
+import 'package:navinotes/widgets/components.dart';
 
 InputDecoration _inputDecoration({
   required String hintText,
   Widget? prefixIcon,
   Widget? suffixIcon,
   OutlineInputBorder? border,
-  bool isRectangle = true,
-  required bool isTextArea,
+  // bool isRectangle = true,
+  // required bool isTextArea,
   Color? fillColor,
 }) {
   OutlineInputBorder defaultBorder =
       border ??
       OutlineInputBorder(
-        borderRadius: BorderRadius.circular(isRectangle ? 8 : 30),
-        // borderSide: BorderSide(color: Apptheme.ghostWhite, width: 2),
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Apptheme.coolGray, width: 1),
       );
-  // Color runFillColor = isTextArea ? Apptheme.white : Apptheme.polar;
+
   return InputDecoration(
     hintText: hintText,
     hintStyle: Apptheme.text.copyWith(
@@ -31,10 +32,7 @@ InputDecoration _inputDecoration({
     focusedBorder: defaultBorder.copyWith(
       borderSide: BorderSide(color: Apptheme.primaryColor, width: 2),
     ),
-    fillColor: fillColor,
-    // fillColor: fillColor ?? runFillColor,
-
-    // color: darkenColor(Apptheme.ghostWhite),
+    fillColor: fillColor ?? Apptheme.white,
     filled: true,
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
@@ -51,37 +49,38 @@ class CustomInputField extends StatefulWidget {
     this.fillColor,
     TextEditingController? controller,
     this.validator,
-    this.footer,
-    // this.required = false,
+    // this.footer,
+    this.required = false,
+    this.optional = false,
     this.prefixIcon,
     this.suffixIcon,
     this.border,
     this.maxLines = 1,
     this.wrapWithExpanded = false,
-    this.isSearch = false,
-    this.isRectangle = true,
-    this.isTextArea = false,
+    // this.isSearch = false,
+    this.selectItems,
     this.style,
     this.hintStyle,
   }) : controller = controller ?? TextEditingController();
 
   final String? label;
-  final bool isTextArea;
-  final bool isRectangle;
+  // final bool isTextArea;
+  // final bool isRectangle;
   final String hintText;
-  final String? footer;
+  final bool optional;
+  // final String? footer;
   final TextInputType keyboardType;
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final bool wrapWithExpanded;
-  final bool isSearch;
+  // final bool isSearch;
   // final Widget? suffixIcon;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
-  // final bool required;
+  final bool required;
   final OutlineInputBorder? border;
   final int maxLines;
-  // final List<String>? selectItems;
+  final List<String>? selectItems;
   final Color? fillColor;
   final TextStyle? style;
   final TextStyle? hintStyle;
@@ -126,13 +125,13 @@ class _CustomInputFieldState extends State<CustomInputField> {
       );
     }
 
-    // bool isSelect = isNotNull(widget.selectItems);
-    // if (isSelect) {
-    //   suffix = Padding(
-    //     padding: EdgeInsets.symmetric(horizontal: padding),
-    //     child: Icon(Icons.keyboard_arrow_down, color: Apptheme.mistyGray),
-    //   );
-    // }
+    bool isSelect = isNotNull(widget.selectItems);
+    if (isSelect) {
+      suffix = Padding(
+        padding: EdgeInsets.symmetric(horizontal: padding),
+        child: Icon(Icons.keyboard_arrow_down, color: Apptheme.black),
+      );
+    }
 
     // Color fillColor = isSelect ? Apptheme.transparent : Apptheme.polar;
     return Column(
@@ -140,33 +139,31 @@ class _CustomInputFieldState extends State<CustomInputField> {
       spacing: 8,
       children: [
         if (isNotNull(widget.label))
-          Text(
-            widget.label!,
-            style: Apptheme.text.copyWith(
-              // color: Apptheme.darkSlateGray,
-              fontWeight: FontWeight.w500,
-            ),
-            // style: Apptheme.text.copyWith(color: Apptheme.charcoal),
+          Header6(
+            title: widget.label!,
+            required: widget.required,
+            optional: widget.optional,
           ),
         TextFormField(
-          // readOnly: isSelect,
+          readOnly: isSelect,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: widget.validator,
           controller: widget.controller,
           maxLines: widget.maxLines,
-          // onTap: isSelect ? _showBottomSheet : null,
+          onTap: isSelect ? _showCenterDialog : null,
           decoration: _inputDecoration(
             hintText: widget.hintText,
             prefixIcon: prefix,
             suffixIcon: suffix,
             border: widget.border,
-            isRectangle: widget.isRectangle,
-            isTextArea: widget.isTextArea,
+            // isTextArea: widget.isTextArea,
             fillColor: widget.fillColor,
-          ).copyWith(hintStyle: widget.hintStyle),
+          ).copyWith(
+            hintStyle: widget.hintStyle ?? Apptheme.text.copyWith(fontSize: 16),
+          ),
           keyboardType: widget.keyboardType,
           obscureText: isPassword ? true : false,
-          style: widget.style ?? Apptheme.text,
+          style: widget.style ?? Apptheme.text.copyWith(fontSize: 16),
         ),
         // if (isNotNull(widget.footer))
         //   Text(
@@ -177,6 +174,38 @@ class _CustomInputFieldState extends State<CustomInputField> {
         //     ),
         //   ),
       ],
+    );
+  }
+
+  void _showCenterDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Text("Select an item"),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView(
+              shrinkWrap: true,
+              children:
+                  widget.selectItems!
+                      .map(
+                        (item) => ListTile(
+                          title: Text(item),
+                          onTap: () {
+                            widget.controller.text = item;
+                            Navigator.pop(context);
+                          },
+                        ),
+                      )
+                      .toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 
