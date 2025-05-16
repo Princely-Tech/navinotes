@@ -14,36 +14,78 @@ class AboutMeForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AboutMeVm>(
       builder: (context, vm, child) {
-        return Column(
-          spacing: 30,
-          children: [
-            // Container(
-            //   width: double.infinity,
-            //   decoration: ShapeDecoration(
-            //     color: Apptheme.white,
-            //     shape: RoundedRectangleBorder(
-            //       side: BorderSide(color: Apptheme.lightGray),
-            //       borderRadius: BorderRadius.circular(12),
-            //     ),
-            //   ),
-            //   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-            //   child: Form(
-            //     child: Column(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       spacing: 30,
-            //       children: [_header(), _mainForm(vm)],
-            //     ),
-            //   ),
-            // ),
-            _footer(),
-          ],
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 30),
+          child: Column(
+            spacing: 50,
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: ShapeDecoration(
+                  color: Apptheme.white,
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Apptheme.lightGray),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+                child: Form(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 30,
+                    children: [_header(), _mainForm(vm)],
+                  ),
+                ),
+              ),
+              _footer(vm),
+            ],
+          ),
         );
       },
     );
   }
 
-  Widget _footer() {
-    return Container();
+  Widget _footer(AboutMeVm vm) {
+    EdgeInsets padding = EdgeInsets.symmetric(vertical: 12, horizontal: 20);
+    return Column(
+      spacing: 15,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 15,
+          children: [
+            AppButton.secondary(
+              onTap: vm.skipHandler,
+              text: 'Skip for Now',
+              wrapWithFlexible: true,
+              mainAxisSize: MainAxisSize.min,
+              color: Apptheme.coolGray,
+              textColor: Apptheme.darkSlateGray,
+              padding: padding,
+            ),
+            AppButton(
+              onTap: vm.saveHandler,
+              text: 'Save & Continue',
+              wrapWithFlexible: true,
+              mainAxisSize: MainAxisSize.min,
+              padding: padding,
+              color: Apptheme.jungleGreen,
+            ),
+          ],
+        ),
+        Text(
+          'You can update your profile anytime in Settings',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: const Color(0xFF6B7280),
+            fontSize: 14,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w400,
+            height: 1,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _mainForm(AboutMeVm vm) {
@@ -110,7 +152,7 @@ class AboutMeForm extends StatelessWidget {
   Widget _profileImage() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8,
+      spacing: 15,
       children: [
         Header6(title: 'Profile picture', optional: true),
         Row(
@@ -131,8 +173,7 @@ class AboutMeForm extends StatelessWidget {
 
                     textColor: Apptheme.darkSlateGray,
                     prefix: SVGImagePlaceHolder(
-                      imagePath:
-                          Images.upload, //TODO: confirm that thss looks good
+                      imagePath: Images.upload,
                       size: 16,
                     ),
                   ),

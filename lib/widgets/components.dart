@@ -31,6 +31,31 @@ class SVGImagePlaceHolder extends StatelessWidget {
     );
   }
 }
+class ImagePlaceHolder extends StatelessWidget {
+  const ImagePlaceHolder({super.key, required this.imagePath, this.size});
+
+  final String imagePath;
+  final double? size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        // color: Apptheme.black.withAlpha(100),
+        shape: BoxShape.circle,
+      ),
+      child: Image.asset(
+        height: size,
+        width: size,
+        imagePath,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return const Icon(Icons.error);
+        },
+      ),
+    );
+  }
+}
 
 class WidthLimiter extends StatelessWidget {
   const WidthLimiter({super.key, required this.child, required this.maxWidth});

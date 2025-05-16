@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:navinotes/providers/layout.dart';
+import 'package:navinotes/screens/aboutMe/aside.dart';
 import 'package:navinotes/screens/aboutMe/form.dart';
 import 'package:navinotes/screens/aboutMe/vm.dart';
 import 'package:navinotes/settings/app_strings.dart';
@@ -46,19 +47,26 @@ class AboutMeScreen extends StatelessWidget {
 
   Widget _main(BuildContext context, LayoutProviderVm vm, bool mainScrollable) {
     bool canScroll = !mainScrollable;
-    Widget aboutMe = ExpandableController(
+    Widget aboutMeForm = ExpandableController(
       expandable: canScroll,
       child: ScrollableController(scrollable: canScroll, child: AboutMeForm()),
+    );
+    Widget aboutMeAside = ScrollableController(
+      scrollable: canScroll,
+      child: AboutMeAside(),
     );
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding),
       child: WidthLimiter(
         maxWidth: desktopsSize,
         child: ResponsiveSection(
-          mobile: Column(
+          mobile: Column(children: [aboutMeForm, aboutMeAside]),
+          desktops: Row(
+            spacing: 30,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              aboutMe,
-              //
+              aboutMeForm,
+              WidthLimiter(maxWidth: 400, child: aboutMeAside),
             ],
           ),
         ),

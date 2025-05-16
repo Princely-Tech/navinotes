@@ -138,8 +138,7 @@ class AppButton extends StatelessWidget {
   Widget _body() {
     Color bgColor = color ?? Apptheme.primaryColor;
     Color borderColor = color ?? Apptheme.primaryColor;
-    Color? runTextColor = textColor;
-    // Color runTextColor = textColor ?? Apptheme.whiteSmoke;
+    Color? runTextColor = textColor ?? Apptheme.white;
 
     if (_type.isSecondary) {
       bgColor = Apptheme.transparent;

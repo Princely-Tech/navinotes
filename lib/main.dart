@@ -19,10 +19,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          // primarySwatch: AppTheme.primaryColor,//TODO uncomment
-          fontFamily: Apptheme.fontFamily,
-        ),
+        theme: ThemeData(fontFamily: Apptheme.fontFamily),
         initialRoute: Routes.aboutMe,
         // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,

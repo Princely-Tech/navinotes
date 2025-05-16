@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/settings/navigation_helper.dart';
+import 'package:navinotes/settings/routes.dart';
 
 class AboutMeVm extends ChangeNotifier {
   List<String> selectedApplicationReasons = [];
@@ -10,6 +12,18 @@ class AboutMeVm extends ChangeNotifier {
       selectedApplicationReasons.add(reason);
     }
     notifyListeners();
+  }
+
+  void skipHandler() {
+    goToDashboard();
+  }
+
+  void goToDashboard() {
+    NavigationHelper.pushReplacement(Routes.dashboard);
+  }
+
+  void saveHandler() {
+    goToDashboard();
   }
 }
 
