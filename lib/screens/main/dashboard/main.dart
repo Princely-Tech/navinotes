@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/screens/dashboard/boards.dart';
-import 'package:navinotes/screens/dashboard/header.dart';
-import 'package:navinotes/screens/dashboard/recent_activity.dart';
+import 'package:navinotes/screens/main/dashboard/boards.dart';
+import 'package:navinotes/screens/main/dashboard/header.dart';
+import 'package:navinotes/screens/main/dashboard/recent_activity.dart';
 import 'package:navinotes/settings/ui_helpers.dart';
 import 'package:navinotes/widgets/components.dart';
 

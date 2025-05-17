@@ -6,14 +6,18 @@ class ScaffoldFrame extends StatelessWidget {
     super.key,
     required this.body,
     this.drawer,
+    this.endDrawer,
     this.scaffoldKey,
     this.floatingActionButton,
+    this.backgroundColor,
   });
 
   final Widget body;
   final Widget? drawer;
+  final Widget? endDrawer;
   final Widget? floatingActionButton;
   final Key? scaffoldKey;
+  final Color? backgroundColor;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -21,7 +25,8 @@ class ScaffoldFrame extends StatelessWidget {
         key: scaffoldKey,
         body: body,
         drawer: drawer,
-        backgroundColor: Apptheme.lightGray,
+        endDrawer: endDrawer,
+        backgroundColor: backgroundColor ?? Apptheme.lightGray,
         floatingActionButton: floatingActionButton,
       ),
     );

@@ -54,20 +54,22 @@ class ImagePlaceHolder extends StatelessWidget {
     required this.imagePath,
     this.size,
     this.isCardHeader = false,
+    this.borderRadius,
   });
 
   final String imagePath;
   final double? size;
   final bool isCardHeader;
-
+  final BorderRadiusGeometry? borderRadius;
   @override
   Widget build(BuildContext context) {
     Radius radius = Radius.circular(12);
+    BorderRadiusGeometry runBorderRadius =
+        isCardHeader
+            ? BorderRadius.only(topLeft: radius, topRight: radius)
+            : BorderRadius.circular(999);
     return ClipRRect(
-      borderRadius:
-          isCardHeader
-              ? BorderRadius.only(topLeft: radius, topRight: radius)
-              : BorderRadius.circular(999),
+      borderRadius: borderRadius ?? runBorderRadius,
       child: Image.asset(
         height: size,
         width: isCardHeader ? double.infinity : size,
@@ -174,12 +176,13 @@ class Header6 extends StatelessWidget {
     required this.title,
     this.required = false,
     this.optional = false,
+    this.style,
   });
 
   final String title;
   final bool required;
   final bool optional;
-
+  final TextStyle? style;
   @override
   Widget build(BuildContext context) {
     return Text.rich(
@@ -187,11 +190,13 @@ class Header6 extends StatelessWidget {
         children: [
           TextSpan(
             text: title,
-            style: Apptheme.text.copyWith(
-              color: Apptheme.darkSlateGray,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style:
+                style ??
+                Apptheme.text.copyWith(
+                  color: Apptheme.darkSlateGray,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
           ),
           if (required)
             TextSpan(
@@ -235,12 +240,6 @@ class CustomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     BorderRadiusGeometry radius =
         decoration.borderRadius ?? BorderRadius.circular(12);
-
-    // if (isNotNull(edgeClipRadius)) {
-    //   Radius clipRadius = Radius.circular(edgeClipRadius!);
-    //   radius = BorderRadius.only(topLeft: clipRadius, topRight: clipRadius);
-    // }
-
     return Container(
       width: width,
       height: height,

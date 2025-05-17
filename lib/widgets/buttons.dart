@@ -13,6 +13,8 @@ enum ButtonType {
   bool get isText => this == text;
 }
 
+const defaultMinHeight = 50.0;
+
 class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
@@ -20,14 +22,15 @@ class AppButton extends StatelessWidget {
     this.text,
     this.child,
     this.style,
-    this.isRectangle = true,
+    // this.isRectangle = true,
     this.loading = false,
+    this.shape,
     required this.onTap,
     this.prefix,
     this.color,
     this.wrapWithFlexible = false,
     this.suffix,
-    this.minHeight = 40,
+    this.minHeight = defaultMinHeight,
     this.padding,
     this.mainAxisSize = MainAxisSize.max,
     this.textColor,
@@ -43,7 +46,7 @@ class AppButton extends StatelessWidget {
     super.key,
     this.text,
     this.child,
-    this.isRectangle = true,
+    // this.isRectangle = true,
     required this.onTap,
     this.prefix,
     this.suffix,
@@ -51,12 +54,12 @@ class AppButton extends StatelessWidget {
     this.loading = false,
     this.wrapWithFlexible = false,
     this.style,
-    this.minHeight = 50,
+    this.minHeight = defaultMinHeight,
     this.mainAxisSize = MainAxisSize.max,
     this.padding,
     this.textColor,
     this.gradient,
-    // this.borderSide,
+    this.shape,
   }) : _type = ButtonType.secondary,
        assert(
          (text == null || child == null),
@@ -68,7 +71,7 @@ class AppButton extends StatelessWidget {
     this.text,
     this.child,
     required this.onTap,
-    this.isRectangle = true,
+    // this.isRectangle = true,
     this.wrapWithFlexible = false,
     this.prefix,
     this.suffix,
@@ -81,6 +84,7 @@ class AppButton extends StatelessWidget {
     this.gradient,
     // this.borderSide,
     this.mainAxisSize = MainAxisSize.max,
+    this.shape,
   }) : _type = ButtonType.text,
        assert(
          (text == null || child == null),
@@ -89,7 +93,7 @@ class AppButton extends StatelessWidget {
 
   final ButtonType _type;
   final String? text;
-  final bool isRectangle;
+  // final bool isRectangle;
   final bool loading;
   final bool wrapWithFlexible;
   final VoidCallback onTap;
@@ -103,6 +107,7 @@ class AppButton extends StatelessWidget {
   final Color? textColor;
   final MainAxisSize mainAxisSize;
   final Gradient? gradient;
+  final OutlinedBorder? shape;
   // final BorderSide? borderSide;
 
   @override
@@ -138,58 +143,40 @@ class AppButton extends StatelessWidget {
   Widget _body() {
     Color bgColor = color ?? Apptheme.primaryColor;
     Color borderColor = color ?? Apptheme.primaryColor;
-    Color? runTextColor = textColor ?? Apptheme.white;
-
-    if (_type.isSecondary) {
-      bgColor = Apptheme.transparent;
-      runTextColor = textColor ?? color;
-      // runTextColor = textColor ?? color ?? Apptheme.darkSlateGray;
-      // borderColor = Apptheme.silver;
-    }
+    BorderRadius radius = BorderRadius.circular(8);
+    OutlinedBorder runShape =
+        shape ??
+        RoundedRectangleBorder(
+          side: BorderSide(color: borderColor),
+          borderRadius: radius,
+        );
     return Stack(
       children: [
-        InkWell(
-          onTap: onTap,
-          child: Container(
-            constraints: BoxConstraints(minHeight: minHeight),
-            padding:
-                padding ?? EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-            clipBehavior: Clip.antiAlias,
-            decoration: ShapeDecoration(
-              gradient: gradient,
-              color: isNotNull(gradient) ? null : bgColor,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(color: borderColor),
-                borderRadius: BorderRadius.circular(isRectangle ? 8 : 50),
-              ),
+        if (_type.isSecondary)
+          OutlinedButton(
+            onPressed: () {},
+            style: OutlinedButton.styleFrom(
+              shape: runShape,
+              padding: EdgeInsets.zero,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: mainAxisSize,
-              spacing: 5,
-              children: [
-                if (isNotNull(prefix)) prefix!,
-                if (isNotNull(text))
-                  Flexible(
-                    child: Text(
-                      text!,
-                      textAlign: TextAlign.center,
-                      style:
-                          style ??
-                          Apptheme.text.copyWith(
-                            color: runTextColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                  ),
-                if (isNotNull(child)) child!,
-                if (isNotNull(suffix)) suffix!,
-              ],
+            child: _btnMain(),
+          )
+        else
+          ElevatedButton(
+            onPressed: onTap,
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.zero,
+              backgroundColor: bgColor,
+              shape: runShape,
+            ),
+            child: Ink(
+              decoration: BoxDecoration(
+                gradient: gradient,
+                borderRadius: radius,
+              ),
+              child: _btnMain(),
             ),
           ),
-        ),
         if (loading)
           Positioned(
             top: 0,
@@ -204,6 +191,42 @@ class AppButton extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _btnMain() {
+    Color? runTextColor = textColor ?? Apptheme.white;
+    if (_type.isSecondary) {
+      runTextColor = textColor ?? color;
+    }
+    return Container(
+      constraints: BoxConstraints(minHeight: minHeight),
+      padding: padding ?? EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: mainAxisSize,
+        spacing: 5,
+        children: [
+          if (isNotNull(prefix)) prefix!,
+          if (isNotNull(text))
+            Flexible(
+              child: Text(
+                text!,
+                textAlign: TextAlign.center,
+                style:
+                    style ??
+                    Apptheme.text.copyWith(
+                      color: runTextColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ),
+          if (isNotNull(child)) child!,
+          if (isNotNull(suffix)) suffix!,
+        ],
+      ),
     );
   }
 }

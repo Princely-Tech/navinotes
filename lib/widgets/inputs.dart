@@ -61,6 +61,7 @@ class CustomInputField extends StatefulWidget {
     this.selectItems,
     this.style,
     this.hintStyle,
+    this.labelStyle,
   }) : controller = controller ?? TextEditingController();
 
   final String? label;
@@ -84,6 +85,7 @@ class CustomInputField extends StatefulWidget {
   final Color? fillColor;
   final TextStyle? style;
   final TextStyle? hintStyle;
+  final TextStyle? labelStyle;
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
@@ -143,6 +145,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
             title: widget.label!,
             required: widget.required,
             optional: widget.optional,
+            style: widget.labelStyle,
           ),
         TextFormField(
           readOnly: isSelect,

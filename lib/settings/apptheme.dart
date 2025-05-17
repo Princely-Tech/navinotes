@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Apptheme {
   Apptheme._();
-  static const Color primaryColor = Color(0xFF1D9AAA);
+  static const Color primaryColor = Color(0xFF10B981);
   static const Color black = Color(0xFF000000);
   static const Color white = Color(0xFFFFFFFF);
   static const Color defaultBlack = Color(0xFF1F2937);
@@ -31,7 +31,8 @@ class Apptheme {
   static const Color lightMintGreen = Color(0xFFD1FAE5);
   static const Color purple = Color(0xFFEDE9FE);
   static const Color yellow = Color(0xFFFEF3C7);
-
+  static const Color softSkyBlue = Color(0xFF93C5FD);
+  static const Color mintyGreen = Color(0xFF34D399);
 
   static const String fontFamily = 'Inter'; //TODO bring font in
 

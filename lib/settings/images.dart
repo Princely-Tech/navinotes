@@ -1,6 +1,7 @@
 const iconPath = 'assets/icons';
 const imagePath = 'assets/images';
 const boardsPath = 'assets/images/boards';
+const boardsCreatePath = 'assets/images/boards/create';
 
 class Images {
   Images._();
@@ -27,7 +28,9 @@ class Images {
   static const String share = '$iconPath/share.svg';
   static const String pen = '$iconPath/pen.svg';
   static const String flask = '$iconPath/flask.svg';
-  // static const String apple = '$iconPath/apple.svg';
+  static const String draw = '$iconPath/draw.svg';
+  // static const String draw = '$iconPath/draw.svg';
+  // static const String draw = '$iconPath/draw.svg';
 
   //images
   static const String brain =
@@ -36,9 +39,20 @@ class Images {
   //  static const String brain = '$imagePath/brain.png';
 
   //boards
-    static const String board1 ='$boardsPath/board1.png'; 
-    static const String board2 ='$boardsPath/board2.png'; 
-    static const String board3 ='$boardsPath/board3.png'; 
-    static const String board4 ='$boardsPath/board4.png'; 
-    static const String board5 ='$boardsPath/board5.png'; 
+  static const String board1 = '$boardsPath/board1.png';
+  static const String board2 = '$boardsPath/board2.png';
+  static const String board3 = '$boardsPath/board3.png';
+  static const String board4 = '$boardsPath/board4.png';
+  static const String board5 = '$boardsPath/board5.png';
+
+  //boards create
+  static const String boardPlain = '$boardsCreatePath/plain.png';
+  static const String boardMinimalist = '$boardsCreatePath/minimalist.png';
+  static const String boardAcademiaDark = '$boardsCreatePath/academia_dark.png';
+  static const String boardAcademiaLight =
+      '$boardsCreatePath/academia_light.png';
+  static const String boardNature = '$boardsCreatePath/nature.png';
+  static const String boardPastel = '$boardsCreatePath/pastel.png';
+  static const String boardNeon = '$boardsCreatePath/neon.png';
+  static const String boardVintage = '$boardsCreatePath/vintage.png';
 }

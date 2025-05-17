@@ -226,16 +226,18 @@ class AuthScreen extends StatelessWidget {
   }
 
   Widget _socialBtn(String assetName) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: ShapeDecoration(
+    return SizedBox(
+      width: 50,
+      height: 50,
+      child: AppButton(
+        // mainAxisSize: MainAxisSize.min,
+        // wrapWithFlexible: true,
         color: inputFillColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(9999),
-        ),
+        onTap: () {},
+
+        shape: CircleBorder(),
+        child: SvgPicture.asset(assetName, height: 20, width: 20),
       ),
-      child: Align(child: SvgPicture.asset(assetName, height: 20, width: 20)),
     );
   }
 

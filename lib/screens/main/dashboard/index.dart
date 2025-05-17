@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/screens/dashboard/main.dart';
-import 'package:navinotes/screens/dashboard/side_drawer.dart';
-import 'package:navinotes/screens/dashboard/vm.dart';
+import 'package:navinotes/screens/main/dashboard/main.dart';
+import 'package:navinotes/screens/main/dashboard/side_drawer.dart';
+import 'package:navinotes/screens/main/dashboard/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/ui_helpers.dart';
 import 'package:navinotes/widgets/components.dart';

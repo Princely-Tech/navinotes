@@ -23,4 +23,5 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/images/boards/
+    - assets/images/boards/create/
     

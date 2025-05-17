@@ -59,14 +59,51 @@ class DashboardSideBar extends StatelessWidget {
               ),
             ),
           ),
-          //
+          _footer(),
         ],
       ),
     );
   }
-Widget _footer(){
-  return Column(children: [],)
-}
+
+  Widget _footer() {
+    return Padding(
+      padding: EdgeInsets.all(15),
+      child: Column(
+        spacing: 10,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Storage Usage',
+            style: Apptheme.text.copyWith(
+              color: Apptheme.steelMist,
+              fontSize: 12,
+            ),
+          ),
+          Column(
+            spacing: 4,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LinearProgressIndicator(
+                value: 3.5 / 10,
+                backgroundColor: Apptheme.lightGray,
+                borderRadius: BorderRadius.circular(100),
+                minHeight: 8,
+                color: Apptheme.vividBlue,
+              ),
+              Text(
+                '3.5 GB / 10 GB',
+                style: Apptheme.text.copyWith(
+                  color: Apptheme.steelMist,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _item({
     required String title,
     required String icon,
