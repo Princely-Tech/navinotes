@@ -4,49 +4,73 @@ import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/screen_dimensions.dart';
 import 'package:navinotes/settings/ui_helpers.dart';
+import 'package:navinotes/settings/util_functions.dart';
 import 'package:provider/provider.dart';
 
 class SVGImagePlaceHolder extends StatelessWidget {
-  const SVGImagePlaceHolder({super.key, required this.imagePath, this.size});
+  const SVGImagePlaceHolder({
+    super.key,
+    required this.imagePath,
+    this.size,
+    this.containerSize,
+    this.color,
+    this.decoration,
+  });
 
   final String imagePath;
   final double? size;
+  final double? containerSize;
+  final Decoration? decoration;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        // color: Apptheme.black.withAlpha(100),
-        shape: BoxShape.circle,
-      ),
-      child: SvgPicture.asset(
-        height: size,
-        width: size,
-        imagePath,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return const Icon(Icons.error);
-        },
-      ),
+      width: containerSize,
+      height: containerSize,
+      decoration: decoration ?? BoxDecoration(shape: BoxShape.circle),
+      child: isNotNull(containerSize) ? Center(child: _body()) : _body(),
+    );
+  }
+
+  Widget _body() {
+    return SvgPicture.asset(
+      height: size,
+      width: size,
+      imagePath,
+      fit: BoxFit.cover,
+      colorFilter:
+          isNotNull(color) ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
+      errorBuilder: (context, error, stackTrace) {
+        return const Icon(Icons.error);
+      },
     );
   }
 }
+
 class ImagePlaceHolder extends StatelessWidget {
-  const ImagePlaceHolder({super.key, required this.imagePath, this.size});
+  const ImagePlaceHolder({
+    super.key,
+    required this.imagePath,
+    this.size,
+    this.isCardHeader = false,
+  });
 
   final String imagePath;
   final double? size;
+  final bool isCardHeader;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        // color: Apptheme.black.withAlpha(100),
-        shape: BoxShape.circle,
-      ),
+    Radius radius = Radius.circular(12);
+    return ClipRRect(
+      borderRadius:
+          isCardHeader
+              ? BorderRadius.only(topLeft: radius, topRight: radius)
+              : BorderRadius.circular(999),
       child: Image.asset(
         height: size,
-        width: size,
+        width: isCardHeader ? double.infinity : size,
         imagePath,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
@@ -116,7 +140,7 @@ class ScrollableController extends StatelessWidget {
   const ScrollableController({
     super.key,
     required this.child,
-    required this.scrollable,
+    this.scrollable = true,
   });
 
   final Widget child;
@@ -184,6 +208,97 @@ class Header6 extends StatelessWidget {
               style: Apptheme.text.copyWith(color: Apptheme.steelMist),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomCard extends StatelessWidget {
+  const CustomCard({
+    super.key,
+    this.child,
+    this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+    this.decoration = const BoxDecoration(),
+    this.width = double.infinity,
+    this.height,
+    this.margin,
+    // this.edgeClipRadius,
+  });
+  final Widget? child;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final BoxDecoration decoration;
+  final double? width;
+  final double? height;
+  // final double? edgeClipRadius;
+  @override
+  Widget build(BuildContext context) {
+    BorderRadiusGeometry radius =
+        decoration.borderRadius ?? BorderRadius.circular(12);
+
+    // if (isNotNull(edgeClipRadius)) {
+    //   Radius clipRadius = Radius.circular(edgeClipRadius!);
+    //   radius = BorderRadius.only(topLeft: clipRadius, topRight: clipRadius);
+    // }
+
+    return Container(
+      width: width,
+      height: height,
+      margin: margin,
+      decoration: decoration.copyWith(
+        color: decoration.color ?? Apptheme.white,
+        borderRadius: decoration.shape == BoxShape.circle ? null : radius,
+        shape: null,
+        border: decoration.border ?? Border.all(color: Apptheme.lightGray),
+      ),
+      padding: padding,
+      child: child,
+    );
+  }
+}
+
+class VisibleController extends StatelessWidget {
+  const VisibleController({
+    super.key,
+    required this.child,
+    required this.visible,
+  });
+
+  final Widget child;
+  final bool visible;
+
+  @override
+  Widget build(BuildContext context) {
+    return visible ? child : const SizedBox();
+  }
+}
+
+class CustomTag extends StatelessWidget {
+  const CustomTag(
+    this.data, {
+    super.key,
+    required this.color,
+    required this.textColor,
+  });
+
+  final String data;
+  final Color color;
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: ShapeDecoration(
+        color: color,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Apptheme.whisperGrey),
+          borderRadius: BorderRadius.circular(9999),
+        ),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      child: Text(
+        data,
+        style: Apptheme.text.copyWith(color: textColor, fontSize: 12),
       ),
     );
   }

@@ -19,16 +19,7 @@ class AboutMeForm extends StatelessWidget {
           child: Column(
             spacing: 50,
             children: [
-              Container(
-                width: double.infinity,
-                decoration: ShapeDecoration(
-                  color: Apptheme.white,
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Apptheme.lightGray),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+              CustomCard(
                 child: Form(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

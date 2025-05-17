@@ -6,7 +6,7 @@ import 'package:navinotes/screens/dashboard/index.dart';
 Map<String, WidgetBuilder> routes = {
   Routes.auth: (context) => const AuthScreen(),
   Routes.aboutMe: (context) => const AboutMeScreen(),
-  Routes.dashboard: (context) => const DashboardScreen(),
+  Routes.dashboard: (context) => DashboardScreen(),
 };
 
 class Routes {

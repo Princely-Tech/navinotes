@@ -27,6 +27,11 @@ class Apptheme {
   static const Color jungleGreen = Color(0xFF059669);
   static const Color stormGray = Color(0xFF4B5563);
   static const Color electricIndigo = Color(0xFF1D4ED8);
+  static const Color emeraldGreen = Color(0xFF047857);
+  static const Color lightMintGreen = Color(0xFFD1FAE5);
+  static const Color purple = Color(0xFFEDE9FE);
+  static const Color yellow = Color(0xFFFEF3C7);
+
 
   static const String fontFamily = 'Inter'; //TODO bring font in
 

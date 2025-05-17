@@ -39,14 +39,7 @@ class AboutMeAside extends StatelessWidget {
   }
 
   Widget _profilePreviewer() {
-    return Container(
-      decoration: ShapeDecoration(
-        color: Apptheme.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: Apptheme.lightGray),
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
+    return CustomCard(
       padding: EdgeInsets.all(25),
       child: Column(
         spacing: 15,
@@ -125,29 +118,10 @@ class AboutMeAside extends StatelessWidget {
                   children:
                       ['Study Tips', 'Research Tools', 'Note Templates']
                           .map(
-                            (str) => Flexible(
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  color: Apptheme.paleBlue,
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      color: Apptheme.whisperGrey,
-                                    ),
-                                    borderRadius: BorderRadius.circular(9999),
-                                  ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 5,
-                                ),
-                                child: Text(
-                                  str,
-                                  style: Apptheme.text.copyWith(
-                                    color: Apptheme.electricIndigo,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
+                            (str) => CustomTag(
+                              str,
+                              color: Apptheme.paleBlue,
+                              textColor: Apptheme.electricIndigo,
                             ),
                           )
                           .toList(),
@@ -161,54 +135,73 @@ class AboutMeAside extends StatelessWidget {
   }
 
   Widget _proTip() {
-    return Container(
-      decoration: ShapeDecoration(
-        color: const Color(0xFFEFF6FF),
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: const Color(0xFFDBEAFE)),
-          borderRadius: BorderRadius.circular(12),
-        ),
+    return CustomCard(
+      decoration: BoxDecoration(
+        color: Apptheme.iceBlue,
+        border: Border.all(color: Apptheme.paleBlue),
       ),
       padding: EdgeInsets.all(30),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ImagePlaceHolder(imagePath: Images.brainPers, size: 48),
+
           Expanded(
-            child: Container(
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: const Color(0xFFE5E7EB)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              padding: EdgeInsets.all(20),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Pro Tip:',
-                      style: TextStyle(
-                        color: const Color(0xFF374151),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w700,
-                        height: 1,
-                      ),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 16,
+                  left: 0,
+                  child: CustomCard(
+                    height: 20,
+                    width: 20,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border(),
                     ),
-                    TextSpan(
-                      text:
-                          'Students who complete their profiles are 3x more likely to find study partners within the app!',
-                      style: TextStyle(
-                        color: const Color(0xFF374151),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+
+                CustomCard(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.only(left: 14),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Pro Tip:',
+                          style: Apptheme.text.copyWith(
+                            color: Apptheme.darkSlateGray,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        TextSpan(
+                          text:
+                              'Students who complete their profiles are 3x more likely to find study partners within the app!',
+                          style: Apptheme.text.copyWith(
+                            color: Apptheme.darkSlateGray,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 16,
+                  left: 0,
+                  child: CustomCard(
+                    height: 20,
+                    width: 20,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border(),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -217,21 +210,12 @@ class AboutMeAside extends StatelessWidget {
   }
 
   Widget _whyShare() {
-    TextStyle tileStyle = TextStyle(
-      color: const Color(0xFF4B5563),
+    TextStyle tileStyle = Apptheme.text.copyWith(
+      color: Apptheme.stormGray,
       fontSize: 16,
-      fontFamily: 'Inter',
-      fontWeight: FontWeight.w400,
       height: 1.5,
     );
-    return Container(
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: const Color(0xFFE5E7EB)),
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
+    return CustomCard(
       padding: EdgeInsets.all(15),
       child: Column(
         spacing: 15,
@@ -241,12 +225,9 @@ class AboutMeAside extends StatelessWidget {
             initiallyExpanded: true,
             title: Text(
               'Why Share This Info?',
-              style: TextStyle(
-                color: const Color(0xFF1F2937),
+              style: Apptheme.text.copyWith(
                 fontSize: 16,
-                fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
-                height: 1,
               ),
             ),
             shape: RoundedRectangleBorder(
@@ -254,7 +235,6 @@ class AboutMeAside extends StatelessWidget {
             ),
             children: <Widget>[
               ListTile(
-                // dense: true,
                 minVerticalPadding: 10,
                 title: Text(
                   'Sharing your information helps us to:',
@@ -275,11 +255,9 @@ class AboutMeAside extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               'We value your privacy. Your information is never shared with third parties.',
-              style: TextStyle(
-                color: Colors.black,
+              style: Apptheme.text.copyWith(
+                color: Apptheme.black,
                 fontSize: 12,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
               ),
             ),
           ),
