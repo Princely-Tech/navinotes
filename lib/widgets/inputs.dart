@@ -114,23 +114,22 @@ class _CustomInputFieldState extends State<CustomInputField> {
         prefixImg = Images.padlock;
         break;
     }
+    EdgeInsets prefPadding = EdgeInsets.only(left: padding);
+    EdgeInsets suffixPadding = EdgeInsets.only(left: 5, right: padding);
     if (isNotNull(prefixImg)) {
       prefix = Padding(
-        padding: EdgeInsets.symmetric(horizontal: padding),
+        padding: prefPadding,
         child: SvgPicture.asset(prefixImg!, width: 16, height: 16),
       );
     }
     if (widget.prefixIcon != null) {
-      prefix = Padding(
-        padding: EdgeInsets.symmetric(horizontal: padding),
-        child: widget.prefixIcon,
-      );
+      prefix = Padding(padding: prefPadding, child: widget.prefixIcon);
     }
 
     bool isSelect = isNotNull(widget.selectItems);
     if (isSelect) {
       suffix = Padding(
-        padding: EdgeInsets.symmetric(horizontal: padding),
+        padding: suffixPadding,
         child: Icon(Icons.keyboard_arrow_down, color: Apptheme.black),
       );
     }

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/board_notes/aside.dart';
+import 'package:navinotes/screens/main/board_notes/appbar.dart';
 import 'package:navinotes/screens/main/board_notes/main.dart';
 import 'package:navinotes/screens/main/board_notes/vm.dart';
-import 'package:navinotes/screens/main/dashboard/main.dart';
-import 'package:navinotes/screens/main/dashboard/side_drawer.dart';
-import 'package:navinotes/screens/main/dashboard/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/frames.dart';
 import 'package:provider/provider.dart';
@@ -29,14 +26,21 @@ class BoardNotesScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(),
               child: BoardNotesAside(),
             ),
-            body: ResponsiveSection(
-              mobile: BoardNotesMain(),
-              desktops: Row(
-                children: [
-                  Expanded(child: BoardNotesMain()),
-                  WidthLimiter(mobile: 288, child: BoardNotesAside()),
-                ],
-              ),
+            body: Column(
+              children: [
+                BoardNotesAppBar(),
+                Expanded(
+                  child: ResponsiveSection(
+                    mobile: BoardNotesMain(),
+                    desktops: Row(
+                      children: [
+                        Expanded(child: BoardNotesMain()),
+                        WidthLimiter(mobile: 288, child: BoardNotesAside()),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },

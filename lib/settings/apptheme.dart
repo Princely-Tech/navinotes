@@ -4,6 +4,7 @@ class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
   static const Color black = Color(0xFF000000);
+  static const Color lightAsh = Color(0xFFF3F4F6);
   static const Color white = Color(0xFFFFFFFF);
   static const Color defaultBlack = Color(0xFF1F2937);
   static const Color royalBlue = Color(0xFF1E3A8A);
@@ -39,7 +40,7 @@ class Apptheme {
   static const Color dodgerBlue = Color(0xFF0075FF);
   static const Color gainsboro = Color(0xFFE5E5E5);
 
-  static const String fontFamily = 'Inter'; //TODO bring font in
+  static const String fontFamily = 'Inter';
 
   static TextStyle get text => TextStyle(
     color: defaultBlack,

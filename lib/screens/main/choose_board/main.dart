@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/choose_board/vm.dart';
-import 'package:navinotes/screens/main/dashboard/boards.dart';
-import 'package:navinotes/screens/main/dashboard/header.dart';
-import 'package:navinotes/screens/main/dashboard/recent_activity.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
 import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/customGrid.dart';
+import 'package:navinotes/widgets/custom_grid.dart';
 import 'package:navinotes/widgets/inputs.dart';
 import 'package:provider/provider.dart';
 
@@ -121,7 +117,7 @@ class ChooseBoardMain extends StatelessWidget {
   Widget _customCreateBoard() {
     return _cardFrame(
       title: 'Custom',
-      header: Container(
+      header: SizedBox(
         height: 140,
         width: double.infinity,
         child: Column(

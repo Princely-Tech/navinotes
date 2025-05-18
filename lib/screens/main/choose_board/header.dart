@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/choose_board/vm.dart';
+import 'package:navinotes/settings/app_strings.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/settings/util_functions.dart';
@@ -35,7 +36,7 @@ class ChooseBoardHeader extends StatelessWidget {
                             spacing: 8,
                             children: [
                               Text(
-                                'NeuroNotes',
+                                AppStrings.appName,
                                 style: TextStyle(
                                   color: const Color(0xFF1E3A8A),
                                   fontSize: 24,

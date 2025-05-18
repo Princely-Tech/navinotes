@@ -345,3 +345,28 @@ class CustomTag extends StatelessWidget {
     );
   }
 }
+
+class OutlinedChild extends StatelessWidget {
+  const OutlinedChild({
+    super.key,
+    required this.child,
+    this.decoration = const BoxDecoration(),
+  });
+
+  final Widget child;
+  final BoxDecoration decoration;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+
+      decoration: decoration.copyWith(
+        borderRadius: decoration.borderRadius ?? BorderRadius.circular(6),
+        border: decoration.border ?? Border.all(color: Apptheme.lightGray),
+      ),
+      child: Center(child: child),
+    );
+  }
+}

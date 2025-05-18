@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:navinotes/screens/auth/vm.dart';
+import 'package:navinotes/settings/app_strings.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/ui_helpers.dart';
@@ -92,7 +93,7 @@ class AuthScreen extends StatelessWidget {
                             size: 64,
                           ),
                           Text(
-                            'NueroNote',
+                            AppStrings.appName,
                             textAlign: TextAlign.center,
                             style: Apptheme.text.copyWith(
                               color: Apptheme.white,

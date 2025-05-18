@@ -4,7 +4,6 @@ import 'package:navinotes/screens/main/choose_board/main.dart';
 import 'package:navinotes/screens/main/choose_board/side_drawer.dart';
 import 'package:navinotes/screens/main/choose_board/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/widgets/buttons.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/frames.dart';

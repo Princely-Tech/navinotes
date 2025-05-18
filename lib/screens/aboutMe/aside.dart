@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/settings/app_strings.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/widgets/components.dart';
@@ -98,7 +99,7 @@ class AboutMeAside extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Uses MindMapper for:',
+                        text: 'Uses ${AppStrings.appName} for:',
                         style: Apptheme.text.copyWith(
                           color: Apptheme.stormGray,
                         ),
