@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/screens/main/dashboard/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
@@ -6,13 +7,18 @@ import 'package:navinotes/settings/routes.dart';
 import 'package:navinotes/widgets/buttons.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/customGrid.dart';
+import 'package:provider/provider.dart';
 
 class YourBoards extends StatelessWidget {
   const YourBoards({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(spacing: 20, children: [_header(), _boards()]);
+    return Consumer<DashboardVm>(
+      builder: (context, vm, child) {
+        return Column(spacing: 20, children: [_header(), _boards(vm)]);
+      },
+    );
   }
 
   Widget _boardCard({
@@ -23,7 +29,6 @@ class YourBoards extends StatelessWidget {
     required int mindmaps,
   }) {
     return CustomCard(
-      // edgeClipRadius: 12,
       padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,13 +81,11 @@ class YourBoards extends StatelessWidget {
     );
   }
 
-  Widget _createBoard() { 
+  Widget _createBoard(DashboardVm vm) {
     return Column(
       children: [
         InkWell(
-          onTap: () {
-            NavigationHelper.push(Routes.chooseBoard);
-          },
+          onTap: vm.goToCreateBoard,
           child: CustomCard(
             child: Column(
               spacing: 15,
@@ -126,7 +129,7 @@ class YourBoards extends StatelessWidget {
     );
   }
 
-  Widget _boards() {
+  Widget _boards(DashboardVm vm) {
     return CustomGrid(
       mobile: 1,
       laptops: 2,
@@ -167,7 +170,7 @@ class YourBoards extends StatelessWidget {
           notes: 18,
           mindmaps: 1,
         ),
-        _createBoard(),
+        _createBoard(vm),
       ],
     );
   }

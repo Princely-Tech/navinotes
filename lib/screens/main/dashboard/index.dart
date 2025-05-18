@@ -15,30 +15,34 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldFrame(
-      scaffoldKey: _scaffoldKey,
-      drawer: Drawer(
-        backgroundColor: Apptheme.white,
-        shape: RoundedRectangleBorder(),
-        child: DashboardSideBar(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Apptheme.strongBlue,
-        shape: CircleBorder(),
-        child: Icon(Icons.add, color: Apptheme.white),
-      ),
-      body: ChangeNotifierProvider(
-        create: (context) => DashboardVm(scaffoldKey: _scaffoldKey),
-        child: ResponsiveSection(
-          mobile: DashboardMain(),
-          desktops: Row(
-            children: [
-              WidthLimiter(maxWidth: 255, child: DashboardSideBar()),
-              Expanded(child: DashboardMain()),
-            ],
-          ),
-        ),
+    return ChangeNotifierProvider(
+      create: (context) => DashboardVm(scaffoldKey: _scaffoldKey),
+      child: Consumer<DashboardVm>(
+        builder: (context, vm, child) {
+          return ScaffoldFrame(
+            scaffoldKey: _scaffoldKey,
+            drawer: Drawer(
+              backgroundColor: Apptheme.white,
+              shape: RoundedRectangleBorder(),
+              child: DashboardSideBar(),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: vm.goToCreateBoard,
+              backgroundColor: Apptheme.strongBlue,
+              shape: CircleBorder(),
+              child: Icon(Icons.add, color: Apptheme.white),
+            ),
+            body: ResponsiveSection(
+              mobile: DashboardMain(),
+              desktops: Row(
+                children: [
+                  WidthLimiter(maxWidth: 255, child: DashboardSideBar()),
+                  Expanded(child: DashboardMain()),
+                ],
+              ),
+            ),
+          );
+        }
       ),
     );
   }

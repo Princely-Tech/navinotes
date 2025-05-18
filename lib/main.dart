@@ -5,7 +5,7 @@ import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/settings/routes.dart';
 import 'package:navinotes/settings/apptheme.dart';
 
-void main() {
+void main() { 
   runApp(const MyApp());
 }
 

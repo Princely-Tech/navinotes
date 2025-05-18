@@ -55,4 +55,5 @@ class Images {
   static const String boardPastel = '$boardsCreatePath/pastel.png';
   static const String boardNeon = '$boardsCreatePath/neon.png';
   static const String boardVintage = '$boardsCreatePath/vintage.png';
+  static const String boardPreview = '$boardsCreatePath/preview.png';
 }

@@ -143,14 +143,24 @@ class ScrollableController extends StatelessWidget {
     super.key,
     required this.child,
     this.scrollable = true,
+    this.padding,
+    this.scrollDirection = Axis.vertical,
   });
 
   final Widget child;
   final bool scrollable;
+  final EdgeInsetsGeometry? padding;
+  final Axis scrollDirection;
 
   @override
   Widget build(BuildContext context) {
-    return scrollable ? SingleChildScrollView(child: child) : child;
+    return scrollable
+        ? SingleChildScrollView(
+          padding: padding,
+          scrollDirection: scrollDirection,
+          child: child,
+        )
+        : Container(padding: padding, child: child);
   }
 }
 

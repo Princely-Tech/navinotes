@@ -6,8 +6,16 @@ import 'package:navinotes/settings/screen_dimensions.dart';
 class ChooseBoardVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   ChooseBoardVm({required this.scaffoldKey});
+
+  double backgroundPatternOpacity = 0;
+
   bool saveAsFavoriteStyle = false;
   String selectedBoard = 'Plain';
+
+  void updateBackgroundPatternOpacity(double value) {
+    backgroundPatternOpacity = value;
+    notifyListeners();
+  }
 
   void updateSelectedBoard(String value) {
     selectedBoard = value;
