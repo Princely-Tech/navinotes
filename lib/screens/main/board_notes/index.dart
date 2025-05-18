@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/screens/main/board_notes/aside.dart';
+import 'package:navinotes/screens/main/board_notes/main.dart';
+import 'package:navinotes/screens/main/board_notes/vm.dart';
 import 'package:navinotes/screens/main/dashboard/main.dart';
 import 'package:navinotes/screens/main/dashboard/side_drawer.dart';
 import 'package:navinotes/screens/main/dashboard/vm.dart';
@@ -8,41 +11,35 @@ import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/frames.dart';
 import 'package:provider/provider.dart';
 
-class DashboardScreen extends StatelessWidget {
-  DashboardScreen({super.key});
+class BoardNotesScreen extends StatelessWidget {
+  BoardNotesScreen({super.key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => DashboardVm(scaffoldKey: _scaffoldKey),
-      child: Consumer<DashboardVm>(
+      create: (context) => BoardNotesVm(scaffoldKey: _scaffoldKey),
+      child: Consumer<BoardNotesVm>(
         builder: (context, vm, child) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
-            drawer: Drawer(
+            endDrawer: Drawer(
               backgroundColor: Apptheme.white,
               shape: RoundedRectangleBorder(),
-              child: DashboardSideBar(),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: vm.goToCreateBoard,
-              backgroundColor: Apptheme.strongBlue,
-              shape: CircleBorder(),
-              child: Icon(Icons.add, color: Apptheme.white),
+              child: BoardNotesAside(),
             ),
             body: ResponsiveSection(
-              mobile: DashboardMain(),
+              mobile: BoardNotesMain(),
               desktops: Row(
                 children: [
-                  WidthLimiter(mobile: 255, child: DashboardSideBar()),
-                  Expanded(child: DashboardMain()),
+                  Expanded(child: BoardNotesMain()),
+                  WidthLimiter(mobile: 288, child: BoardNotesAside()),
                 ],
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

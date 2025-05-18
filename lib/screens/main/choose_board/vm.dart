@@ -31,11 +31,7 @@ class ChooseBoardVm extends ChangeNotifier {
     scaffoldKey.currentState?.openEndDrawer();
   }
 
-  bool getMenuVisible(DeviceType deviceType) {
-    return deviceType == DeviceType.mobile ||
-        deviceType == DeviceType.tablets ||
-        deviceType == DeviceType.laptops;
-  }
+ 
 
   void skipAndUseDefault() {
     goNext();

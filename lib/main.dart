@@ -5,7 +5,7 @@ import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/settings/routes.dart';
 import 'package:navinotes/settings/apptheme.dart';
 
-void main() { 
+void main() {
   runApp(const MyApp());
 }
 
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: Apptheme.fontFamily),
-        initialRoute: Routes.chooseBoard,
+        initialRoute: Routes.auth,
         // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,

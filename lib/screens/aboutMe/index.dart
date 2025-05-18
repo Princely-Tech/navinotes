@@ -58,7 +58,7 @@ class AboutMeScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding),
       child: WidthLimiter(
-        maxWidth: desktopsSize,
+        mobile: desktopsSize,
         child: ResponsiveSection(
           mobile: Column(children: [aboutMeForm, aboutMeAside]),
           desktops: Row(
@@ -66,7 +66,7 @@ class AboutMeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               aboutMeForm,
-              WidthLimiter(maxWidth: 400, child: aboutMeAside),
+              WidthLimiter(mobile: 400, child: aboutMeAside),
             ],
           ),
         ),
@@ -86,7 +86,7 @@ class AboutMeScreen extends StatelessWidget {
       ),
       child: Center(
         child: WidthLimiter(
-          maxWidth: desktopsSize,
+          mobile: desktopsSize,
           child: Row(
             spacing: 15,
             children: [

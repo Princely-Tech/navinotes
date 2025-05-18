@@ -3,18 +3,10 @@ import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/settings/routes.dart';
 import 'package:navinotes/settings/screen_dimensions.dart';
 
-class DashboardVm extends ChangeNotifier {
+class BoardNotesVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  DashboardVm({required this.scaffoldKey});
+  BoardNotesVm({required this.scaffoldKey});
   void openDrawer() {
-    scaffoldKey.currentState?.openDrawer();
-  }
-
-  goToCreateBoard() {
-    NavigationHelper.push(Routes.chooseBoard);
-  }
-
-  goToBoardNotes() {
-    NavigationHelper.push(Routes.boardNotes);
+    scaffoldKey.currentState?.openEndDrawer();
   }
 }

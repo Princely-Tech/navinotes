@@ -3,6 +3,7 @@ import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/choose_board/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
+import 'package:navinotes/settings/util_functions.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:provider/provider.dart';
 
@@ -71,7 +72,7 @@ class ChooseBoardHeader extends StatelessWidget {
                         child: Icon(Icons.person, color: Apptheme.strongBlue),
                       ),
                       VisibleController(
-                        visible: vm.getMenuVisible(layoutVm.deviceType),
+                        visible: getMenuVisible(layoutVm.deviceType),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: InkWell(

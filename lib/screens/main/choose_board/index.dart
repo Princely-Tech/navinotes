@@ -36,7 +36,11 @@ class ChooseBoardScreen extends StatelessWidget {
                 desktops: Row(
                   children: [
                     Expanded(child: ChooseBoardMain()),
-                    WidthLimiter(maxWidth: 360, child: ChooseBoardAside()),
+                    WidthLimiter(
+                      mobile: 280,
+                      largeDesktops: 360,
+                      child: ChooseBoardAside(),
+                    ),
                   ],
                 ),
               ),

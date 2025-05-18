@@ -84,20 +84,53 @@ class ImagePlaceHolder extends StatelessWidget {
 }
 
 class WidthLimiter extends StatelessWidget {
-  const WidthLimiter({super.key, required this.child, required this.maxWidth});
+  const WidthLimiter({
+    super.key,
+    required this.child,
+    required this.mobile,
+    this.tablets,
+    this.laptops,
+    this.desktops,
+    this.largeDesktops,
+  });
 
   final Widget child;
-  final double maxWidth;
+  final double mobile;
+  final double? tablets;
+  final double? laptops;
+  final double? desktops;
+  final double? largeDesktops;
 
   @override
   Widget build(BuildContext context) {
     double deviceWidth = screenWidth(context);
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: deviceWidth < maxWidth ? deviceWidth : maxWidth,
-      ),
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, child) {
+        double maxWidth = getMaxWidth(layoutVm.deviceType);
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: deviceWidth < maxWidth ? deviceWidth : maxWidth,
+          ),
+          child: child,
+        );
+      },
       child: child,
     );
+  }
+
+  double getMaxWidth(DeviceType deviceType) {
+    switch (deviceType) {
+      case DeviceType.mobile:
+        return mobile;
+      case DeviceType.tablets:
+        return tablets ?? mobile;
+      case DeviceType.laptops:
+        return laptops ?? tablets ?? mobile;
+      case DeviceType.desktops:
+        return desktops ?? laptops ?? tablets ?? mobile;
+      case DeviceType.largeDesktops:
+        return largeDesktops ?? desktops ?? laptops ?? tablets ?? mobile;
+    }
   }
 }
 

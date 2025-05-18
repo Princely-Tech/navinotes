@@ -3,6 +3,7 @@ import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/dashboard/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
+import 'package:navinotes/settings/util_functions.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/inputs.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ class DashboardHeader extends StatelessWidget {
                   child: Row(
                     children: [
                       VisibleController(
-                        visible: vm.getMenuVisible(layoutVm.deviceType),
+                        visible: getMenuVisible(layoutVm.deviceType),
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: InkWell(
@@ -41,7 +42,7 @@ class DashboardHeader extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: WidthLimiter(
-                            maxWidth: 512,
+                            mobile: 512,
                             child: CustomInputField(
                               prefixIcon: Icon(
                                 Icons.search,
