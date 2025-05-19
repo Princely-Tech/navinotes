@@ -23,6 +23,7 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/images/boards/
+    - assets/images/boards/notes/
     - assets/images/boards/create/
 
   fonts:

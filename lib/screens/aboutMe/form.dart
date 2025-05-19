@@ -67,13 +67,7 @@ class AboutMeForm extends StatelessWidget {
         Text(
           'You can update your profile anytime in Settings',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: const Color(0xFF6B7280),
-            fontSize: 14,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w400,
-            height: 1,
-          ),
+          style: Apptheme.text.copyWith(color: Apptheme.steelMist),
         ),
       ],
     );
@@ -255,22 +249,16 @@ class AboutMeForm extends StatelessWidget {
       children: [
         Text(
           'Tell Us About You',
-          style: TextStyle(
-            color: const Color(0xFF1F2937),
+          style: Apptheme.text.copyWith(
             fontSize: 24,
-            fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
-            height: 1,
           ),
         ),
         Text(
           'Help us personalize your experience (you can skip or edit this later)',
-          style: TextStyle(
-            color: const Color(0xFF4B5563),
+          style: Apptheme.text.copyWith(
+            color: Apptheme.stormGray,
             fontSize: 16,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w400,
-            height: 1,
           ),
         ),
       ],

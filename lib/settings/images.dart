@@ -2,6 +2,7 @@ const iconPath = 'assets/icons';
 const imagePath = 'assets/images';
 const boardsPath = 'assets/images/boards';
 const boardsCreatePath = 'assets/images/boards/create';
+const boardsNotesPath = 'assets/images/boards/notes';
 
 class Images {
   Images._();
@@ -24,11 +25,23 @@ class Images {
   static const String bell = '$iconPath/bell.svg';
   static const String arrowVer = '$iconPath/arrow_ver.svg';
   static const String filter = '$iconPath/filter.svg';
-  static const String note = '$iconPath/note.svg';
+  static const String file = '$iconPath/file.svg';
   static const String share = '$iconPath/share.svg';
   static const String pen = '$iconPath/pen.svg';
   static const String flask = '$iconPath/flask.svg';
   static const String draw = '$iconPath/draw.svg';
+  static const String pref = '$iconPath/pref.svg';
+  static const String img = '$iconPath/img.svg';
+  static const String hook = '$iconPath/hook.svg';
+  static const String copy2 = '$iconPath/copy2.svg';
+  static const String video = '$iconPath/video.svg';
+  static const String calculator = '$iconPath/calculator.svg';
+  static const String chart = '$iconPath/chart.svg';
+  static const String calender = '$iconPath/calender.svg';
+  static const String person = '$iconPath/person.svg';
+  static const String menu = '$iconPath/menu.svg';
+  static const String ques2 = '$iconPath/ques2.svg';
+  // static const String draw = '$iconPath/draw.svg';
   // static const String draw = '$iconPath/draw.svg';
   // static const String draw = '$iconPath/draw.svg';
 
@@ -56,4 +69,15 @@ class Images {
   static const String boardNeon = '$boardsCreatePath/neon.png';
   static const String boardVintage = '$boardsCreatePath/vintage.png';
   static const String boardPreview = '$boardsCreatePath/preview.png';
+
+  //boards notes
+  static const String noteWave = '$boardsNotesPath/wave.png';
+
+  static const String noteNewton = '$boardsNotesPath/newton.png';
+  static const String noteThermodynamics =
+      '$boardsNotesPath/thermodynamics.png';
+  static const String noteElectromagnetism =
+      '$boardsNotesPath/electromagnetism.png';
+  static const String noteMechanics = '$boardsNotesPath/mechanics.png';
+  static const String noteOptics = '$boardsNotesPath/optics.png';
 }

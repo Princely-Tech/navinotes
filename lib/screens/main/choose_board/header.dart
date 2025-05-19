@@ -37,22 +37,16 @@ class ChooseBoardHeader extends StatelessWidget {
                             children: [
                               Text(
                                 AppStrings.appName,
-                                style: TextStyle(
-                                  color: const Color(0xFF1E3A8A),
+                                style: Apptheme.text.copyWith(
+                                  color: Apptheme.royalBlue,
                                   fontSize: 24,
-                                  fontFamily: 'Inter',
                                   fontWeight: FontWeight.w700,
-                                  height: 1,
                                 ),
                               ),
                               Text(
                                 'Choose Board Style',
-                                style: TextStyle(
-                                  color: const Color(0xFF2563EB),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1,
+                                style: Apptheme.text.copyWith(
+                                  color: Apptheme.strongBlue,
                                 ),
                               ),
                             ],

@@ -15,12 +15,9 @@ class RecentActivity extends StatelessWidget {
       children: [
         Text(
           'Recent Activity',
-          style: TextStyle(
-            color: const Color(0xFF1F2937),
+          style: Apptheme.text.copyWith(
             fontSize: 24,
-            fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
-            height: 1,
           ),
         ),
         CustomCard(
@@ -30,7 +27,7 @@ class RecentActivity extends StatelessWidget {
               _activityCard(
                 body: 'You added new equations to the Schrödinger section',
                 image: _imgCard(
-                  imagePath: Images.note,
+                  imagePath: Images.file,
                   color: Apptheme.paleBlue,
                 ),
                 lastUpdated: 'Today, 10:23 AM',

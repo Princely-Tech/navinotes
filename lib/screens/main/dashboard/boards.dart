@@ -83,54 +83,6 @@ class YourBoards extends StatelessWidget {
     );
   }
 
-  Widget _createBoard(DashboardVm vm) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: vm.goToCreateBoard,
-          child: CustomCard(
-            child: Column(
-              spacing: 15,
-              children: [
-                CustomCard(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: Apptheme.paleBlue,
-                    shape: BoxShape.circle,
-                  ),
-                  padding: EdgeInsets.zero,
-                  child: Icon(Icons.add, color: Apptheme.vividBlue),
-                ),
-                Column(
-                  spacing: 5,
-                  children: [
-                    Text(
-                      'Create New Board',
-                      style: Apptheme.text.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'Start organizing your ideas',
-                      style: TextStyle(
-                        color: const Color(0xFF6B7280),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _boards(DashboardVm vm) {
     return CustomGrid(
       mobile: 1,
@@ -177,7 +129,7 @@ class YourBoards extends StatelessWidget {
           notes: 18,
           mindmaps: 1,
         ),
-        _createBoard(vm),
+        CreateCard(onTap: vm.goToCreateBoard, text: 'Create New Board'),
       ],
     );
   }

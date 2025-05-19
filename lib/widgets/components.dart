@@ -302,12 +302,11 @@ class CustomCard extends StatelessWidget {
 class VisibleController extends StatelessWidget {
   const VisibleController({
     super.key,
-    required this.child,
     required this.visible,
+    required this.child,
   });
-
-  final Widget child;
   final bool visible;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -351,22 +350,74 @@ class OutlinedChild extends StatelessWidget {
     super.key,
     required this.child,
     this.decoration = const BoxDecoration(),
+    this.size = 36,
   });
 
   final Widget child;
   final BoxDecoration decoration;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
+    BorderRadiusGeometry borderRadius =
+        decoration.borderRadius ?? BorderRadius.circular(6);
     return Container(
-      width: 36,
-      height: 36,
-
+      width: size,
+      height: size,
       decoration: decoration.copyWith(
-        borderRadius: decoration.borderRadius ?? BorderRadius.circular(6),
+        borderRadius: decoration.shape == BoxShape.circle ? null : borderRadius,
         border: decoration.border ?? Border.all(color: Apptheme.lightGray),
       ),
       child: Center(child: child),
+    );
+  }
+}
+
+class CreateCard extends StatelessWidget {
+  const CreateCard({super.key, required this.onTap, required this.text});
+  final void Function()? onTap;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        InkWell(
+          onTap:onTap,
+          child: CustomCard(
+            child: Column(
+              spacing: 15,
+              children: [
+                CustomCard(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: Apptheme.paleBlue,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: EdgeInsets.zero,
+                  child: Icon(Icons.add, color: Apptheme.vividBlue),
+                ),
+                Column(
+                  spacing: 5,
+                  children: [
+                    Text(
+                      text,
+                      style: Apptheme.text.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Start organizing your ideas',
+                      style: Apptheme.text.copyWith(color: Apptheme.steelMist),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

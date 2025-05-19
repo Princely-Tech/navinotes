@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/util_functions.dart';
@@ -13,12 +12,14 @@ InputDecoration _inputDecoration({
   // bool isRectangle = true,
   // required bool isTextArea,
   Color? fillColor,
+  BoxConstraints? constraints,
+  BorderSide? side,
 }) {
   OutlineInputBorder defaultBorder =
       border ??
       OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Apptheme.coolGray, width: 1),
+        borderSide: side ?? BorderSide(color: Apptheme.coolGray, width: 1),
       );
 
   return InputDecoration(
@@ -36,6 +37,8 @@ InputDecoration _inputDecoration({
     filled: true,
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
+    maintainHintHeight: true,
+    constraints: constraints,
     contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
   );
 }
@@ -62,6 +65,8 @@ class CustomInputField extends StatefulWidget {
     this.style,
     this.hintStyle,
     this.labelStyle,
+    this.constraints,
+    this.side,
   }) : controller = controller ?? TextEditingController();
 
   final String? label;
@@ -69,6 +74,7 @@ class CustomInputField extends StatefulWidget {
   // final bool isRectangle;
   final String hintText;
   final bool optional;
+  final BorderSide? side;
   // final String? footer;
   final TextInputType keyboardType;
   final TextEditingController controller;
@@ -86,6 +92,7 @@ class CustomInputField extends StatefulWidget {
   final TextStyle? style;
   final TextStyle? hintStyle;
   final TextStyle? labelStyle;
+  final BoxConstraints? constraints;
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
@@ -97,6 +104,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
   }
 
   Widget _body() {
+    TextStyle style = widget.style ?? Apptheme.text.copyWith(fontSize: 16);
     Widget? prefix;
     Widget? suffix;
     // bool isDate = widget.keyboardType == TextInputType.datetime;
@@ -116,10 +124,14 @@ class _CustomInputFieldState extends State<CustomInputField> {
     }
     EdgeInsets prefPadding = EdgeInsets.only(left: padding);
     EdgeInsets suffixPadding = EdgeInsets.only(left: 5, right: padding);
+
     if (isNotNull(prefixImg)) {
       prefix = Padding(
         padding: prefPadding,
-        child: SvgPicture.asset(prefixImg!, width: 16, height: 16),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [SVGImagePlaceHolder(imagePath: prefixImg!, size: 16)],
+        ),
       );
     }
     if (widget.prefixIcon != null) {
@@ -130,7 +142,11 @@ class _CustomInputFieldState extends State<CustomInputField> {
     if (isSelect) {
       suffix = Padding(
         padding: suffixPadding,
-        child: Icon(Icons.keyboard_arrow_down, color: Apptheme.black),
+        child: Icon(
+          Icons.keyboard_arrow_down,
+          color: style.color ?? Apptheme.black,
+          size: style.fontSize! + 5,
+        ),
       );
     }
 
@@ -158,23 +174,16 @@ class _CustomInputFieldState extends State<CustomInputField> {
             prefixIcon: prefix,
             suffixIcon: suffix,
             border: widget.border,
-            // isTextArea: widget.isTextArea,
+            constraints: widget.constraints,
+            side: widget.side,
             fillColor: widget.fillColor,
           ).copyWith(
             hintStyle: widget.hintStyle ?? Apptheme.text.copyWith(fontSize: 16),
           ),
           keyboardType: widget.keyboardType,
           obscureText: isPassword ? true : false,
-          style: widget.style ?? Apptheme.text.copyWith(fontSize: 16),
+          style: style,
         ),
-        // if (isNotNull(widget.footer))
-        //   Text(
-        //     widget.footer!,
-        //     style: Apptheme.text.copyWith(
-        //       color: Apptheme.charcoal,
-        //       fontSize: 12,
-        //     ),
-        //   ),
       ],
     );
   }

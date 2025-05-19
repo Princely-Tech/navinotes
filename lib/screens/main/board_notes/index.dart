@@ -33,7 +33,7 @@ class BoardNotesScreen extends StatelessWidget {
                   child: ResponsiveSection(
                     mobile: BoardNotesMain(),
                     desktops: Row(
-                      children: [
+                      children: [ 
                         Expanded(child: BoardNotesMain()),
                         WidthLimiter(mobile: 288, child: BoardNotesAside()),
                       ],

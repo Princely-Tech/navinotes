@@ -70,12 +70,9 @@ class ChooseBoardScreen extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Save as Favorite Style',
-                        style: TextStyle(
-                          color: const Color(0xFF1E40AF),
-                          fontSize: 14,
-                          fontFamily: 'Inter',
+                        style: Apptheme.text.copyWith(
+                          color: Apptheme.persianBlue,
                           fontWeight: FontWeight.w500,
-                          height: 1,
                         ),
                       ),
                     ),

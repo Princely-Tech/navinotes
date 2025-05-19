@@ -35,12 +35,10 @@ class ChooseBoardMain extends StatelessWidget {
                         children: [
                           Text(
                             'Select a style for your board',
-                            style: TextStyle(
-                              color: const Color(0xFF1E40AF),
+                            style: Apptheme.text.copyWith(
+                              color: Apptheme.persianBlue,
                               fontSize: 18,
-                              fontFamily: 'Inter',
                               fontWeight: FontWeight.w600,
-                              height: 1,
                             ),
                           ),
                           CustomGrid(
@@ -129,12 +127,9 @@ class ChooseBoardMain extends StatelessWidget {
             Text(
               'Create your own',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: const Color(0xFF3B82F6),
+              style: Apptheme.text.copyWith(
+                color: Apptheme.vividBlue,
                 fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                height: 1,
               ),
             ),
           ],
@@ -173,22 +168,17 @@ class ChooseBoardMain extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        color: const Color(0xFF1E3A8A),
+                      style: Apptheme.text.copyWith(
+                        color: Apptheme.royalBlue,
                         fontSize: 16,
-                        fontFamily: 'Inter',
                         fontWeight: FontWeight.w500,
-                        height: 1,
                       ),
                     ),
                     Text(
                       description,
-                      style: TextStyle(
-                        color: const Color(0xFF2563EB),
+                      style: Apptheme.text.copyWith(
+                        color: Apptheme.strongBlue,
                         fontSize: 12,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 1,
                       ),
                     ),
                   ],
@@ -241,17 +231,13 @@ class ChooseBoardMain extends StatelessWidget {
       child: CustomInputField(
         label: 'Board Name',
         hintText: 'Enter Board Title...',
-        labelStyle: TextStyle(
-          color: const Color(0xFF1D4ED8),
-          fontSize: 14,
-          fontFamily: 'Inter',
+        labelStyle: Apptheme.text.copyWith(
+          color: Apptheme.electricIndigo,
           fontWeight: FontWeight.w500,
         ),
-        hintStyle: TextStyle(
-          color: const Color(0xFFADAEBC),
+        hintStyle: Apptheme.text.copyWith(
+          color: Apptheme.slateGray,
           fontSize: 16,
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w400,
           height: 1.50,
         ),
       ),
