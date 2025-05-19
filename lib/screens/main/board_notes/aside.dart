@@ -135,29 +135,47 @@ class BoardNotesAside extends StatelessWidget {
   }
 
   Widget _tags() {
-    return Wrap(
-      runSpacing: 15,
-      spacing: 10,
+    return Column(
+      spacing: 15,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomTag(
-          'Physics',
-          color: Apptheme.paleBlue,
-          textColor: Apptheme.electricIndigo,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 20,
+          children: [
+            Flexible(child: Text('Tags', style: Apptheme.text)),
+            AppButton.text(
+              onTap: () {},
+              text: 'Edit',
+              color: Apptheme.strongBlue,
+            ),
+          ],
         ),
-        CustomTag(
-          'Science',
-          color: Apptheme.lightMintGreen,
-          textColor: Apptheme.emeraldGreen,
-        ),
-        CustomTag(
-          'Study',
-          color: Apptheme.purple,
-          textColor: Apptheme.royalViolet,
-        ),
-        CustomTag(
-          'Exam Prep',
-          color: Apptheme.yellow,
-          textColor: Apptheme.burntSienna,
+        Wrap(
+          runSpacing: 15,
+          spacing: 10,
+          children: [
+            CustomTag(
+              'Physics',
+              color: Apptheme.paleBlue,
+              textColor: Apptheme.electricIndigo,
+            ),
+            CustomTag(
+              'Science',
+              color: Apptheme.lightMintGreen,
+              textColor: Apptheme.emeraldGreen,
+            ),
+            CustomTag(
+              'Study',
+              color: Apptheme.purple,
+              textColor: Apptheme.royalViolet,
+            ),
+            CustomTag(
+              'Exam Prep',
+              color: Apptheme.yellow,
+              textColor: Apptheme.burntSienna,
+            ),
+          ],
         ),
       ],
     );

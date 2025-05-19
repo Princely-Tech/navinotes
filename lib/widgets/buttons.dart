@@ -122,15 +122,7 @@ class AppButton extends StatelessWidget {
           children: [
             if (isNotNull(prefix)) prefix!,
             if (isNotNull(text))
-              Text(
-                text!,
-                style:
-                    style ??
-                    Apptheme.text.copyWith(
-                      color: textColor,
-                      // color: textColor ?? Apptheme.mistyGray,
-                    ),
-              ),
+              Text(text!, style: style ?? Apptheme.text.copyWith(color: color)),
             if (isNotNull(child)) child!,
           ],
         ),

@@ -30,19 +30,23 @@ class CustomGrid extends StatelessWidget {
 
         return Column(
           spacing: defaultSpacing,
-          children: [
-            for (int i = 0; i < splitChildren.length; i++)
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  spacing: defaultSpacing,
-                  children:
-                      splitChildren[i]
-                          .map((item) => Expanded(child: item))
-                          .toList(),
-                ),
-              ),
-          ],
+          children:
+              splitChildren.map((children) {
+                //Ensure each row is of equal length
+                if (children.length < split) {
+                  for (int i = children.length; i < split; i++) {
+                    children.add(SizedBox.shrink());
+                  }
+                }
+                return IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: defaultSpacing,
+                    children:
+                        children.map((item) => Expanded(child: item)).toList(),
+                  ),
+                );
+              }).toList(),
         );
       },
     );
