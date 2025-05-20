@@ -76,7 +76,6 @@ class ChooseBoardScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    //
                   ],
                 ),
               ),

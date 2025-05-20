@@ -85,9 +85,6 @@ class YourBoards extends StatelessWidget {
 
   Widget _boards(DashboardVm vm) {
     return CustomGrid(
-      mobile: 1,
-      laptops: 2,
-      largeDesktops: 3,
       children: [
         _boardCard(
           vm,

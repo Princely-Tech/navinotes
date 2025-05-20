@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
+import 'package:navinotes/settings/routes.dart';
 
 class BoardNotesVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
@@ -8,6 +9,6 @@ class BoardNotesVm extends ChangeNotifier {
     scaffoldKey.currentState?.openEndDrawer();
   }
   gotToCreateNotePage() {
-    // NavigationHelper.goToCreateNote();
+    NavigationHelper.push(Routes.noteTemplate);
   }
 }

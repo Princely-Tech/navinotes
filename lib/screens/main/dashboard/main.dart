@@ -21,16 +21,10 @@ class DashboardMain extends StatelessWidget {
           DashboardHeader(),
           Expanded(
             child: ScrollableController(
-              scrollable: true,
+              padding: const EdgeInsets.symmetric(vertical: 20),
               child: Column(
                 spacing: 30,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: YourBoards(),
-                  ),
-                  RecentActivity(),
-                ],
+                children: [YourBoards(), RecentActivity()],
               ),
             ),
           ),

@@ -25,7 +25,7 @@ class DashboardHeader extends StatelessWidget {
                   child: Row(
                     children: [
                       VisibleController(
-                        visible: getMenuVisible(layoutVm.deviceType),
+                        mobile: getMenuVisible(layoutVm.deviceType),
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: InkWell(

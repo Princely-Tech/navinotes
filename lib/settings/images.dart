@@ -3,6 +3,7 @@ const imagePath = 'assets/images';
 const boardsPath = 'assets/images/boards';
 const boardsCreatePath = 'assets/images/boards/create';
 const boardsNotesPath = 'assets/images/boards/notes';
+const noteTemplatePath = 'assets/images/boards/note_templates';
 
 class Images {
   Images._();
@@ -41,7 +42,7 @@ class Images {
   static const String person = '$iconPath/person.svg';
   static const String menu = '$iconPath/menu.svg';
   static const String ques2 = '$iconPath/ques2.svg';
-  // static const String draw = '$iconPath/draw.svg';
+  static const String flash = '$iconPath/flash.svg';
   // static const String draw = '$iconPath/draw.svg';
   // static const String draw = '$iconPath/draw.svg';
 
@@ -80,4 +81,31 @@ class Images {
       '$boardsNotesPath/electromagnetism.png';
   static const String noteMechanics = '$boardsNotesPath/mechanics.png';
   static const String noteOptics = '$boardsNotesPath/optics.png';
+
+  //note template
+  static const String noteTemplateBlank = '$noteTemplatePath/blank.svg';
+  static const String noteTemplateSquared = '$noteTemplatePath/squared.svg';
+  static const String noteTemplateFlashCards =
+      '$noteTemplatePath/flash_cards.svg';
+  static const String noteTemplateCompareContrast =
+      '$noteTemplatePath/compare_contrast.svg';
+  static const String noteTemplateLectures = '$noteTemplatePath/lectures.svg';
+  static const String noteTemplateCornell = '$noteTemplatePath/cornell.svg';
+  static const String noteTemplateDotted = '$noteTemplatePath/dotted.svg';
+  static const String noteTemplateFlashCardsAI =
+      '$noteTemplatePath/flashcards_ai.svg';
+  static const String noteTemplateCauseEffect =
+      '$noteTemplatePath/cause_effect.svg';
+  static const String noteTemplateLined = '$noteTemplatePath/lined.svg';
+  static const String noteTemplateLegalPad =
+      '$noteTemplatePath/legal_pad.svg';
+  static const String noteTemplateQuestionAnswer =
+      '$noteTemplatePath/question_answer.svg';
+  static const String noteTemplateConcept = '$noteTemplatePath/concept.svg';
+  static const String noteTemplateTimeline = '$noteTemplatePath/time_line.svg';
+  static const String noteTemplateProjectSteps =
+      '$noteTemplatePath/project_steps.svg';
+  static const String noteTemplateGoalSetting =
+      '$noteTemplatePath/goal_setting.svg';
+  static const String noteTemplateKanban = '$noteTemplatePath/kanban.svg';
 }

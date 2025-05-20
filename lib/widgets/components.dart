@@ -302,15 +302,42 @@ class CustomCard extends StatelessWidget {
 class VisibleController extends StatelessWidget {
   const VisibleController({
     super.key,
-    required this.visible,
+    required this.mobile,
+    this.tablets,
+    this.laptops,
+    this.desktops,
+    this.largeDesktops,
     required this.child,
   });
-  final bool visible;
+  final bool mobile;
+  final bool? tablets;
+  final bool? laptops;
+  final bool? desktops;
+  final bool? largeDesktops;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return visible ? child : const SizedBox();
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return getVisible(layoutVm.deviceType) ? child : const SizedBox();
+      },
+    );
+  }
+
+  bool getVisible(DeviceType deviceType) {
+    switch (deviceType) {
+      case DeviceType.mobile:
+        return mobile;
+      case DeviceType.tablets:
+        return tablets ?? mobile;
+      case DeviceType.laptops:
+        return laptops ?? tablets ?? mobile;
+      case DeviceType.desktops:
+        return desktops ?? laptops ?? tablets ?? mobile;
+      case DeviceType.largeDesktops:
+        return largeDesktops ?? desktops ?? laptops ?? tablets ?? mobile;
+    }
   }
 }
 
@@ -382,7 +409,7 @@ class CreateCard extends StatelessWidget {
     return Column(
       children: [
         InkWell(
-          onTap:onTap,
+          onTap: onTap,
           child: CustomCard(
             child: Column(
               spacing: 15,

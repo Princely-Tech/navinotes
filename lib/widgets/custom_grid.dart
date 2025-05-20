@@ -7,11 +7,11 @@ class CustomGrid extends StatelessWidget {
   const CustomGrid({
     super.key,
     required this.children,
-    required this.mobile,
+    this.mobile = 1,
     this.tablets,
-    this.laptops,
+    this.laptops = 2,
     this.desktops,
-    this.largeDesktops,
+    this.largeDesktops = 3,
   });
   final List<Widget> children;
   final int mobile;

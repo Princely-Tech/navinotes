@@ -42,9 +42,6 @@ class ChooseBoardMain extends StatelessWidget {
                             ),
                           ),
                           CustomGrid(
-                            mobile: 1,
-                            laptops: 2,
-                            largeDesktops: 3,
                             children: [
                               _board(
                                 vm,

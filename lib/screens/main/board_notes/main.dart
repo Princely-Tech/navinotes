@@ -4,7 +4,6 @@ import 'package:navinotes/screens/main/board_notes/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/ui_helpers.dart';
-import 'package:navinotes/widgets/buttons.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/custom_grid.dart';
 import 'package:navinotes/widgets/inputs.dart';
@@ -24,9 +23,6 @@ class BoardNotesMain extends StatelessWidget {
               child: ScrollableController(
                 padding: EdgeInsets.all(defaultHorizontalPadding),
                 child: CustomGrid(
-                  mobile: 1,
-                  laptops: 2,
-                  largeDesktops: 3,
                   children: [
                     _noteCard(
                       lastEdited: 'Apr 28, 2025',

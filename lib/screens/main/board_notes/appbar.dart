@@ -3,7 +3,6 @@ import 'package:navinotes/screens/main/board_notes/shared.dart';
 import 'package:navinotes/screens/main/board_notes/vm.dart';
 import 'package:navinotes/settings/app_strings.dart';
 import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/inputs.dart';

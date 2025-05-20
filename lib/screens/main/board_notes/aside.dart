@@ -35,7 +35,7 @@ class BoardNotesAside extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           VisibleController(
-                            visible: getMenuVisible(layoutVm.deviceType),
+                            mobile: getMenuVisible(layoutVm.deviceType),
                             child: Column(children: [_actionRow(), _divider()]),
                           ),
                           _boardDetails(),

@@ -67,7 +67,7 @@ class ChooseBoardHeader extends StatelessWidget {
                         child: Icon(Icons.person, color: Apptheme.strongBlue),
                       ),
                       VisibleController(
-                        visible: getMenuVisible(layoutVm.deviceType),
+                        mobile: getMenuVisible(layoutVm.deviceType),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: InkWell(

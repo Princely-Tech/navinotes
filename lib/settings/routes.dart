@@ -4,6 +4,7 @@ import 'package:navinotes/screens/aboutMe/index.dart';
 import 'package:navinotes/screens/main/board_notes/index.dart';
 import 'package:navinotes/screens/main/dashboard/index.dart';
 import 'package:navinotes/screens/main/choose_board/index.dart';
+import 'package:navinotes/screens/main/note_template/index.dart';
 
 Map<String, WidgetBuilder> routes = {
   Routes.auth: (context) => const AuthScreen(),
@@ -11,6 +12,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.dashboard: (context) => DashboardScreen(),
   Routes.chooseBoard: (context) => ChooseBoardScreen(),
   Routes.boardNotes: (context) => BoardNotesScreen(),
+  Routes.noteTemplate: (context) => NoteTemplateScreen(),
 };
 
 class Routes {
@@ -18,6 +20,7 @@ class Routes {
   static const auth = 'auth';
   static const aboutMe = 'aboutMe';
   static const dashboard = 'dashboard';
-  static const chooseBoard = 'chooseBoard';
-  static const boardNotes = 'boardNotes';
+  static const chooseBoard = 'choose_board';
+  static const boardNotes = 'board_notes';
+  static const noteTemplate = 'note_template';
 }

@@ -11,16 +11,14 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return CustomProviders(
       child: MaterialApp(
         title: AppStrings.appName,
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false, 
         theme: ThemeData(fontFamily: Apptheme.fontFamily),
-        initialRoute: Routes.boardNotes,
+        initialRoute: Routes.noteTemplate,
         // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,

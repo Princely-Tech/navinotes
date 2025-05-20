@@ -31,7 +31,7 @@ class Apptheme {
   static const Color darkSlateGray = Color(0xFF374151);
   static const Color strongBlue = Color(0xFF2563EB);
   static const Color iceBlue = Color(0xFFEFF6FF);
-  static const Color paleBlue = Color(0xFFDBEAFE);
+  static const Color paleBlue = Color(0xFFDBEAFE); 
   static const Color whisperGrey = Color(0x4CEFEFEF);
   static const Color steelMist = Color(0xFF6B7280);
   static const Color jungleGreen = Color(0xFF059669);

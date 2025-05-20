@@ -25,6 +25,7 @@ flutter:
     - assets/images/boards/
     - assets/images/boards/notes/
     - assets/images/boards/create/
+    - assets/images/boards/note_templates/
 
   fonts:
     - family: Inter
