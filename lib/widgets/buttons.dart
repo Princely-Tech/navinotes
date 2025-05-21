@@ -113,23 +113,31 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_type.isText) {
-      return InkWell(
-        onTap: onTap,
-        child: Row(
-          spacing: 5,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isNotNull(prefix)) prefix!,
-            if (isNotNull(text))
-              Text(text!, style: style ?? Apptheme.text.copyWith(color: color)),
-            if (isNotNull(child)) child!,
-          ],
-        ),
-      );
+      return wrapWithFlexible ? Flexible(child: _textBody()) : _textBody();
     }
-
     return wrapWithFlexible ? Flexible(child: _body()) : _body();
+  }
+
+  Widget _textBody() {
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        spacing: 5,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: mainAxisSize,
+        children: [
+          if (isNotNull(prefix)) prefix!,
+          if (isNotNull(text))
+            wrapWithFlexible ? Flexible(child: _text()) : _text(),
+          if (isNotNull(child)) child!,
+        ],
+      ),
+    );
+  }
+
+  Widget _text() {
+    return Text(text!, style: style ?? Apptheme.text.copyWith(color: color));
   }
 
   Widget _body() {

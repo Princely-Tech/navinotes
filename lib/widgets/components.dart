@@ -12,13 +12,19 @@ class SVGImagePlaceHolder extends StatelessWidget {
     super.key,
     required this.imagePath,
     this.size,
+    this.width,
+    this.height,
     this.containerSize,
     this.color,
+    this.center = false,
     this.decoration,
   });
 
   final String imagePath;
   final double? size;
+  final bool center;
+  final double? width;
+  final double? height;
   final double? containerSize;
   final Decoration? decoration;
   final Color? color;
@@ -29,14 +35,15 @@ class SVGImagePlaceHolder extends StatelessWidget {
       width: containerSize,
       height: containerSize,
       decoration: decoration ?? BoxDecoration(shape: BoxShape.circle),
-      child: isNotNull(containerSize) ? Center(child: _body()) : _body(),
+      child:
+          isNotNull(containerSize) || center ? Center(child: _body()) : _body(),
     );
   }
 
   Widget _body() {
     return SvgPicture.asset(
-      height: size,
-      width: size,
+      height: height ?? size,
+      width: width ?? size,
       imagePath,
       fit: BoxFit.cover,
       colorFilter:
@@ -378,16 +385,19 @@ class OutlinedChild extends StatelessWidget {
     required this.child,
     this.decoration = const BoxDecoration(),
     this.size = 36,
+    // this.unbounded = false,
   });
 
   final Widget child;
   final BoxDecoration decoration;
   final double size;
+  // final bool unbounded;
 
   @override
   Widget build(BuildContext context) {
     BorderRadiusGeometry borderRadius =
         decoration.borderRadius ?? BorderRadius.circular(6);
+    // double? runSize = unbounded ? null : size;
     return Container(
       width: size,
       height: size,
@@ -445,6 +455,69 @@ class CreateCard extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class CustomSlider extends StatelessWidget {
+  const CustomSlider({super.key, required this.slider});
+  final Slider slider;
+  @override
+  Widget build(BuildContext context) {
+    return SliderTheme(
+      data: SliderThemeData(
+        trackHeight: 8.0,
+        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
+        overlayShape: RoundSliderOverlayShape(overlayRadius: 16.0),
+      ),
+      child: Slider(
+        value: slider.value,
+        onChanged: slider.onChanged,
+        activeColor: Apptheme.dodgerBlue,
+        padding: slider.padding ?? EdgeInsets.zero,
+        inactiveColor: Apptheme.gainsboro,
+      ),
+    );
+  }
+}
+
+class ScrollableRow extends StatelessWidget {
+  const ScrollableRow({super.key, required this.children});
+  final List<Widget> children;
+  @override
+  Widget build(BuildContext context) {
+    return ScrollableController(
+      scrollDirection: Axis.horizontal,
+      child: Row(spacing: 10, children: children),
+    );
+  }
+}
+
+class ColorWidget extends StatelessWidget {
+  const ColorWidget(
+    this.color, {
+    super.key,
+    this.size = 24,
+    this.addBorder = false,
+  });
+  final Color color;
+  final double size;
+  final bool addBorder;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(
+          color:
+              color == Apptheme.white || addBorder
+                  ? Apptheme.coolGray
+                  : Apptheme.transparent,
+        ),
+      ),
     );
   }
 }

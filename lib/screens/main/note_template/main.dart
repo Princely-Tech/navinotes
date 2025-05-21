@@ -168,6 +168,7 @@ class NoteTemplateMain extends StatelessWidget {
           Padding(
             padding: padding,
             child: Row(
+              spacing: 5,
               children: [
                 Expanded(
                   child: Column(

@@ -23,4 +23,7 @@ class Routes {
   static const chooseBoard = 'choose_board';
   static const boardNotes = 'board_notes';
   static const noteTemplate = 'note_template';
+  //TODO build these screens
+  static const uploadPdf = 'upload_pdf';
+  static const importNotes = 'import_notes';
 }

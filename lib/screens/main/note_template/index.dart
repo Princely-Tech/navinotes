@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/note_template/aside.dart';
+import 'package:navinotes/screens/main/note_template/footer.dart';
 import 'package:navinotes/screens/main/note_template/header.dart';
 import 'package:navinotes/screens/main/note_template/main.dart';
 import 'package:navinotes/screens/main/note_template/vm.dart';
@@ -44,7 +45,7 @@ class NoteTemplateScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                //TODO add the footer
+                NoteTemplateFooter(),
               ],
             ),
           );

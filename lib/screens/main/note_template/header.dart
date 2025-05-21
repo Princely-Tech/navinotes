@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
+import 'package:navinotes/screens/main/note_template/vm.dart';
 import 'package:navinotes/settings/app_strings.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
@@ -14,33 +15,37 @@ class NoteTemplateHeader extends StatelessWidget {
   const NoteTemplateHeader({super.key});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Apptheme.white,
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              spacing: 5,
-              children: [_leading(), _actions()],
-            ),
-          ),
-          Container(
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: Apptheme.lightGray),
+    return Consumer<NoteTemplateVm>(
+      builder: (context, vm, _) {
+        return Container(
+          color: Apptheme.white,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  spacing: 5,
+                  children: [_leading(), _actions(vm)],
+                ),
               ),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 15,
-              children: [_searchBar(), _sortBy()],
-            ),
+              Container(
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: Apptheme.lightGray),
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 15,
+                  children: [_searchBar(), _sortBy()],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -84,7 +89,7 @@ class NoteTemplateHeader extends StatelessWidget {
     );
   }
 
-  Widget _actions() {
+  Widget _actions(NoteTemplateVm vm) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -128,6 +133,10 @@ class NoteTemplateHeader extends StatelessWidget {
           padding: EdgeInsets.zero,
           minHeight: 32,
           child: Icon(Icons.more_vert, color: Apptheme.stormGray),
+        ),
+        IconButton(
+          onPressed: vm.openDrawer,
+          icon: Icon(Icons.menu, color: Apptheme.stormGray),
         ),
       ],
     );

@@ -35,6 +35,7 @@ class Images {
   static const String img = '$iconPath/img.svg';
   static const String hook = '$iconPath/hook.svg';
   static const String copy2 = '$iconPath/copy2.svg';
+
   static const String video = '$iconPath/video.svg';
   static const String calculator = '$iconPath/calculator.svg';
   static const String chart = '$iconPath/chart.svg';
@@ -43,6 +44,9 @@ class Images {
   static const String menu = '$iconPath/menu.svg';
   static const String ques2 = '$iconPath/ques2.svg';
   static const String flash = '$iconPath/flash.svg';
+  static const String copy3 = '$iconPath/copy3.svg';
+  // static const String draw = '$iconPath/draw.svg';
+  // static const String draw = '$iconPath/draw.svg';
   // static const String draw = '$iconPath/draw.svg';
   // static const String draw = '$iconPath/draw.svg';
 
@@ -92,13 +96,14 @@ class Images {
   static const String noteTemplateLectures = '$noteTemplatePath/lectures.svg';
   static const String noteTemplateCornell = '$noteTemplatePath/cornell.svg';
   static const String noteTemplateDotted = '$noteTemplatePath/dotted.svg';
+  static const String noteTemplateDottedWhite =
+      '$noteTemplatePath/dotted_white.svg';
   static const String noteTemplateFlashCardsAI =
       '$noteTemplatePath/flashcards_ai.svg';
   static const String noteTemplateCauseEffect =
       '$noteTemplatePath/cause_effect.svg';
   static const String noteTemplateLined = '$noteTemplatePath/lined.svg';
-  static const String noteTemplateLegalPad =
-      '$noteTemplatePath/legal_pad.svg';
+  static const String noteTemplateLegalPad = '$noteTemplatePath/legal_pad.svg';
   static const String noteTemplateQuestionAnswer =
       '$noteTemplatePath/question_answer.svg';
   static const String noteTemplateConcept = '$noteTemplatePath/concept.svg';

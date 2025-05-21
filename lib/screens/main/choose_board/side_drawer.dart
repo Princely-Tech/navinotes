@@ -102,23 +102,6 @@ class ChooseBoardAside extends StatelessWidget {
     );
   }
 
-  Widget _color(Color color, {double size = 32}) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        border: Border.all(
-          color:
-              color == Apptheme.white
-                  ? Apptheme.coolGray
-                  : Apptheme.transparent,
-        ),
-      ),
-    );
-  }
-
   Widget _customization(ChooseBoardVm vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,11 +130,11 @@ class ChooseBoardAside extends StatelessWidget {
               child: Row(
                 spacing: 10,
                 children: [
-                  _color(Apptheme.vividBlue, size: 24),
-                  _color(Apptheme.primaryColor, size: 24),
-                  _color(Apptheme.lavenderPurple, size: 24),
-                  _color(Apptheme.coralRed, size: 24),
-                  _color(Apptheme.amber, size: 24),
+                  ColorWidget(Apptheme.vividBlue),
+                  ColorWidget(Apptheme.primaryColor),
+                  ColorWidget(Apptheme.lavenderPurple),
+                  ColorWidget(Apptheme.coralRed),
+                  ColorWidget(Apptheme.amber),
                 ],
               ),
             ),
@@ -177,18 +160,10 @@ class ChooseBoardAside extends StatelessWidget {
         Column(
           spacing: 7,
           children: [
-            SliderTheme(
-              data: SliderThemeData(
-                trackHeight: 8.0,
-                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
-                overlayShape: RoundSliderOverlayShape(overlayRadius: 16.0),
-              ),
-              child: Slider(
+            CustomSlider(
+              slider: Slider(
                 value: vm.backgroundPatternOpacity,
                 onChanged: vm.updateBackgroundPatternOpacity,
-                activeColor: Apptheme.dodgerBlue,
-                padding: EdgeInsets.zero,
-                inactiveColor: Apptheme.gainsboro,
               ),
             ),
             Row(
@@ -227,18 +202,14 @@ class ChooseBoardAside extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        ScrollableController(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            spacing: 10,
-            children: [
-              _color(Apptheme.white),
-              _color(Apptheme.lightGray),
-              _color(Apptheme.vividBlue),
-              _color(Apptheme.mintyGreen),
-              _color(Apptheme.defaultBlack),
-            ],
-          ),
+        ScrollableRow(
+          children: [
+            ColorWidget(Apptheme.white, size: 32),
+            ColorWidget(Apptheme.lightGray, size: 32),
+            ColorWidget(Apptheme.vividBlue, size: 32),
+            ColorWidget(Apptheme.mintyGreen, size: 32),
+            ColorWidget(Apptheme.defaultBlack, size: 32),
+          ],
         ),
       ],
     );
