@@ -27,7 +27,7 @@ class AppButton extends StatelessWidget {
     this.shape,
     required this.onTap,
     this.prefix,
-    this.color,
+    this.color = Apptheme.strongBlue,
     this.wrapWithFlexible = false,
     this.suffix,
     this.minHeight = defaultMinHeight,
@@ -50,7 +50,7 @@ class AppButton extends StatelessWidget {
     required this.onTap,
     this.prefix,
     this.suffix,
-    this.color,
+    this.color = Apptheme.strongBlue,
     this.loading = false,
     this.wrapWithFlexible = false,
     this.style,
@@ -75,7 +75,7 @@ class AppButton extends StatelessWidget {
     this.wrapWithFlexible = false,
     this.prefix,
     this.suffix,
-    this.color,
+    this.color = Apptheme.strongBlue,
     this.padding,
     this.style,
     this.loading = false,
@@ -100,7 +100,7 @@ class AppButton extends StatelessWidget {
   final Widget? suffix;
   final Widget? prefix;
   final TextStyle? style;
-  final Color? color;
+  final Color color;
   final Widget? child;
   final double minHeight;
   final EdgeInsetsGeometry? padding;
@@ -141,8 +141,8 @@ class AppButton extends StatelessWidget {
   }
 
   Widget _body() {
-    Color bgColor = color ?? Apptheme.primaryColor;
-    Color borderColor = color ?? Apptheme.primaryColor;
+    Color bgColor = color;
+    Color borderColor = color;
     BorderRadius radius = BorderRadius.circular(8);
     OutlinedBorder runShape =
         shape ??
@@ -227,6 +227,18 @@ class AppButton extends StatelessWidget {
           if (isNotNull(suffix)) suffix!,
         ],
       ),
+    );
+  }
+}
+
+class MenuButton extends StatelessWidget {
+  const MenuButton({super.key, required this.onPressed});
+  final void Function()? onPressed;
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onPressed,
+      icon: Icon(Icons.menu, color: Apptheme.stormGray),
     );
   }
 }

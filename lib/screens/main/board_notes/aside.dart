@@ -72,7 +72,6 @@ class BoardNotesAside extends StatelessWidget {
         AppButton(
           onTap: () {},
           text: 'View Mind Map',
-          color: Apptheme.strongBlue,
           minHeight: 40,
           prefix: SVGImagePlaceHolder(
             imagePath: Images.logo,

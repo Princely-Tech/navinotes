@@ -155,7 +155,6 @@ class AboutMeForm extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     minHeight: 42,
                     color: Apptheme.coolGray,
-
                     textColor: Apptheme.darkSlateGray,
                     prefix: SVGImagePlaceHolder(
                       imagePath: Images.upload,

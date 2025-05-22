@@ -4,6 +4,7 @@ import 'package:navinotes/screens/aboutMe/index.dart';
 import 'package:navinotes/screens/main/board_notes/index.dart';
 import 'package:navinotes/screens/main/dashboard/index.dart';
 import 'package:navinotes/screens/main/choose_board/index.dart';
+import 'package:navinotes/screens/main/import_pdf/index.dart';
 import 'package:navinotes/screens/main/note_template/index.dart';
 
 Map<String, WidgetBuilder> routes = {
@@ -13,6 +14,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.chooseBoard: (context) => ChooseBoardScreen(),
   Routes.boardNotes: (context) => BoardNotesScreen(),
   Routes.noteTemplate: (context) => NoteTemplateScreen(),
+  Routes.uploadPdf: (context) => UploadPdfScreen(),
 };
 
 class Routes {
@@ -23,7 +25,6 @@ class Routes {
   static const chooseBoard = 'choose_board';
   static const boardNotes = 'board_notes';
   static const noteTemplate = 'note_template';
-  //TODO build these screens
   static const uploadPdf = 'upload_pdf';
-  static const importNotes = 'import_notes';
+  static const importNotes = 'import_notes'; //TODO build this screen
 }

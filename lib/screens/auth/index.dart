@@ -64,142 +64,144 @@ class AuthScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         spacing: 20,
         children: [
-          Container(
-            constraints: BoxConstraints(
-              maxHeight: screenHeight(context) - 100,
-              maxWidth: maxWidth,
-              minWidth: minWidth,
-            ),
-            child: Center(
-              child: Container(
-                padding: EdgeInsets.all(40),
-                decoration: ShapeDecoration(
-                  color: Apptheme.white.withAlpha(20),
-                  shape: RoundedRectangleBorder(
-                    side: borderSide,
-                    borderRadius: BorderRadius.circular(16),
+          Flexible(
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: screenHeight(context) - 100,
+                maxWidth: maxWidth,
+                minWidth: minWidth,
+              ),
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.all(40),
+                  decoration: ShapeDecoration(
+                    color: Apptheme.white.withAlpha(20),
+                    shape: RoundedRectangleBorder(
+                      side: borderSide,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    shadows: boxShadows,
                   ),
-                  shadows: boxShadows,
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    spacing: 35,
-                    children: [
-                      Column(
-                        spacing: 20,
-                        children: [
-                          SVGImagePlaceHolder(
-                            imagePath: Images.logoRounded,
-                            size: 64,
-                          ),
-                          Text(
-                            AppStrings.appName,
-                            textAlign: TextAlign.center,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.white,
-                              fontSize: 36,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Text(
-                            'Connect Your Thoughts, Expand Your Mind',
-                            textAlign: TextAlign.center,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.mintyAqua,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      Form(
-                        child: Column(
-                          spacing: 25,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      spacing: 35,
+                      children: [
+                        Column(
+                          spacing: 20,
                           children: [
-                            Column(
-                              spacing: 15,
-                              children: [
-                                CustomInputField(
-                                  hintText: 'Email or Username',
-                                  keyboardType: TextInputType.emailAddress,
-                                  fillColor: inputFillColor,
-                                  style: inputStyle.copyWith(
-                                    color: Apptheme.aquaGreen,
-                                  ),
-                                  hintStyle: inputStyle,
-                                  border: inputBorder,
-                                ),
-                                CustomInputField(
-                                  hintText: 'Password',
-                                  keyboardType: TextInputType.visiblePassword,
-                                  fillColor: inputFillColor,
-                                  style: inputStyle.copyWith(
-                                    color: Apptheme.aquaGreen,
-                                  ),
-                                  hintStyle: inputStyle,
-                                  border: inputBorder,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        'Forgot Password?',
-                                        style: Apptheme.text.copyWith(
-                                          color: Apptheme.mintGreen,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            SVGImagePlaceHolder(
+                              imagePath: Images.logoRounded,
+                              size: 64,
                             ),
-
-                            Column(
-                              spacing: 15,
-                              children: [
-                                AppButton(
-                                  onTap: vm.login,
-                                  text: 'Login',
-                                  gradient: LinearGradient(
-                                    begin: Alignment(0.00, 0.50),
-                                    end: Alignment(1.00, 0.50),
-                                    colors: [
-                                      Apptheme.vividBlue,
-                                      Apptheme.aquaGreen,
-                                    ],
-                                  ),
-                                  style: btnTextStyle,
-                                ),
-                                AppButton(
-                                  onTap: vm.login,
-                                  text: 'Sign Up',
-                                  color: inputFillColor,
-                                  style: btnTextStyle,
-                                ),
-                                Text(
-                                  'Start Your 7 Day Free Trial',
-                                  textAlign: TextAlign.center,
-                                  style: Apptheme.text.copyWith(
-                                    color: Apptheme.mintGreen,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              AppStrings.appName,
+                              textAlign: TextAlign.center,
+                              style: Apptheme.text.copyWith(
+                                color: Apptheme.white,
+                                fontSize: 36,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              'Connect Your Thoughts, Expand Your Mind',
+                              textAlign: TextAlign.center,
+                              style: Apptheme.text.copyWith(
+                                color: Apptheme.mintyAqua,
+                                fontSize: 18,
+                              ),
                             ),
                           ],
                         ),
-                      ),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        spacing: 20,
-                        children: [
-                          _socialBtn(Images.google),
-                          _socialBtn(Images.apple),
-                        ],
-                      ),
-                    ],
+                        Form(
+                          child: Column(
+                            spacing: 25,
+                            children: [
+                              Column(
+                                spacing: 15,
+                                children: [
+                                  CustomInputField(
+                                    hintText: 'Email or Username',
+                                    keyboardType: TextInputType.emailAddress,
+                                    fillColor: inputFillColor,
+                                    style: inputStyle.copyWith(
+                                      color: Apptheme.aquaGreen,
+                                    ),
+                                    hintStyle: inputStyle,
+                                    border: inputBorder,
+                                  ),
+                                  CustomInputField(
+                                    hintText: 'Password',
+                                    keyboardType: TextInputType.visiblePassword,
+                                    fillColor: inputFillColor,
+                                    style: inputStyle.copyWith(
+                                      color: Apptheme.aquaGreen,
+                                    ),
+                                    hintStyle: inputStyle,
+                                    border: inputBorder,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          'Forgot Password?',
+                                          style: Apptheme.text.copyWith(
+                                            color: Apptheme.mintGreen,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              Column(
+                                spacing: 15,
+                                children: [
+                                  AppButton(
+                                    onTap: vm.login,
+                                    text: 'Login',
+                                    gradient: LinearGradient(
+                                      begin: Alignment(0.00, 0.50),
+                                      end: Alignment(1.00, 0.50),
+                                      colors: [
+                                        Apptheme.vividBlue,
+                                        Apptheme.aquaGreen,
+                                      ],
+                                    ),
+                                    style: btnTextStyle,
+                                  ),
+                                  AppButton(
+                                    onTap: vm.login,
+                                    text: 'Sign Up',
+                                    color: inputFillColor,
+                                    style: btnTextStyle,
+                                  ),
+                                  Text(
+                                    'Start Your 7 Day Free Trial',
+                                    textAlign: TextAlign.center,
+                                    style: Apptheme.text.copyWith(
+                                      color: Apptheme.mintGreen,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          spacing: 20,
+                          children: [
+                            _socialBtn(Images.google),
+                            _socialBtn(Images.apple),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -231,11 +233,8 @@ class AuthScreen extends StatelessWidget {
       width: 50,
       height: 50,
       child: AppButton(
-        // mainAxisSize: MainAxisSize.min,
-        // wrapWithFlexible: true,
         color: inputFillColor,
         onTap: () {},
-
         shape: CircleBorder(),
         child: SvgPicture.asset(assetName, height: 20, width: 20),
       ),

@@ -13,7 +13,7 @@ class NoteTemplateFooter extends StatelessWidget {
     return Consumer<NoteTemplateVm>(
       builder: (_, vm, _) {
         return CustomCard(
-          padding: EdgeInsets.all(15),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
           child: ResponsiveSection(
             mobile: Row(
@@ -45,7 +45,6 @@ class NoteTemplateFooter extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           onTap: vm.createNote,
           text: 'Create Note',
-          color: Apptheme.strongBlue,
           prefix: Icon(Icons.add, color: Apptheme.white),
         ),
       ],

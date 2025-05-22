@@ -39,7 +39,7 @@ InputDecoration _inputDecoration({
     suffixIcon: suffixIcon,
     maintainHintHeight: true,
     constraints: constraints,
-    contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+    contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
   );
 }
 

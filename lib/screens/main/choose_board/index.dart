@@ -92,6 +92,7 @@ class ChooseBoardScreen extends StatelessWidget {
                     text: 'Skip & Use Default',
                   ),
                   AppButton(
+                    color: Apptheme.primaryColor,
                     wrapWithFlexible: true,
                     mainAxisSize: MainAxisSize.min,
                     onTap: vm.createBoard,

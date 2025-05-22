@@ -47,6 +47,7 @@ class NewNotesButton extends StatelessWidget {
     return Consumer<BoardNotesVm>(
       builder: (context, vm, child) {
         return AppButton(
+          color: Apptheme.primaryColor,
           wrapWithFlexible: true,
           mainAxisSize: MainAxisSize.min,
           onTap: vm.gotToCreateNotePage,

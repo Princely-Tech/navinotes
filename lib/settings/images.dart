@@ -45,8 +45,15 @@ class Images {
   static const String ques2 = '$iconPath/ques2.svg';
   static const String flash = '$iconPath/flash.svg';
   static const String copy3 = '$iconPath/copy3.svg';
-  // static const String draw = '$iconPath/draw.svg';
-  // static const String draw = '$iconPath/draw.svg';
+  static const String pdf = '$iconPath/pdf.svg';
+  static const String book = '$iconPath/book.svg';
+  static const String star = '$iconPath/star.svg';
+  static const String upload2 = '$iconPath/upload2.svg';
+  static const String camera = '$iconPath/camera.svg';
+  static const String drive = '$iconPath/drive.svg';
+  static const String cloud = '$iconPath/cloud.svg';
+  static const String dropbox = '$iconPath/dropbox.svg';
+  static const String url = '$iconPath/url.svg';
   // static const String draw = '$iconPath/draw.svg';
   // static const String draw = '$iconPath/draw.svg';
 

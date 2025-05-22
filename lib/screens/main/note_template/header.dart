@@ -134,10 +134,7 @@ class NoteTemplateHeader extends StatelessWidget {
           minHeight: 32,
           child: Icon(Icons.more_vert, color: Apptheme.stormGray),
         ),
-        IconButton(
-          onPressed: vm.openDrawer,
-          icon: Icon(Icons.menu, color: Apptheme.stormGray),
-        ),
+        MenuButton(onPressed: vm.openDrawer),
       ],
     );
   }

@@ -4,6 +4,7 @@ class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
   static const Color black = Color(0xFF000000);
+  static const Color teal = Color(0xFF14B8A6);
   static const Color pastelViolet = Color(0xFFF5F3FF);
   static const Color honeyDew = Color(0xFFECFDF5);
   static const Color ivory = Color(0xFFFFFBEB);

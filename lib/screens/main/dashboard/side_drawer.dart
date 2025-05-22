@@ -109,7 +109,7 @@ class DashboardSideBar extends StatelessWidget {
     required String title,
     required String icon,
     bool isActive = false,
-    // required String route,
+    // required String route, //TODO add the different routes
   }) {
     final color = isActive ? Apptheme.strongBlue : Apptheme.defaultBlack;
     Radius radius = Radius.circular(100);
