@@ -17,13 +17,15 @@ class CustomProviders extends StatelessWidget {
           create:
               (_) => LayoutProviderVm(
                 deviceType: getDeviceType(screenWidth(context)),
+                context: context,
               ),
         ),
       ],
       child: Builder(
         builder: (context) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.read<LayoutProviderVm>().updateDeviceType(context);
+            context.read<LayoutProviderVm>().updateDeviceType();
+            // context.read<LayoutProviderVm>().updateDeviceType(context);
           });
           return child;
         },

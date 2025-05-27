@@ -59,7 +59,7 @@ class Images {
 
   //images
   static const String brain =
-      '$imagePath/brain.png'; //TODO get an image with no background
+      '$imagePath/brain.png';
   static const String brainPers = '$imagePath/brain_pers.png';
   //  static const String brain = '$imagePath/brain.png';
 

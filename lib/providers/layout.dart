@@ -4,13 +4,17 @@ import 'package:navinotes/settings/ui_helpers.dart';
 
 class LayoutProviderVm extends ChangeNotifier {
   DeviceType deviceType;
-  LayoutProviderVm({required this.deviceType});
+  BuildContext context;
+  LayoutProviderVm({required this.deviceType, required this.context});
 
-  void updateDeviceType(BuildContext context) {
+  void updateDeviceType() {
     final newDeviceType = getDeviceType(screenWidth(context));
     if (deviceType != newDeviceType) {
       deviceType = newDeviceType;
       notifyListeners();
     }
+  }
+  double deviceWidth(){
+    return screenWidth(context);
   }
 }

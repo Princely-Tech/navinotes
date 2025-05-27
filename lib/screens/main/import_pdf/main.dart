@@ -1,11 +1,13 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
+import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/settings/Apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/ui_helpers.dart';
 import 'package:navinotes/widgets/buttons.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/custom_grid.dart';
+import 'package:provider/provider.dart';
 
 class ImportPdfMain extends StatelessWidget {
   const ImportPdfMain({super.key});
@@ -135,22 +137,34 @@ class ImportPdfMain extends StatelessWidget {
   }
 
   Widget _importChild({required String name, required String image}) {
-    return Expanded(
-      child: CustomCard(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          spacing: 6,
-          children: [
-            SVGImagePlaceHolder(imagePath: image, size: 20),
-            Text(
-              name,
-              textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
-            ),
-          ],
-        ),
+    return CustomCard(
+      padding: EdgeInsets.all(15),
+      width: null,
+      child: Column(
+        spacing: 6,
+        children: [
+          SVGImagePlaceHolder(imagePath: image, size: 20),
+          Text(
+            name,
+            textAlign: TextAlign.center,
+            style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _mobileImportChild(Widget child) {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, vm, _) {
+        double iWidth = vm.deviceWidth() / 4;
+        return SizedBox(width: iWidth, child: child);
+      },
+    );
+  }
+
+  Widget _tabletImportChild(Widget child) {
+    return Expanded(child: child);
   }
 
   Widget _importFromCloud() {
@@ -165,14 +179,43 @@ class ImportPdfMain extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        Row(
-          spacing: 15,
-          children: [
-            _importChild(name: 'Google Drive', image: Images.drive),
-            _importChild(name: 'iCloud', image: Images.cloud),
-            _importChild(name: 'Dropbox', image: Images.dropbox),
-            _importChild(name: 'URL Import', image: Images.url),
-          ],
+        ResponsiveSection(
+          mobile: SizedBox(
+            width: double.infinity,
+            child: ScrollableRow(
+              children: [
+                _mobileImportChild(
+                  _importChild(name: 'Google Drive', image: Images.drive),
+                ),
+                _mobileImportChild(
+                  _importChild(name: 'iCloud', image: Images.cloud),
+                ),
+                _mobileImportChild(
+                  _importChild(name: 'Dropbox', image: Images.dropbox),
+                ),
+                _mobileImportChild(
+                  _importChild(name: 'URL Import', image: Images.url),
+                ),
+              ],
+            ),
+          ),
+          tablets: Row(
+            spacing: 15,
+            children: [
+              _tabletImportChild(
+                _importChild(name: 'Google Drive', image: Images.drive),
+              ),
+              _tabletImportChild(
+                _importChild(name: 'iCloud', image: Images.cloud),
+              ),
+              _tabletImportChild(
+                _importChild(name: 'Dropbox', image: Images.dropbox),
+              ),
+              _tabletImportChild(
+                _importChild(name: 'URL Import', image: Images.url),
+              ),
+            ],
+          ),
         ),
       ],
     );

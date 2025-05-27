@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/import_pdf/vm.dart';
+import 'package:navinotes/settings/app_strings.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
@@ -127,7 +128,7 @@ class ImportPdfAppBar extends StatelessWidget {
                   ),
                   Flexible(
                     child: Text(
-                      'NueroNote',
+                      AppStrings.appName,
                       style: Apptheme.text.copyWith(
                         color: Apptheme.royalBlue,
                         fontSize: 16,

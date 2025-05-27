@@ -12,6 +12,11 @@ dependencies:
   flutter_svg: ^2.1.0
   provider: ^6.1.5
   dotted_decoration: ^2.0.0
+  pdfx: ^2.9.1
+  file_picker: ^10.1.9
+  flutter_dotenv: ^5.2.1
+  syncfusion_flutter_pdfviewer: ^29.2.7
+
 
 dev_dependencies:
   flutter_test:
@@ -22,11 +27,13 @@ flutter:
 
   assets:
     - assets/icons/
+    - assets/
     - assets/images/
     - assets/images/boards/
     - assets/images/boards/notes/
     - assets/images/boards/create/
     - assets/images/boards/note_templates/
+    - .env
 
   fonts:
     - family: Inter
