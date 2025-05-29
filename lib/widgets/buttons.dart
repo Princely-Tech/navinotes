@@ -157,6 +157,7 @@ class AppButton extends StatelessWidget {
             onPressed: onTap,
             style: OutlinedButton.styleFrom(
               shape: runShape,
+              side: BorderSide(color: borderColor),
               padding: EdgeInsets.zero,
             ),
             child: _btnMain(),

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/custom_grid.dart';
-
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 class NoteTemplateMain extends StatelessWidget {
   const NoteTemplateMain({super.key});
 

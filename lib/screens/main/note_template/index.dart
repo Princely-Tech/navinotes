@@ -4,10 +4,8 @@ import 'package:navinotes/screens/main/note_template/footer.dart';
 import 'package:navinotes/screens/main/note_template/header.dart';
 import 'package:navinotes/screens/main/note_template/main.dart';
 import 'package:navinotes/screens/main/note_template/vm.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/frames.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class NoteTemplateScreen extends StatelessWidget {
   NoteTemplateScreen({super.key});
@@ -22,23 +20,19 @@ class NoteTemplateScreen extends StatelessWidget {
         builder: (context, vm, child) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
-            endDrawer: Drawer(
-              backgroundColor: Apptheme.white,
-              shape: RoundedRectangleBorder(),
-              child: NoteTemplateAside(),
-            ),
+            endDrawer: CustomDrawer(child: NoteTemplateAside()),
             body: Column(
               children: [
                 NoteTemplateHeader(),
                 Expanded(
                   child: ResponsiveSection(
                     mobile: NoteTemplateMain(),
-                    desktops: Row(
+                    desktop: Row(
                       children: [
                         Expanded(child: NoteTemplateMain()),
                         WidthLimiter(
                           mobile: 280,
-                          largeDesktops: 320,
+                          largeDesktop: 320,
                           child: NoteTemplateAside(),
                         ),
                       ],

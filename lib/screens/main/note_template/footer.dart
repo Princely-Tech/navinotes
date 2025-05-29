@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/note_template/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/widgets/buttons.dart';
-import 'package:navinotes/widgets/components.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class NoteTemplateFooter extends StatelessWidget {
   const NoteTemplateFooter({super.key});
@@ -20,7 +20,7 @@ class NoteTemplateFooter extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [_actions(vm)],
             ),
-            laptops: Row(
+            laptop: Row(
               spacing: 20,
               children: [Expanded(child: _sectionSelector(vm)), _actions(vm)],
             ),

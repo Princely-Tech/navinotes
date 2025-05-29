@@ -1,27 +1,27 @@
 double mobileSize = 640;
-double tabletsSize = 768;
-double laptopsSize = 1024;
-double desktopsSize = 1280;
-double largeDesktopsSize = 1536;
+double tabletSize = 768;
+double laptopSize = 1024;
+double desktopSize = 1280;
+double largeDesktopSize = 1536;
 
-enum DeviceType { 
+enum DeviceType {
   mobile,
-  tablets,
-  laptops,
-  desktops,
-  largeDesktops;
+  tablet,
+  laptop,
+  desktop,
+  largeDesktop;
 
   bool get isMobile => this == mobile;
-  bool get isTablets => this == tablets;
-  bool get isLaptops => this == laptops;
-  bool get isDesktops => this == desktops;
-  bool get isLargeDesktops => this == largeDesktops;
+  bool get isTablet => this == tablet;
+  bool get isLaptop => this == laptop;
+  bool get isDesktop => this == desktop;
+  bool get isLargeDesktop => this == largeDesktop;
 }
 
 DeviceType getDeviceType(double width) {
   if (width <= mobileSize) return DeviceType.mobile;
-  if (width <= tabletsSize) return DeviceType.tablets;
-  if (width <= laptopsSize) return DeviceType.laptops;
-  if (width <= desktopsSize) return DeviceType.desktops;
-  return DeviceType.largeDesktops;
+  if (width <= tabletSize) return DeviceType.tablet;
+  if (width <= laptopSize) return DeviceType.laptop;
+  if (width <= desktopSize) return DeviceType.desktop;
+  return DeviceType.largeDesktop;
 }

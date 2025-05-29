@@ -1,13 +1,9 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
-import 'package:navinotes/settings/Apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
-import 'package:navinotes/widgets/buttons.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/custom_grid.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class ImportPdfMain extends StatelessWidget {
   const ImportPdfMain({super.key});
@@ -199,7 +195,7 @@ class ImportPdfMain extends StatelessWidget {
               ],
             ),
           ),
-          tablets: Row(
+          tablet: Row(
             spacing: 15,
             children: [
               _tabletImportChild(

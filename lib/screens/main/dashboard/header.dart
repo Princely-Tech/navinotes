@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/dashboard/vm.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/util_functions.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/inputs.dart';
 import 'package:provider/provider.dart';
-
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({super.key});
 

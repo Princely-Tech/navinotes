@@ -28,6 +28,7 @@ class Images {
   static const String filter = '$iconPath/filter.svg';
   static const String file = '$iconPath/file.svg';
   static const String share = '$iconPath/share.svg';
+  static const String share2 = '$iconPath/share2.svg';
   static const String pen = '$iconPath/pen.svg';
   static const String flask = '$iconPath/flask.svg';
   static const String draw = '$iconPath/draw.svg';
@@ -54,7 +55,10 @@ class Images {
   static const String cloud = '$iconPath/cloud.svg';
   static const String dropbox = '$iconPath/dropbox.svg';
   static const String url = '$iconPath/url.svg';
-  // static const String draw = '$iconPath/draw.svg';
+  static const String bold = '$iconPath/bold.svg';
+  static const String italic = '$iconPath/italic.svg';
+  static const String underline = '$iconPath/underline.svg';
+  static const String scan = '$iconPath/scan.svg';
   // static const String draw = '$iconPath/draw.svg';
 
   //images

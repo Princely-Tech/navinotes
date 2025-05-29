@@ -63,8 +63,15 @@ class SignUpForm extends StatelessWidget {
                   ),
                   AppButton.text(
                     onTap: () => vm.updateAuthType(AuthType.login),
-                    text: 'Have an account? Log in',
-                    color: Apptheme.mintGreen,
+                    child: Flexible(
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        'Have an account? Login',
+                        style: Apptheme.text.copyWith(
+                          color: Apptheme.mintGreen,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

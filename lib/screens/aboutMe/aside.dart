@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/settings/app_strings.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/widgets/components.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class AboutMeAside extends StatelessWidget {
   const AboutMeAside({super.key});
@@ -18,8 +16,8 @@ class AboutMeAside extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 30),
       child: ResponsiveSection(
         mobile: mobileView,
-        desktops: mobileView,
-        laptops: Column(
+        desktop: mobileView,
+        laptop: Column(
           spacing: gap,
           children: [
             IntrinsicHeight(

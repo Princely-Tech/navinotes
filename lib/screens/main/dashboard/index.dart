@@ -3,9 +3,9 @@ import 'package:navinotes/screens/main/dashboard/main.dart';
 import 'package:navinotes/screens/main/dashboard/side_drawer.dart';
 import 'package:navinotes/screens/main/dashboard/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/frames.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
@@ -20,11 +20,7 @@ class DashboardScreen extends StatelessWidget {
         builder: (context, vm, child) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
-            drawer: Drawer(
-              backgroundColor: Apptheme.white,
-              shape: RoundedRectangleBorder(),
-              child: DashboardSideBar(),
-            ),
+            drawer: CustomDrawer(child: DashboardSideBar()),
             floatingActionButton: FloatingActionButton(
               onPressed: vm.goToCreateBoard,
               backgroundColor: Apptheme.strongBlue,
@@ -33,7 +29,7 @@ class DashboardScreen extends StatelessWidget {
             ),
             body: ResponsiveSection(
               mobile: DashboardMain(),
-              desktops: Row(
+              desktop: Row(
                 children: [
                   WidthLimiter(mobile: 255, child: DashboardSideBar()),
                   Expanded(child: DashboardMain()),
@@ -41,7 +37,7 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

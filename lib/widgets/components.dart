@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/screen_dimensions.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
 import 'package:navinotes/settings/util_functions.dart';
-import 'package:provider/provider.dart';
 
 class SVGImagePlaceHolder extends StatelessWidget {
   const SVGImagePlaceHolder({
@@ -18,6 +14,7 @@ class SVGImagePlaceHolder extends StatelessWidget {
     this.color,
     this.center = false,
     this.decoration,
+    this.onTap,
   });
 
   final String imagePath;
@@ -28,15 +25,21 @@ class SVGImagePlaceHolder extends StatelessWidget {
   final double? containerSize;
   final Decoration? decoration;
   final Color? color;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: containerSize,
-      height: containerSize,
-      decoration: decoration ?? BoxDecoration(shape: BoxShape.circle),
-      child:
-          isNotNull(containerSize) || center ? Center(child: _body()) : _body(),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: containerSize,
+        height: containerSize,
+        decoration: decoration ?? BoxDecoration(shape: BoxShape.circle),
+        child:
+            isNotNull(containerSize) || center
+                ? Center(child: _body())
+                : _body(),
+      ),
     );
   }
 
@@ -86,94 +89,6 @@ class ImagePlaceHolder extends StatelessWidget {
           return const Icon(Icons.error);
         },
       ),
-    );
-  }
-}
-
-class WidthLimiter extends StatelessWidget {
-  const WidthLimiter({
-    super.key,
-    required this.child,
-    required this.mobile,
-    this.tablets,
-    this.laptops,
-    this.desktops,
-    this.largeDesktops,
-  });
-
-  final Widget child;
-  final double mobile;
-  final double? tablets;
-  final double? laptops;
-  final double? desktops;
-  final double? largeDesktops;
-
-  @override
-  Widget build(BuildContext context) {
-    double deviceWidth = screenWidth(context);
-    return Consumer<LayoutProviderVm>(
-      builder: (_, layoutVm, child) {
-        double maxWidth = getMaxWidth(layoutVm.deviceType);
-        return ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: deviceWidth < maxWidth ? deviceWidth : maxWidth,
-          ),
-          child: child,
-        );
-      },
-      child: child,
-    );
-  }
-
-  double getMaxWidth(DeviceType deviceType) {
-    switch (deviceType) {
-      case DeviceType.mobile:
-        return mobile;
-      case DeviceType.tablets:
-        return tablets ?? mobile;
-      case DeviceType.laptops:
-        return laptops ?? tablets ?? mobile;
-      case DeviceType.desktops:
-        return desktops ?? laptops ?? tablets ?? mobile;
-      case DeviceType.largeDesktops:
-        return largeDesktops ?? desktops ?? laptops ?? tablets ?? mobile;
-    }
-  }
-}
-
-class ResponsiveSection extends StatelessWidget {
-  const ResponsiveSection({
-    super.key,
-    required this.mobile,
-    this.tablets,
-    this.laptops,
-    this.desktops,
-    this.largeDesktops,
-  });
-
-  final Widget mobile;
-  final Widget? tablets;
-  final Widget? laptops;
-  final Widget? desktops;
-  final Widget? largeDesktops;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<LayoutProviderVm>(
-      builder: (context, vm, child) {
-        switch (vm.deviceType) {
-          case DeviceType.mobile:
-            return mobile;
-          case DeviceType.tablets:
-            return tablets ?? mobile;
-          case DeviceType.laptops:
-            return laptops ?? tablets ?? mobile;
-          case DeviceType.desktops:
-            return desktops ?? laptops ?? tablets ?? mobile;
-          case DeviceType.largeDesktops:
-            return largeDesktops ?? desktops ?? laptops ?? tablets ?? mobile;
-        }
-      },
     );
   }
 }
@@ -268,86 +183,6 @@ class Header6 extends StatelessWidget {
   }
 }
 
-class CustomCard extends StatelessWidget {
-  const CustomCard({
-    super.key,
-    this.child,
-    this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-    this.decoration = const BoxDecoration(),
-    this.width = double.infinity,
-    this.height,
-    this.margin,
-    // this.edgeClipRadius,
-  });
-  final Widget? child;
-  final EdgeInsets? padding;
-  final EdgeInsets? margin;
-  final BoxDecoration decoration;
-  final double? width;
-  final double? height;
-  // final double? edgeClipRadius;
-  @override
-  Widget build(BuildContext context) {
-    BorderRadiusGeometry radius =
-        decoration.borderRadius ?? BorderRadius.circular(12);
-    return Container(
-      width: width,
-      height: height,
-      margin: margin,
-      decoration: decoration.copyWith(
-        color: decoration.color ?? Apptheme.white,
-        borderRadius: decoration.shape == BoxShape.circle ? null : radius,
-        shape: null,
-        border: decoration.border ?? Border.all(color: Apptheme.lightGray),
-      ),
-      padding: padding,
-      child: child,
-    );
-  }
-}
-
-class VisibleController extends StatelessWidget {
-  const VisibleController({
-    super.key,
-    required this.mobile,
-    this.tablets,
-    this.laptops,
-    this.desktops,
-    this.largeDesktops,
-    required this.child,
-  });
-  final bool mobile;
-  final bool? tablets;
-  final bool? laptops;
-  final bool? desktops;
-  final bool? largeDesktops;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<LayoutProviderVm>(
-      builder: (_, layoutVm, _) {
-        return getVisible(layoutVm.deviceType) ? child : const SizedBox();
-      },
-    );
-  }
-
-  bool getVisible(DeviceType deviceType) {
-    switch (deviceType) {
-      case DeviceType.mobile:
-        return mobile;
-      case DeviceType.tablets:
-        return tablets ?? mobile;
-      case DeviceType.laptops:
-        return laptops ?? tablets ?? mobile;
-      case DeviceType.desktops:
-        return desktops ?? laptops ?? tablets ?? mobile;
-      case DeviceType.largeDesktops:
-        return largeDesktops ?? desktops ?? laptops ?? tablets ?? mobile;
-    }
-  }
-}
-
 class CustomTag extends StatelessWidget {
   const CustomTag(
     this.data, {
@@ -410,55 +245,6 @@ class OutlinedChild extends StatelessWidget {
   }
 }
 
-class CreateCard extends StatelessWidget {
-  const CreateCard({super.key, required this.onTap, required this.text});
-  final void Function()? onTap;
-  final String text;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          child: CustomCard(
-            child: Column(
-              spacing: 15,
-              children: [
-                CustomCard(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: Apptheme.paleBlue,
-                    shape: BoxShape.circle,
-                  ),
-                  padding: EdgeInsets.zero,
-                  child: Icon(Icons.add, color: Apptheme.vividBlue),
-                ),
-                Column(
-                  spacing: 5,
-                  children: [
-                    Text(
-                      text,
-                      style: Apptheme.text.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'Start organizing your ideas',
-                      style: Apptheme.text.copyWith(color: Apptheme.steelMist),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class CustomSlider extends StatelessWidget {
   const CustomSlider({super.key, required this.slider});
   final Slider slider;
@@ -482,13 +268,21 @@ class CustomSlider extends StatelessWidget {
 }
 
 class ScrollableRow extends StatelessWidget {
-  const ScrollableRow({super.key, required this.children});
+  const ScrollableRow({
+    super.key,
+    this.children = const [],
+    this.child,
+    this.padding,
+  });
   final List<Widget> children;
+  final Widget? child;
+  final EdgeInsets? padding;
   @override
   Widget build(BuildContext context) {
     return ScrollableController(
+      padding: padding,
       scrollDirection: Axis.horizontal,
-      child: Row(spacing: 10, children: children),
+      child: child ?? Row(spacing: 10, children: children),
     );
   }
 }
@@ -518,6 +312,19 @@ class ColorWidget extends StatelessWidget {
                   : Apptheme.transparent,
         ),
       ),
+    );
+  }
+}
+
+class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      backgroundColor: Apptheme.white,
+      shape: RoundedRectangleBorder(),
+      child: child,
     );
   }
 }

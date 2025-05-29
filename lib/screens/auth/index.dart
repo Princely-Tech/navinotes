@@ -9,6 +9,7 @@ import 'package:navinotes/settings/images.dart';
 import 'package:navinotes/settings/ui_helpers.dart';
 import 'package:navinotes/widgets/components.dart';
 import 'package:navinotes/widgets/frames.dart';
+import 'package:navinotes/widgets/responsive_widgets.dart';
 import 'package:provider/provider.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -29,9 +30,9 @@ class AuthScreen extends StatelessWidget {
   }
 
   Widget _main(BuildContext context, AuthVM vm) {
-    double maxWidth = 500;
-    double deviceWidth = screenWidth(context);
-    double minWidth = deviceWidth < maxWidth ? deviceWidth : maxWidth;
+    // double maxWidth = 500;
+    // double deviceWidth = screenWidth(context);
+    // double minWidth = deviceWidth < maxWidth ? deviceWidth : maxWidth;
 
     List<BoxShadow> boxShadows = [
       BoxShadow(
@@ -42,97 +43,101 @@ class AuthScreen extends StatelessWidget {
       ),
     ];
 
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        spacing: 20,
-        children: [
-          Flexible(
-            child: Container(
-              constraints: BoxConstraints(
-                maxHeight: screenHeight(context) - 100,
-                maxWidth: maxWidth,
-                minWidth: minWidth,
-              ),
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.all(40),
-                  decoration: ShapeDecoration(
-                    color: Apptheme.white.withAlpha(20),
-                    shape: RoundedRectangleBorder(
-                      side: vm.borderSide,
-                      borderRadius: BorderRadius.circular(16),
+    return ResponsivePadding(
+      mobile: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      laptop: const EdgeInsets.all(20),
+      child: SizedBox(
+        width: screenWidth(context),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 20,
+          children: [
+            Flexible(
+              child: WidthLimiter(
+                mobile: 500,
+                child: Center(
+                  child: Container(
+                    // padding: EdgeInsets.all(40),
+                    decoration: ShapeDecoration(
+                      color: Apptheme.white.withAlpha(20),
+                      shape: RoundedRectangleBorder(
+                        side: vm.borderSide,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      shadows: boxShadows,
                     ),
-                    shadows: boxShadows,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      spacing: 35,
-                      children: [
-                        Column(
-                          spacing: 20,
+                    child: ResponsivePadding(
+                      mobile: EdgeInsets.all(20),
+                      laptop: EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 20,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          spacing: 35,
                           children: [
-                            SVGImagePlaceHolder(
-                              imagePath: Images.logoRounded,
-                              size: 64,
+                            Column(
+                              spacing: 20,
+                              children: [
+                                SVGImagePlaceHolder(
+                                  imagePath: Images.logoRounded,
+                                  size: 64,
+                                ),
+                                Text(
+                                  AppStrings.appName,
+                                  textAlign: TextAlign.center,
+                                  style: Apptheme.text.copyWith(
+                                    overflow: TextOverflow.ellipsis,
+                                    color: Apptheme.white,
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Text(
+                                  'Connect Your Thoughts, Expand Your Mind',
+                                  textAlign: TextAlign.center,
+                                  style: Apptheme.text.copyWith(
+                                    color: Apptheme.mintyAqua,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              AppStrings.appName,
-                              textAlign: TextAlign.center,
-                              style: Apptheme.text.copyWith(
-                                color: Apptheme.white,
-                                fontSize: 36,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Text(
-                              'Connect Your Thoughts, Expand Your Mind',
-                              textAlign: TextAlign.center,
-                              style: Apptheme.text.copyWith(
-                                color: Apptheme.mintyAqua,
-                                fontSize: 18,
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (vm.authType == AuthType.login)
-                          LoginForm()
-                        else
-                          SignUpForm(),
+                            if (vm.authType == AuthType.login)
+                              LoginForm()
+                            else
+                              SignUpForm(),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          spacing: 20,
-                          children: [
-                            _socialBtn(Images.google, vm),
-                            _socialBtn(Images.apple, vm),
+                            ScrollableRow(
+                              children: [
+                                _socialBtn(Images.google, vm),
+                                _socialBtn(Images.apple, vm),
+                              ],
+                            ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          Row(
-            spacing: 20,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:
-                authFooterLinks
-                    .map(
-                      (str) => Text(
-                        str,
-                        style: Apptheme.text.copyWith(
-                          color: Apptheme.pastelBlue,
+            ScrollableRow(
+              children:
+                  authFooterLinks
+                      .map(
+                        (str) => Text(
+                          str,
+                          style: Apptheme.text.copyWith(
+                            color: Apptheme.pastelBlue,
+                          ),
                         ),
-                      ),
-                    )
-                    .toList(),
-          ),
-        ],
+                      )
+                      .toList(),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/widgets/components.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class RecentActivity extends StatelessWidget {
   const RecentActivity({super.key});
@@ -93,7 +92,7 @@ class RecentActivity extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 30,
+        // spacing: 30,
         children: [
           Expanded(
             child: Row(
@@ -138,11 +137,18 @@ class RecentActivity extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            lastUpdated,
-            style: Apptheme.text.copyWith(
-              color: Apptheme.steelMist,
-              fontSize: 12,
+          VisibleController(
+            mobile: false,
+            tablet: true,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30),
+              child: Text(
+                lastUpdated,
+                style: Apptheme.text.copyWith(
+                  color: Apptheme.steelMist,
+                  fontSize: 12,
+                ),
+              ),
             ),
           ),
         ],

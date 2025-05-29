@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/choose_board/vm.dart';
-import 'package:navinotes/settings/app_strings.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/navigation_helper.dart';
-import 'package:navinotes/settings/util_functions.dart';
-import 'package:navinotes/widgets/components.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class ChooseBoardHeader extends StatelessWidget {
   const ChooseBoardHeader({super.key});
@@ -14,9 +11,9 @@ class ChooseBoardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
-      builder: (context, layoutVm, child) {
+      builder: (_, layoutVm, _) {
         return Consumer<ChooseBoardVm>(
-          builder: (context, vm, child) {
+          builder: (_, vm, _) {
             return Container(
               padding: EdgeInsets.all(15),
               color: Apptheme.white,
@@ -32,24 +29,27 @@ class ChooseBoardHeader extends StatelessWidget {
                         spacing: 10,
                         children: [
                           Icon(Icons.arrow_back, color: Apptheme.strongBlue),
-                          Column(
-                            spacing: 8,
-                            children: [
-                              Text(
-                                AppStrings.appName,
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.royalBlue,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
+                          Flexible(
+                            child: Column(
+                              spacing: 8,
+                              children: [
+                                Text(
+                                  AppStrings.appName,
+                                  style: Apptheme.text.copyWith(
+                                    overflow: TextOverflow.ellipsis,
+                                    color: Apptheme.royalBlue,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'Choose Board Style',
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.strongBlue,
+                                Text(
+                                  'Choose Board Style',
+                                  style: Apptheme.text.copyWith(
+                                    color: Apptheme.strongBlue,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       ),

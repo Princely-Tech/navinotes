@@ -11,6 +11,6 @@ void logError(String message) {
 
 bool getMenuVisible(DeviceType deviceType) {
   return deviceType == DeviceType.mobile ||
-      deviceType == DeviceType.tablets ||
-      deviceType == DeviceType.laptops;
+      deviceType == DeviceType.tablet ||
+      deviceType == DeviceType.laptop;
 }

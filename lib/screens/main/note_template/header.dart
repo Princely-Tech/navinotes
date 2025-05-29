@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/note_template/vm.dart';
-import 'package:navinotes/settings/app_strings.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/navigation_helper.dart';
-import 'package:navinotes/settings/screen_dimensions.dart';
-import 'package:navinotes/widgets/buttons.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/inputs.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class NoteTemplateHeader extends StatelessWidget {
   const NoteTemplateHeader({super.key});
@@ -95,7 +89,7 @@ class NoteTemplateHeader extends StatelessWidget {
       children: [
         VisibleController(
           mobile: false,
-          laptops: true,
+          laptop: true,
           child: Flexible(
             child: Container(
               decoration: ShapeDecoration(

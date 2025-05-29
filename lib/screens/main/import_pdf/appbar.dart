@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/import_pdf/vm.dart';
-import 'package:navinotes/settings/app_strings.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/navigation_helper.dart';
-import 'package:navinotes/widgets/buttons.dart';
-import 'package:navinotes/widgets/components.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class ImportPdfAppBar extends StatelessWidget {
   const ImportPdfAppBar({super.key});
@@ -33,7 +29,7 @@ class ImportPdfAppBar extends StatelessWidget {
                 MenuButton(onPressed: vm.openDrawer),
               ],
             ),
-            laptops: Row(
+            laptop: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: 10,
               children: [
@@ -44,7 +40,7 @@ class ImportPdfAppBar extends StatelessWidget {
                     _actions(),
                     VisibleController(
                       mobile: true,
-                      desktops: false,
+                      desktop: false,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: MenuButton(onPressed: vm.openDrawer),

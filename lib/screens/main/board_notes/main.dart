@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/board_notes/shared.dart';
 import 'package:navinotes/screens/main/board_notes/vm.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/custom_grid.dart';
-import 'package:navinotes/widgets/inputs.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class BoardNotesMain extends StatelessWidget {
   const BoardNotesMain({super.key});
@@ -203,6 +199,7 @@ class BoardNotesMain extends StatelessWidget {
 
   Widget _header() {
     return Container(
+      constraints: BoxConstraints(minHeight: 60),
       decoration: ShapeDecoration(
         color: Apptheme.white,
         shape: RoundedRectangleBorder(
@@ -214,49 +211,55 @@ class BoardNotesMain extends StatelessWidget {
         spacing: 20,
         children: [
           Text('8 Note Pages', style: Apptheme.text.copyWith(fontSize: 16)),
-          Expanded(
-            child: ResponsiveSection(
-              mobile: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                spacing: 10,
-                children: [_sortBy()],
-              ),
-              desktops: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                spacing: 10,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Apptheme.lightAsh,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Row(
-                        spacing: 5,
-                        children: [
-                          OutlinedChild(
-                            size: 32,
-                            decoration: BoxDecoration(color: Apptheme.white),
-                            child: SVGImagePlaceHolder(
-                              imagePath: Images.ques2,
-                              size: 16,
+          VisibleController(
+            mobile: false,
+            tablet: true,
+            child: Expanded(
+              child: ResponsiveSection(
+                mobile: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  spacing: 10,
+                  children: [_sortBy()],
+                ),
+                desktop: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  spacing: 10,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Apptheme.lightAsh,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Row(
+                          spacing: 5,
+                          children: [
+                            OutlinedChild(
+                              size: 32,
+                              decoration: BoxDecoration(color: Apptheme.white),
+                              child: SVGImagePlaceHolder(
+                                imagePath: Images.ques2,
+                                size: 16,
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: SVGImagePlaceHolder(
-                              imagePath: Images.menu,
-                              size: 16,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                              child: SVGImagePlaceHolder(
+                                imagePath: Images.menu,
+                                size: 16,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  _sortBy(),
-                  NewNotesButton(isAside: false),
-                ],
+                    _sortBy(),
+                    NewNotesButton(isAside: false),
+                  ],
+                ),
               ),
             ),
           ),

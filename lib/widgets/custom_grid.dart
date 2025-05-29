@@ -8,17 +8,17 @@ class CustomGrid extends StatelessWidget {
     super.key,
     required this.children,
     this.mobile = 1,
-    this.tablets,
-    this.laptops = 2,
-    this.desktops,
-    this.largeDesktops = 3,
+    this.tablet,
+    this.laptop = 2,
+    this.desktop,
+    this.largeDesktop = 3,
   });
   final List<Widget> children;
   final int mobile;
-  final int? tablets;
-  final int? laptops;
-  final int? desktops;
-  final int? largeDesktops;
+  final int? tablet;
+  final int? laptop;
+  final int? desktop;
+  final int? largeDesktop;
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +54,14 @@ class CustomGrid extends StatelessWidget {
 
   int getSplit(DeviceType deviceType) {
     switch (deviceType) {
-      case DeviceType.tablets:
-        return tablets ?? mobile;
-      case DeviceType.laptops:
-        return laptops ?? tablets ?? mobile;
-      case DeviceType.desktops:
-        return desktops ?? laptops ?? tablets ?? mobile;
-      case DeviceType.largeDesktops:
-        return largeDesktops ?? desktops ?? laptops ?? tablets ?? mobile;
+      case DeviceType.tablet:
+        return tablet ?? mobile;
+      case DeviceType.laptop:
+        return laptop ?? tablet ?? mobile;
+      case DeviceType.desktop:
+        return desktop ?? laptop ?? tablet ?? mobile;
+      case DeviceType.largeDesktop:
+        return largeDesktop ?? desktop ?? laptop ?? tablet ?? mobile;
       default:
         return mobile;
     }

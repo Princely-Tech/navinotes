@@ -4,13 +4,8 @@ import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/aboutMe/aside.dart';
 import 'package:navinotes/screens/aboutMe/form.dart';
 import 'package:navinotes/screens/aboutMe/vm.dart';
-import 'package:navinotes/settings/app_strings.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/screen_dimensions.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/frames.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 import 'package:provider/provider.dart';
 
 class AboutMeScreen extends StatelessWidget {
@@ -22,8 +17,8 @@ class AboutMeScreen extends StatelessWidget {
       builder: (context, layoutProviderVm, child) {
         bool mainScrollable =
             layoutProviderVm.deviceType == DeviceType.mobile ||
-            layoutProviderVm.deviceType == DeviceType.tablets ||
-            layoutProviderVm.deviceType == DeviceType.laptops;
+            layoutProviderVm.deviceType == DeviceType.tablet ||
+            layoutProviderVm.deviceType == DeviceType.laptop;
         return ScaffoldFrame(
           body: ChangeNotifierProvider(
             create: (context) => AboutMeVm(),
@@ -58,10 +53,10 @@ class AboutMeScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: defaultHorizontalPadding),
       child: WidthLimiter(
-        mobile: desktopsSize,
+        mobile: desktopSize,
         child: ResponsiveSection(
           mobile: Column(children: [aboutMeForm, aboutMeAside]),
-          desktops: Row(
+          desktop: Row(
             spacing: 30,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -86,7 +81,7 @@ class AboutMeScreen extends StatelessWidget {
       ),
       child: Center(
         child: WidthLimiter(
-          mobile: desktopsSize,
+          mobile: desktopSize,
           child: Row(
             spacing: 15,
             children: [

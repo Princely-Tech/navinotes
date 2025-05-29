@@ -6,7 +6,7 @@ import 'package:navinotes/screens/main/dashboard/index.dart';
 import 'package:navinotes/screens/main/choose_board/index.dart';
 import 'package:navinotes/screens/main/import_pdf/index.dart';
 import 'package:navinotes/screens/main/note_template/index.dart';
-import 'package:navinotes/screens/main/pdf/index.dart';
+import 'package:navinotes/screens/main/pdf_view/index.dart';
 
 Map<String, WidgetBuilder> routes = {
   Routes.auth: (context) => const AuthScreen(),
@@ -16,7 +16,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardNotes: (context) => BoardNotesScreen(),
   Routes.noteTemplate: (context) => NoteTemplateScreen(),
   Routes.uploadPdf: (context) => UploadPdfScreen(),
-  Routes.pdf: (context) => PDFAnnotationScreen(),
+  Routes.pdf: (context) => PdfViewScreen(),
 };
 
 class Routes {

@@ -68,8 +68,15 @@ class LoginForm extends StatelessWidget {
                   ),
                   AppButton.text(
                     onTap: () => vm.updateAuthType(AuthType.signUp),
-                    text: 'Don’t have an account? Create one now',
-                    color: Apptheme.mintGreen,
+                    child: Flexible(
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        'Don’t have an account? Create one now',
+                        style: Apptheme.text.copyWith(
+                          color: Apptheme.mintGreen,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

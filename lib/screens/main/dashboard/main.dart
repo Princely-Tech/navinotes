@@ -4,14 +4,16 @@ import 'package:navinotes/screens/main/dashboard/header.dart';
 import 'package:navinotes/screens/main/dashboard/recent_activity.dart';
 import 'package:navinotes/settings/ui_helpers.dart';
 import 'package:navinotes/widgets/components.dart';
+import 'package:navinotes/widgets/responsive_widgets.dart';
 
 class DashboardMain extends StatelessWidget {
   const DashboardMain({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
+    return ResponsivePadding(
+      mobile: EdgeInsets.all(10),
+      tablet: EdgeInsets.symmetric(
         horizontal: defaultHorizontalPadding,
         vertical: 10,
       ),

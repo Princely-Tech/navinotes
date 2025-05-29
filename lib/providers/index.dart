@@ -25,7 +25,6 @@ class CustomProviders extends StatelessWidget {
         builder: (context) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.read<LayoutProviderVm>().updateDeviceType();
-            // context.read<LayoutProviderVm>().updateDeviceType(context);
           });
           return child;
         },

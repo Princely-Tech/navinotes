@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/import_pdf/appbar.dart';
 import 'package:navinotes/screens/main/import_pdf/aside.dart';
+import 'package:navinotes/screens/main/import_pdf/footer.dart';
 import 'package:navinotes/screens/main/import_pdf/main.dart';
 import 'package:navinotes/screens/main/import_pdf/vm.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/frames.dart';
 import 'package:provider/provider.dart';
+import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/widgets/index.dart';
 
 class UploadPdfScreen extends StatelessWidget {
   UploadPdfScreen({super.key});
@@ -20,18 +20,14 @@ class UploadPdfScreen extends StatelessWidget {
       child: ScaffoldFrame(
         scaffoldKey: _scaffoldKey,
         backgroundColor: Apptheme.white,
-        drawer: Drawer(
-          backgroundColor: Apptheme.white,
-          shape: RoundedRectangleBorder(),
-          child: ImportPdfAside(),
-        ),
+        drawer: CustomDrawer(child: ImportPdfAside()),
         body: Column(
           children: [
             ImportPdfAppBar(),
             Expanded(
               child: ResponsiveSection(
                 mobile: ImportPdfMain(),
-                desktops: Row(
+                desktop: Row(
                   children: [
                     WidthLimiter(mobile: 256, child: ImportPdfAside()),
                     Expanded(child: ImportPdfMain()),
@@ -39,6 +35,7 @@ class UploadPdfScreen extends StatelessWidget {
                 ),
               ),
             ),
+            UploadPdfFooter(),
           ],
         ),
       ),
