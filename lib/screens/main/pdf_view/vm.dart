@@ -10,3 +10,4 @@ class PdfViewVm extends ChangeNotifier {
     scaffoldKey.currentState?.openEndDrawer();
   }
 }
+

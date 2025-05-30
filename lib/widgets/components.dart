@@ -238,7 +238,7 @@ class OutlinedChild extends StatelessWidget {
       height: size,
       decoration: decoration.copyWith(
         borderRadius: decoration.shape == BoxShape.circle ? null : borderRadius,
-        border: decoration.border ?? Border.all(color: Apptheme.lightGray),
+        // border: decoration.border ?? Border.all(color: Apptheme.lightGray),
       ),
       child: Center(child: child),
     );

@@ -80,6 +80,7 @@ class AppButton extends StatelessWidget {
     this.style,
     this.loading = false,
     this.minHeight = 10,
+
     this.textColor,
     this.gradient,
     // this.borderSide,

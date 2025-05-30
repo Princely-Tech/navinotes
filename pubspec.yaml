@@ -19,6 +19,7 @@ dependencies:
   syncfusion_flutter_pdf: ^29.2.7+1
   shared_preferences: ^2.5.3
   flutter_animate: ^4.5.2
+  path_provider: ^2.1.5
 
 
 dev_dependencies:

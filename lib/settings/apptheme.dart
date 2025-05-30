@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
-  static const Color black = Color(0xFF000000);
+  static const Color black = Color(0xFF000000); 
+  static const Color electricPurple = Color(0xFF7C3AED); 
+  static const Color orangeYellow = Color(0xFFFBBF24);
   static const Color teal = Color(0xFF14B8A6);
   static const Color pastelViolet = Color(0xFFF5F3FF);
   static const Color honeyDew = Color(0xFFECFDF5);
@@ -39,7 +41,7 @@ class Apptheme {
   static const Color darkSlateGray = Color(0xFF374151);
   static const Color strongBlue = Color(0xFF2563EB);
   static const Color iceBlue = Color(0xFFEFF6FF);
-  static const Color paleBlue = Color(0xFFDBEAFE); 
+  static const Color paleBlue = Color(0xFFDBEAFE);
   static const Color whisperGrey = Color(0x4CEFEFEF);
   static const Color steelMist = Color(0xFF6B7280);
   static const Color jungleGreen = Color(0xFF059669);
@@ -59,7 +61,7 @@ class Apptheme {
 
   static const String fontFamily = 'Inter';
 
-  static TextStyle get text => TextStyle(
+  static const TextStyle text = TextStyle(
     color: defaultBlack,
     fontSize: 14,
     fontFamily: fontFamily,

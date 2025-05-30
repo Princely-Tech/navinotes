@@ -59,7 +59,12 @@ class Images {
   static const String italic = '$iconPath/italic.svg';
   static const String underline = '$iconPath/underline.svg';
   static const String scan = '$iconPath/scan.svg';
-  // static const String draw = '$iconPath/draw.svg';
+  static const String card = '$iconPath/card.svg';
+  // static const String card = '$iconPath/card.svg';
+  // static const String card = '$iconPath/card.svg';
+  // static const String card = '$iconPath/card.svg';
+  // static const String card = '$iconPath/card.svg';
+  // static const String card = '$iconPath/card.svg';
 
   //images
   static const String brain =

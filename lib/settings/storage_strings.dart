@@ -1,4 +1,4 @@
 class StorageStrings {
   StorageStrings._();
-  static const String pdfViewOverlaySeen = 'pdfViewOverlaySeen';
+  static const String dontShowPdfViewOverlay = 'dontShowPdfViewOverlay';
 }
