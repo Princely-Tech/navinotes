@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/providers/layout.dart';
-import 'package:navinotes/settings/screen_dimensions.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
-import 'package:provider/provider.dart';
+import 'package:navinotes/packages.dart';
 
 class WidthLimiter extends StatelessWidget {
   const WidthLimiter({
@@ -25,6 +21,7 @@ class WidthLimiter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double deviceWidth = screenWidth(context);
+
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, child) {
         double maxWidth = getMaxWidth(layoutVm.deviceType);

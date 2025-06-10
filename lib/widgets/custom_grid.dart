@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/providers/layout.dart';
-import 'package:navinotes/settings/screen_dimensions.dart';
-import 'package:provider/provider.dart';
+import 'package:navinotes/packages.dart';
 
 class CustomGrid extends StatelessWidget {
   const CustomGrid({

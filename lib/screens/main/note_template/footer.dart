@@ -18,7 +18,7 @@ class NoteTemplateFooter extends StatelessWidget {
           child: ResponsiveSection(
             mobile: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [_actions(vm)],
+              children: [Flexible(child: _actions(vm))],
             ),
             laptop: Row(
               spacing: 20,
@@ -32,11 +32,14 @@ class NoteTemplateFooter extends StatelessWidget {
 
   Widget _actions(NoteTemplateVm vm) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       spacing: 15,
       children: [
         AppButton.text(
           onTap: () {},
           text: 'Save as Favorite',
+          mainAxisSize: MainAxisSize.min,
+          wrapWithFlexible: true,
           color: Apptheme.strongBlue,
           prefix: Icon(Icons.star_border, color: Apptheme.strongBlue),
         ),
@@ -46,6 +49,7 @@ class NoteTemplateFooter extends StatelessWidget {
           onTap: vm.createNote,
           text: 'Create Note',
           prefix: Icon(Icons.add, color: Apptheme.white),
+          // wrapWithFlexible: true,
         ),
       ],
     );

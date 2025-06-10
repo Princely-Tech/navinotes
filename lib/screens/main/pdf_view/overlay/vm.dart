@@ -1,4 +1,3 @@
-import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/packages.dart';
 
 class PdfViewOverlayViewModel extends ChangeNotifier {

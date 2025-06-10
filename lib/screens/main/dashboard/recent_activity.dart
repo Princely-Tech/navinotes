@@ -88,70 +88,74 @@ class RecentActivity extends StatelessWidget {
     required String lastUpdated,
     required Widget image,
   }) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        // spacing: 30,
-        children: [
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 15,
-              children: [
-                image,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 10,
-                    children: [
-                      Text(
-                        title,
-                        style: Apptheme.text.copyWith(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
+    return InkWell(
+      onTap: () {
+        NavigationHelper.push(Routes.pdf);
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  image,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 10,
+                      children: [
+                        Text(
+                          title,
+                          style: Apptheme.text.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 8,
-                        children: [
-                          Text(
-                            body,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.stormGray,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 8,
+                          children: [
+                            Text(
+                              body,
+                              style: Apptheme.text.copyWith(
+                                color: Apptheme.stormGray,
+                              ),
                             ),
-                          ),
-                          Text(
-                            subject,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.strongBlue,
-                              fontSize: 12,
+                            Text(
+                              subject,
+                              style: Apptheme.text.copyWith(
+                                color: Apptheme.strongBlue,
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          VisibleController(
-            mobile: false,
-            tablet: true,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: Text(
-                lastUpdated,
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.steelMist,
-                  fontSize: 12,
+            VisibleController(
+              mobile: false,
+              tablet: true,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 30),
+                child: Text(
+                  lastUpdated,
+                  style: Apptheme.text.copyWith(
+                    color: Apptheme.steelMist,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/settings/app_strings.dart';
-import 'package:navinotes/settings/Apptheme.dart';
-import 'package:navinotes/settings/util_functions.dart';
+import 'package:navinotes/packages.dart';
 
 enum ButtonType {
   primary,
@@ -27,7 +24,7 @@ class AppButton extends StatelessWidget {
     this.shape,
     required this.onTap,
     this.prefix,
-    this.color = Apptheme.strongBlue,
+    this.color = Apptheme.vividRose,
     this.wrapWithFlexible = false,
     this.suffix,
     this.minHeight = defaultMinHeight,
@@ -50,7 +47,7 @@ class AppButton extends StatelessWidget {
     required this.onTap,
     this.prefix,
     this.suffix,
-    this.color = Apptheme.strongBlue,
+    this.color = Apptheme.vividRose,
     this.loading = false,
     this.wrapWithFlexible = false,
     this.style,
@@ -75,7 +72,7 @@ class AppButton extends StatelessWidget {
     this.wrapWithFlexible = false,
     this.prefix,
     this.suffix,
-    this.color = Apptheme.strongBlue,
+    this.color = Apptheme.vividRose,
     this.padding,
     this.style,
     this.loading = false,

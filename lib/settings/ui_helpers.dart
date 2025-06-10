@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:navinotes/packages.dart';
 
 double defaultHorizontalPadding = 20;
 

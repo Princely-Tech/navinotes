@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/settings/screen_dimensions.dart';
+import 'package:navinotes/packages.dart';
 
 bool isNotNull(dynamic value) => value != null;
 

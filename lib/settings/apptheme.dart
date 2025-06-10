@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+
+
+import 'package:navinotes/packages.dart';
 
 class Apptheme {
   Apptheme._();
@@ -58,6 +60,7 @@ class Apptheme {
   static const Color amber = Color(0xFFF59E0B);
   static const Color dodgerBlue = Color(0xFF0075FF);
   static const Color gainsboro = Color(0xFFE5E5E5);
+  static const Color vividRose = Color(0xFF00555A);
 
   static const String fontFamily = 'Inter';
 

@@ -8,17 +8,21 @@ const noteTemplatePath = 'assets/images/boards/note_templates';
 class Images {
   Images._();
   //icons
+
+  //TODO delete this
   static const String logoRounded = '$iconPath/logo_rounded.svg';
   static const String logoRounded2 = '$iconPath/logo_rounded2.svg';
+  static const String logo = '$iconPath/logo.svg';
+  static const String logoSquare = '$iconPath/logo_square.svg';
+
   static const String email = '$iconPath/email.svg';
   static const String padlock = '$iconPath/padlock.svg';
   static const String google = '$iconPath/google.svg';
   static const String apple = '$iconPath/apple.svg';
-  static const String logo = '$iconPath/logo.svg';
+
   static const String ques = '$iconPath/ques.svg';
   static const String settings = '$iconPath/settings.svg';
   static const String upload = '$iconPath/upload.svg';
-  static const String logoSquare = '$iconPath/logo_square.svg';
   static const String recent = '$iconPath/recent.svg';
   static const String home = '$iconPath/home.svg';
   static const String flashCards = '$iconPath/flash_cards.svg';
@@ -67,8 +71,7 @@ class Images {
   // static const String card = '$iconPath/card.svg';
 
   //images
-  static const String brain =
-      '$imagePath/brain.png';
+  static const String brain = '$imagePath/brain.png';
   static const String brainPers = '$imagePath/brain_pers.png';
   //  static const String brain = '$imagePath/brain.png';
 

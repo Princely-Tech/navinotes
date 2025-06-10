@@ -1,12 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/screens/auth/index.dart';
-import 'package:navinotes/screens/aboutMe/index.dart';
-import 'package:navinotes/screens/main/board_notes/index.dart';
-import 'package:navinotes/screens/main/dashboard/index.dart';
-import 'package:navinotes/screens/main/choose_board/index.dart';
-import 'package:navinotes/screens/main/import_pdf/index.dart';
-import 'package:navinotes/screens/main/note_template/index.dart';
-import 'package:navinotes/screens/main/pdf_view/index.dart';
+import 'package:navinotes/packages.dart';
 
 Map<String, WidgetBuilder> routes = {
   Routes.auth: (context) => const AuthScreen(),

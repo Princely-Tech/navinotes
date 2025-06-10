@@ -1,5 +1,5 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:navinotes/packages.dart';
 
-class Env {
-  static String get syncfusionKey => dotenv.env['SyncfusionKey']!;
+class EnvKeys {
+  static String get comPdfKey => dotenv.env['ComPdfKey']!;
 }

@@ -16,69 +16,28 @@ class LoginForm extends StatelessWidget {
       builder: (_, vm, _) {
         return Form(
           child: Column(
-            spacing: 40,
+            spacing: 20,
             children: [
-              Column(
-                spacing: 15,
-                children: [
-                  CustomInputField(
-                    hintText: 'Email or Username',
-                    keyboardType: TextInputType.emailAddress,
-                    fillColor: vm.inputFillColor,
-                    style: vm.inputStyle.copyWith(color: Apptheme.aquaGreen),
-                    hintStyle: vm.inputStyle,
-                    border: vm.inputBorder,
-                  ),
-                  CustomInputField(
-                    hintText: 'Password',
-                    keyboardType: TextInputType.visiblePassword,
-                    fillColor: vm.inputFillColor,
-                    style: vm.inputStyle.copyWith(color: Apptheme.aquaGreen),
-                    hintStyle: vm.inputStyle,
-                    border: vm.inputBorder,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          'Forgot Password?',
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.mintGreen,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              CustomInputField(
+                hintText: 'your.email@school.edu',
+                label: 'Email',
+                keyboardType: TextInputType.emailAddress,
+                fillColor: vm.inputFillColor,
               ),
-
-              Column(
-                spacing: 15,
-                children: [
-                  AppButton(
-                    onTap: vm.login,
-                    text: 'Login',
-                    gradient: LinearGradient(
-                      begin: Alignment(0.00, 0.50),
-                      end: Alignment(1.00, 0.50),
-                      colors: [Apptheme.vividBlue, Apptheme.aquaGreen],
-                    ),
-                    style: vm.btnTextStyle,
-                  ),
-                  AppButton.text(
-                    onTap: () => vm.updateAuthType(AuthType.signUp),
-                    child: Flexible(
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        'Don’t have an account? Create one now',
-                        style: Apptheme.text.copyWith(
-                          color: Apptheme.mintGreen,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              CustomInputField(
+                hintText: 'Password',
+                label: 'Password',
+                labelRight: AppButton.text(
+                  onTap: () {},
+                  text: 'Forgot Password?',
+                ),
+                keyboardType: TextInputType.visiblePassword,
+                fillColor: vm.inputFillColor,
+              ),
+              AppButton(
+                onTap: vm.login,
+                text: 'Sign In',
+                suffix: Icon(Icons.arrow_forward, color: Apptheme.white),
               ),
             ],
           ),

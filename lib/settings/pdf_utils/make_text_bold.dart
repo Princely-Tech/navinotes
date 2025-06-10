@@ -1,36 +1,64 @@
-import 'dart:io';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:navinotes/packages.dart';
+// import 'package:navinotes/packages.dart';
+
+// TODO  delete this
+
+// Future<void> makeTextBolder(
+//   PdfViewVm vm,
+//   PdfTextSelectionChangedDetails details,
+// ) async {
+//   String currentPdfPath = 'assets/example.pdf';
+//   try {
+//     // final File inputFile = File(currentPdfPath);
+//     // print(inputFile);
+//     // final PdfDocument document = PdfDocument(
+//     //   inputBytes: await inputFile.readAsBytes(),
+//     // );
 
 
 
-Future<void> boldTextInPdf(String textToBold) async {
-  // Load PDF from assets
-  final data = await rootBundle.load('assets/example.pdf');
-  final bytes = data.buffer.asUint8List();
+//     final ByteData bytes = await rootBundle.load(currentPdfPath);
 
-  // Load the PDF document
-  final document = PdfDocument(inputBytes: bytes);
+//     final PdfDocument document = PdfDocument(
+//       inputBytes: bytes.buffer.asUint8List(),
+//     );
 
-  // Search for text in the document
-  final finder = PdfTextFinder(document);
-  final results = finder.find(textToBold);
+//     // final List<TextLine> lines = extractor.extractTextLines(
+//     //   startPageIndex: pageNumber,
+//     //   endPageIndex: pageNumber,
+//     // );
+//     // print(lines);
 
-  for (final result in results) {
-    for (final textElement in result.textElements) {
-      textElement.font = PdfStandardFont(PdfFontFamily.helvetica, textElement.fontSize, style: PdfFontStyle.bold);
-    }
-  }
+//     final Rect bounds = details.globalSelectedRegion!;
+//     int pageNumber = vm.pdfViewerController.pageNumber;
+//     PdfPage page = document.pages[pageNumber];
 
-  // Save updated document
-  final outputBytes = document.save();
-  document.dispose();
+//     // Cover original text
+//     page.graphics.drawRectangle(brush: PdfBrushes.white, bounds: bounds);
 
-  // Save to file system (temporary path)
-  final dir = await getApplicationDocumentsDirectory();
-  final filePath = '${dir.path}/updated_example.pdf';
-  final file = File(filePath);
-  await file.writeAsBytes(outputBytes, flush: true);
+//     // Draw bold text
+//     page.graphics.drawString(
+//       details.selectedText!,
+//       PdfStandardFont(
+//         PdfFontFamily.helvetica,
+//         30,
+//         // word.fontSize,
+//         style: PdfFontStyle.bold,
+//       ),
+//       brush: PdfBrushes.black,
+//       bounds: bounds,
+//       format: PdfStringFormat(
+//         lineAlignment: PdfVerticalAlignment.top,
+//         alignment: PdfTextAlignment.left,
+//       ),
+//     );
+//     final List<int> updatedBytes = await document.save();
+//     vm.updatePdfData(Uint8List.fromList(updatedBytes));
+//     print('Updated path in vm');
+//   } catch (e) {
+//     print("Error making text bolder: $e");
 
-  print('Saved bolded PDF at: $filePath');
-}
+//     // Handle error (e.g., show snackbar)
+//   } finally {
+//     // vm.setProcessing(false);
+//   }
+// }

@@ -9,29 +9,16 @@ BorderSide defBorderSide = BorderSide(color: Apptheme.white.withAlpha(30));
 
 class AuthVM extends ChangeNotifier {
   AuthType authType = AuthType.login;
-  Color inputFillColor = Apptheme.white.withAlpha(30);
-  BorderSide borderSide = defBorderSide;
+  Color inputFillColor = Apptheme.whiteSmoke;
 
-  TextStyle inputStyle = Apptheme.text.copyWith(
-    color: Apptheme.slateGray,
-    fontSize: 16,
-  );
-
-  TextStyle btnTextStyle = Apptheme.text.copyWith(
-    color: Apptheme.white,
-    fontSize: 18,
-    fontWeight: FontWeight.w700,
-  );
-
-  OutlineInputBorder inputBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(12),
-    borderSide: defBorderSide,
-  );
-
-  updateAuthType(AuthType type) {
-    authType = type;
+  toggleAuthType() {
+    authType = authType == AuthType.login ? AuthType.signUp : AuthType.login;
     notifyListeners();
   }
+  // updateAuthType(AuthType type) {
+  //   authType = type;
+  //   notifyListeners();
+  // }
 
   void login() {
     NavigationHelper.pushReplacement(Routes.aboutMe);

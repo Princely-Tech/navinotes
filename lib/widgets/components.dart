@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/util_functions.dart';
+import 'package:navinotes/packages.dart';
 
 class SVGImagePlaceHolder extends StatelessWidget {
   const SVGImagePlaceHolder({

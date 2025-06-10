@@ -1,7 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/pdf_view/overlay/vm.dart';
-import 'package:navinotes/settings/index.dart';
-import 'package:navinotes/widgets/index.dart';
 
 class PdfViewOverlay extends StatelessWidget {
   const PdfViewOverlay({super.key});
@@ -45,61 +42,75 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (vm.showOverlay)
-                Container(
-                  decoration: ShapeDecoration(
-                    color: Apptheme.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1, color: Apptheme.pastelBlue),
-                      borderRadius: BorderRadius.circular(8),
+                Flexible(
+                  child: WidthLimiter(
+                    mobile: 720,
+                    child: ResponsivePadding(
+                      mobile: EdgeInsets.all(10),
+                      tablet: EdgeInsets.all(20),
+                      child: Container(
+                        decoration: ShapeDecoration(
+                          color: Apptheme.white,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1,
+                              color: Apptheme.pastelBlue,
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          shadows: [
+                            BoxShadow(
+                              color: Apptheme.black.withAlpha(63),
+                              blurRadius: 50,
+                              offset: Offset(0, 25),
+                              spreadRadius: 5,
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.all(15),
+                        child: ScrollableController(
+                          child: Column(
+                            spacing: 30,
+                            children: [
+                              _header(vm),
+                              _guideCard(
+                                title: 'Add to Mind Map',
+                                body:
+                                    'Connect key concepts to your mind map for visual learning and better understanding',
+                                icon: _outlinedChild(
+                                  img: Images.share,
+                                  imgColor: Apptheme.strongBlue,
+                                  bgColor: Apptheme.paleBlue,
+                                ),
+                              ),
+                              _guideCard(
+                                title: 'Create Flashcard',
+                                body:
+                                    'Transform highlights into flashcards for effective memorization and review',
+                                icon: _outlinedChild(
+                                  img: Images.card,
+                                  imgColor: Apptheme.jungleGreen,
+                                  bgColor: Apptheme.lightMintGreen,
+                                ),
+                              ),
+                              _guideCard(
+                                title: 'Create Note',
+                                body:
+                                    'Make detailed notes and link them to your study materials',
+                                icon: _outlinedChild(
+                                  img: Images.copy2,
+                                  imgColor: Apptheme.electricPurple,
+                                  bgColor: Apptheme.purple,
+                                ),
+                              ),
+                              _footer(vm),
+                            ],
+                          ),
+                        ),
+                      ).animate().fadeIn().scale(duration: 1.seconds),
                     ),
-                    shadows: [
-                      BoxShadow(
-                        color: Apptheme.black.withAlpha(63),
-                        blurRadius: 50,
-                        offset: Offset(0, 25),
-                        spreadRadius: 5,
-                      ),
-                    ],
                   ),
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    spacing: 30,
-                    children: [
-                      _header(vm),
-                      _guideCard(
-                        title: 'Add to Mind Map',
-                        body:
-                            'Connect key concepts to your mind map for visual learning and better understanding',
-                        icon: _outlinedChild(
-                          img: Images.share,
-                          imgColor: Apptheme.strongBlue,
-                          bgColor: Apptheme.paleBlue,
-                        ),
-                      ),
-                      _guideCard(
-                        title: 'Create Flashcard',
-                        body:
-                            'Transform highlights into flashcards for effective memorization and review',
-                        icon: _outlinedChild(
-                          img: Images.card,
-                          imgColor: Apptheme.jungleGreen,
-                          bgColor: Apptheme.lightMintGreen,
-                        ),
-                      ),
-                      _guideCard(
-                        title: 'Create Note',
-                        body:
-                            'Make detailed notes and link them to your study materials',
-                        icon: _outlinedChild(
-                          img: Images.copy2,
-                          imgColor: Apptheme.electricPurple,
-                          bgColor: Apptheme.purple,
-                        ),
-                      ),
-                      _footer(vm),
-                    ],
-                  ),
-                ).animate().fadeIn().scale(duration: 1.seconds),
+                ),
             ],
           ),
         );

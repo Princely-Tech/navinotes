@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:navinotes/packages.dart';
 
 class NavigationHelper {
   NavigationHelper._();
@@ -42,6 +42,4 @@ class NavigationHelper {
       navigatorKey.currentState!.pop(result);
     }
   }
-
- 
 }

@@ -87,7 +87,7 @@ class BoardNotesAppBar extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                ), //TODO confirm if this is logo
+                ), 
                 Flexible(
                   child: Text.rich(
                     TextSpan(

@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/util_functions.dart';
-import 'package:navinotes/widgets/components.dart';
+import 'package:navinotes/packages.dart';
 
 InputDecoration _inputDecoration({
   required String hintText,
@@ -65,11 +61,13 @@ class CustomInputField extends StatefulWidget {
     this.style,
     this.hintStyle,
     this.labelStyle,
+    this.labelRight,
     this.constraints,
     this.side,
   }) : controller = controller ?? TextEditingController();
 
   final String? label;
+  final Widget? labelRight;
   // final bool isTextArea;
   // final bool isRectangle;
   final String hintText;
@@ -114,14 +112,14 @@ class _CustomInputFieldState extends State<CustomInputField> {
     //   // prefix = Icon(Icons.search, color: Apptheme.inputPlaceholderColor);
     // }
     String? prefixImg;
-    switch (widget.keyboardType) {
-      case TextInputType.emailAddress:
-        prefixImg = Images.email;
-        break;
-      case TextInputType.visiblePassword:
-        prefixImg = Images.padlock;
-        break;
-    }
+    // switch (widget.keyboardType) {
+    //   case TextInputType.emailAddress:
+    //     prefixImg = Images.email;
+    //     break;
+    //   case TextInputType.visiblePassword:
+    //     prefixImg = Images.padlock;
+    //     break;
+    // }
     EdgeInsets prefPadding = EdgeInsets.only(left: padding);
     EdgeInsets suffixPadding = EdgeInsets.only(left: 5, right: padding);
 
@@ -156,11 +154,19 @@ class _CustomInputFieldState extends State<CustomInputField> {
       spacing: 8,
       children: [
         if (isNotNull(widget.label))
-          Header6(
-            title: widget.label!,
-            required: widget.required,
-            optional: widget.optional,
-            style: widget.labelStyle,
+          Row(
+            spacing: 15,
+            children: [
+              Expanded(
+                child: Header6(
+                  title: widget.label!,
+                  required: widget.required,
+                  optional: widget.optional,
+                  style: widget.labelStyle,
+                ),
+              ),
+              if (isNotNull(widget.labelRight)) widget.labelRight!,
+            ],
           ),
         TextFormField(
           readOnly: isSelect,
@@ -178,7 +184,9 @@ class _CustomInputFieldState extends State<CustomInputField> {
             side: widget.side,
             fillColor: widget.fillColor,
           ).copyWith(
-            hintStyle: widget.hintStyle ?? Apptheme.text.copyWith(fontSize: 16),
+            hintStyle:
+                widget.hintStyle ??
+                Apptheme.text.copyWith(color: Apptheme.slateGray, fontSize: 16),
           ),
           keyboardType: widget.keyboardType,
           obscureText: isPassword ? true : false,

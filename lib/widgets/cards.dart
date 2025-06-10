@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/settings/apptheme.dart';
+import 'package:navinotes/packages.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
