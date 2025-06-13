@@ -39,46 +39,61 @@ class CustomCard extends StatelessWidget {
 }
 
 class CreateCard extends StatelessWidget {
-  const CreateCard({super.key, required this.onTap, required this.text});
+  const CreateCard({
+    super.key,
+    required this.onTap,
+    required this.text,
+    this.width = 0.0,
+    this.height = 0.0,
+  });
   final void Function()? onTap;
   final String text;
+  final double width;
+  final double height;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         InkWell(
           onTap: onTap,
-          child: CustomCard(
-            child: Column(
-              spacing: 15,
-              children: [
-                CustomCard(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: Apptheme.paleBlue,
-                    shape: BoxShape.circle,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: width, minHeight: height),
+            child: CustomCard(
+              width: null,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 15,
+                children: [
+                  CustomCard(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: Apptheme.babyIce,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.zero,
+                    child: Icon(Icons.add, color: Apptheme.vividRose),
                   ),
-                  padding: EdgeInsets.zero,
-                  child: Icon(Icons.add, color: Apptheme.vividBlue),
-                ),
-                Column(
-                  spacing: 5,
-                  children: [
-                    Text(
-                      text,
-                      style: Apptheme.text.copyWith(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                  Column(
+                    spacing: 5,
+                    children: [
+                      Text(
+                        text,
+                        style: Apptheme.text.copyWith(
+                          fontSize: 16,
+                          fontWeight: getFontWeight(500),
+                        ),
                       ),
-                    ),
-                    Text(
-                      'Start organizing your ideas',
-                      style: Apptheme.text.copyWith(color: Apptheme.steelMist),
-                    ),
-                  ],
-                ),
-              ],
+                      Text(
+                        'Start organizing your ideas',
+                        style: Apptheme.text.copyWith(
+                          color: Apptheme.steelMist,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

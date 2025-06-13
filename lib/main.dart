@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: Apptheme.fontFamily),
-        // initialRoute: Routes.pdf,
+        // initialRoute: Routes.dashboard,
         initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,

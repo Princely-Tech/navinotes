@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
+
 class NoteTemplateMain extends StatelessWidget {
   const NoteTemplateMain({super.key});
 
@@ -177,7 +178,7 @@ class NoteTemplateMain extends StatelessWidget {
                           color: const Color(0xFF1F2937),
                           fontSize: 16,
                           fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
+                          fontWeight: getFontWeight(500),
                           height: 1,
                         ),
                       ),
@@ -187,7 +188,7 @@ class NoteTemplateMain extends StatelessWidget {
                           color: const Color(0xFF6B7280),
                           fontSize: 12,
                           fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
+                          fontWeight: getFontWeight(400),
                           height: 1,
                         ),
                       ),

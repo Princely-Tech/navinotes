@@ -200,7 +200,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                   color: const Color(0xFF111827),
                   fontSize: 16,
                   fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
+                  fontWeight: getFontWeight(500),
                 ),
               ),
               Text(
@@ -209,7 +209,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                   color: const Color(0xFF4B5563),
                   fontSize: 14,
                   fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
+                  fontWeight: getFontWeight(400),
                 ),
               ),
             ],

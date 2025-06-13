@@ -112,7 +112,7 @@ class RecentActivity extends StatelessWidget {
                           title,
                           style: Apptheme.text.copyWith(
                             fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: getFontWeight(500),
                           ),
                         ),
                         Column(
@@ -128,7 +128,7 @@ class RecentActivity extends StatelessWidget {
                             Text(
                               subject,
                               style: Apptheme.text.copyWith(
-                                color: Apptheme.strongBlue,
+                                color: Apptheme.vividRose,
                                 fontSize: 12,
                               ),
                             ),

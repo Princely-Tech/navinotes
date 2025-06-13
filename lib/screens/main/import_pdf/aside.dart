@@ -3,6 +3,7 @@ import 'package:navinotes/screens/main/import_pdf/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
+
 class ImportPdfAside extends StatelessWidget {
   const ImportPdfAside({super.key});
 
@@ -48,7 +49,7 @@ class ImportPdfAside extends StatelessWidget {
               color: const Color(0xFF6B7280),
               fontSize: 14,
               fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
+              fontWeight: getFontWeight(400),
             ),
           ),
         ),
@@ -79,7 +80,7 @@ class ImportPdfAside extends StatelessWidget {
                     color: const Color(0xFF374151),
                     fontSize: 16,
                     fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
+                    fontWeight: getFontWeight(400),
                     height: 1,
                   ),
                 ),
@@ -153,7 +154,7 @@ class ImportPdfAside extends StatelessWidget {
             color: const Color(0xFF6B7280),
             fontSize: 14,
             fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
             height: 1,
             letterSpacing: 0.70,
           ),
@@ -183,7 +184,7 @@ class ImportPdfAside extends StatelessWidget {
           style: Apptheme.text.copyWith(
             color: color,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
           ),
         ),
         onTap: () => vm.updateSelectedFilter(title),

@@ -8,31 +8,33 @@ class AboutMeAside extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double gap = 30;
-    Widget mobileView = Column(
+    Widget horizontalView = Column(
       spacing: gap,
-      children: [_whyShare(), _proTip(), _profilePreviewer()],
+      children: [_profilePreviewer(), _proTip()],
+      // children: [_whyShare(), _proTip(), _profilePreviewer()],
     );
     return Padding(
       padding: const EdgeInsets.only(bottom: 30),
       child: ResponsiveSection(
-        mobile: mobileView,
-        desktop: mobileView,
-        laptop: Column(
-          spacing: gap,
-          children: [
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: gap,
-                children: [
-                  Expanded(child: _whyShare()),
-                  Expanded(child: _proTip()),
-                ],
-              ),
-            ),
-            _profilePreviewer(),
-          ],
-        ),
+        mobile: horizontalView,
+
+        // laptop: Column(
+        //   spacing: gap,
+        //   children: [
+        //     _profilePreviewer(),
+        //     _proTip(),
+        //     // IntrinsicHeight(
+        //     //   child: Row(
+        //     //     crossAxisAlignment: CrossAxisAlignment.stretch,
+        //     //     spacing: gap,
+        //     //     children: [
+        //     //       Expanded(child: _whyShare()),
+        //     //       Expanded(child: _proTip()),
+        //     //     ],
+        //     //   ),
+        //     // ),
+        //   ],
+        // ),
       ),
     );
   }
@@ -48,7 +50,7 @@ class AboutMeAside extends StatelessWidget {
             'Profile Preview',
             style: Apptheme.text.copyWith(
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontWeight: getFontWeight(500),
             ),
           ),
           Container(
@@ -66,9 +68,17 @@ class AboutMeAside extends StatelessWidget {
                 Row(
                   spacing: 15,
                   children: [
-                    SVGImagePlaceHolder(
-                      imagePath: Images.logoRounded2,
-                      size: 48,
+                    OutlinedChild(
+                      size: 55,
+                      decoration: BoxDecoration(
+                        color: Apptheme.pastelBloom,
+                        border: Border.all(color: Apptheme.skyFoam),
+                        shape: BoxShape.circle,
+                      ),
+                      child: SVGImagePlaceHolder(
+                        imagePath: Images.logo,
+                        size: 22,
+                      ),
                     ),
                     Expanded(
                       child: Column(
@@ -79,7 +89,7 @@ class AboutMeAside extends StatelessWidget {
                             'Jane Smith',
                             style: Apptheme.text.copyWith(
                               fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: getFontWeight(500),
                             ),
                           ),
                           Text(
@@ -105,7 +115,7 @@ class AboutMeAside extends StatelessWidget {
                       TextSpan(
                         text: ' Studying, Research, Notes',
                         style: Apptheme.text.copyWith(
-                          color: Apptheme.strongBlue,
+                          color: Apptheme.vividRose,
                         ),
                       ),
                     ],
@@ -119,8 +129,8 @@ class AboutMeAside extends StatelessWidget {
                           .map(
                             (str) => CustomTag(
                               str,
-                              color: Apptheme.paleBlue,
-                              textColor: Apptheme.electricIndigo,
+                              color: Apptheme.pastelBloom,
+                              textColor: Apptheme.vividRose,
                             ),
                           )
                           .toList(),
@@ -136,14 +146,15 @@ class AboutMeAside extends StatelessWidget {
   Widget _proTip() {
     return CustomCard(
       decoration: BoxDecoration(
-        color: Apptheme.iceBlue,
+        color: Apptheme.pastelBloom,
         border: Border.all(color: Apptheme.paleBlue),
       ),
       padding: EdgeInsets.all(30),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 20,
         children: [
-          ImagePlaceHolder(imagePath: Images.brainPers, size: 48),
+          SVGImagePlaceHolder(imagePath: Images.logo, size: 34),
 
           Expanded(
             child: Stack(
@@ -153,7 +164,7 @@ class AboutMeAside extends StatelessWidget {
                   left: 0,
                   child: CustomCard(
                     height: 20,
-                    width: 20,
+                    width: 10,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(2),
                       border: Border(),
@@ -166,27 +177,31 @@ class AboutMeAside extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: EdgeInsets.all(20),
-                  margin: EdgeInsets.only(left: 14),
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Pro Tip:',
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.darkSlateGray,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        TextSpan(
-                          text:
-                              'Students who complete their profiles are 3x more likely to find study partners within the app!',
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.darkSlateGray,
-                          ),
-                        ),
-                      ],
-                    ),
+                  margin: EdgeInsets.only(left: 8),
+                  child: Text(
+                    'We value your privacy. Your information is never shared with third parties.',
+                    style: Apptheme.text.copyWith(color: Apptheme.black),
                   ),
+                  // child: Text.rich(
+                  //   TextSpan(
+                  //     children: [
+                  //       TextSpan(
+                  //         text: 'Pro Tip:',
+                  //         style: Apptheme.text.copyWith(
+                  //           color: Apptheme.darkSlateGray,
+                  //           fontWeight: FontWeight.w700,
+                  //         ),
+                  //       ),
+                  //       TextSpan(
+                  //         text:
+                  //             'Students who complete their profiles are 3x more likely to find study partners within the app!',
+                  //         style: Apptheme.text.copyWith(
+                  //           color: Apptheme.darkSlateGray,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ),
                 Positioned(
                   top: 16,
@@ -226,7 +241,7 @@ class AboutMeAside extends StatelessWidget {
               'Why Share This Info?',
               style: Apptheme.text.copyWith(
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontWeight: getFontWeight(500),
               ),
             ),
             shape: RoundedRectangleBorder(

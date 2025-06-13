@@ -1,18 +1,8 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/auth/login.dart';
 import 'package:navinotes/screens/auth/sign_up.dart';
 import 'package:navinotes/screens/auth/vm.dart';
-import 'package:navinotes/settings/app_strings.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
-import 'package:navinotes/widgets/components.dart';
-import 'package:navinotes/widgets/frames.dart';
-import 'package:navinotes/widgets/responsive_widgets.dart';
-import 'package:provider/provider.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
@@ -53,8 +43,10 @@ class AuthScreen extends StatelessWidget {
                         spacing: 30,
                         children: [
                           _header(),
-                          _authCard(vm), _authTypeSwitch(vm),
-                          //
+                          _authCard(vm),
+                          _freeTrial(),
+                          _authTypeSwitch(vm),
+                          _testimonial(),
                         ],
                       ),
                       _footerLinks(),
@@ -69,6 +61,74 @@ class AuthScreen extends StatelessWidget {
     );
   }
 
+  Widget _testimonial() {
+    return Column(
+      spacing: 15,
+      children: [
+        ImagePlaceHolder(imagePath: Images.testimonial),
+        Text(
+          '"NaviNotes transformed how I study. My grades improved within weeks!"',
+          style: Apptheme.text.copyWith(color: Apptheme.black, fontSize: 12),
+        ),
+      ],
+    );
+  }
+
+  Widget _freeTrial() {
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+          child: SvgPicture.asset(Images.authCardBg, fit: BoxFit.fill),
+        ),
+        ResponsivePadding(
+          mobile: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          laptop: const EdgeInsets.all(30),
+          child: Column(
+            spacing: 15,
+            children: [
+              Text(
+                'New to NaviNotes?',
+                textAlign: TextAlign.center,
+                style: Apptheme.text.copyWith(
+                  color: Apptheme.white,
+                  fontSize: 20,
+                  fontFamily: Apptheme.fontPoppins,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                'Experience everything NaviNotes offers - 7 days free, no commitment',
+                textAlign: TextAlign.center,
+                style: Apptheme.text.copyWith(
+                  color: Apptheme.white.withAlpha(229),
+                  fontSize: 16,
+                  fontFamily: Apptheme.fontPoppins,
+                ),
+              ),
+
+              AppButton(
+                mainAxisSize: MainAxisSize.min,
+                text: 'Start Free Trial',
+                onTap: () {},
+                color: Apptheme.white,
+                style: Apptheme.text.copyWith(
+                  color: Apptheme.amber,
+                  fontSize: 16,
+                  fontFamily: Apptheme.fontPoppins,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _authTypeSwitch(AuthVM vm) {
     bool isLogin = vm.authType == AuthType.login;
     return Text.rich(
@@ -79,23 +139,20 @@ class AuthScreen extends StatelessWidget {
                 isLogin
                     ? 'Don\'t have an account? '
                     : 'Already have an account? ',
-            style: TextStyle(
-              color: const Color(0xFF4B5563),
+            style: Apptheme.text.copyWith(
+              color: Apptheme.stormGray,
               fontSize: 16,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-              height: 1,
+              fontFamily: Apptheme.fontPoppins,
             ),
           ),
           TextSpan(
             recognizer: TapGestureRecognizer()..onTap = vm.toggleAuthType,
             text: isLogin ? 'Create Account' : 'Login',
-            style: TextStyle(
-              color: const Color(0xFF00555A),
+            style: Apptheme.text.copyWith(
+              color: Apptheme.vividRose,
               fontSize: 16,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w500,
-              height: 1,
+              fontFamily: Apptheme.fontPoppins,
+              fontWeight: getFontWeight(500),
             ),
           ),
         ],
@@ -110,7 +167,7 @@ class AuthScreen extends StatelessWidget {
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: const Color(0xFFE5E7EB)),
+          side: BorderSide(color: Apptheme.lightGray),
           borderRadius: BorderRadius.circular(16),
         ),
         shadows: [
@@ -140,23 +197,19 @@ class AuthScreen extends StatelessWidget {
                 Text(
                   'Welcome back to your study space',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: const Color(0xFF1F2937),
+                  style: Apptheme.text.copyWith(
                     fontSize: 24,
-                    fontFamily: 'Poppins',
+                    fontFamily: Apptheme.fontPoppins,
                     fontWeight: FontWeight.w600,
-                    height: 1,
                   ),
                 ),
                 Text(
                   'Pick up right where you left off',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: const Color(0xFF4B5563),
+                  style: Apptheme.text.copyWith(
+                    color: Apptheme.stormGray,
                     fontSize: 16,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                    height: 1,
+                    fontFamily: Apptheme.fontPoppins,
                   ),
                 ),
               ],
@@ -190,11 +243,10 @@ class AuthScreen extends StatelessWidget {
         size: 20,
         color: Apptheme.darkSlateGray,
       ),
-      style: TextStyle(
-        color: const Color(0xFF374151),
-        fontSize: 14,
-        fontFamily: 'Poppins',
-        fontWeight: FontWeight.w500,
+      style: Apptheme.text.copyWith(
+        color: Apptheme.darkSlateGray,
+        fontFamily: Apptheme.fontPoppins,
+        fontWeight: getFontWeight(500),
       ),
     );
   }
@@ -206,11 +258,9 @@ class AuthScreen extends StatelessWidget {
         _divider(),
         Text(
           'or continue with',
-          style: TextStyle(
-            color: const Color(0xFF6B7280),
-            fontSize: 14,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
+          style: Apptheme.text.copyWith(
+            color: Apptheme.steelMist,
+            fontFamily: Apptheme.fontPoppins,
           ),
         ),
         _divider(),
@@ -232,27 +282,22 @@ class AuthScreen extends StatelessWidget {
         Text(
           'NaviNotes',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: const Color(0xFF00555A),
+          style: Apptheme.text.copyWith(
+            color: Apptheme.vividRose,
             fontSize: 30,
-            fontFamily: 'Poppins',
+            fontFamily: Apptheme.fontPoppins,
             fontWeight: FontWeight.w700,
-            height: 1,
           ),
         ),
         Text(
           'Your supportive study companion',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: const Color(0xFF4B5563),
+          style: Apptheme.text.copyWith(
+            color: Apptheme.stormGray,
             fontSize: 16,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-            height: 1,
+            fontFamily: Apptheme.fontPoppins,
           ),
         ),
-
-        //
       ],
     );
   }

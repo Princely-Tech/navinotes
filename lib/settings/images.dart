@@ -1,4 +1,5 @@
 const iconPath = 'assets/icons';
+const delPath = 'assets/images/del';
 const imagePath = 'assets/images';
 const boardsPath = 'assets/images/boards';
 const boardsCreatePath = 'assets/images/boards/create';
@@ -12,9 +13,14 @@ class Images {
   //TODO delete this
   static const String logoRounded = '$iconPath/logo_rounded.svg';
   static const String logoRounded2 = '$iconPath/logo_rounded2.svg';
-  static const String logo = '$iconPath/logo.svg';
   static const String logoSquare = '$iconPath/logo_square.svg';
+  static const String testimonial = '$delPath/testimonial.png';
+  // static const String testimonial = '$delPath/testimonial.png';
+  // static const String testimonial = '$delPath/testimonial.png';
+  // static const String testimonial = '$delPath/testimonial.png';
+  // static const String testimonial = '$delPath/testimonial.png';
 
+  static const String logo = '$iconPath/logo.svg';
   static const String email = '$iconPath/email.svg';
   static const String padlock = '$iconPath/padlock.svg';
   static const String google = '$iconPath/google.svg';
@@ -64,16 +70,19 @@ class Images {
   static const String underline = '$iconPath/underline.svg';
   static const String scan = '$iconPath/scan.svg';
   static const String card = '$iconPath/card.svg';
-  // static const String card = '$iconPath/card.svg';
-  // static const String card = '$iconPath/card.svg';
-  // static const String card = '$iconPath/card.svg';
+  static const String store = '$iconPath/store.svg';
+  static const String map = '$iconPath/map.svg';
+  static const String calender2 = '$iconPath/calender2.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
 
   //images
   static const String brain = '$imagePath/brain.png';
   static const String brainPers = '$imagePath/brain_pers.png';
-  //  static const String brain = '$imagePath/brain.png';
+  static const String authCardBg = '$imagePath/auth_card_bg.svg';
+  //  static const String auth_card_bg = '$imagePath/auth_card_bg.png';
+  //  static const String auth_card_bg = '$imagePath/auth_card_bg.png';
+  //  static const String auth_card_bg = '$imagePath/auth_card_bg.png';
 
   //boards
   static const String board1 = '$boardsPath/board1.png';

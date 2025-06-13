@@ -62,8 +62,17 @@ class ImagePlaceHolder extends StatelessWidget {
     this.size,
     this.isCardHeader = false,
     this.borderRadius,
+    this.type = ImagePlaceHolderTypes.asset,
   });
-
+  const ImagePlaceHolder.network({
+    super.key,
+    required this.imagePath,
+    this.size,
+    this.isCardHeader = false,
+    this.borderRadius,
+    this.type = ImagePlaceHolderTypes.network,
+  });
+  final ImagePlaceHolderTypes type;
   final String imagePath;
   final double? size;
   final bool isCardHeader;
@@ -77,7 +86,13 @@ class ImagePlaceHolder extends StatelessWidget {
             : BorderRadius.circular(999);
     return ClipRRect(
       borderRadius: borderRadius ?? runBorderRadius,
-      child: Image.asset(
+      child: _returnChild(),
+    );
+  }
+
+  Widget _returnChild() {
+    if (type.isNetwork) {
+      return Image.network(
         height: size,
         width: isCardHeader ? double.infinity : size,
         imagePath,
@@ -85,50 +100,17 @@ class ImagePlaceHolder extends StatelessWidget {
         errorBuilder: (context, error, stackTrace) {
           return const Icon(Icons.error);
         },
-      ),
+      );
+    }
+    return Image.asset(
+      height: size,
+      width: isCardHeader ? double.infinity : size,
+      imagePath,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return const Icon(Icons.error);
+      },
     );
-  }
-}
-
-class ScrollableController extends StatelessWidget {
-  const ScrollableController({
-    super.key,
-    required this.child,
-    this.scrollable = true,
-    this.padding,
-    this.scrollDirection = Axis.vertical,
-  });
-
-  final Widget child;
-  final bool scrollable;
-  final EdgeInsetsGeometry? padding;
-  final Axis scrollDirection;
-
-  @override
-  Widget build(BuildContext context) {
-    return scrollable
-        ? SingleChildScrollView(
-          padding: padding,
-          scrollDirection: scrollDirection,
-          child: child,
-        )
-        : Container(padding: padding, child: child);
-  }
-}
-
-class ExpandableController extends StatelessWidget {
-  const ExpandableController({
-    super.key,
-    required this.child,
-    required this.expandable,
-  });
-
-  final Widget child;
-  final bool expandable;
-
-  @override
-  Widget build(BuildContext context) {
-    return expandable ? Expanded(child: child) : child;
   }
 }
 
@@ -157,7 +139,7 @@ class Header6 extends StatelessWidget {
                 Apptheme.text.copyWith(
                   color: Apptheme.darkSlateGray,
                   fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: getFontWeight(500),
                 ),
           ),
           if (required)
@@ -166,7 +148,7 @@ class Header6 extends StatelessWidget {
               style: Apptheme.text.copyWith(
                 color: Apptheme.strongBlue,
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
+                fontWeight: getFontWeight(500),
               ),
             ),
           if (optional)

@@ -1,0 +1,34 @@
+<svg width="460" height="208" viewBox="0 0 460 208" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_dd_286_9)">
+<g clip-path="url(#clip0_286_9)">
+<path d="M6 18C6 9.16345 13.1634 2 22 2H438C446.837 2 454 9.16344 454 18V182C454 190.837 446.837 198 438 198H22C13.1634 198 6 190.837 6 182V18Z" fill="#F59E0B"/>
+<g opacity="0.5">
+<path d="M446 -38C472.51 -38 494 -16.5097 494 10C494 36.5097 472.51 58 446 58C419.49 58 398 36.5097 398 10C398 -16.5097 419.49 -38 446 -38Z" fill="#FBBF24"/>
+<path d="M446 -38C472.51 -38 494 -16.5097 494 10C494 36.5097 472.51 58 446 58C419.49 58 398 36.5097 398 10C398 -16.5097 419.49 -38 446 -38Z" stroke="#E5E7EB"/>
+</g>
+<g opacity="0.5">
+<path d="M14 158C31.6731 158 46 172.327 46 190C46 207.673 31.6731 222 14 222C-3.67311 222 -18 207.673 -18 190C-18 172.327 -3.67311 158 14 158Z" fill="#FBBF24"/>
+<path d="M14 158C31.6731 158 46 172.327 46 190C46 207.673 31.6731 222 14 222C-3.67311 222 -18 207.673 -18 190C-18 172.327 -3.67311 158 14 158Z" stroke="#E5E7EB"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_dd_286_9" x="0" y="0" width="460" height="208" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="3"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_286_9"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2"/>
+<feGaussianBlur stdDeviation="2"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="effect1_dropShadow_286_9" result="effect2_dropShadow_286_9"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_286_9" result="shape"/>
+</filter>
+<clipPath id="clip0_286_9">
+<path d="M6 18C6 9.16345 13.1634 2 22 2H438C446.837 2 454 9.16344 454 18V182C454 190.837 446.837 198 438 198H22C13.1634 198 6 190.837 6 182V18Z" fill="white"/>
+</clipPath>
+</defs>
+</svg>

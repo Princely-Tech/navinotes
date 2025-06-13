@@ -3,6 +3,7 @@ import 'package:navinotes/screens/main/choose_board/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
+
 class ChooseBoardMain extends StatelessWidget {
   const ChooseBoardMain({super.key});
 
@@ -19,7 +20,7 @@ class ChooseBoardMain extends StatelessWidget {
             children: [
               Expanded(
                 child: ScrollableController(
-                  scrollable: true,
+                  mobile: true,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 20,
@@ -164,7 +165,7 @@ class ChooseBoardMain extends StatelessWidget {
                       style: Apptheme.text.copyWith(
                         color: Apptheme.royalBlue,
                         fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: getFontWeight(500),
                       ),
                     ),
                     Text(
@@ -226,7 +227,7 @@ class ChooseBoardMain extends StatelessWidget {
         hintText: 'Enter Board Title...',
         labelStyle: Apptheme.text.copyWith(
           color: Apptheme.electricIndigo,
-          fontWeight: FontWeight.w500,
+          fontWeight: getFontWeight(500),
         ),
         hintStyle: Apptheme.text.copyWith(
           color: Apptheme.slateGray,

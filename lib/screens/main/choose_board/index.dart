@@ -68,7 +68,7 @@ class ChooseBoardScreen extends StatelessWidget {
                         'Save as Favorite Style',
                         style: Apptheme.text.copyWith(
                           color: Apptheme.persianBlue,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: getFontWeight(500),
                         ),
                       ),
                     ],

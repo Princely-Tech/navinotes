@@ -107,7 +107,7 @@ class NoteTemplateAside extends StatelessWidget {
           style: Apptheme.text.copyWith(
             color: Apptheme.darkSlateGray,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
           ),
         ),
         _recentCard(title: 'Legal Pad'),
@@ -134,7 +134,7 @@ class NoteTemplateAside extends StatelessWidget {
                   'Brain\'s Tip',
                   style: Apptheme.text.copyWith(
                     color: Apptheme.electricIndigo,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: getFontWeight(500),
                   ),
                 ),
                 Text(
@@ -179,7 +179,7 @@ class NoteTemplateAside extends StatelessWidget {
           style: Apptheme.text.copyWith(
             color: Apptheme.darkSlateGray,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
           ),
         ),
         _section(
@@ -251,7 +251,7 @@ class NoteTemplateAside extends StatelessWidget {
           style: Apptheme.text.copyWith(
             color: Apptheme.darkSlateGray,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
           ),
         ),
         Column(

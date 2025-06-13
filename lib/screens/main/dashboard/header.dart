@@ -4,15 +4,16 @@ import 'package:navinotes/screens/main/dashboard/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
+
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
-      builder: (context, layoutVm, child) {
+      builder: (_, layoutVm, _) {
         return Consumer<DashboardVm>(
-          builder: (context, vm, child) {
+          builder: (_, vm, _) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: 30,
@@ -68,6 +69,20 @@ class DashboardHeader extends StatelessWidget {
                       size: 16,
                       color: Apptheme.steelMist,
                     ),
+                    ImagePlaceHolder.network(
+                      imagePath:
+                          "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
+                      size: 29,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    // Image.network(
+                    //   "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
+                    //   width: 29,
+                    //   height: 29,
+                    //   fit: BoxFit.cover,
+                    //   // imagePath: Images.person,
+                    //   // size: 16,
+                    // ),
                   ],
                 ),
               ],

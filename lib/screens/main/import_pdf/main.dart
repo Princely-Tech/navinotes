@@ -75,7 +75,7 @@ class ImportPdfMain extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Apptheme.text.copyWith(fontWeight: FontWeight.w500),
+                  style: Apptheme.text.copyWith(fontWeight: getFontWeight(500)),
                 ),
                 Text(
                   'Uploaded on $updatedDate',
@@ -104,7 +104,7 @@ class ImportPdfMain extends StatelessWidget {
                 'Recently Uploaded PDFs',
                 style: Apptheme.text.copyWith(
                   color: Apptheme.darkSlateGray,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: getFontWeight(500),
                 ),
               ),
             ),
@@ -172,7 +172,7 @@ class ImportPdfMain extends StatelessWidget {
           'Import from Cloud',
           style: Apptheme.text.copyWith(
             color: Apptheme.darkSlateGray,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
           ),
         ),
         ResponsiveSection(
@@ -243,7 +243,7 @@ class ImportPdfMain extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Apptheme.text.copyWith(
                 fontSize: 18,
-                fontWeight: FontWeight.w500,
+                fontWeight: getFontWeight(500),
               ),
             ),
             Text(

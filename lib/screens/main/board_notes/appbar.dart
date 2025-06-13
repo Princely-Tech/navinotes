@@ -87,7 +87,7 @@ class BoardNotesAppBar extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                ), 
+                ),
                 Flexible(
                   child: Text.rich(
                     TextSpan(
@@ -97,7 +97,7 @@ class BoardNotesAppBar extends StatelessWidget {
                           style: Apptheme.text.copyWith(
                             color: Apptheme.persianBlue,
                             fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: getFontWeight(500),
                           ),
                         ),
                         TextSpan(
@@ -112,7 +112,7 @@ class BoardNotesAppBar extends StatelessWidget {
                           style: Apptheme.text.copyWith(
                             color: Apptheme.darkSlateGray,
                             fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: getFontWeight(500),
                           ),
                         ),
                       ],

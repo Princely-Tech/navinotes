@@ -28,7 +28,7 @@ class AboutMeScreen extends StatelessWidget {
                 _appBar(context),
                 Expanded(
                   child: ScrollableController(
-                    scrollable: mainScrollable,
+                    mobile: mainScrollable,
                     child: _main(context, layoutProviderVm, mainScrollable),
                   ),
                 ),
@@ -43,11 +43,11 @@ class AboutMeScreen extends StatelessWidget {
   Widget _main(BuildContext context, LayoutProviderVm vm, bool mainScrollable) {
     bool canScroll = !mainScrollable;
     Widget aboutMeForm = ExpandableController(
-      expandable: canScroll,
-      child: ScrollableController(scrollable: canScroll, child: AboutMeForm()),
+      mobile: canScroll,
+      child: ScrollableController(mobile: canScroll, child: AboutMeForm()),
     );
     Widget aboutMeAside = ScrollableController(
-      scrollable: canScroll,
+      mobile: canScroll,
       child: AboutMeAside(),
     );
     return Padding(
@@ -83,28 +83,30 @@ class AboutMeScreen extends StatelessWidget {
         child: WidthLimiter(
           mobile: desktopSize,
           child: Row(
-            spacing: 15,
+            spacing: 10,
             children: [
+              SVGImagePlaceHolder(imagePath: Images.logo, size: 30),
               Expanded(
-                child: Row(
-                  spacing: 10,
-                  children: [
-                    SVGImagePlaceHolder(imagePath: Images.logo, size: 30),
-                    Expanded(
-                      child: Text(
-                        AppStrings.appName,
-                        style: Apptheme.text.copyWith(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  AppStrings.appName,
+                  style: Apptheme.text.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Apptheme.vividRose,
+                  ),
                 ),
               ),
+              // Expanded(
+              //   child: Row(
+              //     spacing: 10,
+              //     children: [
 
-              _appBarAction(imagePath: Images.ques),
-              _appBarAction(imagePath: Images.settings),
+              //     ],
+              //   ),
+              // ),
+
+              // _appBarAction(imagePath: Images.ques),
+              // _appBarAction(imagePath: Images.settings),
             ],
           ),
         ),

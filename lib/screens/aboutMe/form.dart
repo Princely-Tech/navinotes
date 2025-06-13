@@ -3,6 +3,7 @@ import 'package:navinotes/screens/aboutMe/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
+
 class AboutMeForm extends StatelessWidget {
   const AboutMeForm({super.key});
 
@@ -41,12 +42,16 @@ class AboutMeForm extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: 15,
           children: [
-            AppButton.secondary(
+            AppButton(
               onTap: vm.skipHandler,
               text: 'Skip for Now',
               wrapWithFlexible: true,
               mainAxisSize: MainAxisSize.min,
-              color: Apptheme.coolGray,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(color: Apptheme.coolGray, width: 2),
+              ),
+              color: Apptheme.white,
               textColor: Apptheme.darkSlateGray,
               padding: padding,
             ),
@@ -75,6 +80,11 @@ class AboutMeForm extends StatelessWidget {
       fontSize: 16,
       height: 1.50,
     );
+    TextStyle labelStyle = Apptheme.text.copyWith(
+      color: Apptheme.vividRose,
+      fontSize: 16,
+      fontWeight: getFontWeight(500),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 20,
@@ -88,9 +98,9 @@ class AboutMeForm extends StatelessWidget {
         ),
         Container(
           decoration: ShapeDecoration(
-            color: Apptheme.iceBlue,
+            color: Apptheme.azura,
             shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Apptheme.paleBlue),
+              side: BorderSide(width: 1, color: Apptheme.mintLight),
               borderRadius: BorderRadius.circular(8),
             ),
           ),
@@ -101,18 +111,24 @@ class AboutMeForm extends StatelessWidget {
               CustomInputField(
                 hintText: 'Enter your school or university',
                 label: 'School/University name',
+                optional: true,
+                labelStyle: labelStyle,
                 hintStyle: hintStyle,
               ),
               CustomInputField(
                 hintText: 'E.g., Computer Science, Biology',
                 label: 'Field of study/Major',
                 hintStyle: hintStyle,
+                optional: true,
+                labelStyle: labelStyle,
               ),
               CustomInputField(
                 hintText: 'Select your education level',
                 label: 'Education level',
-                // hintStyle: hintStyle,
+                optional: true,
+                labelStyle: labelStyle,
                 selectItems: ['High School', 'College', 'University'],
+                hintStyle: Apptheme.text.copyWith(fontSize: 16),
               ),
             ],
           ),
@@ -138,9 +154,16 @@ class AboutMeForm extends StatelessWidget {
         Header6(title: 'Profile picture', optional: true),
         Row(
           spacing: 15,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SVGImagePlaceHolder(imagePath: Images.logoRounded2, size: 80),
+            OutlinedChild(
+              size: 80,
+              decoration: BoxDecoration(
+                color: Apptheme.pastelBloom,
+                border: Border.all(color: Apptheme.skyFoam),
+                shape: BoxShape.circle,
+              ),
+              child: SVGImagePlaceHolder(imagePath: Images.logo, size: 30),
+            ),
             Flexible(
               child: Column(
                 spacing: 4,

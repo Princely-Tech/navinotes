@@ -111,7 +111,7 @@ class NoteTemplateHeader extends StatelessWidget {
                       style: Apptheme.text.copyWith(
                         color: Apptheme.electricIndigo,
                         fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: getFontWeight(500),
                       ),
                     ),
                   ),
@@ -172,7 +172,7 @@ class NoteTemplateHeader extends StatelessWidget {
                             text: 'Advanced Biology - Semester 2',
                             style: Apptheme.text.copyWith(
                               color: Apptheme.strongBlue,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: getFontWeight(500),
                             ),
                           ),
                         ],

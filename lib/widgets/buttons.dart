@@ -167,6 +167,7 @@ class AppButton extends StatelessWidget {
               padding: EdgeInsets.zero,
               backgroundColor: bgColor,
               shape: runShape,
+              elevation: 0,
             ),
             child: Ink(
               decoration: BoxDecoration(
@@ -218,7 +219,7 @@ class AppButton extends StatelessWidget {
                     Apptheme.text.copyWith(
                       color: runTextColor,
                       fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: getFontWeight(500),
                     ),
               ),
             ),

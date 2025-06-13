@@ -10,10 +10,10 @@ class PdfViewHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Consumer<LayoutProviderVm>(
+    return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return Consumer<PdfViewVm>(
-              builder: (_, vm, _) {
+          builder: (_, vm, _) {
             return Container(
               padding: EdgeInsets.all(15),
               decoration: ShapeDecoration(
@@ -33,7 +33,11 @@ class PdfViewHeader extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 10,
                         children: [
-                          Icon(Icons.arrow_back, color: Apptheme.stormGray, size: 20),
+                          Icon(
+                            Icons.arrow_back,
+                            color: Apptheme.stormGray,
+                            size: 20,
+                          ),
                           Flexible(
                             child: Text(
                               'Cellular Biology - Chapter 4',
@@ -41,7 +45,7 @@ class PdfViewHeader extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: Apptheme.text.copyWith(
                                 fontSize: 18,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: getFontWeight(500),
                               ),
                             ),
                           ),
@@ -54,13 +58,19 @@ class PdfViewHeader extends StatelessWidget {
                       Row(
                         spacing: 15,
                         children: [
-                          SVGImagePlaceHolder(imagePath: Images.recent, size: 16),
-                          SVGImagePlaceHolder(imagePath: Images.share2, size: 16),
+                          SVGImagePlaceHolder(
+                            imagePath: Images.recent,
+                            size: 16,
+                          ),
+                          SVGImagePlaceHolder(
+                            imagePath: Images.share2,
+                            size: 16,
+                          ),
                           Icon(Icons.more_horiz, color: Apptheme.stormGray),
                         ],
                       ),
                       VisibleController(
-                         mobile: getMenuVisible(layoutVm.deviceType),
+                        mobile: getMenuVisible(layoutVm.deviceType),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: MenuButton(onPressed: vm.openDrawer),
@@ -71,9 +81,9 @@ class PdfViewHeader extends StatelessWidget {
                 ],
               ),
             );
-          }
+          },
         );
-      }
+      },
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:navinotes/screens/main/choose_board/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
+
 class ChooseBoardAside extends StatelessWidget {
   const ChooseBoardAside({super.key});
 
@@ -64,7 +65,7 @@ class ChooseBoardAside extends StatelessWidget {
                   'Brainy Tip',
                   style: Apptheme.text.copyWith(
                     color: Apptheme.royalBlue,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: getFontWeight(500),
                   ),
                 ),
                 Text(
@@ -108,7 +109,7 @@ class ChooseBoardAside extends StatelessWidget {
           'Customization',
           style: Apptheme.text.copyWith(
             color: Apptheme.royalBlue,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
           ),
         ),
         Column(
@@ -196,7 +197,7 @@ class ChooseBoardAside extends StatelessWidget {
           'Color Palette',
           style: Apptheme.text.copyWith(
             color: Apptheme.royalBlue,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
           ),
         ),
         ScrollableRow(
@@ -222,7 +223,7 @@ class ChooseBoardAside extends StatelessWidget {
           style: Apptheme.text.copyWith(
             color: Apptheme.royalBlue,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
           ),
         ),
         Text(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/dashboard/vm.dart';
+import 'package:navinotes/screens/main/dashboard/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
+
 class YourBoards extends StatelessWidget {
   const YourBoards({super.key});
 
@@ -10,7 +12,10 @@ class YourBoards extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DashboardVm>(
       builder: (context, vm, child) {
-        return Column(spacing: 20, children: [_header(), _boards(vm)]);
+        return Column(
+          spacing: 20,
+          children: [DashFilterSection(title: 'Your Boards'), _boards(vm)],
+        );
       },
     );
   }
@@ -44,7 +49,7 @@ class YourBoards extends StatelessWidget {
                     title,
                     style: Apptheme.text.copyWith(
                       fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: getFontWeight(500),
                     ),
                   ),
                   Text(
@@ -123,51 +128,6 @@ class YourBoards extends StatelessWidget {
           mindmaps: 1,
         ),
         CreateCard(onTap: vm.goToCreateBoard, text: 'Create New Board'),
-      ],
-    );
-  }
-
-  Widget _header() {
-    return Row(
-      spacing: 30,
-      children: [
-        Expanded(
-          child: Text(
-            'Your Boards',
-            style: Apptheme.text.copyWith(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 10,
-          children: [
-            AppButton(
-              wrapWithFlexible: true,
-              mainAxisSize: MainAxisSize.min,
-              prefix: SVGImagePlaceHolder(imagePath: Images.arrowVer),
-              onTap: () {},
-              color: Apptheme.white,
-              style: Apptheme.text.copyWith(color: Apptheme.stormGray),
-              minHeight: 29,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              text: 'Sort',
-            ),
-            AppButton(
-              wrapWithFlexible: true,
-              mainAxisSize: MainAxisSize.min,
-              prefix: SVGImagePlaceHolder(imagePath: Images.filter),
-              onTap: () {},
-              color: Apptheme.white,
-              style: Apptheme.text.copyWith(color: Apptheme.stormGray),
-              minHeight: 29,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              text: 'Filter',
-            ),
-          ],
-        ),
       ],
     );
   }

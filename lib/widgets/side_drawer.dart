@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/settings/app_strings.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/settings/images.dart';
-import 'package:navinotes/widgets/components.dart';
+import 'package:navinotes/packages.dart';
 
-class DashboardSideBar extends StatelessWidget {
-  const DashboardSideBar({super.key});
-
+class NavigationSideBar extends StatelessWidget {
+  const NavigationSideBar({super.key, required this.currentRoute});
+  final String currentRoute;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,13 +21,13 @@ class DashboardSideBar extends StatelessWidget {
             child: Row(
               spacing: 10,
               children: [
-                SVGImagePlaceHolder(imagePath: Images.logoSquare, size: 40),
+                SVGImagePlaceHolder(imagePath: Images.logo, size: 29),
                 Expanded(
                   child: Text(
                     AppStrings.appName,
                     overflow: TextOverflow.ellipsis,
                     style: Apptheme.text.copyWith(
-                      color: Apptheme.strongBlue,
+                      color: Apptheme.vividRose,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -49,12 +45,13 @@ class DashboardSideBar extends StatelessWidget {
                     _item(
                       title: 'Dashboard',
                       icon: Images.home,
-                      isActive: true,
+                      route: Routes.dashboard,
                     ),
                     _item(title: 'Recent Notes', icon: Images.recent),
                     _item(title: 'Flashcards', icon: Images.flashCards),
                     _item(title: 'Pomodoro Timer', icon: Images.timer),
                     _item(title: 'Settings', icon: Images.settings),
+                    _item(title: 'Marketplace', icon: Images.store),
                   ],
                 ),
               ),
@@ -108,17 +105,17 @@ class DashboardSideBar extends StatelessWidget {
   Widget _item({
     required String title,
     required String icon,
-    bool isActive = false,
-    // required String route, //TODO add the different routes
+    String? route, //TODO make required
   }) {
-    final color = isActive ? Apptheme.strongBlue : Apptheme.defaultBlack;
+    bool isActive = currentRoute == route;
+    final color = isActive ? Apptheme.vividRose : Apptheme.defaultBlack;
     Radius radius = Radius.circular(100);
     return Material(
       color: Colors.transparent,
       child: ListTile(
         leading: SVGImagePlaceHolder(imagePath: icon, size: 18, color: color),
         selected: isActive,
-        selectedTileColor: Apptheme.iceBlue,
+        selectedTileColor: Apptheme.polarGlow,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topRight: radius,
@@ -130,10 +127,14 @@ class DashboardSideBar extends StatelessWidget {
           style: Apptheme.text.copyWith(
             color: color,
             fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(isActive ? 500 : 400),
           ),
         ),
-        onTap: () {},
+        onTap: () {
+          if (isNotNull(route) && !isActive) {
+            NavigationHelper.push(route!);
+          }
+        },
       ),
     );
   }

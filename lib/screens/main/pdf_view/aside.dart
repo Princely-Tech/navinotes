@@ -58,7 +58,7 @@ class PdfViewAside extends StatelessWidget {
                   'Brainiac Tip',
                   style: Apptheme.text.copyWith(
                     color: Apptheme.electricIndigo,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: getFontWeight(500),
                   ),
                 ),
                 Text(
@@ -83,7 +83,7 @@ class PdfViewAside extends StatelessWidget {
       children: [
         Text(
           'AI Connection Suggestions',
-          style: Apptheme.text.copyWith(fontWeight: FontWeight.w500),
+          style: Apptheme.text.copyWith(fontWeight: getFontWeight(500)),
         ),
         CustomCard(
           padding: EdgeInsets.all(10),
@@ -164,7 +164,7 @@ class PdfViewAside extends StatelessWidget {
                     color: const Color(0xFF1F2937),
                     fontSize: 12,
                     fontFamily: 'Inter',
-                    fontWeight: FontWeight.w500,
+                    fontWeight: getFontWeight(500),
                   ),
                 ),
                 Text(
@@ -173,7 +173,7 @@ class PdfViewAside extends StatelessWidget {
                     color: const Color(0xFF6B7280),
                     fontSize: 12,
                     fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
+                    fontWeight: getFontWeight(400),
                   ),
                 ),
               ],
@@ -198,7 +198,7 @@ class PdfViewAside extends StatelessWidget {
                   color: const Color(0xFF1F2937),
                   fontSize: 14,
                   fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
+                  fontWeight: getFontWeight(500),
                 ),
               ),
             ),
@@ -208,7 +208,7 @@ class PdfViewAside extends StatelessWidget {
                 color: const Color(0xFF6B7280),
                 fontSize: 12,
                 fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
+                fontWeight: getFontWeight(400),
                 height: 1,
               ),
             ),
@@ -244,7 +244,7 @@ class PdfViewAside extends StatelessWidget {
             color: const Color(0xFF1F2937),
             fontSize: 16,
             fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
+            fontWeight: getFontWeight(500),
             height: 1,
           ),
         ),
@@ -260,7 +260,7 @@ class PdfViewAside extends StatelessWidget {
                   color: const Color(0xFF1F2937),
                   fontSize: 14,
                   fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
+                  fontWeight: getFontWeight(500),
                 ),
               ),
               Container(

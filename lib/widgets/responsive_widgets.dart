@@ -1,5 +1,89 @@
 import 'package:navinotes/packages.dart';
 
+class ScrollableController extends StatelessWidget {
+  const ScrollableController({
+    super.key,
+    required this.child,
+    this.padding,
+    this.scrollDirection = Axis.vertical,
+    this.mobile = true,
+    this.tablet,
+    this.laptop,
+    this.desktop,
+    this.largeDesktop,
+  });
+
+  final Widget child;
+  final EdgeInsetsGeometry? padding;
+  final Axis scrollDirection;
+  final bool mobile;
+  final bool? tablet;
+  final bool? laptop;
+  final bool? desktop;
+  final bool? largeDesktop;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, child) {
+        return getBoolFromDeviceWidth(
+              deviceType: layoutVm.deviceType,
+              mobile: mobile,
+              tablet: tablet,
+              laptop: laptop,
+              desktop: desktop,
+              largeDesktop: largeDesktop,
+            )
+            ? SingleChildScrollView(
+              padding: padding,
+              scrollDirection: scrollDirection,
+              child: child,
+            )
+            : Container(padding: padding, child: child);
+      },
+      child: child,
+    );
+  }
+}
+
+class ExpandableController extends StatelessWidget {
+  const ExpandableController({
+    super.key,
+    required this.child,
+    this.mobile = true,
+    this.tablet,
+    this.laptop,
+    this.desktop,
+    this.largeDesktop,
+  });
+
+  final Widget child;
+  final bool mobile;
+  final bool? tablet;
+  final bool? laptop;
+  final bool? desktop;
+  final bool? largeDesktop;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return getBoolFromDeviceWidth(
+              deviceType: layoutVm.deviceType,
+              mobile: mobile,
+              tablet: tablet,
+              laptop: laptop,
+              desktop: desktop,
+              largeDesktop: largeDesktop,
+            )
+            ? Expanded(child: child)
+            : child;
+      },
+      child: child,
+    );
+  }
+}
+
 class WidthLimiter extends StatelessWidget {
   const WidthLimiter({
     super.key,

@@ -1,12 +1,18 @@
-
-
 import 'package:navinotes/packages.dart';
 
 class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
-  static const Color black = Color(0xFF000000); 
-  static const Color electricPurple = Color(0xFF7C3AED); 
+  static const Color black = Color(0xFF000000);
+  static const Color mintWhisper = Color(0xFFDCFCE7);
+  static const Color lavenderBlush = Color(0xFFF3E8FF);
+  static const Color babyIce = Color(0xFFDBF8FE);
+  static const Color polarGlow = Color(0xFBEEFFFF);
+  static const Color skyFoam = Color(0xFFBFE7FE);
+  static const Color pastelBloom = Color(0xFFEFFFFB);
+  static const Color mintLight = Color(0xFFDBF9FE);
+  static const Color azura = Color(0xFFEFFFFA);
+  static const Color electricPurple = Color(0xFF7C3AED);
   static const Color orangeYellow = Color(0xFFFBBF24);
   static const Color teal = Color(0xFF14B8A6);
   static const Color pastelViolet = Color(0xFFF5F3FF);
@@ -63,12 +69,13 @@ class Apptheme {
   static const Color vividRose = Color(0xFF00555A);
 
   static const String fontFamily = 'Inter';
+  static const String fontPoppins = 'Poppins'; //TODO BRING FONT IN
 
-  static const TextStyle text = TextStyle(
+  static get text => TextStyle(
     color: defaultBlack,
     fontSize: 14,
     fontFamily: fontFamily,
-    fontWeight: FontWeight.w400,
+    fontWeight: getFontWeight(400),
     height: 1,
   );
 }
