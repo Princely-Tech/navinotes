@@ -43,13 +43,13 @@ class CreateCard extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.text,
-    this.width = 0.0,
-    this.height = 0.0,
+    this.width,
+    this.height,
   });
   final void Function()? onTap;
   final String text;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -57,9 +57,12 @@ class CreateCard extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: width, minHeight: height),
+            constraints: BoxConstraints(
+              minWidth: width ?? 0,
+              minHeight: height ?? 0,
+            ),
             child: CustomCard(
-              width: null,
+              width: width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 15,

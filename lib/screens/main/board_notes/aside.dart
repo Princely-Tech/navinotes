@@ -26,7 +26,7 @@ class BoardNotesAside extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ScrollableController(
-                      padding: EdgeInsets.all(20),
+                      mobilePadding: EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

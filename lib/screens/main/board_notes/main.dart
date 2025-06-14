@@ -17,7 +17,7 @@ class BoardNotesMain extends StatelessWidget {
             _header(),
             Expanded(
               child: ScrollableController(
-                padding: EdgeInsets.all(defaultHorizontalPadding),
+                mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
                 child: CustomGrid(
                   children: [
                     _noteCard(

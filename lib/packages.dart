@@ -1,20 +1,20 @@
 //Local packages
 //Settings
-export 'package:navinotes/settings/index.dart';
+export 'settings/index.dart';
 
 //Widgets
-export 'package:navinotes/widgets/index.dart';
+export 'widgets/index.dart';
 
 //Screens
-export 'package:navinotes/screens/packages.dart';
+export 'screens/packages.dart';
 
 //View Models
-export 'package:navinotes/screens/main/pdf_view/overlay/vm.dart';
+export 'screens/main/pdf_view/overlay/vm.dart';
 
 //Providers
-export 'package:navinotes/providers/index.dart';
-export 'package:navinotes/providers/layout.dart';
-export 'package:navinotes/providers/compdf.dart';
+export 'providers/index.dart';
+export 'providers/layout.dart';
+export 'providers/compdf.dart';
 
 //External packages
 export 'package:shared_preferences/shared_preferences.dart';

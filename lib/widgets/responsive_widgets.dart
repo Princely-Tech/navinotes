@@ -4,7 +4,11 @@ class ScrollableController extends StatelessWidget {
   const ScrollableController({
     super.key,
     required this.child,
-    this.padding,
+    this.mobilePadding,
+    this.tabletPadding,
+    this.laptopPadding,
+    this.desktopPadding,
+    this.largeDesktopPadding,
     this.scrollDirection = Axis.vertical,
     this.mobile = true,
     this.tablet,
@@ -14,7 +18,11 @@ class ScrollableController extends StatelessWidget {
   });
 
   final Widget child;
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? mobilePadding;
+  final EdgeInsetsGeometry? tabletPadding;
+  final EdgeInsetsGeometry? laptopPadding;
+  final EdgeInsetsGeometry? desktopPadding;
+  final EdgeInsetsGeometry? largeDesktopPadding;
   final Axis scrollDirection;
   final bool mobile;
   final bool? tablet;
@@ -26,6 +34,14 @@ class ScrollableController extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, child) {
+        EdgeInsetsGeometry padding = getPaddingFromDeviceWidth(
+          deviceType: layoutVm.deviceType,
+          mobile: mobilePadding,
+          tablet: tabletPadding,
+          laptop: laptopPadding,
+          desktop: desktopPadding,
+          largeDesktop: largeDesktopPadding,
+        );
         return getBoolFromDeviceWidth(
               deviceType: layoutVm.deviceType,
               mobile: mobile,
@@ -235,23 +251,18 @@ class ResponsivePadding extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        return Padding(padding: getPadding(layoutVm.deviceType), child: child);
+        return Padding(
+          padding: getPaddingFromDeviceWidth(
+            deviceType: layoutVm.deviceType,
+            mobile: mobile,
+            tablet: tablet,
+            laptop: laptop,
+            desktop: desktop,
+            largeDesktop: largeDesktop,
+          ),
+          child: child,
+        );
       },
     );
-  }
-
-  EdgeInsets getPadding(DeviceType deviceType) {
-    switch (deviceType) {
-      case DeviceType.mobile:
-        return mobile;
-      case DeviceType.tablet:
-        return tablet ?? mobile;
-      case DeviceType.laptop:
-        return laptop ?? tablet ?? mobile;
-      case DeviceType.desktop:
-        return desktop ?? laptop ?? tablet ?? mobile;
-      case DeviceType.largeDesktop:
-        return largeDesktop ?? desktop ?? laptop ?? tablet ?? mobile;
-    }
   }
 }

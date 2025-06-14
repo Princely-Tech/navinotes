@@ -2,8 +2,8 @@ import 'main.dart';
 import 'vm.dart';
 import 'package:navinotes/packages.dart';
 
-class DashboardScreen extends StatelessWidget {
-  DashboardScreen({super.key});
+class RecentNotesScreen extends StatelessWidget {
+  RecentNotesScreen({super.key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -11,34 +11,30 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-        DashboardVm vm = DashboardVm(scaffoldKey: _scaffoldKey);
+        RecentNotesVm vm = RecentNotesVm(scaffoldKey: _scaffoldKey);
         vm.initialize();
         return vm;
       },
-      child: Consumer<DashboardVm>(
+
+      child: Consumer<RecentNotesVm>(
         builder: (_, vm, _) {
+          Widget sideBar = NavigationSideBar(currentRoute: Routes.recentNotes);
           return ScaffoldFrame(
             backgroundColor: vm.hasData ? Apptheme.lightGray : Apptheme.white,
             scaffoldKey: _scaffoldKey,
-            drawer: CustomDrawer(
-              child: NavigationSideBar(currentRoute: Routes.dashboard),
-            ),
+            drawer: CustomDrawer(child: sideBar),
             floatingActionButton: FloatingActionButton(
-              onPressed: vm.goToCreateBoard,
-              backgroundColor:
-                  vm.hasData ? Apptheme.vividRose : Apptheme.tropicalTeal,
+              onPressed: () {},
+              backgroundColor: Apptheme.jungleTeal,
               shape: CircleBorder(),
               child: Icon(Icons.add, color: Apptheme.white),
             ),
             body: ResponsiveSection(
-              mobile: DashboardMain(),
+              mobile: RecentNotesMain(),
               desktop: Row(
                 children: [
-                  WidthLimiter(
-                    mobile: 255,
-                    child: NavigationSideBar(currentRoute: Routes.dashboard),
-                  ),
-                  Expanded(child: DashboardMain()),
+                  WidthLimiter(mobile: 255, child: sideBar),
+                  Expanded(child: RecentNotesMain()),
                 ],
               ),
             ),

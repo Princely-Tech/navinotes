@@ -60,3 +60,31 @@ bool getBoolFromDeviceWidth({
       return largeDesktop ?? desktop ?? laptop ?? tablet ?? mobile;
   }
 }
+
+EdgeInsetsGeometry getPaddingFromDeviceWidth({
+  required DeviceType deviceType,
+  EdgeInsetsGeometry? mobile,
+  EdgeInsetsGeometry? tablet,
+  EdgeInsetsGeometry? laptop,
+  EdgeInsetsGeometry? desktop,
+  EdgeInsetsGeometry? largeDesktop,
+}) {
+  EdgeInsetsGeometry zeroPadding = EdgeInsets.zero;
+  switch (deviceType) {
+    case DeviceType.mobile:
+      return mobile ?? zeroPadding;
+    case DeviceType.tablet:
+      return tablet ?? mobile ?? zeroPadding;
+    case DeviceType.laptop:
+      return laptop ?? tablet ?? mobile ?? zeroPadding;
+    case DeviceType.desktop:
+      return desktop ?? laptop ?? tablet ?? mobile ?? zeroPadding;
+    case DeviceType.largeDesktop:
+      return largeDesktop ??
+          desktop ??
+          laptop ??
+          tablet ??
+          mobile ??
+          zeroPadding;
+  }
+}

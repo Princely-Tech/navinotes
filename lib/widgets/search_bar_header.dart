@@ -1,20 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
-import 'package:navinotes/screens/main/dashboard/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
 
-class DashboardHeader extends StatelessWidget {
-  const DashboardHeader({super.key});
-
+class SearchBarHeader extends StatelessWidget {
+  const SearchBarHeader({
+    super.key,
+    required this.openDrawer,
+    this.borderBottom = false,
+  });
+  final VoidCallback openDrawer;
+  final bool borderBottom;
   @override
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        return Consumer<DashboardVm>(
-          builder: (_, vm, _) {
-            return Row(
+        return Container(
+          decoration: BoxDecoration(
+            color: borderBottom ? Apptheme.white : Apptheme.transparent,
+            border: Border(
+              bottom: BorderSide(
+                color: borderBottom ? Apptheme.lightGray : Colors.transparent,
+              ),
+            ),
+          ),
+          child: ResponsivePadding(
+            mobile: EdgeInsets.all(10),
+            tablet: EdgeInsets.symmetric(
+              horizontal: defaultHorizontalPadding,
+              vertical: 10,
+            ),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               spacing: 30,
               children: [
@@ -26,7 +43,7 @@ class DashboardHeader extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: InkWell(
-                            onTap: vm.openDrawer,
+                            onTap: openDrawer,
                             child: Icon(
                               Icons.menu,
                               size: 24,
@@ -75,19 +92,11 @@ class DashboardHeader extends StatelessWidget {
                       size: 29,
                       borderRadius: BorderRadius.circular(999),
                     ),
-                    // Image.network(
-                    //   "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
-                    //   width: 29,
-                    //   height: 29,
-                    //   fit: BoxFit.cover,
-                    //   // imagePath: Images.person,
-                    //   // size: 16,
-                    // ),
                   ],
                 ),
               ],
-            );
-          },
+            ),
+          ),
         );
       },
     );

@@ -4,6 +4,15 @@ class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
   static const Color black = Color(0xFF000000);
+  static const Color spicedAmber = Color(0xFFD97706);
+  static const Color bloodFire = Color(0xFFDC2626);
+  static const Color vitalGreen = Color(0xFF16A34A);
+  static const Color electricViolet = Color(0xFF9333EA);
+  static const Color solarGold = Color(0xFFEAB308);
+  static const Color tealStone = Color(0xFF006D5B);
+  static const Color jungleTeal = Color(0xFF0D8D7A);
+  static const Color graphite = Color(0xFF333333);
+  static const Color tropicalTeal = Color(0xFF1A9A84);
   static const Color mintWhisper = Color(0xFFDCFCE7);
   static const Color lavenderBlush = Color(0xFFF3E8FF);
   static const Color babyIce = Color(0xFFDBF8FE);

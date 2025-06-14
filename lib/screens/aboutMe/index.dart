@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/aboutMe/aside.dart';
 import 'package:navinotes/screens/aboutMe/form.dart';
@@ -114,7 +113,4 @@ class AboutMeScreen extends StatelessWidget {
     );
   }
 
-  Widget _appBarAction({required String imagePath}) {
-    return SvgPicture.asset(imagePath, width: 20, height: 20);
-  }
 }

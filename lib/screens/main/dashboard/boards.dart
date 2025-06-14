@@ -127,7 +127,7 @@ class YourBoards extends StatelessWidget {
           notes: 18,
           mindmaps: 1,
         ),
-        CreateCard(onTap: vm.goToCreateBoard, text: 'Create New Board'),
+        DashboardCreateCard(),
       ],
     );
   }

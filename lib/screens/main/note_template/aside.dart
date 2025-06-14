@@ -22,7 +22,7 @@ class NoteTemplateAside extends StatelessWidget {
             children: [
               Expanded(
                 child: ScrollableController(
-                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 30),
+                  mobilePadding: const EdgeInsets.fromLTRB(15, 15, 15, 30),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 25,

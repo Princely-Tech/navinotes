@@ -73,6 +73,14 @@ class Images {
   static const String store = '$iconPath/store.svg';
   static const String map = '$iconPath/map.svg';
   static const String calender2 = '$iconPath/calender2.svg';
+  static const String folder = '$iconPath/folder.svg';
+  static const String import = '$iconPath/import.svg';
+  static const String language = '$iconPath/language.svg';
+  static const String trash = '$iconPath/trash.svg';
+  // static const String card = '$iconPath/card.svg';
+  // static const String card = '$iconPath/card.svg';
+  // static const String card = '$iconPath/card.svg';
+  // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
 

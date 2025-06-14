@@ -9,6 +9,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.noteTemplate: (context) => NoteTemplateScreen(),
   Routes.uploadPdf: (context) => UploadPdfScreen(),
   Routes.pdf: (context) => PdfViewScreen(),
+  Routes.recentNotes: (context) => RecentNotesScreen(),
 };
 
 class Routes {
@@ -22,4 +23,5 @@ class Routes {
   static const uploadPdf = 'upload_pdf';
   static const importNotes = 'import_notes'; //TODO build this screen
   static const pdf = 'pdf';
+  static const recentNotes = 'recent_notes';
 }

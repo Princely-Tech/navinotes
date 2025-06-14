@@ -22,7 +22,7 @@ class ImportPdfAside extends StatelessWidget {
             children: [
               Expanded(
                 child: ScrollableController(
-                  padding: const EdgeInsets.all(15),
+                  mobilePadding: const EdgeInsets.all(15),
                   child: Column(
                     spacing: 30,
                     children: [_quickFilters(vm), _importTo(), _preview()],

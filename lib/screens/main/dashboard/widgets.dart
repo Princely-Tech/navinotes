@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/dashboard/vm.dart';
 
 class DashFilterSection extends StatelessWidget {
   const DashFilterSection({super.key, required this.title});
@@ -55,6 +56,24 @@ class DashFilterSection extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class DashboardCreateCard extends StatelessWidget {
+  const DashboardCreateCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DashboardVm>(
+      builder: (_, vm, _) {
+        return CreateCard(
+          onTap: vm.goToCreateBoard,
+          text: 'Create New Board',
+          width: vm.hasData ? double.infinity : 356,
+          height: vm.hasData ? null : 237,
+        );
+      },
     );
   }
 }

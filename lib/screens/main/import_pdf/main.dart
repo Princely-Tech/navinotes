@@ -14,7 +14,7 @@ class ImportPdfMain extends StatelessWidget {
       children: [
         Expanded(
           child: ScrollableController(
-            padding: EdgeInsets.all(defaultHorizontalPadding),
+            mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
             child: Column(
               spacing: 30,
               children: [

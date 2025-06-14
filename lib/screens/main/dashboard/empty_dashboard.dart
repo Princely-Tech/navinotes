@@ -4,45 +4,114 @@ import 'package:navinotes/screens/main/dashboard/widgets.dart';
 
 class EmptyDashboardMain extends StatelessWidget {
   const EmptyDashboardMain({super.key});
-  //TODO look at this again
   @override
   Widget build(BuildContext context) {
     return Consumer<DashboardVm>(
       builder: (_, vm, _) {
-        return Column(
-          spacing: 30,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _welcome(),
-            Column(children: [DashFilterSection(title: 'Start Here!')]),
-            CreateCard(
-              onTap: vm.goToCreateBoard,
-              text: 'Create New Board',
-              width: 356,
-              height: 237,
-            ),
-            _quickActions(),
-            _recentActivity(),
-          ],
+        return Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: Column(
+            spacing: 30,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _welcome(),
+              Column(
+                spacing: 15,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DashFilterSection(title: 'Start Here!'),
+                  DashboardCreateCard(),
+                ],
+              ),
+              _quickActions(),
+              _recentActivity(vm),
+            ],
+          ),
         );
       },
     );
   }
 
-  Widget _recentActivity() {
+  Widget _recentActivity(DashboardVm vm) {
     return Column(
+      spacing: 15,
       children: [
-        Text(
-          'Recent Activity',
-          style: TextStyle(
-            color: const Color(0xFF333333),
-            fontSize: 18.58,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
-            height: 1.40,
+        Row(
+          spacing: 15,
+          children: [
+            Expanded(
+              child: Text(
+                'Recent Activity',
+                style: Apptheme.text.copyWith(
+                  color: Apptheme.graphite,
+                  fontSize: 18.58,
+                  fontWeight: getFontWeight(600),
+                  height: 1.40,
+                ),
+              ),
+            ),
+            AppButton.text(
+              mainAxisSize: MainAxisSize.min,
+              onTap: () {
+                NavigationHelper.push(Routes.recentNotes);
+              },
+              text: 'View all',
+              style: Apptheme.text.copyWith(
+                color: Apptheme.tropicalTeal,
+                fontSize: 13,
+                fontWeight: getFontWeight(500),
+              ),
+            ),
+          ],
+        ),
+
+        CustomCard(
+          child: WidthLimiter(
+            mobile: 400,
+            child: Column(
+              spacing: 20,
+              children: [
+                Column(
+                  spacing: 10,
+                  children: [
+                    OutlinedChild(
+                      size: 59,
+                      decoration: BoxDecoration(
+                        color: Apptheme.lightAsh,
+                        shape: BoxShape.circle,
+                      ),
+                      child: SVGImagePlaceHolder(
+                        imagePath: Images.recent,
+                        size: 27,
+                        color: Apptheme.lightGray,
+                      ),
+                    ),
+                    Text(
+                      'No Recent Activity Yet',
+                      textAlign: TextAlign.center,
+                      style: Apptheme.text.copyWith(
+                        color: Apptheme.graphite,
+                        fontSize: 16.72,
+                        fontWeight: getFontWeight(500),
+                      ),
+                    ),
+                    Text(
+                      'Your activity will appear here once you start creating and editing boards, notes, and flashcards.',
+                      textAlign: TextAlign.center,
+                      style: Apptheme.text.copyWith(color: Apptheme.steelMist),
+                    ),
+                  ],
+                ),
+                AppButton(
+                  mainAxisSize: MainAxisSize.min,
+                  onTap: vm.goToCreateBoard,
+                  text: 'Create Your First Board',
+                  color: Apptheme.tropicalTeal,
+                ),
+              ],
+            ),
           ),
         ),
-        //
       ],
     );
   }
@@ -61,33 +130,35 @@ class EmptyDashboardMain extends StatelessWidget {
           width: null,
           padding: EdgeInsets.all(10),
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             spacing: 15,
             children: [
               icon,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: const Color(0xFF333333),
-                      fontSize: 14.86,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
-                      height: 1.50,
+              ExpandableController(
+                mobile: false,
+                desktop: true,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Apptheme.text.copyWith(
+                        color: Apptheme.graphite,
+                        fontSize: 14.86,
+                        fontWeight: getFontWeight(500),
+                        height: 1.50,
+                      ),
                     ),
-                  ),
-                  Text(
-                    body,
-                    style: TextStyle(
-                      color: const Color(0xFF6B7280),
-                      fontSize: 11.15,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                      height: 1.33,
+                    Text(
+                      body,
+                      style: Apptheme.text.copyWith(
+                        color: Apptheme.steelMist,
+                        fontSize: 11.15,
+                        height: 1.33,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -140,11 +211,10 @@ class EmptyDashboardMain extends StatelessWidget {
       children: [
         Text(
           'Quick Actions',
-          style: TextStyle(
-            color: const Color(0xFF333333),
+          style: Apptheme.text.copyWith(
+            color: Apptheme.graphite,
             fontSize: 18.58,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
+            fontWeight: getFontWeight(600),
             height: 1.40,
           ),
         ),
@@ -163,24 +233,21 @@ class EmptyDashboardMain extends StatelessWidget {
   Widget _welcome() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 3,
       children: [
         Text(
           'Welcome to NaviNotes, Alex!',
-          style: TextStyle(
-            color: const Color(0xFF333333),
+          style: Apptheme.text.copyWith(
+            color: Apptheme.graphite,
             fontSize: 22.29,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w700,
+            fontWeight: getFontWeight(700),
             height: 1.33,
           ),
         ),
         Text(
           'Ready to organize your Computer Science studies? Let\'s get started.',
-          style: TextStyle(
-            color: const Color(0xFF4B5563),
-            fontSize: 14.86,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w400,
+          style: Apptheme.text.copyWith(
+            color: Apptheme.stormGray,
             height: 1.50,
           ),
         ),

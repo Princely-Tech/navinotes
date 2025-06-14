@@ -259,7 +259,7 @@ class ScrollableRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScrollableController(
-      padding: padding,
+      mobilePadding: padding,
       scrollDirection: Axis.horizontal,
       child: child ?? Row(spacing: 10, children: children),
     );

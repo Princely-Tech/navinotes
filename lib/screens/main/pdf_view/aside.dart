@@ -20,7 +20,7 @@ class PdfViewAside extends StatelessWidget {
         children: [
           Expanded(
             child: ScrollableController(
-              padding: EdgeInsets.all(15),
+              mobilePadding: EdgeInsets.all(15),
               child: Column(
                 spacing: 20,
                 children: [

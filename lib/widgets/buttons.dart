@@ -129,6 +129,7 @@ class AppButton extends StatelessWidget {
           if (isNotNull(text))
             wrapWithFlexible ? Flexible(child: _text()) : _text(),
           if (isNotNull(child)) child!,
+          if (isNotNull(suffix)) suffix!,
         ],
       ),
     );

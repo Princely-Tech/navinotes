@@ -5,7 +5,7 @@ import 'package:navinotes/settings/routes.dart';
 class DashboardVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   DashboardVm({required this.scaffoldKey});
-  bool hasData = true;
+  bool hasData = false;
 
   void initialize() {
     Future.delayed(Duration(seconds: 5), () {

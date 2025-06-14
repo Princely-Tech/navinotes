@@ -23,7 +23,7 @@ class ChooseBoardAside extends StatelessWidget {
             children: [
               Expanded(
                 child: ScrollableController(
-                  padding: EdgeInsets.all(20),
+                  mobilePadding: EdgeInsets.all(20),
                   child: Column(
                     spacing: 30,
                     crossAxisAlignment: CrossAxisAlignment.start,

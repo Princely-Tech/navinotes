@@ -17,7 +17,7 @@ class NoteTemplateMain extends StatelessWidget {
         children: [
           Expanded(
             child: ScrollableController(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+              mobilePadding: const EdgeInsets.symmetric(vertical: 20),
               child: Column(
                 spacing: 35,
                 crossAxisAlignment: CrossAxisAlignment.start,

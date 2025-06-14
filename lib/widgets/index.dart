@@ -5,3 +5,5 @@ export 'frames.dart';
 export 'buttons.dart';
 export 'custom_grid.dart';
 export 'inputs.dart';
+export 'search_bar_header.dart';
+export 'side_drawer.dart';

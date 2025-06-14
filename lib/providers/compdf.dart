@@ -11,7 +11,7 @@ class ComPdfVm extends ChangeNotifier {
         notifyListeners();
       });
     } catch (err) {
-      print(err);
+      // print(err);
     }
   }
 
