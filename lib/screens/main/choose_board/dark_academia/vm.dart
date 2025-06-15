@@ -7,4 +7,7 @@ class DarkAcademiaVm extends ChangeNotifier {
     isPrivate = value;
     notifyListeners();
   }
+  void createHandler(){
+    NavigationHelper.push(Routes.boardDarkAcademiaEdit);
+  }
 }

@@ -78,16 +78,16 @@ class Images {
   static const String book2 = '$iconPath/book2.svg';
   static const String brain = '$iconPath/brain.svg';
   static const String org = '$iconPath/org.svg';
+  static const String pen2 = '$iconPath/pen2.svg';
+  static const String calender3 = '$iconPath/calender3.svg';
+  // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
 
   //images
-  // static const String brain = '$imagePath/brain.png';
   static const String brainPers = '$imagePath/brain_pers.png';
   static const String authCardBg = '$imagePath/auth_card_bg.svg';
-  //  static const String auth_card_bg = '$imagePath/auth_card_bg.png';
-  //  static const String auth_card_bg = '$imagePath/auth_card_bg.png';
   //  static const String auth_card_bg = '$imagePath/auth_card_bg.png';
 
   //boards
@@ -98,8 +98,13 @@ class Images {
   static const String board5 = '$boardsPath/board5.png';
 
   //board dark academia
-  static const String boardDarkAcadpreview = '$boardsDarkAcademiaPath/preview.png';
-  // static const String preview = '$boardsDarkAcademiaPath/preview.png';
+  static const String boardDarkAcadPreview = '$boardsDarkAcademiaPath/preview.png';
+  static const String boardDarkAcadEditHeader = '$boardsDarkAcademiaPath/edit_header.png';
+  static const String boardDarkAcadPaper = '$boardsDarkAcademiaPath/paper.png';
+  // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
+  // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
+  // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
+ 
 
   //boards create
   static const String boardPlain = '$boardsCreatePath/plain.png';

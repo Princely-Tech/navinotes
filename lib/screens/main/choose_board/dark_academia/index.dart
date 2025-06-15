@@ -52,7 +52,7 @@ class DarkAcademiaScreen extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               color: Apptheme.royalGold,
                               text: 'Create My Academic Board',
-                              onTap: () {},
+                              onTap: vm.createHandler,
                               style: Apptheme.text.copyWith(
                                 color: Apptheme.deepRoast,
                                 fontSize: 16.0,
@@ -175,7 +175,7 @@ class DarkAcademiaScreen extends StatelessWidget {
               laptop: 2 / 1,
               desktop: 3 / 1,
               child: ImagePlaceHolder(
-                imagePath: Images.boardDarkAcadpreview,
+                imagePath: Images.boardDarkAcadPreview,
                 borderRadius: BorderRadius.zero,
               ),
             ),

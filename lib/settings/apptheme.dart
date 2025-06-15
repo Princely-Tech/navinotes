@@ -4,6 +4,7 @@ class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
   static const Color black = Color(0xFF000000);
+  static const Color caramelMist = Color(0xFFC4A484);
   static const Color royalGold = Color(0xFFD4AF37);
   static const Color cocoaVeil = Color(0x333C2A1E);
   static const Color oatCream = Color(0xFFF5F1E8);
@@ -85,6 +86,8 @@ class Apptheme {
   static const Color shadowBark = Color(0x193C2A1E);
   static const Color velvetCream = Color(0xCCF5F1E8);
   static const Color espressoShadow = Color(0xB23C2A1E);
+  static const Color warmSand = Color(0xFFF5E6D3);
+  static const Color espressoBrown = Color(0xFF4A3B32);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';

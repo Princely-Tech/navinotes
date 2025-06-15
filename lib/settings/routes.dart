@@ -11,6 +11,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.pdf: (context) => PdfViewScreen(),
   Routes.recentNotes: (context) => RecentNotesScreen(),
   Routes.boardDarkAcademia: (context) => DarkAcademiaScreen(),
+  Routes.boardDarkAcademiaEdit: (context) => DarkAcademiaEditScreen(),
 };
 
 class Routes {
@@ -26,4 +27,5 @@ class Routes {
   static const pdf = 'pdf';
   static const recentNotes = 'recent_notes';
   static const boardDarkAcademia = 'board_dark_academia';
+  static const boardDarkAcademiaEdit = 'board_dark_academia_edit';
 }
