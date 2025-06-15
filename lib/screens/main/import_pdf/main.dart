@@ -1,9 +1,10 @@
-import 'package:dotted_decoration/dotted_decoration.dart';
-import 'package:flutter/material.dart';
-import 'package:navinotes/providers/layout.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/settings/index.dart';
-import 'package:navinotes/widgets/index.dart';
+// import 'package:flutter/material.dart';
+// import 'package:navinotes/providers/layout.dart';
+// import 'package:provider/provider.dart';
+// import 'package:navinotes/settings/index.dart';
+// import 'package:navinotes/widgets/index.dart';
+
+import 'package:navinotes/packages.dart';
 
 class ImportPdfMain extends StatelessWidget {
   const ImportPdfMain({super.key});

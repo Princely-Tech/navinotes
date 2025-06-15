@@ -32,3 +32,4 @@ export 'package:flutter_svg/svg.dart';
 export 'package:compdfkit_flutter/configuration/cpdf_configuration.dart';
 export 'package:compdfkit_flutter/widgets/cpdf_reader_widget.dart';
 export 'package:flutter_switch/flutter_switch.dart';
+export 'package:dotted_decoration/dotted_decoration.dart';

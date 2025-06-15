@@ -6,6 +6,22 @@ double mobileHorPadding = 20;
 double laptopHorPadding = 30;
 double desktopHorPadding = 40;
 
+Color shadowColor = Apptheme.black.withAlpha(0x19);
+List<BoxShadow> boxShadows = [
+  BoxShadow(
+    color: shadowColor,
+    blurRadius: 15,
+    offset: Offset(0, 10),
+    spreadRadius: 0,
+  ),
+  BoxShadow(
+    color: shadowColor,
+    blurRadius: 6,
+    offset: Offset(0, 4),
+    spreadRadius: 0,
+  ),
+];
+
 class DarkAcademiaEditScreen extends StatelessWidget {
   const DarkAcademiaEditScreen({super.key});
 
@@ -25,9 +41,16 @@ class DarkAcademiaEditScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         _pic(),
-                        _courseTimeLine(),
-                        Column(children: [_actions()]),
-                        //
+                        _courseTimeLine(), //TODO check the line thats drawn
+                        Column(
+                          spacing: 50,
+                          children: [
+                            _actions(),
+                            _upcomingAssignment(),
+                            _coarseMaterial(),
+                          ],
+                        ),
+                        _footer(),
                       ],
                     ),
                   ),
@@ -36,6 +59,162 @@ class DarkAcademiaEditScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _footerItem({required String title, required List<String> items}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 15,
+      children: [
+        Text(
+          title,
+          style: Apptheme.text.copyWith(
+            color: Apptheme.white,
+            fontSize: 24.0,
+            fontFamily: Apptheme.fontPlayfairDisplay,
+            height: 1.33,
+          ),
+        ),
+        ...items.map(
+          (str) => Text(
+            str,
+            style: Apptheme.text.copyWith(
+              color: Colors.white.withAlpha(178),
+              fontSize: 16.0,
+              height: 1.50,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _footer() {
+    return Container(
+      decoration: BoxDecoration(color: Apptheme.espressoBrown),
+      margin: EdgeInsets.only(top: 40),
+      child: _horizontalPadding(
+        child: ResponsivePadding(
+          mobile: EdgeInsets.symmetric(vertical: mobileHorPadding),
+          tablet: EdgeInsets.symmetric(vertical: laptopHorPadding),
+          desktop: EdgeInsets.symmetric(vertical: desktopHorPadding),
+          child: CustomGrid(
+            largeDesktop: 2,
+            spacing: 30,
+            children: [
+              _footerItem(
+                title: 'Course Details',
+                items: [
+                  'Professor: [Will be extracted from syllabus]',
+                  'Email: [Contact info will appear here]',
+                  'Office Hours: [Schedule will be populated]',
+                ],
+              ),
+              _footerItem(
+                title: 'Class Information',
+                items: [
+                  'Schedule: [Class times from syllabus]',
+                  'Location: [Classroom info will appear]',
+                  'Duration: [Semester dates will populate]',
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _coarseMaterial() {
+    return _section(
+      title: 'Course Materials',
+      child: Container(
+        decoration: DottedDecoration(
+          color: Apptheme.espressoBrown.withAlpha(0x4C),
+          shape: Shape.box,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: CustomCard(
+          decoration: BoxDecoration(color: Apptheme.transparent),
+          child: Column(
+            spacing: 15,
+            children: [
+              Column(
+                spacing: 5,
+                children: [
+                  SVGImagePlaceHolder(
+                    imagePath: Images.upload2,
+                    size: 60,
+                    color: Apptheme.espressoBrown.withAlpha(76),
+                  ),
+                  Text(
+                    'Upload and organize your study materials',
+                    textAlign: TextAlign.center,
+                    style: Apptheme.text.copyWith(
+                      color: Apptheme.espressoBrown,
+                      fontSize: 20.0,
+                      height: 1.40,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                'Drag and drop files here',
+                textAlign: TextAlign.center,
+                style: Apptheme.text.copyWith(
+                  color: Apptheme.espressoBrown.withAlpha(0xB2),
+                  fontSize: 16.0,
+                  height: 1.50,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _upcomingAssignment() {
+    return _section(
+      title: 'Upcoming Assignments',
+      child: CustomCard(
+        child: Column(
+          spacing: 10,
+          children: [
+            SVGImagePlaceHolder(imagePath: Images.calender3, size: 60),
+            Text(
+              'Assignment tracking will appear after syllabus upload',
+              textAlign: TextAlign.center,
+              style: Apptheme.text.copyWith(
+                color: Apptheme.espressoBrown,
+                fontSize: 20.0,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _section({required Widget child, required String title}) {
+    return _horizontalPadding(
+      child: Column(
+        spacing: 25,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Apptheme.text.copyWith(
+              color: Apptheme.espressoBrown,
+              fontSize: 30.0,
+              fontFamily: Apptheme.fontPlayfairDisplay,
+              height: 1.20,
+            ),
+          ),
+          child,
+        ],
       ),
     );
   }
@@ -49,8 +228,59 @@ class DarkAcademiaEditScreen extends StatelessWidget {
     );
   }
 
-  Widget _actionCard() {
-    return CustomCard();
+  Widget _actionCard({
+    required String title,
+    required String body,
+    required String icon,
+    String? route, //TODO make required
+    bool isCaramelMist = false,
+  }) {
+    return InkWell(
+      onTap: () {
+        if (isNotNull(route)) {
+          NavigationHelper.push(route!);
+        }
+      },
+      child: CustomCard(
+        decoration: BoxDecoration(
+          color: isCaramelMist ? Apptheme.caramelMist : Apptheme.white,
+          boxShadow: boxShadows,
+        ),
+        child: Column(
+          spacing: 5,
+          children: [
+            SVGImagePlaceHolder(
+              imagePath: icon,
+              size: 36,
+              color: Apptheme.espressoBrown,
+            ),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Apptheme.text.copyWith(
+                color: isCaramelMist ? Apptheme.white : Apptheme.espressoBrown,
+                fontSize: 24.0,
+                fontFamily: Apptheme.fontPlayfairDisplay,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                body,
+                textAlign: TextAlign.center,
+                style: Apptheme.text.copyWith(
+                  color:
+                      isCaramelMist
+                          ? Colors.white.withAlpha(204)
+                          : Apptheme.espressoBrown,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _actions() {
@@ -72,8 +302,23 @@ class DarkAcademiaEditScreen extends StatelessWidget {
         _horizontalPadding(
           child: CustomGrid(
             children: [
-              _actionCard(),
-              //
+              _actionCard(
+                icon: Images.upload3,
+                title: 'Upload Syllabus',
+                body: 'Start here to unlock AI features',
+                isCaramelMist: true,
+              ),
+              _actionCard(
+                icon: Images.pen2,
+                title: 'Create Note',
+                body: 'Begin taking notes right away',
+                route: Routes.boardNotes,
+              ),
+              _actionCard(
+                icon: Images.folder,
+                title: 'Import Files',
+                body: 'Add your course materials',
+              ),
             ],
           ),
         ),
@@ -84,10 +329,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
   Widget _courseTimeLine() {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: Apptheme.espressoBrown,
-        border: Border.all(color: Apptheme.transparent),
-      ),
+      color: Apptheme.espressoBrown,
       child: ResponsivePadding(
         mobile: EdgeInsets.fromLTRB(mobileHorPadding, 20, mobileHorPadding, 40),
         laptop: EdgeInsets.fromLTRB(laptopHorPadding, 20, laptopHorPadding, 50),
@@ -103,15 +345,13 @@ class DarkAcademiaEditScreen extends StatelessWidget {
           children: [
             Text(
               'Course Timeline',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 30,
-                fontFamily: 'Playfair Display',
-                fontWeight: FontWeight.w400,
+              style: Apptheme.text.copyWith(
+                color: Apptheme.white,
+                fontSize: 30.0,
+                fontFamily: Apptheme.fontPlayfairDisplay,
                 height: 1.20,
               ),
             ),
-
             CustomCard(
               decoration: BoxDecoration(
                 color: Apptheme.white.withAlpha(25),
@@ -128,11 +368,9 @@ class DarkAcademiaEditScreen extends StatelessWidget {
                   Text(
                     'Your course schedule will appear here',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
+                    style: Apptheme.text.copyWith(
+                      color: Apptheme.white,
+                      fontSize: 20.0,
                     ),
                   ),
                   AppButton.secondary(
@@ -145,9 +383,11 @@ class DarkAcademiaEditScreen extends StatelessWidget {
                     ),
                     onTap: () {},
                     text: 'Upload syllabus to generate timeline',
-                    style: TextStyle(color: Apptheme.caramelMist, fontSize: 16),
+                    style: Apptheme.text.copyWith(
+                      color: Apptheme.caramelMist,
+                      fontSize: 16.0,
+                    ),
                   ),
-                  //
                 ],
               ),
             ),

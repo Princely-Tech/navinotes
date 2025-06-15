@@ -80,7 +80,7 @@ class Images {
   static const String org = '$iconPath/org.svg';
   static const String pen2 = '$iconPath/pen2.svg';
   static const String calender3 = '$iconPath/calender3.svg';
-  // static const String card = '$iconPath/card.svg';
+  static const String upload3 = '$iconPath/upload3.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';

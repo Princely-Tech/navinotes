@@ -20,7 +20,7 @@ class ChooseBoardScreen extends StatelessWidget {
         drawer: CustomDrawer(
           child: NavigationSideBar(activeRoute: activeRoute),
         ),
-        backgroundColor: Apptheme.lightGray.withAlpha(100),
+        backgroundColor: Apptheme.lightGray,
         body: Row(
           children: [
             VisibleController(

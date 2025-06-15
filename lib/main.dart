@@ -14,8 +14,8 @@ class MyApp extends StatelessWidget {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: Apptheme.fontFamily),
-        // initialRoute: Routes.recentNotes,
-        initialRoute: Routes.auth, //TODO uncomment
+        initialRoute: Routes.boardDarkAcademiaEdit,
+        // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,
       ),

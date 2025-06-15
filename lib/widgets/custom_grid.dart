@@ -8,6 +8,7 @@ class CustomGrid extends StatelessWidget {
     this.tablet,
     this.laptop = 2,
     this.desktop,
+    this.spacing,
     this.largeDesktop = 3,
   });
   final List<Widget> children;
@@ -16,10 +17,11 @@ class CustomGrid extends StatelessWidget {
   final int? laptop;
   final int? desktop;
   final int? largeDesktop;
+  final double? spacing;
 
   @override
   Widget build(BuildContext context) {
-    double defaultSpacing = 20;
+    double defaultSpacing = spacing?? 20;
     return Consumer<LayoutProviderVm>(
       builder: (context, vm, child) {
         int split = getSplit(vm.deviceType);
