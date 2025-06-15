@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/models/board.dart';
 import 'package:navinotes/screens/main/choose_board/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
@@ -33,62 +34,15 @@ class ChooseBoardMain extends StatelessWidget {
                           Text(
                             'Select a style for your board',
                             style: Apptheme.text.copyWith(
-                              color: Apptheme.persianBlue,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                              color: Apptheme.vividRose,
+                              fontSize: 18.0,
+                              fontWeight: getFontWeight(600),
                             ),
                           ),
                           CustomGrid(
                             children: [
-                              _board(
-                                vm,
-                                title: 'Plain',
-                                image: Images.boardPlain,
-                                description:
-                                    'Clean, distraction-free interface',
-                              ),
-                              _board(
-                                vm,
-                                title: 'Minimalist',
-                                image: Images.boardMinimalist,
-                                description:
-                                    'Simplified, essential elements only',
-                              ),
-                              _board(
-                                vm,
-                                title: 'Dark Academia',
-                                image: Images.boardAcademiaDark,
-                                description: 'Vintage scholarly, darker tones',
-                              ),
-                              _board(
-                                vm,
-                                title: 'Light Academia',
-                                image: Images.boardAcademiaLight,
-                                description: 'Bright scholarly, cream tones',
-                              ),
-                              _board(
-                                vm,
-                                title: 'Nature',
-                                image: Images.boardNature,
-                                description: 'Organic patterns, natural colors',
-                              ),
-                              _board(
-                                vm,
-                                title: 'Pastel',
-                                image: Images.boardPastel,
-                                description: 'Soft, muted color palette',
-                              ),
-                              _board(
-                                vm,
-                                title: 'Tech/Neon',
-                                image: Images.boardNeon,
-                                description: 'Digital, vibrant highlights',
-                              ),
-                              _board(
-                                vm,
-                                title: 'Vintage',
-                                image: Images.boardVintage,
-                                description: 'Retro design, warm tones',
+                              ...boardTypes.map(
+                                (board) => _board(vm, board: board),
                               ),
                               _customCreateBoard(),
                             ],
@@ -123,7 +77,7 @@ class ChooseBoardMain extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Apptheme.text.copyWith(
                 color: Apptheme.vividBlue,
-                fontSize: 16,
+                fontSize: 16.0,
               ),
             ),
           ],
@@ -147,7 +101,8 @@ class ChooseBoardMain extends StatelessWidget {
           CustomCard(
             decoration: BoxDecoration(
               border: Border.all(
-                color: selected ? Apptheme.mintyGreen : Apptheme.lightGray,
+                width: 2,
+                color: selected ? Apptheme.vividRose : Apptheme.pastelBloom,
               ),
             ),
             padding: EdgeInsets.all(10),
@@ -163,16 +118,16 @@ class ChooseBoardMain extends StatelessWidget {
                     Text(
                       title,
                       style: Apptheme.text.copyWith(
-                        color: Apptheme.royalBlue,
-                        fontSize: 16,
+                        color: Apptheme.abyssTeal,
+                        fontSize: 16.0,
                         fontWeight: getFontWeight(500),
                       ),
                     ),
                     Text(
                       description,
                       style: Apptheme.text.copyWith(
-                        color: Apptheme.strongBlue,
-                        fontSize: 12,
+                        color: Apptheme.black,
+                        fontSize: 12.0,
                       ),
                     ),
                   ],
@@ -189,7 +144,7 @@ class ChooseBoardMain extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: Colors.white,
                 ),
-                child: Icon(Icons.check_circle, color: Apptheme.mintyGreen),
+                child: Icon(Icons.check_circle, color: Apptheme.vividRose),
               ),
             ),
         ],
@@ -197,25 +152,21 @@ class ChooseBoardMain extends StatelessWidget {
     );
   }
 
-  Widget _board(
-    ChooseBoardVm vm, {
-    required String title,
-    required String image,
-    required String description,
-  }) {
+  Widget _board(ChooseBoardVm vm, {required BoardType board}) {
     return _cardFrame(
-      selected: vm.selectedBoard == title,
-      onTap: () => vm.updateSelectedBoard(title),
-      title: title,
+      selected: vm.selectedBoard.name == board.name,
+      onTap: () => vm.updateSelectedBoard(board),
+      title: board.name,
       header: AspectRatio(
         aspectRatio: 5 / 2,
         child: ImagePlaceHolder(
-          imagePath: image,
+          imagePath: board.image,
           isCardHeader: true,
           borderRadius: BorderRadius.circular(8),
+          fit: BoxFit.fill,
         ),
       ),
-      description: description,
+      description: board.description,
     );
   }
 
@@ -226,12 +177,15 @@ class ChooseBoardMain extends StatelessWidget {
         label: 'Board Name',
         hintText: 'Enter Board Title...',
         labelStyle: Apptheme.text.copyWith(
-          color: Apptheme.electricIndigo,
+          color: Apptheme.abyssTeal,
           fontWeight: getFontWeight(500),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Apptheme.pastelBlue, width: 1),
         ),
         hintStyle: Apptheme.text.copyWith(
           color: Apptheme.slateGray,
-          fontSize: 16,
           height: 1.50,
         ),
       ),

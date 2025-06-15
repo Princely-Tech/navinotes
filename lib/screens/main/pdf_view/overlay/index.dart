@@ -198,7 +198,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                 'Add to Mind Map',
                 style: TextStyle(
                   color: const Color(0xFF111827),
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontFamily: 'Inter',
                   fontWeight: getFontWeight(500),
                 ),
@@ -207,7 +207,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                 'Connect key concepts to your mind map for visual learning and better understanding',
                 style: TextStyle(
                   color: const Color(0xFF4B5563),
-                  fontSize: 14,
+                  fontSize: 14.0,
                   fontFamily: 'Inter',
                   fontWeight: getFontWeight(400),
                 ),
@@ -234,7 +234,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                   'Quick Start Guide',
                   style: TextStyle(
                     color: const Color(0xFF1D4ED8),
-                    fontSize: 18,
+                    fontSize: 18.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w700,
                     height: 1,

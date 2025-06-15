@@ -83,8 +83,8 @@ class BoardNotesAppBar extends StatelessWidget {
                     'N',
                     style: Apptheme.text.copyWith(
                       color: Apptheme.strongBlue,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 16.0,
+                      fontWeight: getFontWeight(600),
                     ),
                   ),
                 ),
@@ -96,7 +96,7 @@ class BoardNotesAppBar extends StatelessWidget {
                           text: AppStrings.appName,
                           style: Apptheme.text.copyWith(
                             color: Apptheme.persianBlue,
-                            fontSize: 18,
+                            fontSize: 18.0,
                             fontWeight: getFontWeight(500),
                           ),
                         ),
@@ -104,14 +104,14 @@ class BoardNotesAppBar extends StatelessWidget {
                           text: '  /  ',
                           style: Apptheme.text.copyWith(
                             color: Apptheme.blueGray,
-                            fontSize: 16,
+                            fontSize: 16.0,
                           ),
                         ),
                         TextSpan(
                           text: 'Physics 101',
                           style: Apptheme.text.copyWith(
                             color: Apptheme.darkSlateGray,
-                            fontSize: 16,
+                            fontSize: 16.0,
                             fontWeight: getFontWeight(500),
                           ),
                         ),

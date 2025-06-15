@@ -75,7 +75,7 @@ class NoteTemplateHeader extends StatelessWidget {
           prefixIcon: Icon(Icons.search, color: Apptheme.slateGray, size: 20),
           hintStyle: Apptheme.text.copyWith(
             color: Apptheme.slateGray,
-            fontSize: 16,
+            fontSize: 16.0,
             height: 1.50,
           ),
         ),
@@ -110,7 +110,7 @@ class NoteTemplateHeader extends StatelessWidget {
                       AppStrings.appName,
                       style: Apptheme.text.copyWith(
                         color: Apptheme.electricIndigo,
-                        fontSize: 16,
+                        fontSize: 16.0,
                         fontWeight: getFontWeight(500),
                       ),
                     ),
@@ -155,8 +155,8 @@ class NoteTemplateHeader extends StatelessWidget {
                     Text(
                       'Choose Note Template',
                       style: Apptheme.text.copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 20.0,
+                        fontWeight: getFontWeight(600),
                       ),
                     ),
                     Text.rich(

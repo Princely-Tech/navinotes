@@ -219,7 +219,7 @@ class AppButton extends StatelessWidget {
                     style ??
                     Apptheme.text.copyWith(
                       color: runTextColor,
-                      fontSize: 16,
+                      fontSize: 16.0,
                       fontWeight: getFontWeight(500),
                     ),
               ),
@@ -233,13 +233,14 @@ class AppButton extends StatelessWidget {
 }
 
 class MenuButton extends StatelessWidget {
-  const MenuButton({super.key, required this.onPressed});
+  const MenuButton({super.key, required this.onPressed, this.decoration});
   final void Function()? onPressed;
+  final BoxDecoration? decoration;
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onPressed,
-      icon: Icon(Icons.menu, color: Apptheme.stormGray),
+      icon: Icon(Icons.menu, color: decoration?.color ?? Apptheme.stormGray),
     );
   }
 }

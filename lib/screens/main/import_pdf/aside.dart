@@ -47,7 +47,7 @@ class ImportPdfAside extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: const Color(0xFF6B7280),
-              fontSize: 14,
+              fontSize: 14.0,
               fontFamily: 'Inter',
               fontWeight: getFontWeight(400),
             ),
@@ -78,7 +78,7 @@ class ImportPdfAside extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: const Color(0xFF374151),
-                    fontSize: 16,
+                    fontSize: 16.0,
                     fontFamily: 'Inter',
                     fontWeight: getFontWeight(400),
                     height: 1,
@@ -152,7 +152,7 @@ class ImportPdfAside extends StatelessWidget {
           title,
           style: TextStyle(
             color: const Color(0xFF6B7280),
-            fontSize: 14,
+            fontSize: 14.0,
             fontFamily: 'Inter',
             fontWeight: getFontWeight(500),
             height: 1,
@@ -183,7 +183,7 @@ class ImportPdfAside extends StatelessWidget {
           title,
           style: Apptheme.text.copyWith(
             color: color,
-            fontSize: 16,
+            fontSize: 16.0,
             fontWeight: getFontWeight(500),
           ),
         ),

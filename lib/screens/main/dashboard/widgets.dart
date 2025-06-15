@@ -17,7 +17,7 @@ class DashFilterSection extends StatelessWidget {
           child: Text(
             title,
             style: Apptheme.text.copyWith(
-              fontSize: 24,
+              fontSize: 24.0,
               fontWeight: FontWeight.w700,
             ),
           ),

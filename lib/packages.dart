@@ -31,3 +31,4 @@ export 'package:flutter_dotenv/flutter_dotenv.dart';
 export 'package:flutter_svg/svg.dart';
 export 'package:compdfkit_flutter/configuration/cpdf_configuration.dart';
 export 'package:compdfkit_flutter/widgets/cpdf_reader_widget.dart';
+export 'package:flutter_switch/flutter_switch.dart';

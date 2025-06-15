@@ -24,13 +24,16 @@ class DashboardMain extends StatelessWidget {
                   horizontal: defaultHorizontalPadding,
                   vertical: 10,
                 ),
-                child:
-                    vm.hasData
-                        ? Column(
-                          spacing: 30,
-                          children: [YourBoards(), RecentActivity()],
-                        )
-                        : EmptyDashboardMain(),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 100),
+                  child:
+                      vm.hasData
+                          ? Column(
+                            spacing: 30,
+                            children: [YourBoards(), RecentActivity()],
+                          )
+                          : EmptyDashboardMain(),
+                ),
               ),
             ),
           ],

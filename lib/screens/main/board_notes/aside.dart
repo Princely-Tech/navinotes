@@ -5,6 +5,7 @@ import 'package:navinotes/screens/main/board_notes/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/index.dart';
 import 'package:navinotes/widgets/index.dart';
+
 class BoardNotesAside extends StatelessWidget {
   const BoardNotesAside({super.key});
 
@@ -80,7 +81,7 @@ class BoardNotesAside extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Apptheme.text.copyWith(
             color: Apptheme.steelMist,
-            fontSize: 12,
+            fontSize: 12.0,
           ),
         ),
       ],
@@ -106,7 +107,7 @@ class BoardNotesAside extends StatelessWidget {
                 lastEdited,
                 style: Apptheme.text.copyWith(
                   color: Apptheme.steelMist,
-                  fontSize: 12,
+                  fontSize: 12.0,
                 ),
               ),
             ],
@@ -214,7 +215,7 @@ class BoardNotesAside extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 15,
       children: [
-        Text('Board Details', style: Apptheme.text.copyWith(fontSize: 18)),
+        Text('Board Details', style: Apptheme.text.copyWith(fontSize: 18.0)),
         _detailItem(
           title: 'Created',
           value: 'April 10, 2025',

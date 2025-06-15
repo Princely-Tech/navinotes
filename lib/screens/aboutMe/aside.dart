@@ -49,7 +49,7 @@ class AboutMeAside extends StatelessWidget {
           Text(
             'Profile Preview',
             style: Apptheme.text.copyWith(
-              fontSize: 16,
+              fontSize: 16.0,
               fontWeight: getFontWeight(500),
             ),
           ),
@@ -88,7 +88,7 @@ class AboutMeAside extends StatelessWidget {
                           Text(
                             'Jane Smith',
                             style: Apptheme.text.copyWith(
-                              fontSize: 16,
+                              fontSize: 16.0,
                               fontWeight: getFontWeight(500),
                             ),
                           ),
@@ -222,5 +222,4 @@ class AboutMeAside extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -31,8 +31,8 @@ class NoteTemplateAside extends StatelessWidget {
                       Text(
                         'Template Preview',
                         style: Apptheme.text.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 18.0,
+                          fontWeight: getFontWeight(600),
                         ),
                       ),
                       _templateReview(),
@@ -106,7 +106,7 @@ class NoteTemplateAside extends StatelessWidget {
           'Recently Used',
           style: Apptheme.text.copyWith(
             color: Apptheme.darkSlateGray,
-            fontSize: 16,
+            fontSize: 16.0,
             fontWeight: getFontWeight(500),
           ),
         ),
@@ -141,7 +141,7 @@ class NoteTemplateAside extends StatelessWidget {
                   'Dotted paper works great with our pen tools! Try using different colors to organize related ideas visually.',
                   style: Apptheme.text.copyWith(
                     color: Apptheme.strongBlue,
-                    fontSize: 12,
+                    fontSize: 12.0,
                   ),
                 ),
               ],
@@ -161,7 +161,7 @@ class NoteTemplateAside extends StatelessWidget {
           title,
           style: Apptheme.text.copyWith(
             color: Apptheme.stormGray,
-            fontSize: 12,
+            fontSize: 12.0,
           ),
         ),
         child,
@@ -178,7 +178,7 @@ class NoteTemplateAside extends StatelessWidget {
           'Customization',
           style: Apptheme.text.copyWith(
             color: Apptheme.darkSlateGray,
-            fontSize: 16,
+            fontSize: 16.0,
             fontWeight: getFontWeight(500),
           ),
         ),
@@ -191,7 +191,7 @@ class NoteTemplateAside extends StatelessWidget {
                 'Small',
                 style: Apptheme.text.copyWith(
                   color: Apptheme.steelMist,
-                  fontSize: 12,
+                  fontSize: 12.0,
                 ),
               ),
               Expanded(
@@ -207,7 +207,7 @@ class NoteTemplateAside extends StatelessWidget {
                 'Large',
                 style: Apptheme.text.copyWith(
                   color: Apptheme.steelMist,
-                  fontSize: 12,
+                  fontSize: 12.0,
                 ),
               ),
             ],
@@ -250,7 +250,7 @@ class NoteTemplateAside extends StatelessWidget {
           'Best For:',
           style: Apptheme.text.copyWith(
             color: Apptheme.darkSlateGray,
-            fontSize: 16,
+            fontSize: 16.0,
             fontWeight: getFontWeight(500),
           ),
         ),
@@ -303,8 +303,8 @@ class NoteTemplateAside extends StatelessWidget {
         Text(
           'Dotted Paper',
           style: Apptheme.text.copyWith(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontSize: 16.0,
+            fontWeight: getFontWeight(600),
           ),
         ),
       ],

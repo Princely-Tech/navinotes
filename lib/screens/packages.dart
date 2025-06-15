@@ -16,3 +16,4 @@ export 'main/pdf_view/overlay/index.dart';
 export 'main/pdf_view/footer.dart';
 export 'main/pdf_view/header.dart';
 export 'main/recent_notes/index.dart';
+export 'main/choose_board/dark_academia/index.dart';

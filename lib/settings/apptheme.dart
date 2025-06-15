@@ -4,6 +4,10 @@ class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
   static const Color black = Color(0xFF000000);
+  static const Color royalGold = Color(0xFFD4AF37);
+  static const Color cocoaVeil = Color(0x333C2A1E);
+  static const Color oatCream = Color(0xFFF5F1E8);
+  static const Color deepRoast = Color(0xFF3C2A1E);
   static const Color spicedAmber = Color(0xFFD97706);
   static const Color bloodFire = Color(0xFFDC2626);
   static const Color vitalGreen = Color(0xFF16A34A);
@@ -76,13 +80,19 @@ class Apptheme {
   static const Color dodgerBlue = Color(0xFF0075FF);
   static const Color gainsboro = Color(0xFFE5E5E5);
   static const Color vividRose = Color(0xFF00555A);
+  static const Color abyssTeal = Color(0xFF1E788A);
+  static const Color ivoryGlow = Color(0xFFFEFDF8);
+  static const Color shadowBark = Color(0x193C2A1E);
+  static const Color velvetCream = Color(0xCCF5F1E8);
+  static const Color espressoShadow = Color(0xB23C2A1E);
 
   static const String fontFamily = 'Inter';
-  static const String fontPoppins = 'Poppins'; //TODO BRING FONT IN
+  static const String fontPoppins = 'Poppins';
+  static const String fontPlayfairDisplay = 'Playfair Display';
 
   static get text => TextStyle(
     color: defaultBlack,
-    fontSize: 14,
+    fontSize: 14.0,
     fontFamily: fontFamily,
     fontWeight: getFontWeight(400),
     height: 1,

@@ -17,11 +17,12 @@ class DashboardScreen extends StatelessWidget {
       },
       child: Consumer<DashboardVm>(
         builder: (_, vm, _) {
+          String activeRoute = Routes.dashboard;
           return ScaffoldFrame(
             backgroundColor: vm.hasData ? Apptheme.lightGray : Apptheme.white,
             scaffoldKey: _scaffoldKey,
             drawer: CustomDrawer(
-              child: NavigationSideBar(currentRoute: Routes.dashboard),
+              child: NavigationSideBar(activeRoute: activeRoute),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: vm.goToCreateBoard,
@@ -36,7 +37,7 @@ class DashboardScreen extends StatelessWidget {
                 children: [
                   WidthLimiter(
                     mobile: 255,
-                    child: NavigationSideBar(currentRoute: Routes.dashboard),
+                    child: NavigationSideBar(activeRoute: activeRoute),
                   ),
                   Expanded(child: DashboardMain()),
                 ],

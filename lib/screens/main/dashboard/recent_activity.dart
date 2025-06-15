@@ -15,7 +15,7 @@ class RecentActivity extends StatelessWidget {
         Text(
           'Recent Activity',
           style: Apptheme.text.copyWith(
-            fontSize: 24,
+            fontSize: 24.0,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -111,7 +111,7 @@ class RecentActivity extends StatelessWidget {
                         Text(
                           title,
                           style: Apptheme.text.copyWith(
-                            fontSize: 16,
+                            fontSize: 16.0,
                             fontWeight: getFontWeight(500),
                           ),
                         ),
@@ -129,7 +129,7 @@ class RecentActivity extends StatelessWidget {
                               subject,
                               style: Apptheme.text.copyWith(
                                 color: Apptheme.vividRose,
-                                fontSize: 12,
+                                fontSize: 12.0,
                               ),
                             ),
                           ],
@@ -149,7 +149,7 @@ class RecentActivity extends StatelessWidget {
                   lastUpdated,
                   style: Apptheme.text.copyWith(
                     color: Apptheme.steelMist,
-                    fontSize: 12,
+                    fontSize: 12.0,
                   ),
                 ),
               ),

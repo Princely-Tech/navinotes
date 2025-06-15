@@ -10,7 +10,6 @@ class ScaffoldFrame extends StatelessWidget {
     this.floatingActionButton,
     this.backgroundColor,
   });
-
   final Widget body;
   final Widget? drawer;
   final Widget? endDrawer;

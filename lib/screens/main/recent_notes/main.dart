@@ -24,7 +24,7 @@ class RecentNotesMain extends StatelessWidget {
                   vertical: 10,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 30),
+                  padding: const EdgeInsets.only(bottom: 100),
                   child: Column(
                     spacing: 25,
                     children: [
@@ -143,7 +143,7 @@ class RecentNotesMain extends StatelessWidget {
               text ?? '',
               style: Apptheme.text.copyWith(
                 color: isActive ? Apptheme.white : Apptheme.darkSlateGray,
-                fontSize: 16,
+                fontSize: 16.0,
               ),
             ),
       ),
@@ -244,7 +244,7 @@ class RecentNotesMain extends StatelessWidget {
                             title,
                             style: Apptheme.text.copyWith(
                               color: Apptheme.charcoalBlue,
-                              fontSize: 16,
+                              fontSize: 16.0,
                               fontWeight: getFontWeight(500),
                               height: 1.50,
                             ),
@@ -289,7 +289,7 @@ class RecentNotesMain extends StatelessWidget {
                     lastUpdated,
                     style: Apptheme.text.copyWith(
                       color: Apptheme.steelMist,
-                      fontSize: 12,
+                      fontSize: 12.0,
                     ),
                   ),
                 ),

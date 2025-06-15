@@ -83,7 +83,7 @@ class CreateCard extends StatelessWidget {
                       Text(
                         text,
                         style: Apptheme.text.copyWith(
-                          fontSize: 16,
+                          fontSize: 16.0,
                           fontWeight: getFontWeight(500),
                         ),
                       ),

@@ -1,7 +1,7 @@
 import 'package:navinotes/packages.dart';
 
 InputDecoration _inputDecoration({
-  required String hintText,
+  String? hintText,
   Widget? prefixIcon,
   Widget? suffixIcon,
   OutlineInputBorder? border,
@@ -22,7 +22,7 @@ InputDecoration _inputDecoration({
     hintText: hintText,
     hintStyle: Apptheme.text.copyWith(
       // color: Apptheme.inputPlaceholderColor,
-      fontSize: 16,
+      fontSize: 16.0,
     ),
     border: defaultBorder,
     enabledBorder: defaultBorder,
@@ -43,7 +43,7 @@ class CustomInputField extends StatefulWidget {
   CustomInputField({
     super.key,
     this.label,
-    required this.hintText,
+    this.hintText,
     this.keyboardType = TextInputType.text,
     this.fillColor,
     TextEditingController? controller,
@@ -70,7 +70,7 @@ class CustomInputField extends StatefulWidget {
   final Widget? labelRight;
   // final bool isTextArea;
   // final bool isRectangle;
-  final String hintText;
+  final String? hintText;
   final bool optional;
   final BorderSide? side;
   // final String? footer;
@@ -102,7 +102,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
   }
 
   Widget _body() {
-    TextStyle style = widget.style ?? Apptheme.text.copyWith(fontSize: 16);
+    TextStyle style = widget.style ?? Apptheme.text.copyWith(fontSize: 16.0);
     Widget? prefix;
     Widget? suffix;
     // bool isDate = widget.keyboardType == TextInputType.datetime;
@@ -186,7 +186,10 @@ class _CustomInputFieldState extends State<CustomInputField> {
           ).copyWith(
             hintStyle:
                 widget.hintStyle ??
-                Apptheme.text.copyWith(color: Apptheme.slateGray, fontSize: 16),
+                Apptheme.text.copyWith(
+                  color: Apptheme.slateGray,
+                  fontSize: 16.0,
+                ),
           ),
           keyboardType: widget.keyboardType,
           obscureText: isPassword ? true : false,

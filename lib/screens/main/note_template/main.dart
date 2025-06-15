@@ -176,7 +176,7 @@ class NoteTemplateMain extends StatelessWidget {
                         title,
                         style: TextStyle(
                           color: const Color(0xFF1F2937),
-                          fontSize: 16,
+                          fontSize: 16.0,
                           fontFamily: 'Inter',
                           fontWeight: getFontWeight(500),
                           height: 1,
@@ -186,7 +186,7 @@ class NoteTemplateMain extends StatelessWidget {
                         description,
                         style: TextStyle(
                           color: const Color(0xFF6B7280),
-                          fontSize: 12,
+                          fontSize: 12.0,
                           fontFamily: 'Inter',
                           fontWeight: getFontWeight(400),
                           height: 1,
@@ -218,9 +218,9 @@ class NoteTemplateMain extends StatelessWidget {
           title,
           style: TextStyle(
             color: const Color(0xFF1F2937),
-            fontSize: 18,
+            fontSize: 18.0,
             fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
+            fontWeight: getFontWeight(600),
             height: 1,
           ),
         ),

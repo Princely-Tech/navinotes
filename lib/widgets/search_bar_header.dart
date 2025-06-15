@@ -67,7 +67,7 @@ class SearchBarHeader extends StatelessWidget {
                                   'Search your notes, boards, and more...',
                               hintStyle: Apptheme.text.copyWith(
                                 color: Apptheme.slateGray,
-                                fontSize: 16,
+                                fontSize: 16.0,
                                 height: 1.50,
                               ),
                             ),

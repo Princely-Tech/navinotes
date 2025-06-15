@@ -18,7 +18,7 @@ class RecentNotesScreen extends StatelessWidget {
 
       child: Consumer<RecentNotesVm>(
         builder: (_, vm, _) {
-          Widget sideBar = NavigationSideBar(currentRoute: Routes.recentNotes);
+          Widget sideBar = NavigationSideBar(activeRoute: Routes.recentNotes);
           return ScaffoldFrame(
             backgroundColor: vm.hasData ? Apptheme.lightGray : Apptheme.white,
             scaffoldKey: _scaffoldKey,

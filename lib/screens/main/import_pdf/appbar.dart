@@ -61,8 +61,8 @@ class ImportPdfAppBar extends StatelessWidget {
       child: Text(
         'Import PDF',
         style: Apptheme.text.copyWith(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
+          fontSize: 20.0,
+          fontWeight: getFontWeight(600),
         ),
       ),
     );
@@ -87,8 +87,8 @@ class ImportPdfAppBar extends StatelessWidget {
             'U',
             style: Apptheme.text.copyWith(
               color: Apptheme.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontSize: 16.0,
+              fontWeight: getFontWeight(600),
             ),
           ),
         ),
@@ -117,8 +117,8 @@ class ImportPdfAppBar extends StatelessWidget {
                       'N',
                       style: Apptheme.text.copyWith(
                         color: Apptheme.persianBlue,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 16.0,
+                        fontWeight: getFontWeight(600),
                       ),
                     ),
                   ),
@@ -127,8 +127,8 @@ class ImportPdfAppBar extends StatelessWidget {
                       AppStrings.appName,
                       style: Apptheme.text.copyWith(
                         color: Apptheme.royalBlue,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 16.0,
+                        fontWeight: getFontWeight(600),
                       ),
                     ),
                   ),

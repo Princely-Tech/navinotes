@@ -26,7 +26,7 @@ class EmptyRecentNotesMain extends StatelessWidget {
             'No Recent Notes Yet',
             textAlign: TextAlign.center,
             style: Apptheme.text.copyWith(
-              fontSize: 24,
+              fontSize: 24.0,
               fontWeight: getFontWeight(600),
               height: 1.33,
             ),
@@ -38,7 +38,7 @@ class EmptyRecentNotesMain extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Apptheme.text.copyWith(
                 color: Apptheme.stormGray,
-                fontSize: 16,
+                fontSize: 16.0,
                 height: 1.50,
               ),
             ),

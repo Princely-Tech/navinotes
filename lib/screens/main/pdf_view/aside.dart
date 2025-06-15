@@ -65,7 +65,7 @@ class PdfViewAside extends StatelessWidget {
                   'Try highlighting key terms and connecting them to create a comprehensive study structure. Connected ideas are easier to remember!',
                   style: Apptheme.text.copyWith(
                     color: Apptheme.strongBlue,
-                    fontSize: 12,
+                    fontSize: 12.0,
                   ),
                 ),
               ],
@@ -95,7 +95,7 @@ class PdfViewAside extends StatelessWidget {
                 'These concepts might connect well to your mind map:',
                 style: Apptheme.text.copyWith(
                   color: Apptheme.darkSlateGray,
-                  fontSize: 12,
+                  fontSize: 12.0,
                 ),
               ),
               ...[
@@ -118,7 +118,7 @@ class PdfViewAside extends StatelessWidget {
                     Expanded(
                       child: Text(
                         str,
-                        style: Apptheme.text.copyWith(fontSize: 12),
+                        style: Apptheme.text.copyWith(fontSize: 12.0),
                       ),
                     ),
                   ],
@@ -162,7 +162,7 @@ class PdfViewAside extends StatelessWidget {
                   title,
                   style: Apptheme.text.copyWith(
                     color: const Color(0xFF1F2937),
-                    fontSize: 12,
+                    fontSize: 12.0,
                     fontFamily: 'Inter',
                     fontWeight: getFontWeight(500),
                   ),
@@ -171,7 +171,7 @@ class PdfViewAside extends StatelessWidget {
                   body,
                   style: Apptheme.text.copyWith(
                     color: const Color(0xFF6B7280),
-                    fontSize: 12,
+                    fontSize: 12.0,
                     fontFamily: 'Inter',
                     fontWeight: getFontWeight(400),
                   ),
@@ -196,7 +196,7 @@ class PdfViewAside extends StatelessWidget {
                 'Connected Highlights',
                 style: Apptheme.text.copyWith(
                   color: const Color(0xFF1F2937),
-                  fontSize: 14,
+                  fontSize: 14.0,
                   fontFamily: 'Inter',
                   fontWeight: getFontWeight(500),
                 ),
@@ -206,7 +206,7 @@ class PdfViewAside extends StatelessWidget {
               '3 items',
               style: Apptheme.text.copyWith(
                 color: const Color(0xFF6B7280),
-                fontSize: 12,
+                fontSize: 12.0,
                 fontFamily: 'Inter',
                 fontWeight: getFontWeight(400),
                 height: 1,
@@ -242,7 +242,7 @@ class PdfViewAside extends StatelessWidget {
           'Mind Map Connections',
           style: Apptheme.text.copyWith(
             color: const Color(0xFF1F2937),
-            fontSize: 16,
+            fontSize: 16.0,
             fontFamily: 'Inter',
             fontWeight: getFontWeight(500),
             height: 1,
@@ -258,7 +258,7 @@ class PdfViewAside extends StatelessWidget {
                 'Preview',
                 style: Apptheme.text.copyWith(
                   color: const Color(0xFF1F2937),
-                  fontSize: 14,
+                  fontSize: 14.0,
                   fontFamily: 'Inter',
                   fontWeight: getFontWeight(500),
                 ),

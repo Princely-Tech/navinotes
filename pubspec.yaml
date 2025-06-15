@@ -22,6 +22,7 @@ dependencies:
   path_provider: ^2.1.5
   compdfkit_flutter: ^2.4.0+1
   flutter_launcher_icons: ^0.14.3
+  flutter_switch: ^0.3.2
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +43,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/boards/
+    - assets/images/boards/dark_academia/
     - assets/images/del/
     - assets/images/boards/notes/
     - assets/images/boards/create/
@@ -51,4 +53,17 @@ flutter:
   fonts:
     - family: Inter
       fonts:
-        - asset: assets/inter/Inter-VariableFont_opsz,wght.ttf
+        - asset: assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf
+    - family: Playfair Display
+      fonts:
+        - asset: assets/fonts/play_fair/PlayfairDisplay-VariableFont_wght.ttf
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/poppins/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/poppins/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/poppins/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/poppins/Poppins-Bold.ttf
+          weight: 700

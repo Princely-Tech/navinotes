@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/models/board.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
-import 'package:navinotes/settings/routes.dart';
 
 class ChooseBoardVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
@@ -9,14 +9,14 @@ class ChooseBoardVm extends ChangeNotifier {
   double backgroundPatternOpacity = 0;
 
   bool saveAsFavoriteStyle = false;
-  String selectedBoard = 'Plain';
+  BoardType selectedBoard = boardTypes.first;
 
   void updateBackgroundPatternOpacity(double value) {
     backgroundPatternOpacity = value;
     notifyListeners();
   }
 
-  void updateSelectedBoard(String value) {
+  void updateSelectedBoard(BoardType value) {
     selectedBoard = value;
     notifyListeners();
   }
@@ -26,14 +26,21 @@ class ChooseBoardVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  void openDrawer() {
+  void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
   }
 
- 
+  void openDrawer() {
+    scaffoldKey.currentState?.openDrawer();
+  }
 
   void skipAndUseDefault() {
-    goNext();
+    for (int i = 0; i < boardTypes.length; i++) {
+      if (boardTypes[i].route.isNotEmpty) {
+        NavigationHelper.push(boardTypes[i].route);
+        break;
+      }
+    }
   }
 
   void createBoard() {
@@ -41,6 +48,8 @@ class ChooseBoardVm extends ChangeNotifier {
   }
 
   void goNext() {
-    NavigationHelper.pushReplacement(Routes.dashboard);
+    if (selectedBoard.route.isNotEmpty) {
+      NavigationHelper.pushReplacement(selectedBoard.route);
+    }
   }
 }

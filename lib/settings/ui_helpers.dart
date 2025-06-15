@@ -39,13 +39,14 @@ FontWeight getFontWeight(int weight) {
   }
 }
 
-bool getBoolFromDeviceWidth({
+T getDeviceResponsiveValue<T>({
   required DeviceType deviceType,
-  required bool mobile,
-  bool? tablet,
-  bool? laptop,
-  bool? desktop,
-  bool? largeDesktop,
+  required T mobile,
+  T? tablet,
+  T? laptop,
+  T? desktop,
+  T? largeDesktop,
+  T? fallback, // Optional fallback value if everything else is null
 }) {
   switch (deviceType) {
     case DeviceType.mobile:
@@ -58,33 +59,5 @@ bool getBoolFromDeviceWidth({
       return desktop ?? laptop ?? tablet ?? mobile;
     case DeviceType.largeDesktop:
       return largeDesktop ?? desktop ?? laptop ?? tablet ?? mobile;
-  }
-}
-
-EdgeInsetsGeometry getPaddingFromDeviceWidth({
-  required DeviceType deviceType,
-  EdgeInsetsGeometry? mobile,
-  EdgeInsetsGeometry? tablet,
-  EdgeInsetsGeometry? laptop,
-  EdgeInsetsGeometry? desktop,
-  EdgeInsetsGeometry? largeDesktop,
-}) {
-  EdgeInsetsGeometry zeroPadding = EdgeInsets.zero;
-  switch (deviceType) {
-    case DeviceType.mobile:
-      return mobile ?? zeroPadding;
-    case DeviceType.tablet:
-      return tablet ?? mobile ?? zeroPadding;
-    case DeviceType.laptop:
-      return laptop ?? tablet ?? mobile ?? zeroPadding;
-    case DeviceType.desktop:
-      return desktop ?? laptop ?? tablet ?? mobile ?? zeroPadding;
-    case DeviceType.largeDesktop:
-      return largeDesktop ??
-          desktop ??
-          laptop ??
-          tablet ??
-          mobile ??
-          zeroPadding;
   }
 }

@@ -44,7 +44,7 @@ class PdfViewHeader extends StatelessWidget {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: Apptheme.text.copyWith(
-                                fontSize: 18,
+                                fontSize: 18.0,
                                 fontWeight: getFontWeight(500),
                               ),
                             ),

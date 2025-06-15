@@ -8,14 +8,14 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     return CustomProviders(
       child: MaterialApp(
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: Apptheme.fontFamily),
-        initialRoute: Routes.recentNotes,
-        // initialRoute: Routes.auth, //TODO uncomment
+        // initialRoute: Routes.recentNotes,
+        initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,
       ),

@@ -67,8 +67,9 @@ class AuthScreen extends StatelessWidget {
       children: [
         ImagePlaceHolder(imagePath: Images.testimonial),
         Text(
+          textAlign: TextAlign.center,
           '"NaviNotes transformed how I study. My grades improved within weeks!"',
-          style: Apptheme.text.copyWith(color: Apptheme.black, fontSize: 12),
+          style: Apptheme.text.copyWith(color: Apptheme.black, fontSize: 12.0),
         ),
       ],
     );
@@ -95,7 +96,7 @@ class AuthScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Apptheme.text.copyWith(
                   color: Apptheme.white,
-                  fontSize: 20,
+                  fontSize: 20.0,
                   fontFamily: Apptheme.fontPoppins,
                   fontWeight: FontWeight.w700,
                 ),
@@ -105,7 +106,7 @@ class AuthScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: Apptheme.text.copyWith(
                   color: Apptheme.white.withAlpha(229),
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontFamily: Apptheme.fontPoppins,
                 ),
               ),
@@ -117,9 +118,9 @@ class AuthScreen extends StatelessWidget {
                 color: Apptheme.white,
                 style: Apptheme.text.copyWith(
                   color: Apptheme.amber,
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontFamily: Apptheme.fontPoppins,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: getFontWeight(600),
                 ),
               ),
             ],
@@ -141,7 +142,7 @@ class AuthScreen extends StatelessWidget {
                     : 'Already have an account? ',
             style: Apptheme.text.copyWith(
               color: Apptheme.stormGray,
-              fontSize: 16,
+              fontSize: 16.0,
               fontFamily: Apptheme.fontPoppins,
             ),
           ),
@@ -150,7 +151,7 @@ class AuthScreen extends StatelessWidget {
             text: isLogin ? 'Create Account' : 'Login',
             style: Apptheme.text.copyWith(
               color: Apptheme.vividRose,
-              fontSize: 16,
+              fontSize: 16.0,
               fontFamily: Apptheme.fontPoppins,
               fontWeight: getFontWeight(500),
             ),
@@ -198,9 +199,9 @@ class AuthScreen extends StatelessWidget {
                   'Welcome back to your study space',
                   textAlign: TextAlign.center,
                   style: Apptheme.text.copyWith(
-                    fontSize: 24,
+                    fontSize: 24.0,
                     fontFamily: Apptheme.fontPoppins,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: getFontWeight(600),
                   ),
                 ),
                 Text(
@@ -208,7 +209,7 @@ class AuthScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: Apptheme.text.copyWith(
                     color: Apptheme.stormGray,
-                    fontSize: 16,
+                    fontSize: 16.0,
                     fontFamily: Apptheme.fontPoppins,
                   ),
                 ),
@@ -284,7 +285,7 @@ class AuthScreen extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Apptheme.text.copyWith(
             color: Apptheme.vividRose,
-            fontSize: 30,
+            fontSize: 30.0,
             fontFamily: Apptheme.fontPoppins,
             fontWeight: FontWeight.w700,
           ),
@@ -294,7 +295,7 @@ class AuthScreen extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Apptheme.text.copyWith(
             color: Apptheme.stormGray,
-            fontSize: 16,
+            fontSize: 16.0,
             fontFamily: Apptheme.fontPoppins,
           ),
         ),

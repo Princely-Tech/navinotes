@@ -170,7 +170,7 @@ class BoardNotesMain extends StatelessWidget {
                   title,
                   style: Apptheme.text.copyWith(
                     color: Apptheme.charcoalBlue,
-                    fontSize: 16,
+                    fontSize: 16.0,
                   ),
                 ),
                 Row(
@@ -182,7 +182,7 @@ class BoardNotesMain extends StatelessWidget {
                         'Last edited: $lastEdited',
                         style: Apptheme.text.copyWith(
                           color: Apptheme.steelMist,
-                          fontSize: 12,
+                          fontSize: 12.0,
                         ),
                       ),
                     ),
@@ -210,7 +210,7 @@ class BoardNotesMain extends StatelessWidget {
       child: Row(
         spacing: 20,
         children: [
-          Text('8 Note Pages', style: Apptheme.text.copyWith(fontSize: 16)),
+          Text('8 Note Pages', style: Apptheme.text.copyWith(fontSize: 16.0)),
           VisibleController(
             mobile: false,
             tablet: true,

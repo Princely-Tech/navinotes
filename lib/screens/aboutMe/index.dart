@@ -89,8 +89,8 @@ class AboutMeScreen extends StatelessWidget {
                 child: Text(
                   AppStrings.appName,
                   style: Apptheme.text.copyWith(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 20.0,
+                    fontWeight: getFontWeight(600),
                     color: Apptheme.vividRose,
                   ),
                 ),
@@ -112,5 +112,4 @@ class AboutMeScreen extends StatelessWidget {
       ),
     );
   }
-
 }

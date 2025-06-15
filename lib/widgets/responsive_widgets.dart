@@ -34,15 +34,15 @@ class ScrollableController extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, child) {
-        EdgeInsetsGeometry padding = getPaddingFromDeviceWidth(
+        EdgeInsetsGeometry padding = getDeviceResponsiveValue(
           deviceType: layoutVm.deviceType,
-          mobile: mobilePadding,
+          mobile: mobilePadding ?? EdgeInsets.zero,
           tablet: tabletPadding,
           laptop: laptopPadding,
           desktop: desktopPadding,
           largeDesktop: largeDesktopPadding,
         );
-        return getBoolFromDeviceWidth(
+        return getDeviceResponsiveValue(
               deviceType: layoutVm.deviceType,
               mobile: mobile,
               tablet: tablet,
@@ -84,7 +84,7 @@ class ExpandableController extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        return getBoolFromDeviceWidth(
+        return getDeviceResponsiveValue(
               deviceType: layoutVm.deviceType,
               mobile: mobile,
               tablet: tablet,
@@ -252,7 +252,7 @@ class ResponsivePadding extends StatelessWidget {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return Padding(
-          padding: getPaddingFromDeviceWidth(
+          padding: getDeviceResponsiveValue(
             deviceType: layoutVm.deviceType,
             mobile: mobile,
             tablet: tablet,
@@ -264,5 +264,49 @@ class ResponsivePadding extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class ResponsiveAspectRatio extends StatelessWidget {
+  const ResponsiveAspectRatio({
+    super.key,
+    required this.mobile,
+    this.tablet,
+    this.laptop,
+    this.desktop,
+    this.largeDesktop,
+    required this.child,
+  });
+  final double mobile;
+  final double? tablet;
+  final double? laptop;
+  final double? desktop;
+  final double? largeDesktop;
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return AspectRatio(
+          aspectRatio: getRatio(layoutVm.deviceType),
+          child: child,
+        );
+      },
+    );
+  }
+
+  double getRatio(DeviceType deviceType) {
+    switch (deviceType) {
+      case DeviceType.mobile:
+        return mobile;
+      case DeviceType.tablet:
+        return tablet ?? mobile;
+      case DeviceType.laptop:
+        return laptop ?? tablet ?? mobile;
+      case DeviceType.desktop:
+        return desktop ?? laptop ?? tablet ?? mobile;
+      case DeviceType.largeDesktop:
+        return largeDesktop ?? desktop ?? laptop ?? tablet ?? mobile;
+    }
   }
 }

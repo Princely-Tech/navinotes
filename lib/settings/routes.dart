@@ -10,6 +10,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.uploadPdf: (context) => UploadPdfScreen(),
   Routes.pdf: (context) => PdfViewScreen(),
   Routes.recentNotes: (context) => RecentNotesScreen(),
+  Routes.boardDarkAcademia: (context) => DarkAcademiaScreen(),
 };
 
 class Routes {
@@ -24,4 +25,5 @@ class Routes {
   static const importNotes = 'import_notes'; //TODO build this screen
   static const pdf = 'pdf';
   static const recentNotes = 'recent_notes';
+  static const boardDarkAcademia = 'board_dark_academia';
 }

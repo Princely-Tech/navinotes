@@ -16,7 +16,7 @@ class RecentNotesFilter extends StatelessWidget {
               child: Text(
                 'Recent Notes ${vm.hasData ? '(12)' : ''}',
                 style: Apptheme.text.copyWith(
-                  fontSize: 24,
+                  fontSize: 24.0,
                   fontWeight: getFontWeight(600),
                 ),
               ),

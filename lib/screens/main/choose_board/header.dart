@@ -22,39 +22,63 @@ class ChooseBoardHeader extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
-                    child: InkWell(
-                      onTap: NavigationHelper.pop,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 10,
-                        children: [
-                          Icon(Icons.arrow_back, color: Apptheme.strongBlue),
-                          Flexible(
-                            child: Column(
-                              spacing: 8,
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: InkWell(
+                            onTap: NavigationHelper.pop,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  AppStrings.appName,
-                                  style: Apptheme.text.copyWith(
-                                    overflow: TextOverflow.ellipsis,
-                                    color: Apptheme.royalBlue,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                                Icon(
+                                  Icons.arrow_back,
+                                  color: Apptheme.vividRose,
                                 ),
-                                Text(
-                                  'Choose Board Style',
-                                  style: Apptheme.text.copyWith(
-                                    color: Apptheme.strongBlue,
+                                VisibleController(
+                                  mobile: false,
+                                  tablet: true,
+                                  child: Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Column(
+                                        spacing: 8,
+                                        children: [
+                                          Text(
+                                            AppStrings.appName,
+                                            style: Apptheme.text.copyWith(
+                                              overflow: TextOverflow.ellipsis,
+                                              color: Apptheme.vividRose,
+                                              fontSize: 24.0,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Choose Board Style',
+                                            style: Apptheme.text.copyWith(
+                                              color: Apptheme.vividRose,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        VisibleController(
+                          mobile: true,
+                          largeDesktop: false,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: MenuButton(onPressed: vm.openDrawer),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
                   Row(
                     children: [
                       Container(
@@ -62,16 +86,16 @@ class ChooseBoardHeader extends StatelessWidget {
                         height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Apptheme.paleBlue,
+                          color: Apptheme.pastelBloom,
                         ),
-                        child: Icon(Icons.person, color: Apptheme.strongBlue),
+                        child: Icon(Icons.person, color: Apptheme.vividRose),
                       ),
                       VisibleController(
                         mobile: getMenuVisible(layoutVm.deviceType),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: InkWell(
-                            onTap: vm.openDrawer,
+                            onTap: vm.openEndDrawer,
                             child: Icon(
                               Icons.precision_manufacturing_outlined,
                               size: 24,

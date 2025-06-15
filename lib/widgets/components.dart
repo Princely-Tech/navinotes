@@ -62,6 +62,7 @@ class ImagePlaceHolder extends StatelessWidget {
     this.size,
     this.isCardHeader = false,
     this.borderRadius,
+    this.fit = BoxFit.cover,
     this.type = ImagePlaceHolderTypes.asset,
   });
   const ImagePlaceHolder.network({
@@ -70,6 +71,7 @@ class ImagePlaceHolder extends StatelessWidget {
     this.size,
     this.isCardHeader = false,
     this.borderRadius,
+    this.fit = BoxFit.cover,
     this.type = ImagePlaceHolderTypes.network,
   });
   final ImagePlaceHolderTypes type;
@@ -77,6 +79,7 @@ class ImagePlaceHolder extends StatelessWidget {
   final double? size;
   final bool isCardHeader;
   final BorderRadiusGeometry? borderRadius;
+  final BoxFit? fit;
   @override
   Widget build(BuildContext context) {
     Radius radius = Radius.circular(12);
@@ -96,7 +99,7 @@ class ImagePlaceHolder extends StatelessWidget {
         height: size,
         width: isCardHeader ? double.infinity : size,
         imagePath,
-        fit: BoxFit.cover,
+        fit: fit,
         errorBuilder: (context, error, stackTrace) {
           return const Icon(Icons.error);
         },
@@ -106,7 +109,7 @@ class ImagePlaceHolder extends StatelessWidget {
       height: size,
       width: isCardHeader ? double.infinity : size,
       imagePath,
-      fit: BoxFit.cover,
+      fit: fit,
       errorBuilder: (context, error, stackTrace) {
         return const Icon(Icons.error);
       },
@@ -138,7 +141,7 @@ class Header6 extends StatelessWidget {
                 style ??
                 Apptheme.text.copyWith(
                   color: Apptheme.darkSlateGray,
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontWeight: getFontWeight(500),
                 ),
           ),
@@ -147,7 +150,7 @@ class Header6 extends StatelessWidget {
               text: "*",
               style: Apptheme.text.copyWith(
                 color: Apptheme.strongBlue,
-                fontSize: 16,
+                fontSize: 16.0,
                 fontWeight: getFontWeight(500),
               ),
             ),
@@ -187,7 +190,7 @@ class CustomTag extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Text(
         data,
-        style: Apptheme.text.copyWith(color: textColor, fontSize: 12),
+        style: Apptheme.text.copyWith(color: textColor, fontSize: 12.0),
       ),
     );
   }

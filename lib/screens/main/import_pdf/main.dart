@@ -81,7 +81,7 @@ class ImportPdfMain extends StatelessWidget {
                   'Uploaded on $updatedDate',
                   style: Apptheme.text.copyWith(
                     color: Apptheme.steelMist,
-                    fontSize: 12,
+                    fontSize: 12.0,
                   ),
                 ),
               ],
@@ -242,7 +242,7 @@ class ImportPdfMain extends StatelessWidget {
               'Drag & Drop PDFs here or tap to browse',
               textAlign: TextAlign.center,
               style: Apptheme.text.copyWith(
-                fontSize: 18,
+                fontSize: 18.0,
                 fontWeight: getFontWeight(500),
               ),
             ),
@@ -251,7 +251,7 @@ class ImportPdfMain extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Apptheme.text.copyWith(
                 color: Apptheme.steelMist,
-                fontSize: 16,
+                fontSize: 16.0,
               ),
             ),
             Row(
