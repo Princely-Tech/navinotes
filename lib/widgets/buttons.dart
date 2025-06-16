@@ -33,6 +33,7 @@ class AppButton extends StatelessWidget {
     this.mainAxisSize = MainAxisSize.max,
     this.textColor,
     this.gradient,
+    this.spacing,
     // this.borderSide,
   }) : _type = type,
        assert(
@@ -44,6 +45,7 @@ class AppButton extends StatelessWidget {
     super.key,
     this.text,
     this.child,
+    this.spacing,
     // this.isRectangle = true,
     required this.onTap,
     this.prefix,
@@ -86,6 +88,7 @@ class AppButton extends StatelessWidget {
     // this.borderSide,
     this.mainAxisSize = MainAxisSize.max,
     this.shape,
+    this.spacing,
   }) : _type = ButtonType.text,
        assert(
          (text == null || child == null),
@@ -93,6 +96,7 @@ class AppButton extends StatelessWidget {
        );
 
   final ButtonType _type;
+  final double? spacing;
   final String? text;
   // final bool isRectangle;
   final bool loading;
@@ -124,7 +128,7 @@ class AppButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Row(
-        spacing: 5,
+        spacing: spacing ?? 5,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: mainAxisSize,
@@ -211,7 +215,7 @@ class AppButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: mainAxisSize,
-        spacing: 5,
+        spacing: spacing ?? 5,
         children: [
           if (isNotNull(prefix)) prefix!,
           if (isNotNull(text))

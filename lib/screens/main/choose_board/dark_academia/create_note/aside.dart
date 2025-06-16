@@ -65,7 +65,10 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
                             spacing: 15,
                             children: [
                               AppButton(
-                                onTap: () {},
+                                onTap:
+                                    () => NavigationHelper.push(
+                                      Routes.boardDarkAcademiaMindMap,
+                                    ),
                                 text: 'View Mind Map',
                                 color: Apptheme.fadedEmber.withAlpha(0xFF),
                                 borderColor: Apptheme.royalGold.withAlpha(0x7F),
@@ -148,7 +151,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return _section(
+    return RoyalGoldHeaderSection(
       title: 'Recently Viewed',
       child: Column(
         spacing: 15,
@@ -182,7 +185,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
   }
 
   Widget _tags() {
-    return _section(
+    return RoyalGoldHeaderSection(
       title: 'Tags',
       child: Wrap(
         runSpacing: 15,
@@ -227,7 +230,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
   }
 
   Widget _boardDetails() {
-    return _section(
+    return RoyalGoldHeaderSection(
       title: 'Board Details',
       child: Column(
         spacing: 15,
@@ -237,24 +240,6 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
           _detailsItem(title: 'Owner', value: 'Professor Hawking'),
         ],
       ),
-    );
-  }
-
-  Widget _section({required String title, required Widget child}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.royalGold,
-            fontSize: 18.0,
-            fontFamily: Apptheme.fontPlayfairDisplay,
-          ),
-        ),
-        Divider(color: Apptheme.royalGold.withAlpha(0x4C), height: 20),
-        Padding(padding: const EdgeInsets.only(top: 8.0), child: child),
-      ],
     );
   }
 }

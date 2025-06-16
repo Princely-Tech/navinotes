@@ -82,6 +82,16 @@ class Images {
   static const String calender3 = '$iconPath/calender3.svg';
   static const String upload3 = '$iconPath/upload3.svg';
   static const String grid = '$iconPath/grid.svg';
+  static const String scroll = '$iconPath/scroll.svg';
+  static const String imgCopy = '$iconPath/img_copy.svg';
+  static const String feather = '$iconPath/feather.svg';
+  static const String compass = '$iconPath/compass.svg';
+  static const String paint = '$iconPath/paint.svg';
+  static const String squiglyLine = '$iconPath/squigly_line.svg';
+  static const String zaggedLine = '$iconPath/zagged_line.svg';
+  static const String curvyLine = '$iconPath/curvy_line.svg';
+  static const String straightLine = '$iconPath/straight_line.svg';
+  // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
 

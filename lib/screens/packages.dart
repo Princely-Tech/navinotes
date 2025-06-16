@@ -19,3 +19,4 @@ export 'main/recent_notes/index.dart';
 export 'main/choose_board/dark_academia/index.dart';
 export 'main/choose_board/dark_academia/edit/index.dart';
 export 'main/choose_board/dark_academia/create_note/index.dart';
+export 'main/choose_board/dark_academia/mind_map/index.dart';

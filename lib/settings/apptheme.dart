@@ -94,6 +94,12 @@ class Apptheme {
   static const Color burntClove = Color(0x662C1810);
   static const Color deepMoss = Color(0xFF355E3B);
   static const Color blazingCopper = Color(0xFFCC5500);
+  static const Color moltenBrown = Color(0xFF1A0F08);
+  static const Color walnutBronze = Color(0xFF8B7355);
+  static const Color goldenSaffron = Color(0xFFC19B47);
+  static const Color creamMist = Color(0xCCF4F1E8);
+  static const Color rustWood = Color(0xFF8B5A2B);
+  static const Color gumMetalBlue = Color(0xFF36454F);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';

@@ -227,9 +227,30 @@ class OutlinedChild extends StatelessWidget {
   }
 }
 
-class CustomSlider extends StatelessWidget {
+class CustomSlider extends StatefulWidget {
   const CustomSlider({super.key, required this.slider});
   final Slider slider;
+
+  @override
+  State<CustomSlider> createState() => _CustomSliderState();
+}
+
+class _CustomSliderState extends State<CustomSlider> {
+  late double sliderValue;
+
+  void updateValue(double value) {
+    setState(() {
+      sliderValue = value;
+    });
+    widget.slider.onChanged?.call(value);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    sliderValue = widget.slider.value;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SliderTheme(
@@ -239,10 +260,10 @@ class CustomSlider extends StatelessWidget {
         overlayShape: RoundSliderOverlayShape(overlayRadius: 16.0),
       ),
       child: Slider(
-        value: slider.value,
-        onChanged: slider.onChanged,
+        value: sliderValue,
+        onChanged: updateValue,
         activeColor: Apptheme.dodgerBlue,
-        padding: slider.padding ?? EdgeInsets.zero,
+        padding: widget.slider.padding ?? EdgeInsets.zero,
         inactiveColor: Apptheme.gainsboro,
       ),
     );
