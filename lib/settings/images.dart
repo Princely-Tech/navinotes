@@ -81,7 +81,7 @@ class Images {
   static const String pen2 = '$iconPath/pen2.svg';
   static const String calender3 = '$iconPath/calender3.svg';
   static const String upload3 = '$iconPath/upload3.svg';
-  // static const String card = '$iconPath/card.svg';
+  static const String grid = '$iconPath/grid.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
 
@@ -98,13 +98,24 @@ class Images {
   static const String board5 = '$boardsPath/board5.png';
 
   //board dark academia
-  static const String boardDarkAcadPreview = '$boardsDarkAcademiaPath/preview.png';
-  static const String boardDarkAcadEditHeader = '$boardsDarkAcademiaPath/edit_header.png';
+  static const String boardDarkAcadPreview =
+      '$boardsDarkAcademiaPath/preview.png';
+  static const String boardDarkAcadEditHeader =
+      '$boardsDarkAcademiaPath/edit_header.png';
   static const String boardDarkAcadPaper = '$boardsDarkAcademiaPath/paper.png';
+
+  static const String boardDarkAcadNoteNewton =
+      '$boardsDarkAcademiaPath/newton.png';
+  static const String boardDarkAcadNoteQuantum =
+      '$boardsDarkAcademiaPath/quantum.png';
+  static const String boardDarkAcadNoteWave =
+      '$boardsDarkAcademiaPath/wave.png';
+  static const String boardDarkAcadNoteElectromagnetism =
+      '$boardsDarkAcademiaPath/electromagnetism.png';
+  static const String boardDarkAcadNoteThermodynamics =
+      '$boardsDarkAcademiaPath/thermodynamics.png';
   // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
   // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
-  // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
- 
 
   //boards create
   static const String boardPlain = '$boardsCreatePath/plain.png';

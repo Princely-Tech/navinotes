@@ -31,7 +31,6 @@ class CustomCard extends StatelessWidget {
         borderRadius: decoration.shape == BoxShape.circle ? null : radius,
         shape: null,
         border: decoration.border,
-       
         // border: decoration.border ?? Border.all(color: Apptheme.lightGray), //TODO check and return this
       ),
       padding: padding,

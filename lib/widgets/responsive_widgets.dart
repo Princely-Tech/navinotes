@@ -71,10 +71,23 @@ class ExpandableController extends StatelessWidget {
     this.laptop,
     this.desktop,
     this.largeDesktop,
+    this.isFlexible = false,
+  });
+
+  const ExpandableController.flexible({
+    super.key,
+    required this.child,
+    this.mobile = true,
+    this.tablet,
+    this.laptop,
+    this.desktop,
+    this.largeDesktop,
+    this.isFlexible = true,
   });
 
   final Widget child;
   final bool mobile;
+  final bool isFlexible;
   final bool? tablet;
   final bool? laptop;
   final bool? desktop;
@@ -92,11 +105,18 @@ class ExpandableController extends StatelessWidget {
               desktop: desktop,
               largeDesktop: largeDesktop,
             )
-            ? Expanded(child: child)
+            ? _returnChild()
             : child;
       },
       child: child,
     );
+  }
+
+  Widget _returnChild() {
+    if (isFlexible) {
+      return Flexible(child: child);
+    }
+    return Expanded(child: child);
   }
 }
 
@@ -210,24 +230,18 @@ class VisibleController extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        return getVisible(layoutVm.deviceType) ? child : const SizedBox();
+        return getDeviceResponsiveValue(
+              deviceType: layoutVm.deviceType,
+              mobile: mobile,
+              tablet: tablet,
+              laptop: laptop,
+              desktop: desktop,
+              largeDesktop: largeDesktop,
+            )
+            ? child
+            : const SizedBox();
       },
     );
-  }
-
-  bool getVisible(DeviceType deviceType) {
-    switch (deviceType) {
-      case DeviceType.mobile:
-        return mobile;
-      case DeviceType.tablet:
-        return tablet ?? mobile;
-      case DeviceType.laptop:
-        return laptop ?? tablet ?? mobile;
-      case DeviceType.desktop:
-        return desktop ?? laptop ?? tablet ?? mobile;
-      case DeviceType.largeDesktop:
-        return largeDesktop ?? desktop ?? laptop ?? tablet ?? mobile;
-    }
   }
 }
 
@@ -288,25 +302,32 @@ class ResponsiveAspectRatio extends StatelessWidget {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return AspectRatio(
-          aspectRatio: getRatio(layoutVm.deviceType),
+          aspectRatio: getDeviceResponsiveValue(
+            deviceType: layoutVm.deviceType,
+            mobile: mobile,
+            tablet: tablet,
+            laptop: laptop,
+            desktop: desktop,
+            largeDesktop: largeDesktop,
+          ),
           child: child,
         );
       },
     );
   }
+}
 
-  double getRatio(DeviceType deviceType) {
-    switch (deviceType) {
-      case DeviceType.mobile:
-        return mobile;
-      case DeviceType.tablet:
-        return tablet ?? mobile;
-      case DeviceType.laptop:
-        return laptop ?? tablet ?? mobile;
-      case DeviceType.desktop:
-        return desktop ?? laptop ?? tablet ?? mobile;
-      case DeviceType.largeDesktop:
-        return largeDesktop ?? desktop ?? laptop ?? tablet ?? mobile;
-    }
+class ResponsiveHorizontalPadding extends StatelessWidget {
+  const ResponsiveHorizontalPadding({super.key, required this.child});
+
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return ResponsivePadding(
+      mobile: EdgeInsets.symmetric(horizontal: mobileHorPadding),
+      laptop: EdgeInsets.symmetric(horizontal: laptopHorPadding),
+      desktop: EdgeInsets.symmetric(horizontal: desktopHorPadding),
+      child: child,
+    );
   }
 }

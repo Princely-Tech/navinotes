@@ -86,12 +86,7 @@ class SearchBarHeader extends StatelessWidget {
                       size: 16,
                       color: Apptheme.steelMist,
                     ),
-                    ImagePlaceHolder.network(
-                      imagePath:
-                          "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
-                      size: 29,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
+                   ProfilePic(),
                   ],
                 ),
               ],

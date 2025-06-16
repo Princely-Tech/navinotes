@@ -18,3 +18,4 @@ export 'main/pdf_view/header.dart';
 export 'main/recent_notes/index.dart';
 export 'main/choose_board/dark_academia/index.dart';
 export 'main/choose_board/dark_academia/edit/index.dart';
+export 'main/choose_board/dark_academia/create_note/index.dart';

@@ -299,14 +299,35 @@ class ColorWidget extends StatelessWidget {
 }
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key, required this.child});
+  const CustomDrawer({super.key, required this.child, this.bgColor});
   final Widget child;
+  final Color? bgColor;
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Apptheme.white,
+      backgroundColor: bgColor ?? Apptheme.white,
       shape: RoundedRectangleBorder(),
       child: child,
+    );
+  }
+}
+
+class ProfilePic extends StatelessWidget {
+  const ProfilePic({super.key, this.borderColor = Apptheme.transparent});
+  final Color borderColor;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: borderColor),
+      ),
+      child: ImagePlaceHolder.network(
+        imagePath:
+            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
+        size: 29,
+        borderRadius: BorderRadius.circular(999),
+      ),
     );
   }
 }

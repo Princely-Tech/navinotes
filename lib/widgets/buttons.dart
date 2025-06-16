@@ -17,6 +17,7 @@ class AppButton extends StatelessWidget {
     super.key,
     ButtonType type = ButtonType.primary,
     this.text,
+    this.borderColor,
     this.child,
     this.style,
     // this.isRectangle = true,
@@ -57,6 +58,7 @@ class AppButton extends StatelessWidget {
     this.textColor,
     this.gradient,
     this.shape,
+    this.borderColor,
   }) : _type = ButtonType.secondary,
        assert(
          (text == null || child == null),
@@ -67,6 +69,7 @@ class AppButton extends StatelessWidget {
     super.key,
     this.text,
     this.child,
+    this.borderColor,
     required this.onTap,
     // this.isRectangle = true,
     this.wrapWithFlexible = false,
@@ -106,6 +109,7 @@ class AppButton extends StatelessWidget {
   final MainAxisSize mainAxisSize;
   final Gradient? gradient;
   final OutlinedBorder? shape;
+  final Color? borderColor;
   // final BorderSide? borderSide;
 
   @override
@@ -141,12 +145,12 @@ class AppButton extends StatelessWidget {
 
   Widget _body() {
     Color bgColor = color;
-    Color borderColor = color;
+    Color runBorderColor = borderColor ?? color;
     BorderRadius radius = BorderRadius.circular(8);
     OutlinedBorder runShape =
         shape ??
         RoundedRectangleBorder(
-          side: BorderSide(color: borderColor),
+          side: BorderSide(color: runBorderColor),
           borderRadius: radius,
         );
     return Stack(
@@ -156,7 +160,7 @@ class AppButton extends StatelessWidget {
             onPressed: onTap,
             style: OutlinedButton.styleFrom(
               shape: runShape,
-              side: BorderSide(color: borderColor),
+              side: BorderSide(color: runBorderColor),
               padding: EdgeInsets.zero,
             ),
             child: _btnMain(),

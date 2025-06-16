@@ -95,7 +95,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(color: Apptheme.espressoBrown),
       margin: EdgeInsets.only(top: 40),
-      child: _horizontalPadding(
+      child: ResponsiveHorizontalPadding(
         child: ResponsivePadding(
           mobile: EdgeInsets.symmetric(vertical: mobileHorPadding),
           tablet: EdgeInsets.symmetric(vertical: laptopHorPadding),
@@ -199,7 +199,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
   }
 
   Widget _section({required Widget child, required String title}) {
-    return _horizontalPadding(
+    return ResponsiveHorizontalPadding(
       child: Column(
         spacing: 25,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,15 +216,6 @@ class DarkAcademiaEditScreen extends StatelessWidget {
           child,
         ],
       ),
-    );
-  }
-
-  Widget _horizontalPadding({required Widget child}) {
-    return ResponsivePadding(
-      mobile: EdgeInsets.symmetric(horizontal: mobileHorPadding),
-      laptop: EdgeInsets.symmetric(horizontal: laptopHorPadding),
-      desktop: EdgeInsets.symmetric(horizontal: desktopHorPadding),
-      child: child,
     );
   }
 
@@ -299,7 +290,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
             ),
           ),
         ),
-        _horizontalPadding(
+        ResponsiveHorizontalPadding(
           child: CustomGrid(
             children: [
               _actionCard(
@@ -312,7 +303,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
                 icon: Images.pen2,
                 title: 'Create Note',
                 body: 'Begin taking notes right away',
-                route: Routes.boardNotes,
+                route: Routes.boardDarkAcademiaCreateNote,
               ),
               _actionCard(
                 icon: Images.folder,

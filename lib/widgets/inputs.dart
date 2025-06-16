@@ -132,10 +132,13 @@ class _CustomInputFieldState extends State<CustomInputField> {
         ),
       );
     }
-    if (widget.prefixIcon != null) {
+    if (isNotNull(widget.prefixIcon)) {
       prefix = Padding(padding: prefPadding, child: widget.prefixIcon);
     }
-
+    if (isNotNull(widget.suffixIcon)) {
+      suffix = Padding(padding: suffixPadding, child: widget.suffixIcon);
+    }
+    
     bool isSelect = isNotNull(widget.selectItems);
     if (isSelect) {
       suffix = Padding(
