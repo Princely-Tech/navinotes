@@ -154,7 +154,9 @@ class AppButton extends StatelessWidget {
     OutlinedBorder runShape =
         shape ??
         RoundedRectangleBorder(
-          side: BorderSide(color: runBorderColor),
+          side: BorderSide(
+            color: isNotNull(gradient) ? Apptheme.transparent : runBorderColor,
+          ),
           borderRadius: radius,
         );
     return Stack(

@@ -136,9 +136,13 @@ class _CustomInputFieldState extends State<CustomInputField> {
       prefix = Padding(padding: prefPadding, child: widget.prefixIcon);
     }
     if (isNotNull(widget.suffixIcon)) {
-      suffix = Padding(padding: suffixPadding, child: widget.suffixIcon);
+      suffix = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [widget.suffixIcon!],
+      );
     }
-    
+
     bool isSelect = isNotNull(widget.selectItems);
     if (isSelect) {
       suffix = Padding(

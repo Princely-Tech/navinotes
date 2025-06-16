@@ -65,11 +65,10 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
           fontFamily: Apptheme.fontCrimsonPro,
           height: 1.50,
         ),
-        hintStyle: TextStyle(
-          color: const Color(0xFFADAEBC),
-          fontSize: 16,
+        hintStyle: Apptheme.text.copyWith(
+          color: Apptheme.slateGray,
+          fontSize: 16.0,
           fontFamily: Apptheme.fontPlayfairDisplay,
-          fontWeight: FontWeight.w400,
           height: 1.50,
         ),
       ),
@@ -131,11 +130,9 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
                             ),
                             text: 'Share',
                             color: Apptheme.goldenSaffron.withAlpha(0x33),
-                            style: TextStyle(
-                              color: const Color(0xFFC19B47),
-                              fontSize: 14,
-                              fontFamily: 'Playfair Display',
-                              fontWeight: FontWeight.w400,
+                            style: Apptheme.text.copyWith(
+                              color: Apptheme.goldenSaffron,
+                              fontFamily: Apptheme.fontPlayfairDisplay,
                             ),
                           ),
                           _outlinedChild(img: Images.paint),

@@ -40,6 +40,7 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
                             fontWeight: getFontWeight(500),
                           ),
                         ),
+                        _footer(),
                       ],
                     ),
                   ),
@@ -49,6 +50,72 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _footer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 10,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: Text(
+            'Export',
+            style: Apptheme.text.copyWith(
+              color: Apptheme.whiteSmoke,
+              fontSize: 12.0,
+              fontWeight: getFontWeight(600),
+              height: 1.33,
+              letterSpacing: 0.30,
+            ),
+          ),
+        ),
+        AppButton(
+          onTap: () {},
+          text: 'Export Mind Map',
+          prefix: SVGImagePlaceHolder(
+            imagePath: Images.upload,
+            color: Apptheme.white,
+          ),
+          style: Apptheme.text.copyWith(color: Apptheme.white),
+        ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return ScrollableController(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  spacing: 10,
+                  children:
+                      ['PNG', 'SVG', 'PDF']
+                          .map(
+                            (str) => Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Apptheme.white),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              child: Text(
+                                str,
+                                textAlign: TextAlign.center,
+                                style: Apptheme.text.copyWith(
+                                  color: Apptheme.whiteSmoke,
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 

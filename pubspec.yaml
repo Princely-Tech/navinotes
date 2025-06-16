@@ -44,6 +44,7 @@ flutter:
     - assets/images/
     - assets/images/boards/
     - assets/images/boards/dark_academia/
+    - assets/images/boards/nature/
     - assets/images/del/
     - assets/images/boards/notes/
     - assets/images/boards/create/
@@ -66,4 +67,17 @@ flutter:
         - asset: assets/fonts/poppins/Poppins-SemiBold.ttf
           weight: 600
         - asset: assets/fonts/poppins/Poppins-Bold.ttf
+          weight: 700
+    - family: Crimson Pro
+      fonts:
+        - asset: assets/fonts/Crimson_Pro/CrimsonPro-VariableFont_wght.ttf
+    - family: Crimson Text
+      fonts:
+        - asset: assets/fonts/Crimson_Text/CrimsonText-Regular.ttf
+          weight: 400
+        # - asset: assets/fonts/Crimson_Text/CrimsonText-Medium.ttf
+        #   weight: 500
+        - asset: assets/fonts/Crimson_Text/CrimsonText-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Crimson_Text/CrimsonText-Bold.ttf
           weight: 700

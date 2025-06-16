@@ -3,6 +3,7 @@ const delPath = 'assets/images/del';
 const imagePath = 'assets/images';
 const boardsPath = 'assets/images/boards';
 const boardsDarkAcademiaPath = 'assets/images/boards/dark_academia';
+const boardsNaturePath = 'assets/images/boards/nature';
 const boardsCreatePath = 'assets/images/boards/create';
 const boardsNotesPath = 'assets/images/boards/notes';
 const noteTemplatePath = 'assets/images/boards/note_templates';
@@ -91,6 +92,11 @@ class Images {
   static const String zaggedLine = '$iconPath/zagged_line.svg';
   static const String curvyLine = '$iconPath/curvy_line.svg';
   static const String straightLine = '$iconPath/straight_line.svg';
+  static const String leaf = '$iconPath/leaf.svg';
+  static const String tree = '$iconPath/tree.svg';
+  static const String plant = '$iconPath/plant.svg';
+  static const String stack = '$iconPath/stack.svg';
+  // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
@@ -125,8 +131,13 @@ class Images {
   static const String boardDarkAcadNoteThermodynamics =
       '$boardsDarkAcademiaPath/thermodynamics.png';
   // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
-  // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
-
+  
+  //Board nature
+  static const String boardNaturePreview = '$boardsNaturePath/preview.png';
+  // static const String boardNature = '$boardsNaturePath/.png';
+  // static const String boardNature = '$boardsNaturePath/.png';
+  // static const String boardNature = '$boardsNaturePath/preview.png';
+  
   //boards create
   static const String boardPlain = '$boardsCreatePath/plain.png';
   static const String boardMinimalist = '$boardsCreatePath/minimalist.png';

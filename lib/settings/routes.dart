@@ -12,8 +12,10 @@ Map<String, WidgetBuilder> routes = {
   Routes.recentNotes: (context) => RecentNotesScreen(),
   Routes.boardDarkAcademia: (context) => DarkAcademiaScreen(),
   Routes.boardDarkAcademiaEdit: (context) => DarkAcademiaEditScreen(),
-  Routes.boardDarkAcademiaCreateNote: (context) => DarkAcademiaCreateNoteScreen(),
+  Routes.boardDarkAcademiaCreateNote:
+      (context) => DarkAcademiaCreateNoteScreen(),
   Routes.boardDarkAcademiaMindMap: (context) => DarkAcademiaMindMapScreen(),
+  Routes.boardNature: (context) => BoardNatureScreen(),
 };
 
 class Routes {
@@ -32,4 +34,6 @@ class Routes {
   static const boardDarkAcademiaEdit = 'board_dark_academia_edit';
   static const boardDarkAcademiaCreateNote = 'board_dark_academia_create_note';
   static const boardDarkAcademiaMindMap = 'board_dark_academia_mind_map';
+  static const boardNature = 'board_nature';
+  static const boardNatureEdit = 'board_nature_edit';
 }

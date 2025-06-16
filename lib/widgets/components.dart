@@ -207,7 +207,7 @@ class OutlinedChild extends StatelessWidget {
 
   final Widget child;
   final BoxDecoration decoration;
-  final double size;
+  final double? size;
   // final bool unbounded;
 
   @override
