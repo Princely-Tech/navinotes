@@ -16,6 +16,7 @@ Map<String, WidgetBuilder> routes = {
       (context) => DarkAcademiaCreateNoteScreen(),
   Routes.boardDarkAcademiaMindMap: (context) => DarkAcademiaMindMapScreen(),
   Routes.boardNature: (context) => BoardNatureScreen(),
+  Routes.boardNatureEdit: (context) => BoardNatureEditScreen(),
 };
 
 class Routes {

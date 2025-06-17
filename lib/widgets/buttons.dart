@@ -227,11 +227,7 @@ class AppButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style:
                     style ??
-                    Apptheme.text.copyWith(
-                      color: runTextColor,
-                      fontSize: 16.0,
-                      fontWeight: getFontWeight(500),
-                    ),
+                    Apptheme.text.copyWith(color: runTextColor, fontSize: 16.0),
               ),
             ),
           if (isNotNull(child)) child!,

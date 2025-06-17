@@ -45,7 +45,6 @@ class Images {
   static const String img = '$iconPath/img.svg';
   static const String hook = '$iconPath/hook.svg';
   static const String copy2 = '$iconPath/copy2.svg';
-
   static const String video = '$iconPath/video.svg';
   static const String calculator = '$iconPath/calculator.svg';
   static const String chart = '$iconPath/chart.svg';
@@ -96,7 +95,12 @@ class Images {
   static const String tree = '$iconPath/tree.svg';
   static const String plant = '$iconPath/plant.svg';
   static const String stack = '$iconPath/stack.svg';
-  // static const String card = '$iconPath/card.svg';
+  static const String robot = '$iconPath/robot.svg';
+  static const String uploadFile = '$iconPath/upload_file.svg';
+  static const String edit = '$iconPath/edit.svg';
+  static const String checkRect = '$iconPath/check_rect.svg';
+  static const String pers = '$iconPath/pers.svg';
+  static const String menu2 = '$iconPath/menu2.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';

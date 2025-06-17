@@ -9,6 +9,7 @@ class CustomCard extends StatelessWidget {
     this.width = double.infinity,
     this.height,
     this.margin,
+    this.addShadow = false,
     // this.edgeClipRadius,
   });
   final Widget? child;
@@ -17,6 +18,7 @@ class CustomCard extends StatelessWidget {
   final BoxDecoration decoration;
   final double? width;
   final double? height;
+  final bool addShadow;
   // final double? edgeClipRadius;
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class CustomCard extends StatelessWidget {
         borderRadius: decoration.shape == BoxShape.circle ? null : radius,
         shape: null,
         border: decoration.border,
+        boxShadow: addShadow ? boxShadows : null,
         // border: decoration.border ?? Border.all(color: Apptheme.lightGray), //TODO check and return this
       ),
       padding: padding,

@@ -6,21 +6,7 @@ double mobileHorPadding = 20;
 double laptopHorPadding = 30;
 double desktopHorPadding = 40;
 
-Color shadowColor = Apptheme.black.withAlpha(0x19);
-List<BoxShadow> boxShadows = [
-  BoxShadow(
-    color: shadowColor,
-    blurRadius: 15,
-    offset: Offset(0, 10),
-    spreadRadius: 0,
-  ),
-  BoxShadow(
-    color: shadowColor,
-    blurRadius: 6,
-    offset: Offset(0, 4),
-    spreadRadius: 0,
-  ),
-];
+
 
 class DarkAcademiaEditScreen extends StatelessWidget {
   const DarkAcademiaEditScreen({super.key});

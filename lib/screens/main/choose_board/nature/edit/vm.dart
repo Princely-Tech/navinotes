@@ -1,6 +1,6 @@
 import 'package:navinotes/packages.dart';
 
-class BoardNatureVm extends ChangeNotifier {
+class BoardNatureEditVm extends ChangeNotifier {
   bool isPrivate = true;
 
   void updateIsPrivate(bool value) {

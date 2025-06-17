@@ -1,5 +1,24 @@
 import 'package:navinotes/packages.dart';
 
+double mobilePadding = 10;
+double tabletPadding = 20;
+
+Color shadowColor = Apptheme.black.withAlpha(0x19);
+List<BoxShadow> boxShadows = [
+  BoxShadow(
+    color: shadowColor,
+    blurRadius: 15,
+    offset: Offset(0, 10),
+    spreadRadius: 0,
+  ),
+  BoxShadow(
+    color: shadowColor,
+    blurRadius: 6,
+    offset: Offset(0, 4),
+    spreadRadius: 0,
+  ),
+];
+
 class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
@@ -104,6 +123,7 @@ class Apptheme {
   static const Color gumMetalBlue = Color(0xFF36454F);
   static const Color mossGreen = Color(0xFF4A7C59);
   static const Color sageMist = Color(0xFF9CAF88);
+  static const Color dustyOlive = Color(0xFFB5C4A0);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';

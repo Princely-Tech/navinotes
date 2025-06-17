@@ -1,17 +1,14 @@
 import 'vm.dart';
 import 'package:navinotes/packages.dart';
 
-double mobilePadding = 10;
-double tabletPadding = 20;
-
 class BoardNatureScreen extends StatelessWidget {
   const BoardNatureScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => DarkAcademiaVm(),
-      child: Consumer<DarkAcademiaVm>(
+      create: (_) => BoardNatureVm(),
+      child: Consumer<BoardNatureVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: Apptheme.softLinen,
@@ -304,7 +301,7 @@ class BoardNatureScreen extends StatelessWidget {
     );
   }
 
-  Widget _form(DarkAcademiaVm vm) {
+  Widget _form(BoardNatureVm vm) {
     final labelStyle = Apptheme.text.copyWith(
       color: Apptheme.mossGreen,
       fontSize: 18.0,
@@ -381,7 +378,7 @@ class BoardNatureScreen extends StatelessWidget {
   }
 
   Widget _privacySettingItem(
-    DarkAcademiaVm vm, {
+    BoardNatureVm vm, {
     required bool isChecked,
     required String title,
     required String body,
