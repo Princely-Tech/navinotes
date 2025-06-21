@@ -18,6 +18,15 @@ class AuthVM extends ChangeNotifier with AppRepository {
   TextEditingController refCodeController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    refCodeController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   AuthSocialType? loadingAuthType;
 
   void updateLoadingAuthType(AuthSocialType? type) {
@@ -53,31 +62,18 @@ class AuthVM extends ChangeNotifier with AppRepository {
     updateIsLoading(false);
   }
 
-  void clearAllController() {
-    nameController.clear();
-    emailController.clear();
-    refCodeController.clear();
-    passwordController.clear();
-    notifyListeners();
-  }
-
   void _completeSignIn(Map<String, dynamic> response) {
-    AuthApiResponse authApiResponse = AuthApiResponse.fromJson(response);
-    apiServiceProvider.sessionManager.updateSession(
-      user: authApiResponse.user,
-      token: authApiResponse.token,
+    completeSignInAndRouteOut(
+      response: response,
+      apiServiceProvider: apiServiceProvider,
     );
-    clearAllController();
-    NavigationHelper.pushReplacement(Routes.aboutMe);
-    //TODO ask about verify account
   }
 
   Future<void> socialLogin(AuthSocialType type) async {
     updateLoadingAuthType(type);
     if (type == AuthSocialType.google) {
       await signInWithGoogle(context);
-    } else {
-    }
+    } else {}
     updateLoadingAuthType(null);
   }
 
@@ -86,17 +82,24 @@ class AuthVM extends ChangeNotifier with AppRepository {
     fToast.init(context);
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (isNotNull(googleUser)) {
-        nameController.text = googleUser?.displayName ?? '';
-        emailController.text = googleUser?.email ?? '';
-        fToast.showToast(
-          child: MessageDisplayContainer(
-            'User Info gotten! Kindly enter a password and continue.',
-            isError: false,
-          ),
-          gravity: ToastGravity.TOP_RIGHT,
-          toastDuration: const Duration(seconds: 3),
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+      if (isNotNull(googleUser) && isNotNull(googleAuth)) {
+        // googleUser.
+        final body = {
+          "name": googleUser?.displayName,
+          "email": googleUser?.email,
+          'auth_provider': 'google',
+          'token': googleAuth?.idToken,
+        };
+        final request = JsonRequest.post(
+          ApiEndpoints.authRegisterProvider,
+          body,
         );
+        final response = await apiServiceProvider.apiService.sendJsonRequest(
+          request,
+        );
+        _completeSignIn(response);
       } else {
         fToast.showToast(
           child: MessageDisplayContainer('Could not get user data'),
@@ -104,16 +107,6 @@ class AuthVM extends ChangeNotifier with AppRepository {
           toastDuration: const Duration(seconds: 3),
         );
       }
-      // final GoogleSignInAuthentication? googleAuth =
-      //     await googleUser?.authentication;
-      // final credential = GoogleAuthProvider.credential(
-      //   accessToken: googleAuth?.accessToken,
-      //   idToken: googleAuth?.idToken,
-      // );
-      print(googleUser);
-      // UserCredential credentials = await _auth.signInWithCredential(credential);
-      // handleCredential(credentials);
-      // await goToFavStores();
     } catch (e) {
       fToast.showToast(
         child: MessageDisplayContainer('Sign in failed'),

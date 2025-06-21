@@ -2,6 +2,7 @@
 export 'auth/index.dart';
 export 'aboutMe/index.dart';
 export 'auth/verify/index.dart';
+export 'auth/utils.dart';
 
 //Main
 export 'main/pdf_view/vm.dart';

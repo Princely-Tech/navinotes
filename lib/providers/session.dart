@@ -16,4 +16,8 @@ class SessionManager extends ChangeNotifier {
     headers['Authorization'] = 'Bearer $token';
     return headers;
   }
+
+  getEmail() {
+    return user?.email;
+  }
 }

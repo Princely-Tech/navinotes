@@ -36,10 +36,6 @@ class SignUpForm extends StatelessWidget {
                 controller: vm.passwordController,
                 hintText: 'Password',
                 label: 'Password',
-                labelRight: AppButton.text(
-                  onTap: () {},
-                  text: 'Forgot Password?',
-                ),
                 keyboardType: TextInputType.visiblePassword,
                 fillColor: vm.inputFillColor,
                 validator: passwordValidator,

@@ -47,4 +47,6 @@ export 'package:logging/logging.dart';
 export 'package:fluttertoast/fluttertoast.dart';
 export 'package:flutter/gestures.dart';
 export 'package:google_sign_in/google_sign_in.dart';
+export 'package:pin_code_fields/pin_code_fields.dart';
+
 // export 'package:firebase_auth/firebase_auth.dart';

@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/auth/login.dart';
 import 'package:navinotes/screens/auth/sign_up.dart';

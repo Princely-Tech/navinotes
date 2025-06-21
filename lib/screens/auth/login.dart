@@ -35,9 +35,9 @@ class LoginForm extends StatelessWidget {
               AppButton(
                 loading: vm.isLoading,
                 onTap: () {
-                  // if (formKey.currentState!.validate()) {
+                  if (formKey.currentState!.validate()) {
                     vm.login();
-                  // }
+                  }
                 },
                 text: 'Sign In',
                 suffix: Icon(Icons.arrow_forward, color: Apptheme.white),
