@@ -2,14 +2,14 @@ enum ImagePlaceHolderTypes {
   asset,
   network;
 
-  bool get isAsset => this == ImagePlaceHolderTypes.asset;
-  bool get isNetwork => this == ImagePlaceHolderTypes.network;
+  bool get isAsset => this == asset;
+  bool get isNetwork => this == network;
 }
 
 enum PageDisplayFormat {
   grid,
   list;
 
-  bool get isGrid => this == PageDisplayFormat.grid;
-  bool get isList => this == PageDisplayFormat.list;
+  bool get isGrid => this == grid;
+  bool get isList => this == list;
 }

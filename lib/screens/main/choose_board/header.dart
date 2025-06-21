@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/choose_board/vm.dart';
 import 'package:provider/provider.dart';
-import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 
 class ChooseBoardHeader extends StatelessWidget {

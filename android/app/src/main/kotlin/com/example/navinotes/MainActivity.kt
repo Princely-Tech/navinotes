@@ -1,4 +1,4 @@
-package com.example.navinotes
+package com.navinotes.app
 
 import io.flutter.embedding.android.FlutterActivity
 

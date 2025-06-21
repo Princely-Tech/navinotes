@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/screens/aboutMe/vm.dart';
 import 'package:provider/provider.dart';
-import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 
 class AboutMeForm extends StatelessWidget {

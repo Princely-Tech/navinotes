@@ -11,11 +11,21 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScaffoldFrame(
       backgroundColor: Apptheme.white,
-      body: ChangeNotifierProvider(
-        create: (context) => AuthVM(),
-        child: Consumer<AuthVM>(
-          builder: (context, vm, child) {
-            return _main(vm);
+      body: ApiServiceComponent(
+        child: Consumer<ApiServiceProvider>(
+          builder: (_, apiServiceProvider, _) {
+            return ChangeNotifierProvider(
+              create:
+                  (context) => AuthVM(
+                    context: context,
+                    apiServiceProvider: apiServiceProvider,
+                  ),
+              child: Consumer<AuthVM>(
+                builder: (_, vm, _) {
+                  return _main(vm);
+                },
+              ),
+            );
           },
         ),
       ),
@@ -25,32 +35,35 @@ class AuthScreen extends StatelessWidget {
   Widget _main(AuthVM vm) {
     return Builder(
       builder: (context) {
-        return SizedBox(
-          width: screenWidth(context),
-          height: screenHeight(context),
-          child: ResponsivePadding(
-            mobile: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            laptop: const EdgeInsets.all(20),
-            child: Center(
-              child: WidthLimiter(
-                mobile: 500,
-                child: SingleChildScrollView(
-                  child: Column(
-                    spacing: 50,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        spacing: 30,
-                        children: [
-                          _header(),
-                          _authCard(vm),
-                          _freeTrial(),
-                          _authTypeSwitch(vm),
-                          _testimonial(),
-                        ],
-                      ),
-                      _footerLinks(),
-                    ],
+        return AbsorbPointer(
+          absorbing: vm.isLoading || isNotNull(vm.loadingAuthType),
+          child: SizedBox(
+            width: screenWidth(context),
+            height: screenHeight(context),
+            child: ResponsivePadding(
+              mobile: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              laptop: const EdgeInsets.all(20),
+              child: Center(
+                child: WidthLimiter(
+                  mobile: 500,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      spacing: 50,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          spacing: 30,
+                          children: [
+                            _header(),
+                            _authCard(vm),
+                            _freeTrial(),
+                            _authTypeSwitch(vm),
+                            _testimonial(),
+                          ],
+                        ),
+                        _footerLinks(),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -219,7 +232,10 @@ class AuthScreen extends StatelessWidget {
             _continueWith(),
             Row(
               spacing: 12,
-              children: [_socialBtn(Images.google), _socialBtn(Images.apple)],
+              children: [
+                _socialBtn(Images.google, vm),
+                _socialBtn(Images.apple, vm),
+              ],
             ),
           ],
         ),
@@ -227,18 +243,21 @@ class AuthScreen extends StatelessWidget {
     );
   }
 
-  Widget _socialBtn(String assetName) {
+  Widget _socialBtn(String assetName, AuthVM vm) {
     String name = 'Google';
+    AuthSocialType type = AuthSocialType.google;
     switch (assetName) {
       case Images.apple:
         name = 'Apple';
+        type = AuthSocialType.apple;
         break;
     }
     return AppButton.secondary(
       wrapWithFlexible: true,
       color: Apptheme.lightGray,
-      onTap: () {},
+      onTap: () => vm.socialLogin(type),
       text: name,
+      loading: vm.loadingAuthType == type,
       prefix: SVGImagePlaceHolder(
         imagePath: assetName,
         size: 20,

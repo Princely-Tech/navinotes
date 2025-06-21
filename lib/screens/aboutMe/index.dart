@@ -3,7 +3,7 @@ import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/aboutMe/aside.dart';
 import 'package:navinotes/screens/aboutMe/form.dart';
 import 'package:navinotes/screens/aboutMe/vm.dart';
-import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 import 'package:provider/provider.dart';
 

@@ -44,7 +44,7 @@ class EmptyDashboardMain extends StatelessWidget {
                 'Recent Activity',
                 style: Apptheme.text.copyWith(
                   color: Apptheme.graphite,
-                  fontSize:18.58,
+                  fontSize: 18.58,
                   fontWeight: getFontWeight(600),
                   height: 1.40,
                 ),
@@ -58,7 +58,7 @@ class EmptyDashboardMain extends StatelessWidget {
               text: 'View all',
               style: Apptheme.text.copyWith(
                 color: Apptheme.tropicalTeal,
-                fontSize:13.0,
+                fontSize: 13.0,
                 fontWeight: getFontWeight(500),
               ),
             ),
@@ -91,7 +91,7 @@ class EmptyDashboardMain extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: Apptheme.text.copyWith(
                         color: Apptheme.graphite,
-                        fontSize:16.72,
+                        fontSize: 16.72,
                         fontWeight: getFontWeight(500),
                       ),
                     ),
@@ -213,7 +213,7 @@ class EmptyDashboardMain extends StatelessWidget {
           'Quick Actions',
           style: Apptheme.text.copyWith(
             color: Apptheme.graphite,
-            fontSize:18.58,
+            fontSize: 18.58,
             fontWeight: getFontWeight(600),
             height: 1.40,
           ),

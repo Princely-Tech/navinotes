@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/pdf_view/vm.dart';
-import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 import 'package:provider/provider.dart';
 

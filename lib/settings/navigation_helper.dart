@@ -42,4 +42,8 @@ class NavigationHelper {
       navigatorKey.currentState!.pop(result);
     }
   }
+
+ static void gotToNoteTemplate() {
+    push(Routes.noteTemplate);
+  }
 }

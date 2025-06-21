@@ -20,7 +20,7 @@ class AppButton extends StatelessWidget {
     this.borderColor,
     this.child,
     this.style,
-    // this.isRectangle = true,
+    // this.loading = false,
     this.loading = false,
     this.shape,
     required this.onTap,

@@ -1,35 +1,41 @@
-import 'app_bar.dart';
 import 'vm.dart';
 import 'main.dart';
 import 'package:navinotes/packages.dart';
 import 'aside.dart';
 
-class DarkAcademiaCreateNoteScreen extends StatelessWidget {
-  DarkAcademiaCreateNoteScreen({super.key});
+class NatureNotePageScreen extends StatelessWidget {
+  NatureNotePageScreen({super.key});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => DarkAcademiaCreateNoteVm(scaffoldKey: _scaffoldKey),
-      child: Consumer<DarkAcademiaCreateNoteVm>(
+      create: (_) => NatureNotePageVm(scaffoldKey: _scaffoldKey),
+      child: Consumer<NatureNotePageVm>(
         builder: (_, vm, _) {
           return Consumer<LayoutProviderVm>(
             builder: (_, layoutVm, _) {
               return ScaffoldFrame(
                 scaffoldKey: _scaffoldKey,
-                backgroundColor: Apptheme.deepRoast,
+                backgroundColor: Apptheme.linen,
                 endDrawer: CustomDrawer(
                   bgColor: Apptheme.deepRoast,
-                  child: DarkAcademiaCreateNoteAside(isFull: true),
+                  child: NatureNotePageAside(isFull: true),
                 ),
                 body: Column(
-                  spacing: 30,
+                  spacing: getDeviceResponsiveValue(
+                    deviceType: layoutVm.deviceType,
+                    mobile: 10,
+                    desktop: 30,
+                  ),
                   children: [
-                    DarkAcademiaCreateNoteAppBar(),
+                    BoardNoteAppBar(
+                      scaffoldKey: _scaffoldKey,
+                      theme: BoardTheme.nature,
+                    ),
                     Expanded(
                       child: ResponsiveHorizontalPadding(
                         child: ResponsiveSection(
-                          mobile: DarkAcademiaCreateNoteMain(),
+                          mobile: NatureNotePageMain(),
                           desktop: Row(
                             spacing: getDeviceResponsiveValue(
                               deviceType: layoutVm.deviceType,
@@ -37,11 +43,11 @@ class DarkAcademiaCreateNoteScreen extends StatelessWidget {
                               desktop: 30,
                             ),
                             children: [
-                              Expanded(child: DarkAcademiaCreateNoteMain()),
+                              Expanded(child: NatureNotePageMain()),
                               WidthLimiter(
                                 mobile: 288,
                                 largeDesktop: 312,
-                                child: DarkAcademiaCreateNoteAside(),
+                                child: NatureNotePageAside(),
                               ),
                             ],
                           ),

@@ -23,6 +23,7 @@ class Apptheme {
   Apptheme._();
   static const Color primaryColor = Color(0xFF10B981);
   static const Color black = Color(0xFF000000);
+  static const Color mintCream = Color(0xFFE8F5E8);
   static const Color paleSage = Color(0xFFE0E8D9);
   static const Color softLinen = Color(0xFFF8F6F0);
   static const Color vanilaDust = Color(0xFFF5F5DC);
@@ -124,12 +125,17 @@ class Apptheme {
   static const Color mossGreen = Color(0xFF4A7C59);
   static const Color sageMist = Color(0xFF9CAF88);
   static const Color dustyOlive = Color(0xFFB5C4A0);
+  static const Color linen = Color(0xFFF9F7F4);
+  static const Color lightSage = Color(0xFFF0F4E8);
+  static const Color coffee = Color(0xFF6F4E37);
+  static const Color darkMossGreen = Color(0xFF1B4332);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';
   static const String fontPlayfairDisplay = 'Playfair Display';
-  static const String fontCrimsonPro = 'Crimson Pro'; //TODO: add font
-  static const String fontCrimsonText = 'Crimson Text'; //TODO: add font
+  static const String fontCrimsonPro = 'Crimson Pro'; 
+  static const String fontCrimsonText = 'Crimson Text'; 
+  static const String fontLibreBaskerville = 'Libre Baskerville'; //TODO bring font in
 
   static get text => TextStyle(
     color: defaultBlack,

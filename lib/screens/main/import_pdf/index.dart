@@ -5,7 +5,7 @@ import 'package:navinotes/screens/main/import_pdf/footer.dart';
 import 'package:navinotes/screens/main/import_pdf/main.dart';
 import 'package:navinotes/screens/main/import_pdf/vm.dart';
 import 'package:provider/provider.dart';
-import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 
 class UploadPdfScreen extends StatelessWidget {

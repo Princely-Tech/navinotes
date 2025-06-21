@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 
 class AboutMeAside extends StatelessWidget {

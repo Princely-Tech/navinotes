@@ -1,6 +1,6 @@
 //Local packages
 //Settings
-export 'settings/index.dart';
+export 'settings/packages.dart';
 
 //Widgets
 export 'widgets/index.dart';
@@ -13,8 +13,10 @@ export 'screens/main/pdf_view/overlay/vm.dart';
 
 //Providers
 export 'providers/index.dart';
-export 'providers/layout.dart';
-export 'providers/compdf.dart';
+export 'providers/packages.dart';
+
+//Models
+export 'models/packages.dart';
 
 //External packages
 export 'package:shared_preferences/shared_preferences.dart';
@@ -33,3 +35,16 @@ export 'package:compdfkit_flutter/configuration/cpdf_configuration.dart';
 export 'package:compdfkit_flutter/widgets/cpdf_reader_widget.dart';
 export 'package:flutter_switch/flutter_switch.dart';
 export 'package:dotted_decoration/dotted_decoration.dart';
+export 'package:dio/dio.dart';
+export 'package:flutter/foundation.dart';
+export 'package:pretty_dio_logger/pretty_dio_logger.dart';
+export 'package:mime/mime.dart';
+export 'package:http_parser/http_parser.dart';
+export 'dart:async';
+export 'dart:convert';
+export 'package:email_validator/email_validator.dart';
+export 'package:logging/logging.dart';
+export 'package:fluttertoast/fluttertoast.dart';
+export 'package:flutter/gestures.dart';
+export 'package:google_sign_in/google_sign_in.dart';
+// export 'package:firebase_auth/firebase_auth.dart';

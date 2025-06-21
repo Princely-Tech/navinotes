@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/providers/layout.dart';
-import 'package:navinotes/settings/screen_dimensions.dart';
-import 'package:navinotes/settings/ui_helpers.dart';
-import 'package:provider/provider.dart';
+import 'package:navinotes/packages.dart';
 
 class CustomProviders extends StatelessWidget {
   const CustomProviders({super.key, required this.child});
@@ -20,16 +16,37 @@ class CustomProviders extends StatelessWidget {
                 context: context,
               ),
         ),
+        ChangeNotifierProvider(create: (_) => SessionManager()),
       ],
       child: Builder(
         builder: (context) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.read<LayoutProviderVm>().updateDeviceType();
           });
-          // print(context.read<LayoutProviderVm>().deviceType);
           return child;
         },
       ),
+    );
+  }
+}
+
+class ApiServiceComponent extends StatelessWidget {
+  const ApiServiceComponent({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProxyProvider<SessionManager, ApiServiceProvider>(
+      create:
+          (context) => ApiServiceProvider(
+            sessionManager: SessionManager(),
+            context: context,
+          ),
+      update:
+          (context, sessionManager, __) => ApiServiceProvider(
+            sessionManager: sessionManager,
+            context: context,
+          ),
+      child: child,
     );
   }
 }

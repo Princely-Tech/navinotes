@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 
-class DarkAcademiaCreateNoteVm extends ChangeNotifier {
+class NatureNotePageVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  DarkAcademiaCreateNoteVm({required this.scaffoldKey});
+  NatureNotePageVm({required this.scaffoldKey});
 
   PageDisplayFormat pageDisplayFormat = PageDisplayFormat.list;
 

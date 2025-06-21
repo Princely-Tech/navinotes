@@ -10,7 +10,7 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
       builder: (_, vm, _) {
         return Column(
           children: [
-            _header(vm),
+            BoardPageMainHeader(),
             Expanded(
               child: ScrollableController(
                 mobilePadding: EdgeInsets.symmetric(
@@ -55,7 +55,7 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                     Column(
                       children: [
                         InkWell(
-                          onTap: vm.gotToCreateNotePage,
+                          onTap: NavigationHelper.gotToNoteTemplate,
                           child: ConstrainedBox(
                             constraints: BoxConstraints(minHeight: 288),
                             child: CustomCard(
@@ -197,181 +197,6 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                   ],
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _header(DarkAcademiaCreateNoteVm vm) {
-    return Container(
-      constraints: BoxConstraints(minHeight: 60),
-      decoration: BoxDecoration(
-        color: Apptheme.fadedEmber,
-        borderRadius: BorderRadius.circular(4),
-        border: Border(
-          bottom: BorderSide(
-            width: 1,
-            color: Apptheme.royalGold.withAlpha(0x4C),
-          ),
-        ),
-      ),
-      padding: EdgeInsets.all(10),
-      child: Row(
-        spacing: 20,
-        children: [
-          Text(
-            '8 Note Pages',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.royalGold,
-              fontSize: 20.0,
-              fontFamily: Apptheme.fontPlayfairDisplay,
-              height: 1.40,
-            ),
-          ),
-          VisibleController(
-            mobile: false,
-            tablet: true,
-            child: Expanded(
-              child: LayoutBuilder(
-                builder: (_, constraints) {
-                  return ScrollableController(
-                    scrollDirection: Axis.horizontal,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: constraints.maxWidth,
-                      ),
-                      child: ResponsiveSection(
-                        mobile: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          spacing: 10,
-                          children: [
-                            _gridSection(),
-                            _sortBy(),
-                            VisibleController(
-                              mobile: false,
-                              desktop: true,
-                              child: AppButton(
-                                onTap: vm.gotToCreateNotePage,
-                                text: 'New Note Page',
-                                mainAxisSize: MainAxisSize.min,
-                                minHeight: 40,
-                                color: Apptheme.burntLeather.withAlpha(0xFF),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                  side: BorderSide(color: Apptheme.royalGold),
-                                ),
-                                prefix: Icon(
-                                  Icons.add,
-                                  color: Apptheme.royalGold,
-                                  size: 20,
-                                ),
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.royalGold,
-                                  fontSize: 16.0,
-                                  fontFamily: Apptheme.fontCrimsonPro,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _gridSection() {
-    return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
-      child: Padding(
-        padding: EdgeInsets.all(5),
-        child: Row(
-          spacing: 15,
-          children: [
-            SVGImagePlaceHolder(
-              imagePath: Images.ques,
-              color: Apptheme.vanilaDust.withAlpha(204),
-              size: 16,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: Apptheme.burntClove,
-                border: Border.all(color: Apptheme.royalGold),
-              ),
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _layoutBtn(PageDisplayFormat.list),
-                    _layoutBtn(PageDisplayFormat.grid),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _layoutBtn(PageDisplayFormat format) {
-    return Consumer<DarkAcademiaCreateNoteVm>(
-      builder: (_, vm, _) {
-        bool isGrid = format == PageDisplayFormat.grid;
-        bool isActive = vm.pageDisplayFormat == format;
-        return InkWell(
-          onTap: () => vm.updatePageDisplayFormat(format),
-          child: OutlinedChild(
-            size: 40,
-            decoration: BoxDecoration(
-              color:
-                  isActive
-                      ? Apptheme.burntLeather.withAlpha(102)
-                      : Apptheme.transparent,
-              borderRadius: BorderRadius.circular(0),
-            ),
-            child: SVGImagePlaceHolder(
-              imagePath: isGrid ? Images.grid : Images.menu,
-              color: isActive ? Apptheme.royalGold : Apptheme.vanilaDust,
-              size: isGrid ? 16 : 18,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _sortBy() {
-    return WidthLimiter(
-      mobile: 200,
-      child: Row(
-        spacing: 10,
-        children: [
-          Text(
-            'Sort by:',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.vanilaDust.withAlpha(0xCC),
-              fontSize: 16.0,
-              fontFamily: Apptheme.fontCrimsonPro,
-              height: 1.50,
-            ),
-          ),
-          Expanded(
-            child: CustomInputField(
-              fillColor: Apptheme.burntLeather,
-              side: BorderSide(color: Apptheme.royalGold),
-              selectItems: [],
-              style: Apptheme.text.copyWith(color: Apptheme.royalGold),
-              constraints: BoxConstraints(maxHeight: 40),
             ),
           ),
         ],

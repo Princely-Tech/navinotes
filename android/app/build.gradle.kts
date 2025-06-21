@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.navinotes"
+    namespace = "com.navinotes.app"
     compileSdk = 35
     ndkVersion = "28.0.13004108"
 
@@ -21,10 +21,10 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.navinotes"
+        applicationId = "com.navinotes.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 21
+        minSdk = 23
         targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName

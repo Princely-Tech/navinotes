@@ -1,20 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/screens/auth/vm.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:navinotes/widgets/buttons.dart';
-import 'package:navinotes/widgets/inputs.dart';
-import 'package:provider/provider.dart';
+import 'package:navinotes/packages.dart';
+import 'vm.dart';
 
 class LoginForm extends StatelessWidget {
-  const LoginForm({super.key});
-
+  LoginForm({super.key});
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    // BorderSide borderSide = BorderSide(color: Apptheme.white.withAlpha(30));
-
     return Consumer<AuthVM>(
       builder: (_, vm, _) {
         return Form(
+          key: formKey,
           child: Column(
             spacing: 20,
             children: [
@@ -23,10 +18,13 @@ class LoginForm extends StatelessWidget {
                 label: 'Email',
                 keyboardType: TextInputType.emailAddress,
                 fillColor: vm.inputFillColor,
+                validator: emailValidator,
+                controller: vm.emailController,
               ),
               CustomInputField(
                 hintText: 'Password',
                 label: 'Password',
+                controller: vm.passwordController,
                 labelRight: AppButton.text(
                   onTap: () {},
                   text: 'Forgot Password?',
@@ -35,7 +33,12 @@ class LoginForm extends StatelessWidget {
                 fillColor: vm.inputFillColor,
               ),
               AppButton(
-                onTap: vm.login,
+                loading: vm.isLoading,
+                onTap: () {
+                  // if (formKey.currentState!.validate()) {
+                    vm.login();
+                  // }
+                },
                 text: 'Sign In',
                 suffix: Icon(Icons.arrow_forward, color: Apptheme.white),
               ),

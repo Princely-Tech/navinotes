@@ -17,11 +17,14 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardDarkAcademiaMindMap: (context) => DarkAcademiaMindMapScreen(),
   Routes.boardNature: (context) => BoardNatureScreen(),
   Routes.boardNatureEdit: (context) => BoardNatureEditScreen(),
+  Routes.boardNatureNotePage: (context) => NatureNotePageScreen(), 
+  Routes.verify: (context) => VerifyScreen(), 
 };
 
 class Routes {
   Routes._();
   static const auth = 'auth';
+  static const verify = 'verify';
   static const aboutMe = 'aboutMe';
   static const dashboard = 'dashboard';
   static const chooseBoard = 'choose_board';
@@ -37,4 +40,7 @@ class Routes {
   static const boardDarkAcademiaMindMap = 'board_dark_academia_mind_map';
   static const boardNature = 'board_nature';
   static const boardNatureEdit = 'board_nature_edit';
+  static const boardNatureNotePage = 'board_nature_note_page';
 }
+//Documentation
+//https://documenter.getpostman.com/view/45960961/2sB2x8GXet

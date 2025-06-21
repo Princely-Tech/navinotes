@@ -43,7 +43,7 @@ List<BoardType> boardTypes = [
     name: 'Nature',
     image: Images.boardNature,
     description: 'Organic patterns, natural colors',
-    route: '',
+    route: Routes.boardNature,
   ),
   BoardType(
     name: 'Pastel',

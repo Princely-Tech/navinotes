@@ -196,19 +196,48 @@ class CustomTag extends StatelessWidget {
   }
 }
 
+class LoadingIndicator extends StatelessWidget {
+  const LoadingIndicator({
+    super.key,
+    required this.child,
+    required this.loading,
+  });
+  final Widget child;
+  final bool loading;
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        child,
+        if (loading)
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(color: Apptheme.black.withAlpha(20)),
+              child: Center(
+                child: CircularProgressIndicator(color: Apptheme.bloodFire),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class OutlinedChild extends StatelessWidget {
   const OutlinedChild({
     super.key,
     required this.child,
     this.decoration = const BoxDecoration(),
     this.size = 36,
-    // this.unbounded = false,
   });
 
   final Widget child;
   final BoxDecoration decoration;
   final double? size;
-  // final bool unbounded;
 
   @override
   Widget build(BuildContext context) {
@@ -348,6 +377,27 @@ class ProfilePic extends StatelessWidget {
             "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
         size: 29,
         borderRadius: BorderRadius.circular(999),
+      ),
+    );
+  }
+}
+
+class MessageDisplayContainer extends StatelessWidget {
+  const MessageDisplayContainer(this.message, {super.key, this.isError = true});
+  final String message;
+  final bool isError;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        color: isError ? Apptheme.bloodFire : Apptheme.vitalGreen,
+      ),
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: Apptheme.text.copyWith(color: Apptheme.white),
       ),
     );
   }

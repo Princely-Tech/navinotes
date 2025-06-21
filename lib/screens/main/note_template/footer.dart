@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/note_template/vm.dart';
 import 'package:navinotes/settings/apptheme.dart';
 import 'package:provider/provider.dart';
-import 'package:navinotes/settings/index.dart';
+import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 
 class NoteTemplateFooter extends StatelessWidget {

@@ -1,8 +1,6 @@
 import 'vm.dart';
 import 'package:navinotes/packages.dart';
 
-//TODO work on textstyle to use apptheme
-
 class BoardNatureEditScreen extends StatelessWidget {
   const BoardNatureEditScreen({super.key});
 
@@ -25,8 +23,8 @@ class BoardNatureEditScreen extends StatelessWidget {
                         begin: Alignment(0.00, 0.50),
                         end: Alignment(1.00, 0.50),
                         colors: [
-                          const Color(0x4CB5C4A0),
-                          const Color(0xFFF8F6F0),
+                          Apptheme.dustyOlive.withAlpha(0x4C),
+                          Apptheme.softLinen,
                         ],
                       ),
                     ),
@@ -70,11 +68,9 @@ class BoardNatureEditScreen extends StatelessWidget {
                                             ),
                                             text:
                                                 'Upload syllabus to generate timeline',
-                                            style: TextStyle(
-                                              color: const Color(0xFF9CAF88),
-                                              fontSize: 16,
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w500,
+                                            style: Apptheme.text.copyWith(
+                                              color: Apptheme.sageMist,
+                                              fontSize: 16.0,
                                             ),
                                           ),
                                         ),
@@ -95,6 +91,7 @@ class BoardNatureEditScreen extends StatelessWidget {
                                               color: Apptheme.walnutBronze,
                                               image: Images.edit,
                                               title: 'Create Note',
+                                              route: Routes.boardNatureNotePage,
                                             ),
                                             _gridChild(
                                               body:
@@ -125,11 +122,9 @@ class BoardNatureEditScreen extends StatelessWidget {
                                             ),
                                             text:
                                                 'Upload syllabus to see assignments',
-                                            style: TextStyle(
-                                              color: const Color(0xFF9CAF88),
-                                              fontSize: 16,
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w500,
+                                            style: Apptheme.text.copyWith(
+                                              color: Apptheme.sageMist,
+                                              fontSize: 16.0,
                                             ),
                                           ),
                                         ),
@@ -165,11 +160,8 @@ class BoardNatureEditScreen extends StatelessWidget {
                                             Text(
                                               'Upload your syllabus to complete your academic ecosystem',
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: const Color(0xFF1F2937),
-                                                fontSize: 20,
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w500,
+                                              style: Apptheme.text.copyWith(
+                                                fontSize: 20.0,
                                                 height: 1.40,
                                               ),
                                             ),
@@ -183,21 +175,17 @@ class BoardNatureEditScreen extends StatelessWidget {
                                                 size: 16,
                                                 color: Apptheme.white,
                                               ),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w500,
+                                              style: Apptheme.text.copyWith(
+                                                color: Apptheme.white,
+                                                fontSize: 16.0,
                                               ),
                                             ),
                                             Text(
                                               'Nurture your learning journey with organized, AI-powered insights',
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: const Color(0xFF6B7280),
-                                                fontSize: 16,
-                                                fontFamily: 'Inter',
-                                                fontWeight: FontWeight.w400,
+                                              style: Apptheme.text.copyWith(
+                                                color: Apptheme.steelMist,
+                                                fontSize: 16.0,
                                                 height: 1.50,
                                               ),
                                             ),
@@ -232,11 +220,9 @@ class BoardNatureEditScreen extends StatelessWidget {
       child: Text(
         '© 2023 Environmental Science 2401 - Fall Semester',
         textAlign: TextAlign.center,
-        style: TextStyle(
-          color: const Color(0xFF4B5563),
-          fontSize: 16,
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w400,
+        style: Apptheme.text.copyWith(
+          color: Apptheme.stormGray,
+          fontSize: 16.0,
           height: 1.50,
         ),
       ),
@@ -256,12 +242,7 @@ class BoardNatureEditScreen extends StatelessWidget {
           SVGImagePlaceHolder(imagePath: Images.robot, size: 16, color: color),
           Text(
             isExtracted ? 'AI-Extracted' : 'AI-Powered',
-            style: TextStyle(
-              color: color,
-              fontSize: 12,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-            ),
+            style: Apptheme.text.copyWith(color: color, fontSize: 12.0),
           ),
         ],
       ),
@@ -278,13 +259,7 @@ class BoardNatureEditScreen extends StatelessWidget {
           Icon(Icons.calendar_month, size: 20, color: Apptheme.walnutBronze),
         Text(
           title,
-          style: TextStyle(
-            color: const Color(0xFF1F2937),
-            fontSize: 18,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
-            height: 1.56,
-          ),
+          style: Apptheme.text.copyWith(fontSize: 18.0, height: 1.56),
         ),
         _aiPowered(isExtracted: true),
       ],
@@ -308,11 +283,9 @@ class BoardNatureEditScreen extends StatelessWidget {
           constraints: BoxConstraints(minWidth: 130),
           child: Text(
             title,
-            style: TextStyle(
-              color: const Color(0xFF6B7280),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
+            style: Apptheme.text.copyWith(
+              color: Apptheme.steelMist,
+              fontSize: 16.0,
               height: 1.50,
             ),
           ),
@@ -320,16 +293,13 @@ class BoardNatureEditScreen extends StatelessWidget {
         Expanded(
           child: Text(
             value,
-            style: TextStyle(
-              color: const Color(0xFF9CA3AF),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
+            style: Apptheme.text.copyWith(
+              color: Apptheme.blueGray,
+              fontSize: 16.0,
               height: 1.50,
             ),
           ),
         ),
-        //
       ],
     );
   }
@@ -344,11 +314,9 @@ class BoardNatureEditScreen extends StatelessWidget {
         children: [
           Text(
             'Course Information',
-            style: TextStyle(
-              color: const Color(0xFF1F2937),
-              fontSize: 20,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
+            style: Apptheme.text.copyWith(
+              fontSize: 20.0,
+              fontWeight: getFontWeight(600),
             ),
           ),
           CustomGrid(
@@ -421,11 +389,9 @@ class BoardNatureEditScreen extends StatelessWidget {
         Flexible(
           child: Text(
             title,
-            style: TextStyle(
-              color: const Color(0xFF1F2937),
-              fontSize: 20,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
+            style: Apptheme.text.copyWith(
+              fontSize: 20.0,
+              fontWeight: getFontWeight(600),
               height: 1.40,
             ),
           ),
@@ -441,56 +407,59 @@ class BoardNatureEditScreen extends StatelessWidget {
     required String btnText,
     required String image,
     required Color color,
+    String? route, //TODO make required
   }) {
-    return CustomCard(
-      decoration: BoxDecoration(color: color),
-      child: Column(
-        spacing: 15,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          OutlinedChild(
-            size: 48,
-            decoration: BoxDecoration(
-              color: Apptheme.white.withAlpha(51),
-              shape: BoxShape.circle,
+    return InkWell(
+      onTap: () {
+        if (isNotNull(route)) {
+          NavigationHelper.push(route!);
+        }
+      },
+      child: CustomCard(
+        decoration: BoxDecoration(color: color),
+        child: Column(
+          spacing: 15,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            OutlinedChild(
+              size: 48,
+              decoration: BoxDecoration(
+                color: Apptheme.white.withAlpha(51),
+                shape: BoxShape.circle,
+              ),
+              child: SVGImagePlaceHolder(
+                imagePath: image,
+                size: 20,
+                color: Apptheme.white,
+              ),
             ),
-            child: SVGImagePlaceHolder(
-              imagePath: image,
-              size: 20,
-              color: Apptheme.white,
+            Text(
+              title,
+              style: Apptheme.text.copyWith(
+                color: Apptheme.white,
+                fontSize: 20.0,
+                fontWeight: getFontWeight(600),
+              ),
             ),
-          ),
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
+            Text(
+              body,
+              style: Apptheme.text.copyWith(
+                color: Apptheme.white.withAlpha(229),
+                fontSize: 16.0,
+              ),
             ),
-          ),
-          Text(
-            body,
-            style: TextStyle(
-              color: Apptheme.white.withAlpha(229),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
+            AppButton.text(
+              mainAxisSize: MainAxisSize.min,
+              onTap: () {},
+              text: btnText,
+              suffix: Icon(Icons.arrow_forward, color: Apptheme.white),
+              style: Apptheme.text.copyWith(
+                color: Apptheme.white,
+                fontSize: 16.0,
+              ),
             ),
-          ),
-          AppButton.text(
-            mainAxisSize: MainAxisSize.min,
-            onTap: () {},
-            text: btnText,
-            suffix: Icon(Icons.arrow_forward, color: Apptheme.white),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -541,11 +510,9 @@ class BoardNatureEditScreen extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: const Color(0xFF1F2937),
-                  fontSize: 18,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
+                style: Apptheme.text.copyWith(
+                  fontSize: 18.0,
+                  fontWeight: getFontWeight(500),
                   height: 1.56,
                 ),
               ),
@@ -554,11 +521,9 @@ class BoardNatureEditScreen extends StatelessWidget {
                 child: Text(
                   body,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: const Color(0xFF4B5563),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
+                  style: Apptheme.text.copyWith(
+                    color: Apptheme.stormGray,
+                    fontSize: 16.0,
                     height: 1.50,
                   ),
                 ),
@@ -583,21 +548,17 @@ class BoardNatureEditScreen extends StatelessWidget {
         children: [
           Text(
             'Welcome to your Environmental Science sanctuary',
-            style: TextStyle(
-              color: const Color(0xFF1F2937),
-              fontSize: 24,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
+            style: Apptheme.text.copyWith(
+              fontSize: 24.0,
+              fontWeight: getFontWeight(600),
               height: 1.33,
             ),
           ),
           Text(
             'Upload your syllabus to unlock AI-powered course insights and organization tools tailored for your environmental studies',
-            style: TextStyle(
-              color: const Color(0xFF4B5563),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
+            style: Apptheme.text.copyWith(
+              color: Apptheme.stormGray,
+              fontSize: 16.0,
               height: 1.50,
             ),
           ),
@@ -607,11 +568,10 @@ class BoardNatureEditScreen extends StatelessWidget {
             color: Apptheme.sageMist,
             onTap: () {},
             text: 'Upload Syllabus',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
+            style: Apptheme.text.copyWith(
+              color: Apptheme.white,
+              fontSize: 16.0,
+              fontWeight: getFontWeight(500),
             ),
           ),
         ],
@@ -691,9 +651,8 @@ class BoardNatureEditScreen extends StatelessWidget {
                             children: [
                               Text(
                                 'ENVIRONMENTAL SCIENCE 2401',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  // fontSize: 30,
+                                style: Apptheme.text.copyWith(
+                                  color: Apptheme.white,
                                   fontSize: getDeviceResponsiveValue(
                                     deviceType: layoutVm.deviceType,
                                     mobile: 18.0,
@@ -701,18 +660,15 @@ class BoardNatureEditScreen extends StatelessWidget {
                                     laptop: 24.0,
                                     desktop: 30.0,
                                   ),
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: getFontWeight(600),
                                   height: 1.20,
                                 ),
                               ),
                               Text(
                                 'Fall Semester',
-                                style: TextStyle(
+                                style: Apptheme.text.copyWith(
                                   color: Apptheme.white.withAlpha(204),
-                                  fontSize: 16,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16.0,
                                   height: 1.50,
                                 ),
                               ),
@@ -730,9 +686,9 @@ class BoardNatureEditScreen extends StatelessWidget {
                             size: 16,
                           ),
                           onTap: () {},
-                          style: TextStyle(
+                          style: Apptheme.text.copyWith(
                             color: Apptheme.sageMist,
-                            fontSize: 16,
+                            fontSize: 16.0,
                           ),
                         ),
                       ],
