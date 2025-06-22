@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: Apptheme.fontFamily),
-        initialRoute: Routes.aboutMe,
+        initialRoute: Routes.auth,
         // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,

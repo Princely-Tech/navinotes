@@ -25,3 +25,6 @@ export 'main/choose_board/dark_academia/mind_map/index.dart';
 export 'main/choose_board/nature/index.dart';
 export 'main/choose_board/nature/edit/index.dart';
 export 'main/choose_board/nature/note_page/index.dart';
+export 'auth/reset_password/change/index.dart';
+export 'auth/reset_password/email/index.dart';
+export 'auth/reset_password/verify/index.dart';

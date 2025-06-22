@@ -6,7 +6,7 @@ enum AuthSocialType { google, apple }
 
 BorderSide defBorderSide = BorderSide(color: Apptheme.white.withAlpha(30));
 
-class AuthVM extends ChangeNotifier with AppRepository {
+class AuthVM extends ChangeNotifier  {
   bool isLoading = false;
   ApiServiceProvider apiServiceProvider;
   BuildContext context;
@@ -57,6 +57,9 @@ class AuthVM extends ChangeNotifier with AppRepository {
       );
       _completeSignIn(response);
     } catch (err) {
+      if (context.mounted) {
+        ErrorDisplayService.showDefaultError(context);
+      }
       debugPrint(err.toString());
     }
     updateIsLoading(false);
@@ -85,7 +88,6 @@ class AuthVM extends ChangeNotifier with AppRepository {
       final GoogleSignInAuthentication? googleAuth =
           await googleUser?.authentication;
       if (isNotNull(googleUser) && isNotNull(googleAuth)) {
-        // googleUser.
         final body = {
           "name": googleUser?.displayName,
           "email": googleUser?.email,
@@ -93,7 +95,9 @@ class AuthVM extends ChangeNotifier with AppRepository {
           'token': googleAuth?.idToken,
         };
         final request = JsonRequest.post(
-          ApiEndpoints.authRegisterProvider,
+          AuthType.login == authType
+              ? ApiEndpoints.authLoginProvider
+              : ApiEndpoints.authRegisterProvider,
           body,
         );
         final response = await apiServiceProvider.apiService.sendJsonRequest(
@@ -103,16 +107,14 @@ class AuthVM extends ChangeNotifier with AppRepository {
       } else {
         fToast.showToast(
           child: MessageDisplayContainer('Could not get user data'),
-          gravity: ToastGravity.TOP_RIGHT,
-          toastDuration: const Duration(seconds: 3),
+          gravity: AppConstants.toastGravity,
+          toastDuration: AppConstants.toastDuration,
         );
       }
     } catch (e) {
-      fToast.showToast(
-        child: MessageDisplayContainer('Sign in failed'),
-        gravity: ToastGravity.TOP_RIGHT,
-        toastDuration: const Duration(seconds: 3),
-      );
+      if (context.mounted) {
+        ErrorDisplayService.showDefaultError(context);
+      }
       debugPrint(e.toString());
     }
   }

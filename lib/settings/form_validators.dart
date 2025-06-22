@@ -20,6 +20,18 @@ String? passwordValidator(String? value) {
   }
   return null;
 }
+
+String? confirmPasswordValidator(String? value, String password) {
+  String? err = noNullValidator(message: 'Enter Password', value: value);
+  if (isNotNull(err)) {
+    return err;
+  }
+  if (value != password) {
+    return 'Passwords do not match';
+  }
+  return null;
+}
+
 String? emailValidator(String? value) {
   String? err = noNullValidator(message: 'Email is required', value: value);
   if (isNotNull(err)) {

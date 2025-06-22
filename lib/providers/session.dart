@@ -17,7 +17,25 @@ class SessionManager extends ChangeNotifier {
     return headers;
   }
 
-  getEmail() {
+  void updateEmail(String email) {
+    user?.updateEmail(email);
+    notifyListeners();
+  }
+
+  void updateOtp(String otp) {
+    user?.updateOtp(otp);
+    notifyListeners();
+  }
+
+  String? getEmail() {
     return user?.email;
+  }
+
+  String? getOtp() {
+    return user?.otp;
+  }
+
+  String? getName() {
+    return user?.name;
   }
 }

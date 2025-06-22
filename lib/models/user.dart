@@ -1,29 +1,30 @@
 class User {
-  final String name;
-  final String email;
-  final String? country;
-  // final String? countryCode;
-  final double? latitude;
-  final double? longitude;
-  final String? apiKey;
-  final String? otpSecret;
-  final String? tokenSecret;
-  final String? referredBy;
-  final String? referralCode;
-  final String updatedAt;
-  final String createdAt;
-  final String? iam;
-  final int? id;
-  final String? emailVerifiedAt;
-  final String? about;
-  final String? schoolName;
-  final String? schoolField;
-  final String? schoolLevel;
+  String name;
+  String email;
+  String? country;
+  double? latitude;
+  double? longitude;
+  String? apiKey;
+  String? otpSecret;
+  String? tokenSecret;
+  String? referredBy;
+  String? referralCode;
+  String updatedAt;
+  String createdAt;
+  String? iam;
+  int? id;
+  String? emailVerifiedAt;
+  String? about;
+  String? schoolName;
+  String? schoolField;
+  String? schoolLevel;
+  String? otp;
 
   User({
     required this.name,
     required this.email,
-    this.country,
+    required this.country,
+    this.otp,
     required this.emailVerifiedAt,
     required this.iam,
     required this.about,
@@ -66,6 +67,14 @@ class User {
       createdAt: json['created_at'],
       id: json['id'],
     );
+  }
+
+  updateEmail(String email) {
+    this.email = email;
+  }
+
+  updateOtp(String otp) {
+    otp = otp;
   }
 
   // Map<String, dynamic> toJson() {

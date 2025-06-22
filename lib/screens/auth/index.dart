@@ -13,7 +13,7 @@ class AuthScreen extends StatelessWidget {
       body: ApiServiceComponent(
         child: Consumer<ApiServiceProvider>(
           builder: (_, apiServiceProvider, _) {
-            return ChangeNotifierProvider(
+            return ChangeNotifierProvider( 
               create:
                   (context) => AuthVM(
                     context: context,

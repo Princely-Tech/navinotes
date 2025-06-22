@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/screens/aboutMe/vm.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'widget.dart';
+
+import 'vm.dart';
+import 'package:navinotes/packages.dart';
 
 class AboutMeForm extends StatelessWidget {
-  const AboutMeForm({super.key});
-
+  AboutMeForm({super.key});
+  final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Consumer<AboutMeVm>(
@@ -18,6 +17,8 @@ class AboutMeForm extends StatelessWidget {
             children: [
               CustomCard(
                 child: Form(
+                  key: formKey,
+                  // onChanged: vm.formChangeHandler,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 30,
@@ -35,42 +36,53 @@ class AboutMeForm extends StatelessWidget {
 
   Widget _footer(AboutMeVm vm) {
     EdgeInsets padding = EdgeInsets.symmetric(vertical: 12, horizontal: 20);
-    return Column(
-      spacing: 15,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Builder(
+      builder: (context) {
+        return Column(
           spacing: 15,
           children: [
-            AppButton(
-              onTap: vm.skipHandler,
-              text: 'Skip for Now',
-              wrapWithFlexible: true,
-              mainAxisSize: MainAxisSize.min,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: BorderSide(color: Apptheme.coolGray, width: 2),
-              ),
-              color: Apptheme.white,
-              textColor: Apptheme.darkSlateGray,
-              padding: padding,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: 15,
+              children: [
+                AppButton(
+                  onTap: vm.skipHandler,
+                  text: 'Skip for Now',
+                  wrapWithFlexible: true,
+                  mainAxisSize: MainAxisSize.min,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: Apptheme.coolGray, width: 2),
+                  ),
+                  color: Apptheme.white,
+                  textColor: Apptheme.darkSlateGray,
+                  padding: padding,
+                ),
+                AppButton(
+                  onTap: () {
+                    if (formKey.currentState!.validate()) {
+                      vm.saveHandler();
+                    } else {
+                      ErrorDisplayService.showFormInValidError(context);
+                    }
+                  },
+                  text: 'Save & Continue',
+                  loading: vm.isLoading,
+                  wrapWithFlexible: true,
+                  mainAxisSize: MainAxisSize.min,
+                  padding: padding,
+                  color: Apptheme.jungleGreen,
+                ),
+              ],
             ),
-            AppButton(
-              onTap: vm.saveHandler,
-              text: 'Save & Continue',
-              wrapWithFlexible: true,
-              mainAxisSize: MainAxisSize.min,
-              padding: padding,
-              color: Apptheme.jungleGreen,
+            Text(
+              'You can update your profile anytime in Settings',
+              textAlign: TextAlign.center,
+              style: Apptheme.text.copyWith(color: Apptheme.steelMist),
             ),
           ],
-        ),
-        Text(
-          'You can update your profile anytime in Settings',
-          textAlign: TextAlign.center,
-          style: Apptheme.text.copyWith(color: Apptheme.steelMist),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -89,12 +101,24 @@ class AboutMeForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 20,
       children: [
-        CustomInputField(hintText: 'Jane Smith', label: 'Name', required: true),
+        CustomInputField(
+          hintText: 'Jane Smith',
+          label: 'Name',
+          required: true,
+          controller: vm.nameController,
+          validator:
+              (input) =>
+                  noNullValidator(value: input, message: 'Enter your name'),
+        ),
         CustomInputField(
           hintText: 'Select your role',
           label: 'I am a...',
           required: true,
           selectItems: ['Student', 'Teacher', 'Parent'],
+          validator:
+              (input) =>
+                  noNullValidator(value: input, message: 'Select your role'),
+          controller: vm.roleController,
         ),
         Container(
           decoration: ShapeDecoration(
@@ -114,6 +138,7 @@ class AboutMeForm extends StatelessWidget {
                 optional: true,
                 labelStyle: labelStyle,
                 hintStyle: hintStyle,
+                controller: vm.schoolNameController,
               ),
               CustomInputField(
                 hintText: 'E.g., Computer Science, Biology',
@@ -121,14 +146,23 @@ class AboutMeForm extends StatelessWidget {
                 hintStyle: hintStyle,
                 optional: true,
                 labelStyle: labelStyle,
+                controller: vm.fieldController,
               ),
               CustomInputField(
                 hintText: 'Select your education level',
                 label: 'Education level',
                 optional: true,
                 labelStyle: labelStyle,
-                selectItems: ['High School', 'College', 'University'],
+                selectItems: [
+                  'High School',
+                  'Vocational Training',
+                  'Associate Degree',
+                  'Undergraduate (Bachelor’s)',
+                  'Graduate (Master’s)',
+                  'Postgraduate / Doctorate (PhD)',
+                ],
                 hintStyle: Apptheme.text.copyWith(fontSize: 16.0),
+                controller: vm.educationLevelController,
               ),
             ],
           ),
@@ -140,13 +174,14 @@ class AboutMeForm extends StatelessWidget {
           hintStyle: hintStyle,
           maxLines: 5,
           optional: true,
+          controller: vm.aboutController,
         ),
-        _profileImage(),
+        _profileImage(vm),
       ],
     );
   }
 
-  Widget _profileImage() {
+  Widget _profileImage(AboutMeVm vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 15,
@@ -155,21 +190,13 @@ class AboutMeForm extends StatelessWidget {
         Row(
           spacing: 15,
           children: [
-            OutlinedChild(
-              size: 80,
-              decoration: BoxDecoration(
-                color: Apptheme.pastelBloom,
-                border: Border.all(color: Apptheme.skyFoam),
-                shape: BoxShape.circle,
-              ),
-              child: SVGImagePlaceHolder(imagePath: Images.logo, size: 30),
-            ),
+            AboutMeProfilePic(size: 80),
             Flexible(
               child: Column(
                 spacing: 4,
                 children: [
                   AppButton.secondary(
-                    onTap: () {},
+                    onTap: vm.uploadPhoto,
                     text: 'Upload photo',
                     mainAxisSize: MainAxisSize.min,
                     minHeight: 42,
@@ -205,10 +232,13 @@ class AboutMeForm extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children:
-              applicationReasons.map((str) {
-                bool isSelected = vm.selectedApplicationReasons.contains(str);
+              applicationReasons.map((reason) {
+                bool isSelected = vm.selectedApplicationReasons.contains(
+                  reason,
+                );
+                String reasonString = reason.toString();
                 return InkWell(
-                  onTap: () => vm.selectApplicationReason(str),
+                  onTap: () => vm.selectApplicationReason(reason),
                   child: Row(
                     spacing: 6,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,13 +261,13 @@ class AboutMeForm extends StatelessWidget {
                             spacing: 6,
                             children: [
                               Text(
-                                str,
+                                reasonString,
                                 style: Apptheme.text.copyWith(
                                   color: Apptheme.darkSlateGray,
                                   fontSize: 16.0,
                                 ),
                               ),
-                              if (str == 'Other')
+                              if (reason == ApplicationReason.other)
                                 CustomInputField(
                                   hintText: 'Please specify',
                                   hintStyle: Apptheme.text.copyWith(
@@ -246,6 +276,16 @@ class AboutMeForm extends StatelessWidget {
                                     height: 1.50,
                                   ),
                                   fillColor: Apptheme.whisperGrey,
+                                  validator:
+                                      vm.selectedApplicationReasons.contains(
+                                            ApplicationReason.other,
+                                          )
+                                          ? (input) => noNullValidator(
+                                            value: input,
+                                            message: 'Enter custom reasons',
+                                          )
+                                          : null,
+                                  controller: vm.othersController,
                                 ),
                             ],
                           ),

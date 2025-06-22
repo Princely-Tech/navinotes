@@ -2,6 +2,9 @@ import 'package:navinotes/packages.dart';
 
 Map<String, WidgetBuilder> routes = {
   Routes.auth: (context) => const AuthScreen(),
+  Routes.forgotPassword: (context) => ForgotPasswordScreen(),
+  Routes.resetPasswordVerify: (context) => ResetPasswordVerifyScreen(),
+  Routes.changePassword: (context) => ChangePasswordScreen(),
   Routes.aboutMe: (context) => const AboutMeScreen(),
   Routes.dashboard: (context) => DashboardScreen(),
   Routes.chooseBoard: (context) => ChooseBoardScreen(),
@@ -17,13 +20,16 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardDarkAcademiaMindMap: (context) => DarkAcademiaMindMapScreen(),
   Routes.boardNature: (context) => BoardNatureScreen(),
   Routes.boardNatureEdit: (context) => BoardNatureEditScreen(),
-  Routes.boardNatureNotePage: (context) => NatureNotePageScreen(), 
-  Routes.verify: (context) => VerifyScreen(), 
+  Routes.boardNatureNotePage: (context) => NatureNotePageScreen(),
+  Routes.verify: (context) => VerifyScreen(),
 };
 
 class Routes {
   Routes._();
   static const auth = 'auth';
+  static const String forgotPassword = 'forgot_password';
+  static const String resetPasswordVerify = 'reset_password_verify';
+  static const String changePassword = 'change_password';
   static const verify = 'verify';
   static const aboutMe = 'aboutMe';
   static const dashboard = 'dashboard';

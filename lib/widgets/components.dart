@@ -402,3 +402,101 @@ class MessageDisplayContainer extends StatelessWidget {
     );
   }
 }
+
+class CustomBackButton extends StatelessWidget {
+  const CustomBackButton({super.key, this.title});
+  final String? title;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: NavigationHelper.pop,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 10,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: ShapeDecoration(
+              color: Apptheme.deepMoss,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+            ),
+            child: Icon(Icons.arrow_back, color: Apptheme.white),
+          ),
+          if (isNotNull(title))
+            Flexible(
+              child: Text(
+                title!,
+                style: Apptheme.text.copyWith(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                  height: 1.50,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class AppHeaderOne extends StatelessWidget {
+  const AppHeaderOne({
+    super.key,
+    this.widthLimit,
+    this.isBackButton = false,
+    this.title = AppStrings.appName,
+  });
+  final double? widthLimit;
+  final String title;
+  final bool isBackButton;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Apptheme.white,
+        border: Border(bottom: BorderSide(color: Apptheme.lightGray, width: 1)),
+      ),
+
+      child: ResponsivePadding(
+        mobile: EdgeInsets.symmetric(
+          horizontal: isBackButton ? 10 : defaultHorizontalPadding,
+          vertical: 10,
+        ),
+        laptop: EdgeInsets.symmetric(
+          horizontal: defaultHorizontalPadding,
+          vertical: 10,
+        ),
+        child:
+            isNotNull(widthLimit)
+                ? Center(
+                  child: WidthLimiter(mobile: widthLimit!, child: _body()),
+                )
+                : _body(),
+      ),
+    );
+  }
+
+  Widget _body() {
+    if (isBackButton) {
+      return Row(children: [Expanded(child: CustomBackButton(title: title))]);
+    }
+    return Row(
+      spacing: 10,
+      children: [
+        SVGImagePlaceHolder(imagePath: Images.logo, size: 30),
+        Expanded(
+          child: Text(
+            title,
+            style: Apptheme.text.copyWith(
+              fontSize: 20.0,
+              fontWeight: getFontWeight(600),
+              color: Apptheme.vividRose,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

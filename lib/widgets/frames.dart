@@ -9,6 +9,7 @@ class ScaffoldFrame extends StatelessWidget {
     this.scaffoldKey,
     this.floatingActionButton,
     this.backgroundColor,
+    this.bottomNavigationBar,
   });
   final Widget body;
   final Widget? drawer;
@@ -16,11 +17,13 @@ class ScaffoldFrame extends StatelessWidget {
   final Widget? floatingActionButton;
   final Key? scaffoldKey;
   final Color? backgroundColor;
+  final Widget? bottomNavigationBar;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
+        bottomNavigationBar: bottomNavigationBar,
         body: body,
         drawer: drawer,
         endDrawer: endDrawer,

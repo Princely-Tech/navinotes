@@ -1,45 +1,28 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'package:navinotes/packages.dart';
+import 'vm.dart';
+import 'widget.dart';
 
 class AboutMeAside extends StatelessWidget {
   const AboutMeAside({super.key});
 
   @override
   Widget build(BuildContext context) {
-    double gap = 30;
-    Widget horizontalView = Column(
-      spacing: gap,
-      children: [_profilePreviewer(), _proTip()],
-      // children: [_whyShare(), _proTip(), _profilePreviewer()],
-    );
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 30),
-      child: ResponsiveSection(
-        mobile: horizontalView,
-
-        // laptop: Column(
-        //   spacing: gap,
-        //   children: [
-        //     _profilePreviewer(),
-        //     _proTip(),
-        //     // IntrinsicHeight(
-        //     //   child: Row(
-        //     //     crossAxisAlignment: CrossAxisAlignment.stretch,
-        //     //     spacing: gap,
-        //     //     children: [
-        //     //       Expanded(child: _whyShare()),
-        //     //       Expanded(child: _proTip()),
-        //     //     ],
-        //     //   ),
-        //     // ),
-        //   ],
-        // ),
-      ),
+    return Consumer<AboutMeVm>(
+      builder: (_, vm, _) {
+        double gap = 30;
+        Widget horizontalView = Column(
+          spacing: gap,
+          children: [_profilePreviewer(vm), _proTip()],
+        );
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 30),
+          child: ResponsiveSection(mobile: horizontalView),
+        );
+      },
     );
   }
 
-  Widget _profilePreviewer() {
+  Widget _profilePreviewer(AboutMeVm vm) {
     return CustomCard(
       padding: EdgeInsets.all(25),
       child: Column(
@@ -68,35 +51,42 @@ class AboutMeAside extends StatelessWidget {
                 Row(
                   spacing: 15,
                   children: [
-                    OutlinedChild(
-                      size: 55,
-                      decoration: BoxDecoration(
-                        color: Apptheme.pastelBloom,
-                        border: Border.all(color: Apptheme.skyFoam),
-                        shape: BoxShape.circle,
-                      ),
-                      child: SVGImagePlaceHolder(
-                        imagePath: Images.logo,
-                        size: 22,
-                      ),
-                    ),
+                    AboutMeProfilePic(),
                     Expanded(
                       child: Column(
                         spacing: 5,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Jane Smith',
-                            style: Apptheme.text.copyWith(
-                              fontSize: 16.0,
-                              fontWeight: getFontWeight(500),
-                            ),
+                          ValueListenableBuilder(
+                            valueListenable: vm.nameController,
+                            builder: (_, controller, __) {
+                              return Text(
+                                controller.text,
+                                style: Apptheme.text.copyWith(
+                                  fontSize: 16.0,
+                                  fontWeight: getFontWeight(500),
+                                ),
+                              );
+                            },
                           ),
-                          Text(
-                            'Student • Undergraduate',
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.stormGray,
-                            ),
+                          ValueListenableBuilder(
+                            valueListenable: vm.educationLevelController,
+                            builder: (_, educationLevelController, __) {
+                              return ValueListenableBuilder(
+                                valueListenable: vm.roleController,
+                                builder: (_, roleController, __) {
+                                  String role = roleController.text;
+                                  String educationLevel =
+                                      educationLevelController.text;
+                                  return Text(
+                                    '$role ${role.isNotEmpty && educationLevel.isNotEmpty ? "•" : ""} $educationLevel',
+                                    style: Apptheme.text.copyWith(
+                                      color: Apptheme.stormGray,
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -113,7 +103,10 @@ class AboutMeAside extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: ' Studying, Research, Notes',
+                        text: vm.selectedApplicationReasons
+                            .map((e) => e.shortName())
+                            .join(", "),
+                        // text: ' Studying, Research, Notes',
                         style: Apptheme.text.copyWith(
                           color: Apptheme.vividRose,
                         ),
@@ -155,7 +148,6 @@ class AboutMeAside extends StatelessWidget {
         spacing: 20,
         children: [
           SVGImagePlaceHolder(imagePath: Images.logo, size: 34),
-
           Expanded(
             child: Stack(
               children: [
@@ -182,26 +174,6 @@ class AboutMeAside extends StatelessWidget {
                     'We value your privacy. Your information is never shared with third parties.',
                     style: Apptheme.text.copyWith(color: Apptheme.black),
                   ),
-                  // child: Text.rich(
-                  //   TextSpan(
-                  //     children: [
-                  //       TextSpan(
-                  //         text: 'Pro Tip:',
-                  //         style: Apptheme.text.copyWith(
-                  //           color: Apptheme.darkSlateGray,
-                  //           fontWeight: FontWeight.w700,
-                  //         ),
-                  //       ),
-                  //       TextSpan(
-                  //         text:
-                  //             'Students who complete their profiles are 3x more likely to find study partners within the app!',
-                  //         style: Apptheme.text.copyWith(
-                  //           color: Apptheme.darkSlateGray,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                 ),
                 Positioned(
                   top: 16,

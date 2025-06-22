@@ -16,8 +16,8 @@ class ErrorDisplayService {
             for (var message in messages) {
               fToast.showToast(
                 child: MessageDisplayContainer(message),
-                gravity: ToastGravity.TOP_RIGHT,
-                toastDuration: const Duration(seconds: 3),
+                gravity: AppConstants.toastGravity,
+                toastDuration: AppConstants.toastDuration,
               );
             }
           }
@@ -25,8 +25,8 @@ class ErrorDisplayService {
       } else {
         fToast.showToast(
           child: MessageDisplayContainer('Unprocessable entity'),
-          gravity: ToastGravity.TOP_RIGHT,
-          toastDuration: const Duration(seconds: 3),
+          gravity: AppConstants.toastGravity,
+          toastDuration: AppConstants.toastDuration,
         );
       }
     } else if (err.response?.statusCode != 200 &&
@@ -39,9 +39,27 @@ class ErrorDisplayService {
       }
       fToast.showToast(
         child: MessageDisplayContainer(errMsg),
-        gravity: ToastGravity.TOP_RIGHT,
-        toastDuration: const Duration(seconds: 3),
+        gravity: AppConstants.toastGravity,
+        toastDuration: AppConstants.toastDuration,
       );
     }
+  }
+ static void showDefaultError(BuildContext context) {
+    final fToast = FToast();
+    fToast.init(context);
+    fToast.showToast(
+      child: MessageDisplayContainer('An error occurred!'),
+      gravity: AppConstants.toastGravity,
+      toastDuration: AppConstants.toastDuration,
+    );
+  }
+   static void showFormInValidError(BuildContext context) {
+    final fToast = FToast();
+    fToast.init(context);
+    fToast.showToast(
+      child: MessageDisplayContainer( 'Please fill in all the required fields'),
+      gravity: AppConstants.toastGravity,
+      toastDuration: AppConstants.toastDuration,
+    );
   }
 }

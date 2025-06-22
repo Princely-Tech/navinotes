@@ -36,6 +36,4 @@ class VerifyVM extends ChangeNotifier with AppRepository {
     }
     updateIsLoading(false);
   }
-
-  
 }
