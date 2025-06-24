@@ -139,7 +139,7 @@ class BoardNatureMindMapLeft extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: AppTheme.text.copyWith(
                       color: AppTheme.coffee,
-                      fontSize: 16,
+                      fontSize: 16.0,
                       fontFamily: AppTheme.fontCrimsonText,
                       height: 1.50,
                     ),
