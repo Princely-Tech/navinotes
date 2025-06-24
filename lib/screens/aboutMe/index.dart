@@ -32,7 +32,6 @@ class AboutMeScreen extends StatelessWidget {
                       return AbsorbPointer(
                         absorbing: vm.isLoading,
                         child: Column(
-                          spacing: 10,
                           children: [
                             AppHeaderOne(widthLimit: desktopSize),
                             Expanded(
@@ -63,9 +62,14 @@ class AboutMeScreen extends StatelessWidget {
     bool canScroll = !mainScrollable;
     Widget aboutMeForm = ExpandableController(
       mobile: canScroll,
-      child: ScrollableController(mobile: canScroll, child: AboutMeForm()),
+      child: ScrollableController(
+        mobilePadding: EdgeInsets.only(top: 10),
+        mobile: canScroll,
+        child: AboutMeForm(),
+      ),
     );
     Widget aboutMeAside = ScrollableController(
+      mobilePadding: EdgeInsets.only(top: 10),
       mobile: canScroll,
       child: AboutMeAside(),
     );

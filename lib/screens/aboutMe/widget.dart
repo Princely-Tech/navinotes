@@ -14,8 +14,8 @@ class AboutMeProfilePic extends StatelessWidget {
         return OutlinedChild(
           size: size,
           decoration: BoxDecoration(
-            color: Apptheme.pastelBloom,
-            border: Border.all(color: Apptheme.skyFoam),
+            color: AppTheme.pastelBloom,
+            border: Border.all(color: AppTheme.skyFoam),
             shape: BoxShape.circle,
             image:
                 hasImage
@@ -25,9 +25,10 @@ class AboutMeProfilePic extends StatelessWidget {
                     )
                     : null,
           ),
-          child: hasImage
-              ? const SizedBox.shrink()
-              : SVGImagePlaceHolder(imagePath: Images.logo, size: 22),
+          child:
+              hasImage
+                  ? const SizedBox.shrink()
+                  : SVGImagePlaceHolder(imagePath: Images.logo, size: 22),
         );
       },
     );

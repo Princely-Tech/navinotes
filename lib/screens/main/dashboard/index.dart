@@ -19,7 +19,7 @@ class DashboardScreen extends StatelessWidget {
         builder: (_, vm, _) {
           String activeRoute = Routes.dashboard;
           return ScaffoldFrame(
-            backgroundColor: vm.hasData ? Apptheme.lightGray : Apptheme.white,
+            backgroundColor: vm.hasData ? AppTheme.lightGray : AppTheme.white,
             scaffoldKey: _scaffoldKey,
             drawer: CustomDrawer(
               child: NavigationSideBar(activeRoute: activeRoute),
@@ -27,9 +27,9 @@ class DashboardScreen extends StatelessWidget {
             floatingActionButton: FloatingActionButton(
               onPressed: vm.goToCreateBoard,
               backgroundColor:
-                  vm.hasData ? Apptheme.vividRose : Apptheme.tropicalTeal,
+                  vm.hasData ? AppTheme.vividRose : AppTheme.tropicalTeal,
               shape: CircleBorder(),
-              child: Icon(Icons.add, color: Apptheme.white),
+              child: Icon(Icons.add, color: AppTheme.white),
             ),
             body: ResponsiveSection(
               mobile: DashboardMain(),

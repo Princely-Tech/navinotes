@@ -7,7 +7,7 @@ class PdfViewFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color iconColor = Apptheme.stormGray;
+    Color iconColor = AppTheme.stormGray;
     double iconSize = 16;
     return LayoutBuilder(
       builder: (_, constraints) {
@@ -15,7 +15,7 @@ class PdfViewFooter extends StatelessWidget {
           decoration: ShapeDecoration(
             color: Colors.white,
             shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Apptheme.lightGray),
+              side: BorderSide(width: 1, color: AppTheme.lightGray),
             ),
           ),
           child: ScrollableRow(
@@ -47,7 +47,7 @@ class PdfViewFooter extends StatelessWidget {
                       SizedBox(
                         height: 15,
                         child: VerticalDivider(
-                          color: Apptheme.lightGray,
+                          color: AppTheme.lightGray,
                           width: 10,
                         ),
                       ),
@@ -78,7 +78,7 @@ class PdfViewFooter extends StatelessWidget {
                         prefix: SVGImagePlaceHolder(
                           imagePath: Images.share,
                           size: iconSize,
-                          color: Apptheme.white,
+                          color: AppTheme.white,
                         ),
                         minHeight: 36,
                         wrapWithFlexible: true,
@@ -90,7 +90,7 @@ class PdfViewFooter extends StatelessWidget {
                         prefix: SVGImagePlaceHolder(
                           imagePath: Images.settings,
                           size: iconSize,
-                          color: Apptheme.vividBlue,
+                          color: AppTheme.vividBlue,
                         ),
                         minHeight: 36,
                         wrapWithFlexible: true,

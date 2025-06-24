@@ -18,7 +18,6 @@ class AboutMeForm extends StatelessWidget {
               CustomCard(
                 child: Form(
                   key: formKey,
-                  // onChanged: vm.formChangeHandler,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 30,
@@ -52,10 +51,10 @@ class AboutMeForm extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(color: Apptheme.coolGray, width: 2),
+                    side: BorderSide(color: AppTheme.coolGray, width: 2),
                   ),
-                  color: Apptheme.white,
-                  textColor: Apptheme.darkSlateGray,
+                  color: AppTheme.white,
+                  textColor: AppTheme.darkSlateGray,
                   padding: padding,
                 ),
                 AppButton(
@@ -71,14 +70,14 @@ class AboutMeForm extends StatelessWidget {
                   wrapWithFlexible: true,
                   mainAxisSize: MainAxisSize.min,
                   padding: padding,
-                  color: Apptheme.jungleGreen,
+                  color: AppTheme.jungleGreen,
                 ),
               ],
             ),
             Text(
               'You can update your profile anytime in Settings',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(color: Apptheme.steelMist),
+              style: AppTheme.text.copyWith(color: AppTheme.steelMist),
             ),
           ],
         );
@@ -87,13 +86,13 @@ class AboutMeForm extends StatelessWidget {
   }
 
   Widget _mainForm(AboutMeVm vm) {
-    TextStyle hintStyle = Apptheme.text.copyWith(
-      color: Apptheme.slateGray,
+    TextStyle hintStyle = AppTheme.text.copyWith(
+      color: AppTheme.slateGray,
       fontSize: 16.0,
       height: 1.50,
     );
-    TextStyle labelStyle = Apptheme.text.copyWith(
-      color: Apptheme.vividRose,
+    TextStyle labelStyle = AppTheme.text.copyWith(
+      color: AppTheme.vividRose,
       fontSize: 16.0,
       fontWeight: getFontWeight(500),
     );
@@ -122,9 +121,9 @@ class AboutMeForm extends StatelessWidget {
         ),
         Container(
           decoration: ShapeDecoration(
-            color: Apptheme.azura,
+            color: AppTheme.azura,
             shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Apptheme.mintLight),
+              side: BorderSide(width: 1, color: AppTheme.mintLight),
               borderRadius: BorderRadius.circular(8),
             ),
           ),
@@ -161,7 +160,7 @@ class AboutMeForm extends StatelessWidget {
                   'Graduate (Master’s)',
                   'Postgraduate / Doctorate (PhD)',
                 ],
-                hintStyle: Apptheme.text.copyWith(fontSize: 16.0),
+                hintStyle: AppTheme.text.copyWith(fontSize: 16.0),
                 controller: vm.educationLevelController,
               ),
             ],
@@ -200,8 +199,8 @@ class AboutMeForm extends StatelessWidget {
                     text: 'Upload photo',
                     mainAxisSize: MainAxisSize.min,
                     minHeight: 42,
-                    color: Apptheme.coolGray,
-                    textColor: Apptheme.darkSlateGray,
+                    color: AppTheme.coolGray,
+                    textColor: AppTheme.darkSlateGray,
                     prefix: SVGImagePlaceHolder(
                       imagePath: Images.upload,
                       size: 16,
@@ -209,8 +208,8 @@ class AboutMeForm extends StatelessWidget {
                   ),
                   Text(
                     'PNG, JPG or GIF, max 5MB',
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.steelMist,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.steelMist,
                       fontSize: 12.0,
                     ),
                   ),
@@ -250,8 +249,8 @@ class AboutMeForm extends StatelessWidget {
                             : Icons.check_box_outline_blank,
                         color:
                             isSelected
-                                ? Apptheme.strongBlue
-                                : Apptheme.defaultBlack,
+                                ? AppTheme.strongBlue
+                                : AppTheme.defaultBlack,
                       ),
                       Flexible(
                         child: Padding(
@@ -262,20 +261,20 @@ class AboutMeForm extends StatelessWidget {
                             children: [
                               Text(
                                 reasonString,
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.darkSlateGray,
+                                style: AppTheme.text.copyWith(
+                                  color: AppTheme.darkSlateGray,
                                   fontSize: 16.0,
                                 ),
                               ),
                               if (reason == ApplicationReason.other)
                                 CustomInputField(
                                   hintText: 'Please specify',
-                                  hintStyle: Apptheme.text.copyWith(
-                                    color: Apptheme.slateGray,
+                                  hintStyle: AppTheme.text.copyWith(
+                                    color: AppTheme.slateGray,
                                     fontSize: 16.0,
                                     height: 1.50,
                                   ),
-                                  fillColor: Apptheme.whisperGrey,
+                                  fillColor: AppTheme.whisperGrey,
                                   validator:
                                       vm.selectedApplicationReasons.contains(
                                             ApplicationReason.other,
@@ -307,15 +306,15 @@ class AboutMeForm extends StatelessWidget {
       children: [
         Text(
           'Tell Us About You',
-          style: Apptheme.text.copyWith(
+          style: AppTheme.text.copyWith(
             fontSize: 24.0,
             fontWeight: FontWeight.w700,
           ),
         ),
         Text(
           'Help us personalize your experience (you can skip or edit this later)',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.stormGray,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.stormGray,
             fontSize: 16.0,
           ),
         ),

@@ -20,14 +20,14 @@ class RecentNotesScreen extends StatelessWidget {
         builder: (_, vm, _) {
           Widget sideBar = NavigationSideBar(activeRoute: Routes.recentNotes);
           return ScaffoldFrame(
-            backgroundColor: vm.hasData ? Apptheme.lightGray : Apptheme.white,
+            backgroundColor: vm.hasData ? AppTheme.lightGray : AppTheme.white,
             scaffoldKey: _scaffoldKey,
             drawer: CustomDrawer(child: sideBar),
             floatingActionButton: FloatingActionButton(
               onPressed: () {},
-              backgroundColor: Apptheme.jungleTeal,
+              backgroundColor: AppTheme.jungleTeal,
               shape: CircleBorder(),
-              child: Icon(Icons.add, color: Apptheme.white),
+              child: Icon(Icons.add, color: AppTheme.white),
             ),
             body: ResponsiveSection(
               mobile: RecentNotesMain(),

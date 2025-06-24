@@ -22,7 +22,7 @@ class PdfViewScreen extends StatelessWidget {
             child: ScaffoldFrame(
               scaffoldKey: _scaffoldKey,
               endDrawer: CustomDrawer(child: PdfViewAside()),
-              backgroundColor: Apptheme.white,
+              backgroundColor: AppTheme.white,
               body: Stack(
                 children: [
                   ResponsiveSection(

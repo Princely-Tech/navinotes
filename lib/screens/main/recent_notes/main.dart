@@ -40,7 +40,7 @@ class RecentNotesMain extends StatelessWidget {
                                   image: SVGImagePlaceHolder(
                                     imagePath: Images.file,
                                     size: 16,
-                                    color: Apptheme.tealStone,
+                                    color: AppTheme.tealStone,
                                   ),
                                   title: 'Quantum Mechanics Notes',
                                   body:
@@ -52,7 +52,7 @@ class RecentNotesMain extends StatelessWidget {
                                   image: SVGImagePlaceHolder(
                                     imagePath: Images.share,
                                     size: 16,
-                                    color: Apptheme.vitalGreen,
+                                    color: AppTheme.vitalGreen,
                                   ),
                                   title: 'App Development Mindmap',
                                   body:
@@ -64,7 +64,7 @@ class RecentNotesMain extends StatelessWidget {
                                   image: SVGImagePlaceHolder(
                                     imagePath: Images.pen,
                                     size: 16,
-                                    color: Apptheme.electricViolet,
+                                    color: AppTheme.electricViolet,
                                   ),
                                   title: 'Hamlet Character Analysis',
                                   body:
@@ -76,7 +76,7 @@ class RecentNotesMain extends StatelessWidget {
                                   image: SVGImagePlaceHolder(
                                     imagePath: Images.chart,
                                     size: 16,
-                                    color: Apptheme.spicedAmber,
+                                    color: AppTheme.spicedAmber,
                                   ),
                                   title: 'Cell Division Process',
                                   subject: ' Biology 202',
@@ -88,7 +88,7 @@ class RecentNotesMain extends StatelessWidget {
                                   image: SVGImagePlaceHolder(
                                     imagePath: Images.pdf,
                                     size: 16,
-                                    color: Apptheme.bloodFire,
+                                    color: AppTheme.bloodFire,
                                   ),
                                   title: 'Research Paper Annotations',
                                   body:
@@ -129,9 +129,9 @@ class RecentNotesMain extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(5),
       decoration: ShapeDecoration(
-        color: isActive ? Apptheme.tealStone : Apptheme.white,
+        color: isActive ? AppTheme.tealStone : AppTheme.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: Apptheme.coolGray),
+          side: BorderSide(width: 1, color: AppTheme.coolGray),
           borderRadius: BorderRadius.circular(6),
         ),
       ),
@@ -141,8 +141,8 @@ class RecentNotesMain extends StatelessWidget {
             child ??
             Text(
               text ?? '',
-              style: Apptheme.text.copyWith(
-                color: isActive ? Apptheme.white : Apptheme.darkSlateGray,
+              style: AppTheme.text.copyWith(
+                color: isActive ? AppTheme.white : AppTheme.darkSlateGray,
                 fontSize: 16.0,
               ),
             ),
@@ -167,9 +167,9 @@ class RecentNotesMain extends StatelessWidget {
                   prefix: SVGImagePlaceHolder(
                     imagePath: Images.trash,
                     size: 14,
-                    color: Apptheme.tealStone,
+                    color: AppTheme.tealStone,
                   ),
-                  style: Apptheme.text.copyWith(color: Apptheme.tealStone),
+                  style: AppTheme.text.copyWith(color: AppTheme.tealStone),
                 ),
                 Row(
                   spacing: 5,
@@ -178,7 +178,7 @@ class RecentNotesMain extends StatelessWidget {
                     _paignationItem(
                       child: Icon(
                         Icons.keyboard_arrow_left,
-                        color: Apptheme.darkSlateGray,
+                        color: AppTheme.darkSlateGray,
                       ),
                     ),
                     ...List.generate(
@@ -191,7 +191,7 @@ class RecentNotesMain extends StatelessWidget {
                     _paignationItem(
                       child: Icon(
                         Icons.keyboard_arrow_right,
-                        color: Apptheme.darkSlateGray,
+                        color: AppTheme.darkSlateGray,
                       ),
                     ),
                   ],
@@ -201,10 +201,10 @@ class RecentNotesMain extends StatelessWidget {
                   text: 'View All Notes',
                   suffix: Icon(
                     Icons.arrow_forward,
-                    color: Apptheme.tealStone,
+                    color: AppTheme.tealStone,
                     size: 18,
                   ),
-                  style: Apptheme.text.copyWith(color: Apptheme.tealStone),
+                  style: AppTheme.text.copyWith(color: AppTheme.tealStone),
                 ),
               ],
             ),
@@ -242,8 +242,8 @@ class RecentNotesMain extends StatelessWidget {
                         Flexible(
                           child: Text(
                             title,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.charcoalBlue,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.charcoalBlue,
                               fontSize: 16.0,
                               fontWeight: getFontWeight(500),
                               height: 1.50,
@@ -252,7 +252,7 @@ class RecentNotesMain extends StatelessWidget {
                         ),
                         Icon(
                           isFav ? Icons.star : Icons.star_border,
-                          color: isFav ? Apptheme.solarGold : Apptheme.blueGray,
+                          color: isFav ? AppTheme.solarGold : AppTheme.blueGray,
                         ),
                       ],
                     ),
@@ -261,15 +261,15 @@ class RecentNotesMain extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: 'From ',
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.steelMist,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.steelMist,
                               height: 1.43,
                             ),
                           ),
                           TextSpan(
                             text: subject,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.tealStone,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.tealStone,
                               height: 1.43,
                             ),
                           ),
@@ -287,8 +287,8 @@ class RecentNotesMain extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 10),
                   child: Text(
                     lastUpdated,
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.steelMist,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.steelMist,
                       fontSize: 12.0,
                     ),
                   ),
@@ -298,8 +298,8 @@ class RecentNotesMain extends StatelessWidget {
           ),
           Text(
             body,
-            style: Apptheme.text.copyWith(
-              color: Apptheme.darkSlateGray,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.darkSlateGray,
               height: 1.43,
             ),
           ),

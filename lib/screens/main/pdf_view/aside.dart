@@ -10,9 +10,9 @@ class PdfViewAside extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: ShapeDecoration(
-        color: Apptheme.whiteSmoke,
+        color: AppTheme.whiteSmoke,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: Apptheme.lightGray),
+          side: BorderSide(width: 1, color: AppTheme.lightGray),
         ),
       ),
 
@@ -40,8 +40,8 @@ class PdfViewAside extends StatelessWidget {
   Widget _tip() {
     return Container(
       decoration: BoxDecoration(
-        color: Apptheme.iceBlue,
-        border: Border(top: BorderSide(color: Apptheme.pastelBlue)),
+        color: AppTheme.iceBlue,
+        border: Border(top: BorderSide(color: AppTheme.pastelBlue)),
       ),
       padding: EdgeInsets.all(15),
       child: Row(
@@ -56,15 +56,15 @@ class PdfViewAside extends StatelessWidget {
               children: [
                 Text(
                   'Brainiac Tip',
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.electricIndigo,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.electricIndigo,
                     fontWeight: getFontWeight(500),
                   ),
                 ),
                 Text(
                   'Try highlighting key terms and connecting them to create a comprehensive study structure. Connected ideas are easier to remember!',
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.strongBlue,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.strongBlue,
                     fontSize: 12.0,
                   ),
                 ),
@@ -83,7 +83,7 @@ class PdfViewAside extends StatelessWidget {
       children: [
         Text(
           'AI Connection Suggestions',
-          style: Apptheme.text.copyWith(fontWeight: getFontWeight(500)),
+          style: AppTheme.text.copyWith(fontWeight: getFontWeight(500)),
         ),
         CustomCard(
           padding: EdgeInsets.all(10),
@@ -93,8 +93,8 @@ class PdfViewAside extends StatelessWidget {
             children: [
               Text(
                 'These concepts might connect well to your mind map:',
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.darkSlateGray,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.darkSlateGray,
                   fontSize: 12.0,
                 ),
               ),
@@ -108,17 +108,17 @@ class PdfViewAside extends StatelessWidget {
                   children: [
                     OutlinedChild(
                       size: 20,
-                      decoration: BoxDecoration(color: Apptheme.paleBlue),
+                      decoration: BoxDecoration(color: AppTheme.paleBlue),
                       child: Icon(
                         Icons.add,
                         size: 16,
-                        color: Apptheme.strongBlue,
+                        color: AppTheme.strongBlue,
                       ),
                     ),
                     Expanded(
                       child: Text(
                         str,
-                        style: Apptheme.text.copyWith(fontSize: 12.0),
+                        style: AppTheme.text.copyWith(fontSize: 12.0),
                       ),
                     ),
                   ],
@@ -160,7 +160,7 @@ class PdfViewAside extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Apptheme.text.copyWith(
+                  style: AppTheme.text.copyWith(
                     color: const Color(0xFF1F2937),
                     fontSize: 12.0,
                     fontFamily: 'Inter',
@@ -169,7 +169,7 @@ class PdfViewAside extends StatelessWidget {
                 ),
                 Text(
                   body,
-                  style: Apptheme.text.copyWith(
+                  style: AppTheme.text.copyWith(
                     color: const Color(0xFF6B7280),
                     fontSize: 12.0,
                     fontFamily: 'Inter',
@@ -194,7 +194,7 @@ class PdfViewAside extends StatelessWidget {
             Expanded(
               child: Text(
                 'Connected Highlights',
-                style: Apptheme.text.copyWith(
+                style: AppTheme.text.copyWith(
                   color: const Color(0xFF1F2937),
                   fontSize: 14.0,
                   fontFamily: 'Inter',
@@ -204,7 +204,7 @@ class PdfViewAside extends StatelessWidget {
             ),
             Text(
               '3 items',
-              style: Apptheme.text.copyWith(
+              style: AppTheme.text.copyWith(
                 color: const Color(0xFF6B7280),
                 fontSize: 12.0,
                 fontFamily: 'Inter',
@@ -217,17 +217,17 @@ class PdfViewAside extends StatelessWidget {
         _highlightCard(
           title: 'Membrane proteins',
           body: 'Added to Mind Map',
-          color: Apptheme.vividBlue,
+          color: AppTheme.vividBlue,
         ),
         _highlightCard(
           title: 'Phospholipid bilayer',
           body: 'Flashcard created',
-          color: Apptheme.primaryColor,
+          color: AppTheme.primaryColor,
         ),
         _highlightCard(
           title: 'Passive transport',
           body: 'Note created',
-          color: Apptheme.lavenderPurple,
+          color: AppTheme.lavenderPurple,
         ),
       ],
     );
@@ -240,7 +240,7 @@ class PdfViewAside extends StatelessWidget {
       children: [
         Text(
           'Mind Map Connections',
-          style: Apptheme.text.copyWith(
+          style: AppTheme.text.copyWith(
             color: const Color(0xFF1F2937),
             fontSize: 16.0,
             fontFamily: 'Inter',
@@ -256,7 +256,7 @@ class PdfViewAside extends StatelessWidget {
             children: [
               Text(
                 'Preview',
-                style: Apptheme.text.copyWith(
+                style: AppTheme.text.copyWith(
                   color: const Color(0xFF1F2937),
                   fontSize: 14.0,
                   fontFamily: 'Inter',
@@ -267,7 +267,7 @@ class PdfViewAside extends StatelessWidget {
                 width: double.infinity,
                 height: 160,
                 decoration: BoxDecoration(
-                  color: Apptheme.lightBlue,
+                  color: AppTheme.lightBlue,
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),

@@ -6,12 +6,12 @@ class FormDataRequest extends JsonRequest {
   final Map<String, File> files;
 
   FormDataRequest.raw(
-    String method, {
+    super.method, {
     required super.endpoint,
     required this.files,
     required Map<String, dynamic>? otherData,
     required super.queryParams,
-  }) : super(method, body: otherData ?? const {});
+  }) : super(body: otherData ?? const {});
 
   FormDataRequest.post(
     String endpoint,

@@ -13,9 +13,9 @@ class ImportPdfAside extends StatelessWidget {
       builder: (_, vm, _) {
         return Container(
           decoration: BoxDecoration(
-            color: Apptheme.whiteSmoke,
+            color: AppTheme.whiteSmoke,
             border: Border(
-              right: BorderSide(width: 2, color: Apptheme.lightGray),
+              right: BorderSide(width: 2, color: AppTheme.lightGray),
             ),
           ),
           child: Column(
@@ -35,7 +35,7 @@ class ImportPdfAside extends StatelessWidget {
       },
     );
   }
-
+//Return to this TODO
   Widget _preview() {
     return _section(
       title: 'Preview',
@@ -45,7 +45,7 @@ class ImportPdfAside extends StatelessWidget {
           child: Text(
             'Select a PDF to preview',
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: AppTheme.text.copyWith(
               color: const Color(0xFF6B7280),
               fontSize: 14.0,
               fontFamily: 'Inter',
@@ -76,7 +76,7 @@ class ImportPdfAside extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: AppTheme.text.copyWith(
                     color: const Color(0xFF374151),
                     fontSize: 16.0,
                     fontFamily: 'Inter',
@@ -91,7 +91,7 @@ class ImportPdfAside extends StatelessWidget {
         Icon(
           Icons.arrow_forward_ios_rounded,
           size: 16,
-          color: Apptheme.blueGray,
+          color: AppTheme.blueGray,
         ),
       ],
     );
@@ -106,21 +106,21 @@ class ImportPdfAside extends StatelessWidget {
           title: 'Neuroscience',
           icon: SVGImagePlaceHolder(
             imagePath: Images.logo,
-            color: Apptheme.lavenderPurple,
+            color: AppTheme.lavenderPurple,
           ),
         ),
         _importToItem(
           title: 'Biology 101',
           icon: SVGImagePlaceHolder(
             imagePath: Images.flask,
-            color: Apptheme.teal,
+            color: AppTheme.teal,
           ),
         ),
         _importToItem(
           title: 'Statistics',
           icon: SVGImagePlaceHolder(
             imagePath: Images.calculator,
-            color: Apptheme.vividBlue,
+            color: AppTheme.vividBlue,
           ),
         ),
       ],
@@ -150,7 +150,7 @@ class ImportPdfAside extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: AppTheme.text.copyWith(
             color: const Color(0xFF6B7280),
             fontSize: 14.0,
             fontFamily: 'Inter',
@@ -170,18 +170,18 @@ class ImportPdfAside extends StatelessWidget {
     required ImportPdfVm vm,
   }) {
     bool isActive = vm.selectedFilter == title;
-    final color = isActive ? Apptheme.strongBlue : Apptheme.steelMist;
+    final color = isActive ? AppTheme.strongBlue : AppTheme.steelMist;
     return Material(
       color: Colors.transparent,
       child: ListTile(
         leading: SVGImagePlaceHolder(imagePath: icon, size: 14, color: color),
         contentPadding: EdgeInsets.symmetric(horizontal: 10),
         selected: isActive,
-        selectedTileColor: Apptheme.iceBlue,
+        selectedTileColor: AppTheme.iceBlue,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         title: Text(
           title,
-          style: Apptheme.text.copyWith(
+          style: AppTheme.text.copyWith(
             color: color,
             fontSize: 16.0,
             fontWeight: getFontWeight(500),

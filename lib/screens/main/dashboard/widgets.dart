@@ -8,7 +8,7 @@ class DashFilterSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(6),
-      side: BorderSide(color: Apptheme.coolGray),
+      side: BorderSide(color: AppTheme.coolGray),
     );
     return Row(
       spacing: 30,
@@ -16,7 +16,7 @@ class DashFilterSection extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               fontSize: 24.0,
               fontWeight: FontWeight.w700,
             ),
@@ -33,8 +33,8 @@ class DashFilterSection extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 prefix: SVGImagePlaceHolder(imagePath: Images.arrowVer),
                 onTap: () {},
-                color: Apptheme.white,
-                style: Apptheme.text.copyWith(color: Apptheme.stormGray),
+                color: AppTheme.white,
+                style: AppTheme.text.copyWith(color: AppTheme.stormGray),
                 minHeight: 29,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 text: 'Sort',
@@ -45,8 +45,8 @@ class DashFilterSection extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 prefix: SVGImagePlaceHolder(imagePath: Images.filter),
                 onTap: () {},
-                color: Apptheme.white,
-                style: Apptheme.text.copyWith(color: Apptheme.stormGray),
+                color: AppTheme.white,
+                style: AppTheme.text.copyWith(color: AppTheme.stormGray),
                 minHeight: 29,
                 shape: shape,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),

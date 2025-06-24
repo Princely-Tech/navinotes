@@ -4,15 +4,15 @@ enum AuthType { login, signUp }
 
 enum AuthSocialType { google, apple }
 
-BorderSide defBorderSide = BorderSide(color: Apptheme.white.withAlpha(30));
+BorderSide defBorderSide = BorderSide(color: AppTheme.white.withAlpha(30));
 
-class AuthVM extends ChangeNotifier  {
+class AuthVM extends ChangeNotifier {
   bool isLoading = false;
   ApiServiceProvider apiServiceProvider;
   BuildContext context;
   AuthVM({required this.context, required this.apiServiceProvider});
   AuthType authType = AuthType.login;
-  Color inputFillColor = Apptheme.whiteSmoke;
+  Color inputFillColor = AppTheme.whiteSmoke;
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController refCodeController = TextEditingController();
@@ -134,6 +134,9 @@ class AuthVM extends ChangeNotifier  {
       );
       _completeSignIn(response);
     } catch (err) {
+      if (context.mounted) {
+        ErrorDisplayService.showDefaultError(context);
+      }
       debugPrint(err.toString());
     }
     updateIsLoading(false);

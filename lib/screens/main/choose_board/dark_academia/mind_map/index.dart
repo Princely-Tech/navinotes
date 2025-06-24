@@ -17,7 +17,7 @@ class DarkAcademiaMindMapScreen extends StatelessWidget {
         builder: (_, vm, _) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
-            backgroundColor: Apptheme.moltenBrown,
+            backgroundColor: AppTheme.moltenBrown,
             endDrawer: CustomDrawer(child: DarkAcademiaMindMapRight()),
             drawer: CustomDrawer(child: DarkAcademiaMindMapLeft()),
             body: Row(

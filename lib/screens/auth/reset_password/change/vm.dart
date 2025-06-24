@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 
 class ChangePasswordVm extends ChangeNotifier {
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   bool isLoading = false;
   ApiServiceProvider apiServiceProvider;
   BuildContext context;
@@ -9,6 +10,7 @@ class ChangePasswordVm extends ChangeNotifier {
   @override
   void dispose() {
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -26,7 +28,8 @@ class ChangePasswordVm extends ChangeNotifier {
         'email': apiServiceProvider.sessionManager.getEmail(),
       };
       final request = JsonRequest.post(ApiEndpoints.passwordChange, body);
-      await apiServiceProvider.apiService.sendJsonRequest(request);
+     dynamic response = await apiServiceProvider.apiService.sendJsonRequest(request);
+       ErrorDisplayService.showMessage(context,response['message']??'Password changed successfully. Login with your new password');
       NavigationHelper.pushAndRemoveUntil(Routes.auth);
     } catch (err) {
       if (context.mounted) {

@@ -9,11 +9,11 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScaffoldFrame(
-      backgroundColor: Apptheme.white,
+      backgroundColor: AppTheme.white,
       body: ApiServiceComponent(
         child: Consumer<ApiServiceProvider>(
           builder: (_, apiServiceProvider, _) {
-            return ChangeNotifierProvider( 
+            return ChangeNotifierProvider(
               create:
                   (context) => AuthVM(
                     context: context,
@@ -36,36 +36,23 @@ class AuthScreen extends StatelessWidget {
       builder: (context) {
         return AbsorbPointer(
           absorbing: vm.isLoading || isNotNull(vm.loadingAuthType),
-          child: SizedBox(
-            width: screenWidth(context),
-            height: screenHeight(context),
-            child: ResponsivePadding(
-              mobile: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              laptop: const EdgeInsets.all(20),
-              child: Center(
-                child: WidthLimiter(
-                  mobile: 500,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      spacing: 50,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          spacing: 30,
-                          children: [
-                            _header(),
-                            _authCard(vm),
-                            _freeTrial(),
-                            _authTypeSwitch(vm),
-                            _testimonial(),
-                          ],
-                        ),
-                        _footerLinks(),
-                      ],
-                    ),
-                  ),
+          child: AuthFrame(
+            child: Column(
+              spacing: 50,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  spacing: 30,
+                  children: [
+                    AuthHeader(),
+                    _authCard(vm),
+                    _freeTrial(),
+                    _authTypeSwitch(vm),
+                    _testimonial(),
+                  ],
                 ),
-              ),
+                _footerLinks(),
+              ],
             ),
           ),
         );
@@ -81,7 +68,7 @@ class AuthScreen extends StatelessWidget {
         Text(
           textAlign: TextAlign.center,
           '"NaviNotes transformed how I study. My grades improved within weeks!"',
-          style: Apptheme.text.copyWith(color: Apptheme.black, fontSize: 12.0),
+          style: AppTheme.text.copyWith(color: AppTheme.black, fontSize: 12.0),
         ),
       ],
     );
@@ -106,20 +93,20 @@ class AuthScreen extends StatelessWidget {
               Text(
                 'New to NaviNotes?',
                 textAlign: TextAlign.center,
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.white,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.white,
                   fontSize: 20.0,
-                  fontFamily: Apptheme.fontPoppins,
+                  fontFamily: AppTheme.fontPoppins,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               Text(
                 'Experience everything NaviNotes offers - 7 days free, no commitment',
                 textAlign: TextAlign.center,
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.white.withAlpha(229),
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.white.withAlpha(229),
                   fontSize: 16.0,
-                  fontFamily: Apptheme.fontPoppins,
+                  fontFamily: AppTheme.fontPoppins,
                 ),
               ),
 
@@ -127,11 +114,11 @@ class AuthScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 text: 'Start Free Trial',
                 onTap: () {},
-                color: Apptheme.white,
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.amber,
+                color: AppTheme.white,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.amber,
                   fontSize: 16.0,
-                  fontFamily: Apptheme.fontPoppins,
+                  fontFamily: AppTheme.fontPoppins,
                   fontWeight: getFontWeight(600),
                 ),
               ),
@@ -152,19 +139,19 @@ class AuthScreen extends StatelessWidget {
                 isLogin
                     ? 'Don\'t have an account? '
                     : 'Already have an account? ',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.stormGray,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.stormGray,
               fontSize: 16.0,
-              fontFamily: Apptheme.fontPoppins,
+              fontFamily: AppTheme.fontPoppins,
             ),
           ),
           TextSpan(
             recognizer: TapGestureRecognizer()..onTap = vm.toggleAuthType,
             text: isLogin ? 'Create Account' : 'Login',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.vividRose,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.vividRose,
               fontSize: 16.0,
-              fontFamily: Apptheme.fontPoppins,
+              fontFamily: AppTheme.fontPoppins,
               fontWeight: getFontWeight(500),
             ),
           ),
@@ -175,69 +162,24 @@ class AuthScreen extends StatelessWidget {
   }
 
   Widget _authCard(AuthVM vm) {
-    return Container(
-      width: double.infinity,
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: Apptheme.lightGray),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        shadows: [
-          BoxShadow(
-            color: Apptheme.black.withAlpha(0x19),
-            blurRadius: 6,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
+    return ShadowCard(
+      child: Column(
+        spacing: 25,
+        children: [
+          HeaderSectionTwo(
+            title: 'Welcome back to your study space',
+            body: 'Pick up right where you left off',
           ),
-          BoxShadow(
-            color: Apptheme.black.withAlpha(0x19),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-            spreadRadius: 0,
+          if (vm.authType == AuthType.login) LoginForm() else SignUpForm(),
+          _continueWith(),
+          Row(
+            spacing: 12,
+            children: [
+              _socialBtn(Images.google, vm),
+              _socialBtn(Images.apple, vm),
+            ],
           ),
         ],
-      ),
-      child: ResponsivePadding(
-        mobile: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        laptop: const EdgeInsets.all(30),
-        child: Column(
-          spacing: 25,
-          children: [
-            Column(
-              spacing: 10,
-              children: [
-                Text(
-                  'Welcome back to your study space',
-                  textAlign: TextAlign.center,
-                  style: Apptheme.text.copyWith(
-                    fontSize: 24.0,
-                    fontFamily: Apptheme.fontPoppins,
-                    fontWeight: getFontWeight(600),
-                  ),
-                ),
-                Text(
-                  'Pick up right where you left off',
-                  textAlign: TextAlign.center,
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.stormGray,
-                    fontSize: 16.0,
-                    fontFamily: Apptheme.fontPoppins,
-                  ),
-                ),
-              ],
-            ),
-            if (vm.authType == AuthType.login) LoginForm() else SignUpForm(),
-            _continueWith(),
-            Row(
-              spacing: 12,
-              children: [
-                _socialBtn(Images.google, vm),
-                _socialBtn(Images.apple, vm),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -253,18 +195,18 @@ class AuthScreen extends StatelessWidget {
     }
     return AppButton.secondary(
       wrapWithFlexible: true,
-      color: Apptheme.lightGray,
+      color: AppTheme.lightGray,
       onTap: () => vm.socialLogin(type),
       text: name,
       loading: vm.loadingAuthType == type,
       prefix: SVGImagePlaceHolder(
         imagePath: assetName,
         size: 20,
-        color: Apptheme.darkSlateGray,
+        color: AppTheme.darkSlateGray,
       ),
-      style: Apptheme.text.copyWith(
-        color: Apptheme.darkSlateGray,
-        fontFamily: Apptheme.fontPoppins,
+      style: AppTheme.text.copyWith(
+        color: AppTheme.darkSlateGray,
+        fontFamily: AppTheme.fontPoppins,
         fontWeight: getFontWeight(500),
       ),
     );
@@ -277,9 +219,9 @@ class AuthScreen extends StatelessWidget {
         _divider(),
         Text(
           'or continue with',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.steelMist,
-            fontFamily: Apptheme.fontPoppins,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.steelMist,
+            fontFamily: AppTheme.fontPoppins,
           ),
         ),
         _divider(),
@@ -289,35 +231,7 @@ class AuthScreen extends StatelessWidget {
 
   Widget _divider() {
     return Expanded(
-      child: Divider(color: Apptheme.lightGray, thickness: 1, height: 1),
-    );
-  }
-
-  Widget _header() {
-    return Column(
-      spacing: 10,
-      children: [
-        SVGImagePlaceHolder(imagePath: Images.logo, size: 80),
-        Text(
-          'NaviNotes',
-          textAlign: TextAlign.center,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.vividRose,
-            fontSize: 30.0,
-            fontFamily: Apptheme.fontPoppins,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        Text(
-          'Your supportive study companion',
-          textAlign: TextAlign.center,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.stormGray,
-            fontSize: 16.0,
-            fontFamily: Apptheme.fontPoppins,
-          ),
-        ),
-      ],
+      child: Divider(color: AppTheme.lightGray, thickness: 1, height: 1),
     );
   }
 
@@ -328,7 +242,7 @@ class AuthScreen extends StatelessWidget {
               .map(
                 (str) => Text(
                   str,
-                  style: Apptheme.text.copyWith(color: Apptheme.vividRose),
+                  style: AppTheme.text.copyWith(color: AppTheme.vividRose),
                 ),
               )
               .toList(),

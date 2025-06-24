@@ -51,11 +51,11 @@ class SignUpForm extends StatelessWidget {
                 loading: vm.isLoading,
                 onTap: () {
                   if (formKey.currentState!.validate()) {
-                    vm.signUp(); 
+                    vm.signUp();
                   }
                 },
                 text: 'Create Account',
-                suffix: Icon(Icons.arrow_forward, color: Apptheme.white),
+                suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
               ),
             ],
           ),

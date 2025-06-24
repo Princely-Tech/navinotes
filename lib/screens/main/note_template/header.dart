@@ -12,7 +12,7 @@ class NoteTemplateHeader extends StatelessWidget {
     return Consumer<NoteTemplateVm>(
       builder: (context, vm, _) {
         return Container(
-          color: Apptheme.white,
+          color: AppTheme.white,
           child: Column(
             children: [
               Padding(
@@ -26,7 +26,7 @@ class NoteTemplateHeader extends StatelessWidget {
               Container(
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 1, color: Apptheme.lightGray),
+                    side: BorderSide(width: 1, color: AppTheme.lightGray),
                   ),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -50,7 +50,7 @@ class NoteTemplateHeader extends StatelessWidget {
       children: [
         Text(
           'Sort by:',
-          style: Apptheme.text.copyWith(color: Apptheme.stormGray),
+          style: AppTheme.text.copyWith(color: AppTheme.stormGray),
         ),
         WidthLimiter(
           mobile: 160,
@@ -72,9 +72,9 @@ class NoteTemplateHeader extends StatelessWidget {
         child: CustomInputField(
           hintText: 'Search templates...',
           constraints: BoxConstraints(maxHeight: 40),
-          prefixIcon: Icon(Icons.search, color: Apptheme.slateGray, size: 20),
-          hintStyle: Apptheme.text.copyWith(
-            color: Apptheme.slateGray,
+          prefixIcon: Icon(Icons.search, color: AppTheme.slateGray, size: 20),
+          hintStyle: AppTheme.text.copyWith(
+            color: AppTheme.slateGray,
             fontSize: 16.0,
             height: 1.50,
           ),
@@ -93,9 +93,9 @@ class NoteTemplateHeader extends StatelessWidget {
           child: Flexible(
             child: Container(
               decoration: ShapeDecoration(
-                color: Apptheme.paleBlue,
+                color: AppTheme.paleBlue,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Apptheme.lightGray),
+                  side: BorderSide(color: AppTheme.lightGray),
                   borderRadius: BorderRadius.circular(9999),
                 ),
               ),
@@ -108,8 +108,8 @@ class NoteTemplateHeader extends StatelessWidget {
                   Flexible(
                     child: Text(
                       AppStrings.appName,
-                      style: Apptheme.text.copyWith(
-                        color: Apptheme.electricIndigo,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.electricIndigo,
                         fontSize: 16.0,
                         fontWeight: getFontWeight(500),
                       ),
@@ -123,10 +123,10 @@ class NoteTemplateHeader extends StatelessWidget {
         AppButton(
           onTap: () {},
           shape: CircleBorder(),
-          color: Apptheme.lightGray,
+          color: AppTheme.lightGray,
           padding: EdgeInsets.zero,
           minHeight: 32,
-          child: Icon(Icons.more_vert, color: Apptheme.stormGray),
+          child: Icon(Icons.more_vert, color: AppTheme.stormGray),
         ),
         MenuButton(onPressed: vm.openDrawer),
       ],
@@ -143,9 +143,9 @@ class NoteTemplateHeader extends StatelessWidget {
             children: [
               AppButton.text(
                 onTap: NavigationHelper.pop,
-                color: Apptheme.strongBlue,
+                color: AppTheme.strongBlue,
                 text: isMobile ? 'Back' : 'Back to Board View',
-                prefix: Icon(Icons.arrow_back, color: Apptheme.strongBlue),
+                prefix: Icon(Icons.arrow_back, color: AppTheme.strongBlue),
               ),
               Expanded(
                 child: Column(
@@ -154,7 +154,7 @@ class NoteTemplateHeader extends StatelessWidget {
                   children: [
                     Text(
                       'Choose Note Template',
-                      style: Apptheme.text.copyWith(
+                      style: AppTheme.text.copyWith(
                         fontSize: 20.0,
                         fontWeight: getFontWeight(600),
                       ),
@@ -164,14 +164,14 @@ class NoteTemplateHeader extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: 'Board: ',
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.steelMist,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.steelMist,
                             ),
                           ),
                           TextSpan(
                             text: 'Advanced Biology - Semester 2',
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.strongBlue,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.strongBlue,
                               fontWeight: getFontWeight(500),
                             ),
                           ),

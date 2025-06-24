@@ -9,14 +9,15 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
     return Consumer<DarkAcademiaMindMapVm>(
       builder: (_, vm, _) {
         return Container(
-          decoration: BoxDecoration(color: Apptheme.burntClove.withAlpha(255)),
+          decoration: BoxDecoration(color: AppTheme.burntClove.withAlpha(255)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.all(15),
-                  child: RoyalGoldHeaderSection(
+                  child: EditHeaderSection(
+                    theme: BoardTheme.darkAcademia,
                     title: 'Advanced Biology',
                     child: Column(
                       spacing: 30,
@@ -111,19 +112,19 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
       prefix: Container(
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
-            side: BorderSide(width: 1, color: Apptheme.walnutBronze),
+            side: BorderSide(width: 1, color: AppTheme.walnutBronze),
           ),
         ),
         padding: EdgeInsets.all(3),
         child: Container(
           width: 8,
           height: 8,
-          color: isSelected ? Apptheme.goldenSaffron : null,
+          color: isSelected ? AppTheme.goldenSaffron : null,
         ),
       ),
-      style: TextStyle(
-        color: Apptheme.creamMist,
-        fontFamily: Apptheme.fontPlayfairDisplay,
+      style: AppTheme.text.copyWith(
+        color: AppTheme.creamMist,
+        fontFamily: AppTheme.fontPlayfairDisplay,
         height: 1.43,
       ),
     );
@@ -140,14 +141,14 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
                 SVGImagePlaceHolder(
                   imagePath: img!,
                   size: 18,
-                  color: Apptheme.walnutBronze,
+                  color: AppTheme.walnutBronze,
                 ),
               Expanded(
                 child: Text(
                   title,
-                  style: TextStyle(
-                    color: Apptheme.creamMist,
-                    fontFamily: Apptheme.fontPlayfairDisplay,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.creamMist,
+                    fontFamily: AppTheme.fontPlayfairDisplay,
                     height: 1.43,
                   ),
                 ),
@@ -158,10 +159,10 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
         if (isNotNull(right))
           Text(
             right!,
-            style: TextStyle(
-              color: Apptheme.walnutBronze,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.walnutBronze,
               fontSize: 12.0,
-              fontFamily: Apptheme.fontPlayfairDisplay,
+              fontFamily: AppTheme.fontPlayfairDisplay,
               height: 1.33,
             ),
           ),
@@ -180,10 +181,10 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
-                  color: Apptheme.creamMist.withAlpha(0xE5),
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.creamMist.withAlpha(0xE5),
                   fontSize: 16.0,
-                  fontFamily: Apptheme.fontPlayfairDisplay,
+                  fontFamily: AppTheme.fontPlayfairDisplay,
                   height: 1.50,
                 ),
               ),
@@ -191,9 +192,9 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
             if (isNotNull(count))
               Text(
                 count.toString(),
-                style: TextStyle(
-                  color: Apptheme.goldenSaffron,
-                  fontFamily: Apptheme.fontPlayfairDisplay,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.goldenSaffron,
+                  fontFamily: AppTheme.fontPlayfairDisplay,
                   height: 1.43,
                 ),
               ),

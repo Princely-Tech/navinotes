@@ -44,6 +44,15 @@ class ErrorDisplayService {
       );
     }
   }
+  static void showMessage(BuildContext context,String message) {
+    final fToast = FToast();
+    fToast.init(context);
+    fToast.showToast(
+      child: MessageDisplayContainer(message,isError:false),
+      gravity: AppConstants.toastGravity,
+      toastDuration: AppConstants.toastDuration,
+    );
+  }
  static void showDefaultError(BuildContext context) {
     final fToast = FToast();
     fToast.init(context);

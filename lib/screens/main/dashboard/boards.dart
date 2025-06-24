@@ -47,14 +47,14 @@ class YourBoards extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: Apptheme.text.copyWith(
+                    style: AppTheme.text.copyWith(
                       fontSize: 16.0,
                       fontWeight: getFontWeight(500),
                     ),
                   ),
                   Text(
                     'Last edited: $lastEdited',
-                    style: Apptheme.text.copyWith(color: Apptheme.steelMist),
+                    style: AppTheme.text.copyWith(color: AppTheme.steelMist),
                   ),
                   Row(
                     spacing: 10,
@@ -62,15 +62,15 @@ class YourBoards extends StatelessWidget {
                       Flexible(
                         child: CustomTag(
                           '$notes notes',
-                          color: Apptheme.paleBlue,
-                          textColor: Apptheme.electricIndigo,
+                          color: AppTheme.paleBlue,
+                          textColor: AppTheme.electricIndigo,
                         ),
                       ),
                       Flexible(
                         child: CustomTag(
                           '$mindmaps mindmaps',
-                          color: Apptheme.lightMintGreen,
-                          textColor: Apptheme.emeraldGreen,
+                          color: AppTheme.lightMintGreen,
+                          textColor: AppTheme.emeraldGreen,
                         ),
                       ),
                     ],

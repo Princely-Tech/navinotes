@@ -40,15 +40,15 @@ class NoteTemplateFooter extends StatelessWidget {
           text: 'Save as Favorite',
           mainAxisSize: MainAxisSize.min,
           wrapWithFlexible: true,
-          color: Apptheme.strongBlue,
-          prefix: Icon(Icons.star_border, color: Apptheme.strongBlue),
+          color: AppTheme.strongBlue,
+          prefix: Icon(Icons.star_border, color: AppTheme.strongBlue),
         ),
         AppButton(
           minHeight: 36,
           mainAxisSize: MainAxisSize.min,
           onTap: vm.createNote,
           text: 'Create Note',
-          prefix: Icon(Icons.add, color: Apptheme.white),
+          prefix: Icon(Icons.add, color: AppTheme.white),
           // wrapWithFlexible: true,
         ),
       ],
@@ -66,14 +66,14 @@ class NoteTemplateFooter extends StatelessWidget {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: isSelected ? Apptheme.lightAsh : Apptheme.transparent,
+                  color: isSelected ? AppTheme.lightAsh : AppTheme.transparent,
                   borderRadius: BorderRadius.circular(9999),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
                 child: Text(
                   section,
                   textAlign: TextAlign.center,
-                  style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
+                  style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
                 ),
               ),
             );

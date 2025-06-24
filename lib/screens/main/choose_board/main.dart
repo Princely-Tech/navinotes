@@ -10,7 +10,7 @@ class ChooseBoardMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BorderSide side = BorderSide(color: Apptheme.lightGray, width: 3);
+    BorderSide side = BorderSide(color: AppTheme.lightGray, width: 3);
     return Consumer<ChooseBoardVm>(
       builder: (context, vm, child) {
         return Container(
@@ -33,8 +33,8 @@ class ChooseBoardMain extends StatelessWidget {
                         children: [
                           Text(
                             'Select a style for your board',
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.vividRose,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.vividRose,
                               fontSize: 18.0,
                               fontWeight: getFontWeight(600),
                             ),
@@ -75,8 +75,8 @@ class ChooseBoardMain extends StatelessWidget {
             Text(
               'Create your own',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(
-                color: Apptheme.vividBlue,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.vividBlue,
                 fontSize: 16.0,
               ),
             ),
@@ -102,7 +102,7 @@ class ChooseBoardMain extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(
                 width: 2,
-                color: selected ? Apptheme.vividRose : Apptheme.pastelBloom,
+                color: selected ? AppTheme.vividRose : AppTheme.pastelBloom,
               ),
             ),
             padding: EdgeInsets.all(10),
@@ -117,16 +117,16 @@ class ChooseBoardMain extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Apptheme.text.copyWith(
-                        color: Apptheme.abyssTeal,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.abyssTeal,
                         fontSize: 16.0,
                         fontWeight: getFontWeight(500),
                       ),
                     ),
                     Text(
                       description,
-                      style: Apptheme.text.copyWith(
-                        color: Apptheme.black,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.black,
                         fontSize: 12.0,
                       ),
                     ),
@@ -144,7 +144,7 @@ class ChooseBoardMain extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: Colors.white,
                 ),
-                child: Icon(Icons.check_circle, color: Apptheme.vividRose),
+                child: Icon(Icons.check_circle, color: AppTheme.vividRose),
               ),
             ),
         ],
@@ -176,16 +176,16 @@ class ChooseBoardMain extends StatelessWidget {
       child: CustomInputField(
         label: 'Board Name',
         hintText: 'Enter Board Title...',
-        labelStyle: Apptheme.text.copyWith(
-          color: Apptheme.abyssTeal,
+        labelStyle: AppTheme.text.copyWith(
+          color: AppTheme.abyssTeal,
           fontWeight: getFontWeight(500),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Apptheme.pastelBlue, width: 1),
+          borderSide: BorderSide(color: AppTheme.pastelBlue, width: 1),
         ),
-        hintStyle: Apptheme.text.copyWith(
-          color: Apptheme.slateGray,
+        hintStyle: AppTheme.text.copyWith(
+          color: AppTheme.slateGray,
           height: 1.50,
         ),
       ),

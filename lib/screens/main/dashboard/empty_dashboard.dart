@@ -42,8 +42,8 @@ class EmptyDashboardMain extends StatelessWidget {
             Expanded(
               child: Text(
                 'Recent Activity',
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.graphite,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.graphite,
                   fontSize: 18.58,
                   fontWeight: getFontWeight(600),
                   height: 1.40,
@@ -56,8 +56,8 @@ class EmptyDashboardMain extends StatelessWidget {
                 NavigationHelper.push(Routes.recentNotes);
               },
               text: 'View all',
-              style: Apptheme.text.copyWith(
-                color: Apptheme.tropicalTeal,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.tropicalTeal,
                 fontSize: 13.0,
                 fontWeight: getFontWeight(500),
               ),
@@ -77,20 +77,20 @@ class EmptyDashboardMain extends StatelessWidget {
                     OutlinedChild(
                       size: 59,
                       decoration: BoxDecoration(
-                        color: Apptheme.lightAsh,
+                        color: AppTheme.lightAsh,
                         shape: BoxShape.circle,
                       ),
                       child: SVGImagePlaceHolder(
                         imagePath: Images.recent,
                         size: 27,
-                        color: Apptheme.lightGray,
+                        color: AppTheme.lightGray,
                       ),
                     ),
                     Text(
                       'No Recent Activity Yet',
                       textAlign: TextAlign.center,
-                      style: Apptheme.text.copyWith(
-                        color: Apptheme.graphite,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.graphite,
                         fontSize: 16.72,
                         fontWeight: getFontWeight(500),
                       ),
@@ -98,7 +98,7 @@ class EmptyDashboardMain extends StatelessWidget {
                     Text(
                       'Your activity will appear here once you start creating and editing boards, notes, and flashcards.',
                       textAlign: TextAlign.center,
-                      style: Apptheme.text.copyWith(color: Apptheme.steelMist),
+                      style: AppTheme.text.copyWith(color: AppTheme.steelMist),
                     ),
                   ],
                 ),
@@ -106,7 +106,7 @@ class EmptyDashboardMain extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   onTap: vm.goToCreateBoard,
                   text: 'Create Your First Board',
-                  color: Apptheme.tropicalTeal,
+                  color: AppTheme.tropicalTeal,
                 ),
               ],
             ),
@@ -142,8 +142,8 @@ class EmptyDashboardMain extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Apptheme.text.copyWith(
-                        color: Apptheme.graphite,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.graphite,
                         fontSize: 14.86,
                         fontWeight: getFontWeight(500),
                         height: 1.50,
@@ -151,8 +151,8 @@ class EmptyDashboardMain extends StatelessWidget {
                     ),
                     Text(
                       body,
-                      style: Apptheme.text.copyWith(
-                        color: Apptheme.steelMist,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.steelMist,
                         fontSize: 11.15,
                         height: 1.33,
                       ),
@@ -171,13 +171,13 @@ class EmptyDashboardMain extends StatelessWidget {
     Widget importPdf = _actionItem(
       icon: OutlinedChild(
         decoration: BoxDecoration(
-          color: Apptheme.paleBlue,
+          color: AppTheme.paleBlue,
           shape: BoxShape.circle,
         ),
         child: SVGImagePlaceHolder(
           imagePath: Images.pdf,
           size: 14,
-          color: Apptheme.vividBlue,
+          color: AppTheme.vividBlue,
         ),
       ),
       body: 'Convert documents to notes',
@@ -186,7 +186,7 @@ class EmptyDashboardMain extends StatelessWidget {
     Widget takeTour = _actionItem(
       icon: OutlinedChild(
         decoration: BoxDecoration(
-          color: Apptheme.lavenderBlush,
+          color: AppTheme.lavenderBlush,
           shape: BoxShape.circle,
         ),
         child: SVGImagePlaceHolder(imagePath: Images.map, size: 14),
@@ -197,7 +197,7 @@ class EmptyDashboardMain extends StatelessWidget {
     Widget connectCalender = _actionItem(
       icon: OutlinedChild(
         decoration: BoxDecoration(
-          color: Apptheme.mintWhisper,
+          color: AppTheme.mintWhisper,
           shape: BoxShape.circle,
         ),
         child: SVGImagePlaceHolder(imagePath: Images.calender2, size: 14),
@@ -211,8 +211,8 @@ class EmptyDashboardMain extends StatelessWidget {
       children: [
         Text(
           'Quick Actions',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.graphite,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.graphite,
             fontSize: 18.58,
             fontWeight: getFontWeight(600),
             height: 1.40,
@@ -237,8 +237,8 @@ class EmptyDashboardMain extends StatelessWidget {
       children: [
         Text(
           'Welcome to NaviNotes, Alex!',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.graphite,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.graphite,
             fontSize: 22.29,
             fontWeight: getFontWeight(700),
             height: 1.33,
@@ -246,8 +246,8 @@ class EmptyDashboardMain extends StatelessWidget {
         ),
         Text(
           'Ready to organize your Computer Science studies? Let\'s get started.',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.stormGray,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.stormGray,
             height: 1.50,
           ),
         ),

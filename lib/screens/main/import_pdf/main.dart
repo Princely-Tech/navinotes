@@ -41,7 +41,7 @@ class ImportPdfMain extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Apptheme.lightAsh,
+                  color: AppTheme.lightAsh,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 height: 128,
@@ -50,7 +50,7 @@ class ImportPdfMain extends StatelessWidget {
                   child: SVGImagePlaceHolder(
                     imagePath: Images.pdf,
                     size: 36,
-                    color: Apptheme.coralRed,
+                    color: AppTheme.coralRed,
                   ),
                 ),
               ),
@@ -60,7 +60,7 @@ class ImportPdfMain extends StatelessWidget {
                 child: AppButton(
                   minHeight: 24,
                   onTap: () {},
-                  color: Apptheme.white,
+                  color: AppTheme.white,
                   padding: EdgeInsets.zero,
                   shape: CircleBorder(),
                   child: Icon(Icons.more_vert),
@@ -76,12 +76,12 @@ class ImportPdfMain extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Apptheme.text.copyWith(fontWeight: getFontWeight(500)),
+                  style: AppTheme.text.copyWith(fontWeight: getFontWeight(500)),
                 ),
                 Text(
                   'Uploaded on $updatedDate',
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.steelMist,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.steelMist,
                     fontSize: 12.0,
                   ),
                 ),
@@ -103,8 +103,8 @@ class ImportPdfMain extends StatelessWidget {
             Expanded(
               child: Text(
                 'Recently Uploaded PDFs',
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.darkSlateGray,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.darkSlateGray,
                   fontWeight: getFontWeight(500),
                 ),
               ),
@@ -144,7 +144,7 @@ class ImportPdfMain extends StatelessWidget {
           Text(
             name,
             textAlign: TextAlign.center,
-            style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
+            style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
           ),
         ],
       ),
@@ -171,8 +171,8 @@ class ImportPdfMain extends StatelessWidget {
       children: [
         Text(
           'Import from Cloud',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.darkSlateGray,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.darkSlateGray,
             fontWeight: getFontWeight(500),
           ),
         ),
@@ -221,12 +221,12 @@ class ImportPdfMain extends StatelessWidget {
   Widget _dragAndDropArea() {
     return Container(
       decoration: DottedDecoration(
-        color: Apptheme.strongBlue,
+        color: AppTheme.strongBlue,
         shape: Shape.box,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Container(
-        decoration: BoxDecoration(color: Apptheme.softSkyBlue.withAlpha(40)),
+        decoration: BoxDecoration(color: AppTheme.softSkyBlue.withAlpha(40)),
         padding: EdgeInsets.all(25),
         child: Column(
           spacing: 20,
@@ -234,7 +234,7 @@ class ImportPdfMain extends StatelessWidget {
             OutlinedChild(
               size: 80,
               decoration: BoxDecoration(
-                color: Apptheme.paleBlue,
+                color: AppTheme.paleBlue,
                 shape: BoxShape.circle,
               ),
               child: SVGImagePlaceHolder(imagePath: Images.upload2, size: 30),
@@ -242,7 +242,7 @@ class ImportPdfMain extends StatelessWidget {
             Text(
               'Drag & Drop PDFs here or tap to browse',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(
+              style: AppTheme.text.copyWith(
                 fontSize: 18.0,
                 fontWeight: getFontWeight(500),
               ),
@@ -250,8 +250,8 @@ class ImportPdfMain extends StatelessWidget {
             Text(
               'Supported formats: PDF only • Max size: 50MB',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(
-                color: Apptheme.steelMist,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.steelMist,
                 fontSize: 16.0,
               ),
             ),
@@ -273,11 +273,11 @@ class ImportPdfMain extends StatelessWidget {
                   wrapWithFlexible: true,
                   onTap: () {},
                   text: 'Scan Document',
-                  textColor: Apptheme.darkSlateGray,
-                  color: Apptheme.white,
+                  textColor: AppTheme.darkSlateGray,
+                  color: AppTheme.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(color: Apptheme.coolGray),
+                    side: BorderSide(color: AppTheme.coolGray),
                   ),
                 ),
                 //

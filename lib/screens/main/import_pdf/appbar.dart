@@ -14,7 +14,7 @@ class ImportPdfAppBar extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             border: Border.symmetric(
-              horizontal: BorderSide(color: Apptheme.lightGray),
+              horizontal: BorderSide(color: AppTheme.lightGray),
             ),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -60,7 +60,7 @@ class ImportPdfAppBar extends StatelessWidget {
     return Flexible(
       child: Text(
         'Import PDF',
-        style: Apptheme.text.copyWith(
+        style: AppTheme.text.copyWith(
           fontSize: 20.0,
           fontWeight: getFontWeight(600),
         ),
@@ -74,19 +74,19 @@ class ImportPdfAppBar extends StatelessWidget {
       children: [
         SVGImagePlaceHolder(
           imagePath: Images.ques,
-          color: Apptheme.darkSlateGray,
+          color: AppTheme.darkSlateGray,
           size: 16,
         ),
         OutlinedChild(
           decoration: BoxDecoration(
-            color: Apptheme.strongBlue,
+            color: AppTheme.strongBlue,
             shape: BoxShape.circle,
           ),
           size: 32,
           child: Text(
             'U',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.white,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.white,
               fontSize: 16.0,
               fontWeight: getFontWeight(600),
             ),
@@ -104,7 +104,7 @@ class ImportPdfAppBar extends StatelessWidget {
           spacing: 15,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.arrow_back, color: Apptheme.darkSlateGray),
+            Icon(Icons.arrow_back, color: AppTheme.darkSlateGray),
             Flexible(
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -112,11 +112,11 @@ class ImportPdfAppBar extends StatelessWidget {
                 children: [
                   OutlinedChild(
                     size: 32,
-                    decoration: BoxDecoration(color: Apptheme.paleBlue),
+                    decoration: BoxDecoration(color: AppTheme.paleBlue),
                     child: Text(
                       'N',
-                      style: Apptheme.text.copyWith(
-                        color: Apptheme.persianBlue,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.persianBlue,
                         fontSize: 16.0,
                         fontWeight: getFontWeight(600),
                       ),
@@ -125,8 +125,8 @@ class ImportPdfAppBar extends StatelessWidget {
                   Flexible(
                     child: Text(
                       AppStrings.appName,
-                      style: Apptheme.text.copyWith(
-                        color: Apptheme.royalBlue,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.royalBlue,
                         fontSize: 16.0,
                         fontWeight: getFontWeight(600),
                       ),

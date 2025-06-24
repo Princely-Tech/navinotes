@@ -17,10 +17,10 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
                 children: [
                   Text(
                     'Mind map coming soon...',
-                    style: Apptheme.text.copyWith(
+                    style: AppTheme.text.copyWith(
                       fontSize: 30.0,
-                      fontFamily: Apptheme.fontPlayfairDisplay,
-                      color: Apptheme.royalGold,
+                      fontFamily: AppTheme.fontPlayfairDisplay,
+                      color: AppTheme.royalGold,
                       height: 1.33,
                     ),
                   ),
@@ -37,12 +37,12 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
     return OutlinedChild(
       size: 40,
       decoration: BoxDecoration(
-        color: Apptheme.moltenBrown,
+        color: AppTheme.moltenBrown,
         shape: BoxShape.circle,
       ),
       child: SVGImagePlaceHolder(
         imagePath: img,
-        color: Apptheme.goldenSaffron,
+        color: AppTheme.goldenSaffron,
         size: 16,
       ),
     );
@@ -52,23 +52,23 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
     return WidthLimiter(
       mobile: 256,
       child: CustomInputField(
-        suffixIcon: Icon(Icons.search, color: Apptheme.walnutBronze, size: 20),
+        suffixIcon: Icon(Icons.search, color: AppTheme.walnutBronze, size: 20),
         hintText: 'Search...',
-        fillColor: Apptheme.moltenBrown.withAlpha(0x99),
+        fillColor: AppTheme.moltenBrown.withAlpha(0x99),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(999),
-          borderSide: BorderSide(color: Apptheme.walnutBronze.withAlpha(0x66)),
+          borderSide: BorderSide(color: AppTheme.walnutBronze.withAlpha(0x66)),
         ),
-        style: Apptheme.text.copyWith(
-          color: Apptheme.royalGold,
+        style: AppTheme.text.copyWith(
+          color: AppTheme.royalGold,
           fontSize: 16.0,
-          fontFamily: Apptheme.fontCrimsonPro,
+          fontFamily: AppTheme.fontCrimsonPro,
           height: 1.50,
         ),
-        hintStyle: Apptheme.text.copyWith(
-          color: Apptheme.slateGray,
+        hintStyle: AppTheme.text.copyWith(
+          color: AppTheme.slateGray,
           fontSize: 16.0,
-          fontFamily: Apptheme.fontPlayfairDisplay,
+          fontFamily: AppTheme.fontPlayfairDisplay,
           height: 1.50,
         ),
       ),
@@ -77,7 +77,7 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
 
   Widget _header(DarkAcademiaMindMapVm vm) {
     return Container(
-      decoration: BoxDecoration(color: Apptheme.burntClove.withAlpha(255)),
+      decoration: BoxDecoration(color: AppTheme.burntClove.withAlpha(255)),
       padding: EdgeInsets.all(15),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -98,7 +98,7 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 10),
                           child: MenuButton(
                             decoration: BoxDecoration(
-                              color: Apptheme.royalGold,
+                              color: AppTheme.royalGold,
                             ),
                             onPressed: vm.openDrawer,
                           ),
@@ -129,10 +129,10 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
                               horizontal: 15,
                             ),
                             text: 'Share',
-                            color: Apptheme.goldenSaffron.withAlpha(0x33),
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.goldenSaffron,
-                              fontFamily: Apptheme.fontPlayfairDisplay,
+                            color: AppTheme.goldenSaffron.withAlpha(0x33),
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.goldenSaffron,
+                              fontFamily: AppTheme.fontPlayfairDisplay,
                             ),
                           ),
                           _outlinedChild(img: Images.paint),
@@ -145,7 +145,7 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 10),
                           child: MenuButton(
                             decoration: BoxDecoration(
-                              color: Apptheme.royalGold,
+                              color: AppTheme.royalGold,
                             ),
                             onPressed: vm.openEndDrawer,
                           ),

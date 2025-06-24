@@ -6,29 +6,29 @@ class VerifyVM extends ChangeNotifier with AppRepository {
   VerifyVM({required this.apiServiceProvider, required this.context});
   ApiServiceProvider apiServiceProvider;
 
-  TextEditingController controller = TextEditingController();
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   updateIsLoading(bool value) {
     isLoading = value;
     notifyListeners();
   }
 
-  void submitForm() async {
+  void submitForm(String? otp) async {
+    if (isNull(otp)) {
+      if (context.mounted) {
+        ErrorDisplayService.showFormInValidError(context);
+      }
+      return;
+    }
     try {
       updateIsLoading(true);
       final body = {
-        "otp": controller.text,
+        "otp": otp,
         'email': apiServiceProvider.sessionManager.getEmail(),
       };
       final request = JsonRequest.post(ApiEndpoints.passwordVerifyOtp, body);
-      await apiServiceProvider.apiService.sendJsonRequest(request);
-      apiServiceProvider.sessionManager.updateOtp(controller.text);
+      dynamic response = await apiServiceProvider.apiService.sendJsonRequest(
+        request,
+      );
+      apiServiceProvider.sessionManager.updateOtp(response['code']);
       NavigationHelper.push(Routes.changePassword);
     } catch (err) {
       if (context.mounted) {
@@ -37,5 +37,11 @@ class VerifyVM extends ChangeNotifier with AppRepository {
       debugPrint(err.toString());
     }
     updateIsLoading(false);
+  }
+
+  Future<void> resendOtp() async {
+    final body = {"email": apiServiceProvider.sessionManager.getEmail()};
+    final request = JsonRequest.post(ApiEndpoints.passwordOtp, body);
+    await apiServiceProvider.apiService.sendJsonRequest(request);
   }
 }

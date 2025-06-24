@@ -15,21 +15,21 @@ InputDecoration _inputDecoration({
       border ??
       OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: side ?? BorderSide(color: Apptheme.coolGray, width: 1),
+        borderSide: side ?? BorderSide(color: AppTheme.coolGray, width: 1),
       );
 
   return InputDecoration(
     hintText: hintText,
-    hintStyle: Apptheme.text.copyWith(
-      // color: Apptheme.inputPlaceholderColor,
+    hintStyle: AppTheme.text.copyWith(
+      // color: AppTheme.inputPlaceholderColor,
       fontSize: 16.0,
     ),
     border: defaultBorder,
     enabledBorder: defaultBorder,
     focusedBorder: defaultBorder.copyWith(
-      borderSide: BorderSide(color: Apptheme.primaryColor, width: 2),
+      borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
     ),
-    fillColor: fillColor ?? Apptheme.white,
+    fillColor: fillColor ?? AppTheme.white,
     filled: true,
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
@@ -102,14 +102,14 @@ class _CustomInputFieldState extends State<CustomInputField> {
   }
 
   Widget _body() {
-    TextStyle style = widget.style ?? Apptheme.text.copyWith(fontSize: 16.0);
+    TextStyle style = widget.style ?? AppTheme.text.copyWith(fontSize: 16.0);
     Widget? prefix;
     Widget? suffix;
     // bool isDate = widget.keyboardType == TextInputType.datetime;
     bool isPassword = widget.keyboardType == TextInputType.visiblePassword;
     double padding = 12;
     // if (widget.keyboardType) {
-    //   // prefix = Icon(Icons.search, color: Apptheme.inputPlaceholderColor);
+    //   // prefix = Icon(Icons.search, color: AppTheme.inputPlaceholderColor);
     // }
     String? prefixImg;
     // switch (widget.keyboardType) {
@@ -133,7 +133,13 @@ class _CustomInputFieldState extends State<CustomInputField> {
       );
     }
     if (isNotNull(widget.prefixIcon)) {
-      prefix = Padding(padding: prefPadding, child: widget.prefixIcon);
+      prefix = Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Flexible(child: widget.prefixIcon!)],
+      );
+
+      // prefix = Padding(padding: prefPadding, child: widget.prefixIcon);
     }
     if (isNotNull(widget.suffixIcon)) {
       suffix = Row(
@@ -149,13 +155,13 @@ class _CustomInputFieldState extends State<CustomInputField> {
         padding: suffixPadding,
         child: Icon(
           Icons.keyboard_arrow_down,
-          color: style.color ?? Apptheme.black,
+          color: style.color ?? AppTheme.black,
           size: style.fontSize! + 5,
         ),
       );
     }
 
-    // Color fillColor = isSelect ? Apptheme.transparent : Apptheme.polar;
+    // Color fillColor = isSelect ? AppTheme.transparent : AppTheme.polar;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8,
@@ -193,8 +199,8 @@ class _CustomInputFieldState extends State<CustomInputField> {
           ).copyWith(
             hintStyle:
                 widget.hintStyle ??
-                Apptheme.text.copyWith(
-                  color: Apptheme.slateGray,
+                AppTheme.text.copyWith(
+                  color: AppTheme.slateGray,
                   fontSize: 16.0,
                 ),
           ),

@@ -20,7 +20,7 @@ class ChooseBoardScreen extends StatelessWidget {
         drawer: CustomDrawer(
           child: NavigationSideBar(activeRoute: activeRoute),
         ),
-        backgroundColor: Apptheme.lightGray,
+        backgroundColor: AppTheme.lightGray,
         body: Row(
           children: [
             VisibleController(
@@ -64,7 +64,7 @@ class ChooseBoardScreen extends StatelessWidget {
     return Consumer<ChooseBoardVm>(
       builder: (_, vm, _) {
         return Container(
-          decoration: BoxDecoration(color: Apptheme.white),
+          decoration: BoxDecoration(color: AppTheme.white),
           child: LayoutBuilder(
             builder: (_, constraints) {
               return ScrollableRow(
@@ -86,13 +86,13 @@ class ChooseBoardScreen extends StatelessWidget {
                             value: vm.saveAsFavoriteStyle,
                             padding: 1,
                             onToggle: vm.updateSaveAsFavoriteStyle,
-                            activeColor: Apptheme.vividRose,
-                            inactiveColor: Apptheme.lightGray,
+                            activeColor: AppTheme.vividRose,
+                            inactiveColor: AppTheme.lightGray,
                           ),
                           Text(
                             'Save as Favorite Style',
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.vividRose,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.vividRose,
                               fontWeight: getFontWeight(500),
                             ),
                           ),
@@ -106,17 +106,17 @@ class ChooseBoardScreen extends StatelessWidget {
                             wrapWithFlexible: true,
                             mainAxisSize: MainAxisSize.min,
                             onTap: vm.skipAndUseDefault,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.vividRose,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.vividRose,
                               fontWeight: getFontWeight(500),
                             ),
                             minHeight: 35,
-                            color: Apptheme.vividRose,
+                            color: AppTheme.vividRose,
                             text: 'Skip & Use Default',
                           ),
                           AppButton(
                             minHeight: 35,
-                            color: Apptheme.vividRose,
+                            color: AppTheme.vividRose,
                             wrapWithFlexible: true,
                             mainAxisSize: MainAxisSize.min,
                             onTap: vm.createBoard,

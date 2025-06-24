@@ -19,7 +19,7 @@ class UploadPdfScreen extends StatelessWidget {
       create: (context) => ImportPdfVm(scaffoldKey: _scaffoldKey),
       child: ScaffoldFrame(
         scaffoldKey: _scaffoldKey,
-        backgroundColor: Apptheme.white,
+        backgroundColor: AppTheme.white,
         drawer: CustomDrawer(child: ImportPdfAside()),
         body: Column(
           children: [

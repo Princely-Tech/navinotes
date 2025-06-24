@@ -139,8 +139,8 @@ class Header6 extends StatelessWidget {
             text: title,
             style:
                 style ??
-                Apptheme.text.copyWith(
-                  color: Apptheme.darkSlateGray,
+                AppTheme.text.copyWith(
+                  color: AppTheme.darkSlateGray,
                   fontSize: 16.0,
                   fontWeight: getFontWeight(500),
                 ),
@@ -148,8 +148,8 @@ class Header6 extends StatelessWidget {
           if (required)
             TextSpan(
               text: "*",
-              style: Apptheme.text.copyWith(
-                color: Apptheme.strongBlue,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.strongBlue,
                 fontSize: 16.0,
                 fontWeight: getFontWeight(500),
               ),
@@ -157,7 +157,7 @@ class Header6 extends StatelessWidget {
           if (optional)
             TextSpan(
               text: " (optional)",
-              style: Apptheme.text.copyWith(color: Apptheme.steelMist),
+              style: AppTheme.text.copyWith(color: AppTheme.steelMist),
             ),
         ],
       ),
@@ -183,14 +183,14 @@ class CustomTag extends StatelessWidget {
       decoration: ShapeDecoration(
         color: color,
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: Apptheme.whisperGrey),
+          side: BorderSide(color: AppTheme.whisperGrey),
           borderRadius: BorderRadius.circular(9999),
         ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Text(
         data,
-        style: Apptheme.text.copyWith(color: textColor, fontSize: 12.0),
+        style: AppTheme.text.copyWith(color: textColor, fontSize: 12.0),
       ),
     );
   }
@@ -216,9 +216,9 @@ class LoadingIndicator extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-              decoration: BoxDecoration(color: Apptheme.black.withAlpha(20)),
+              decoration: BoxDecoration(color: AppTheme.black.withAlpha(20)),
               child: Center(
-                child: CircularProgressIndicator(color: Apptheme.bloodFire),
+                child: CircularProgressIndicator(color: AppTheme.bloodFire),
               ),
             ),
           ),
@@ -249,7 +249,7 @@ class OutlinedChild extends StatelessWidget {
       height: size,
       decoration: decoration.copyWith(
         borderRadius: decoration.shape == BoxShape.circle ? null : borderRadius,
-        // border: decoration.border ?? Border.all(color: Apptheme.lightGray),
+        // border: decoration.border ?? Border.all(color: AppTheme.lightGray),
       ),
       child: Center(child: child),
     );
@@ -257,9 +257,9 @@ class OutlinedChild extends StatelessWidget {
 }
 
 class CustomSlider extends StatefulWidget {
-  const CustomSlider({super.key, required this.slider});
+  const CustomSlider({super.key, required this.slider, this.trackShape});
   final Slider slider;
-
+  final SliderTrackShape? trackShape;
   @override
   State<CustomSlider> createState() => _CustomSliderState();
 }
@@ -285,16 +285,99 @@ class _CustomSliderState extends State<CustomSlider> {
     return SliderTheme(
       data: SliderThemeData(
         trackHeight: 8.0,
+        trackShape: widget.trackShape,
         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 10.0),
         overlayShape: RoundSliderOverlayShape(overlayRadius: 16.0),
       ),
       child: Slider(
         value: sliderValue,
         onChanged: updateValue,
-        activeColor: Apptheme.dodgerBlue,
+        activeColor: AppTheme.dodgerBlue,
         padding: widget.slider.padding ?? EdgeInsets.zero,
-        inactiveColor: Apptheme.gainsboro,
+        inactiveColor: AppTheme.gainsboro,
       ),
+    );
+  }
+}
+
+class GradientSliderTrackShape extends SliderTrackShape {
+  final LinearGradient gradient;
+  final Color activeColor;
+
+  GradientSliderTrackShape({required this.gradient, required this.activeColor});
+
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight ?? 4.0;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight) / 2;
+
+    return Rect.fromLTWH(
+      offset.dx,
+      trackTop,
+      parentBox.size.width, // full width
+      trackHeight,
+    );
+  }
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset offset, {
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required TextDirection textDirection,
+    required Offset thumbCenter,
+    Offset? secondaryOffset,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final Rect trackRect = getPreferredRect(
+      parentBox: parentBox,
+      offset: offset,
+      sliderTheme: sliderTheme,
+      isEnabled: isEnabled,
+      isDiscrete: isDiscrete,
+    );
+
+    const double trackRadius = 4.0;
+
+    // Full gradient paint
+    final Paint gradientPaint =
+        Paint()
+          ..shader = gradient.createShader(trackRect)
+          ..style = PaintingStyle.fill;
+
+    // Left overlay paint (e.g., solid blue)
+    final Paint maskPaint =
+        Paint()
+          ..color = activeColor
+          ..style = PaintingStyle.fill;
+
+    // Draw the gradient first (entire track)
+    context.canvas.drawRRect(
+      RRect.fromRectAndRadius(trackRect, Radius.circular(trackRadius)),
+      gradientPaint,
+    );
+
+    // Mask the left side of the track
+    final Rect maskRect = Rect.fromLTRB(
+      trackRect.left,
+      trackRect.top,
+      thumbCenter.dx,
+      trackRect.bottom,
+    );
+
+    context.canvas.drawRRect(
+      RRect.fromRectAndRadius(maskRect, Radius.circular(trackRadius)),
+      maskPaint,
     );
   }
 }
@@ -339,9 +422,9 @@ class ColorWidget extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(
           color:
-              color == Apptheme.white || addBorder
-                  ? Apptheme.coolGray
-                  : Apptheme.transparent,
+              color == AppTheme.white || addBorder
+                  ? AppTheme.coolGray
+                  : AppTheme.transparent,
         ),
       ),
     );
@@ -355,7 +438,7 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: bgColor ?? Apptheme.white,
+      backgroundColor: bgColor ?? AppTheme.white,
       shape: RoundedRectangleBorder(),
       child: child,
     );
@@ -363,8 +446,13 @@ class CustomDrawer extends StatelessWidget {
 }
 
 class ProfilePic extends StatelessWidget {
-  const ProfilePic({super.key, this.borderColor = Apptheme.transparent});
+  const ProfilePic({
+    super.key,
+    this.borderColor = AppTheme.transparent,
+    this.size = 29,
+  });
   final Color borderColor;
+  final double size;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -375,7 +463,7 @@ class ProfilePic extends StatelessWidget {
       child: ImagePlaceHolder.network(
         imagePath:
             "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
-        size: 29,
+        size: size,
         borderRadius: BorderRadius.circular(999),
       ),
     );
@@ -392,12 +480,12 @@ class MessageDisplayContainer extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
-        color: isError ? Apptheme.bloodFire : Apptheme.vitalGreen,
+        color: isError ? AppTheme.bloodFire : AppTheme.vitalGreen,
       ),
       child: Text(
         message,
         textAlign: TextAlign.center,
-        style: Apptheme.text.copyWith(color: Apptheme.white),
+        style: AppTheme.text.copyWith(color: AppTheme.white),
       ),
     );
   }
@@ -417,18 +505,18 @@ class CustomBackButton extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(4),
             decoration: ShapeDecoration(
-              color: Apptheme.deepMoss,
+              color: AppTheme.deepMoss,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
               ),
             ),
-            child: Icon(Icons.arrow_back, color: Apptheme.white),
+            child: Icon(Icons.arrow_back, color: AppTheme.white),
           ),
           if (isNotNull(title))
             Flexible(
               child: Text(
                 title!,
-                style: Apptheme.text.copyWith(
+                style: AppTheme.text.copyWith(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w600,
                   height: 1.50,
@@ -455,8 +543,8 @@ class AppHeaderOne extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Apptheme.white,
-        border: Border(bottom: BorderSide(color: Apptheme.lightGray, width: 1)),
+        color: AppTheme.white,
+        border: Border(bottom: BorderSide(color: AppTheme.lightGray, width: 1)),
       ),
 
       child: ResponsivePadding(
@@ -489,11 +577,67 @@ class AppHeaderOne extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               fontSize: 20.0,
               fontWeight: getFontWeight(600),
-              color: Apptheme.vividRose,
+              color: AppTheme.vividRose,
             ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class AuthFrame extends StatelessWidget {
+  const AuthFrame({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: screenWidth(context),
+      height: screenHeight(context),
+      child: ScrollableController(
+        mobilePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+        laptopPadding: const EdgeInsets.all(20),
+        child: Center(
+          child: WidthLimiter(
+            mobile: 500,
+            child: SingleChildScrollView(child: child),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AuthHeader extends StatelessWidget {
+  const AuthHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      spacing: 10,
+      children: [
+        SVGImagePlaceHolder(imagePath: Images.logo, size: 80),
+        Text(
+          'NaviNotes',
+          textAlign: TextAlign.center,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.vividRose,
+            fontSize: 30.0,
+            fontFamily: AppTheme.fontPoppins,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Text(
+          'Your supportive study companion',
+          textAlign: TextAlign.center,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.stormGray,
+            fontSize: 16.0,
+            fontFamily: AppTheme.fontPoppins,
           ),
         ),
       ],

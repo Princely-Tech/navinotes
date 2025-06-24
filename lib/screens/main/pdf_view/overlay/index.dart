@@ -50,17 +50,17 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                       tablet: EdgeInsets.all(20),
                       child: Container(
                         decoration: ShapeDecoration(
-                          color: Apptheme.white,
+                          color: AppTheme.white,
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
                               width: 1,
-                              color: Apptheme.pastelBlue,
+                              color: AppTheme.pastelBlue,
                             ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           shadows: [
                             BoxShadow(
-                              color: Apptheme.black.withAlpha(63),
+                              color: AppTheme.black.withAlpha(63),
                               blurRadius: 50,
                               offset: Offset(0, 25),
                               spreadRadius: 5,
@@ -79,8 +79,8 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                                     'Connect key concepts to your mind map for visual learning and better understanding',
                                 icon: _outlinedChild(
                                   img: Images.share,
-                                  imgColor: Apptheme.strongBlue,
-                                  bgColor: Apptheme.paleBlue,
+                                  imgColor: AppTheme.strongBlue,
+                                  bgColor: AppTheme.paleBlue,
                                 ),
                               ),
                               _guideCard(
@@ -89,8 +89,8 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                                     'Transform highlights into flashcards for effective memorization and review',
                                 icon: _outlinedChild(
                                   img: Images.card,
-                                  imgColor: Apptheme.jungleGreen,
-                                  bgColor: Apptheme.lightMintGreen,
+                                  imgColor: AppTheme.jungleGreen,
+                                  bgColor: AppTheme.lightMintGreen,
                                 ),
                               ),
                               _guideCard(
@@ -99,8 +99,8 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                                     'Make detailed notes and link them to your study materials',
                                 icon: _outlinedChild(
                                   img: Images.copy2,
-                                  imgColor: Apptheme.electricPurple,
-                                  bgColor: Apptheme.purple,
+                                  imgColor: AppTheme.electricPurple,
+                                  bgColor: AppTheme.purple,
                                 ),
                               ),
                               _footer(vm),
@@ -122,7 +122,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
     return Column(
       spacing: 15,
       children: [
-        Divider(color: Apptheme.lightAsh, height: 1),
+        Divider(color: AppTheme.lightAsh, height: 1),
         LayoutBuilder(
           builder: (context, constraints) {
             return ScrollableRow(
@@ -133,7 +133,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AppButton.text(
-                      color: Apptheme.steelMist,
+                      color: AppTheme.steelMist,
                       mainAxisSize: MainAxisSize.min,
                       onTap: vm.toggleDontShowAgain,
                       text: 'Don\'t show this again',
@@ -143,8 +143,8 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                             : Icons.check_box_outline_blank,
                         color:
                             vm.dontShowAgain
-                                ? Apptheme.strongBlue
-                                : Apptheme.blueGray,
+                                ? AppTheme.strongBlue
+                                : AppTheme.blueGray,
                         size: 20,
                       ),
                     ),
@@ -228,7 +228,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
             // mainAxisSize: MainAxisSize.min,
             spacing: 5,
             children: [
-              Icon(Icons.lightbulb, color: Apptheme.orangeYellow, size: 22),
+              Icon(Icons.lightbulb, color: AppTheme.orangeYellow, size: 22),
               Flexible(
                 child: Text(
                   'Quick Start Guide',
@@ -246,7 +246,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
         ),
         InkWell(
           onTap: vm.closeOverlay,
-          child: Icon(Icons.close, color: Apptheme.blueGray, size: 20),
+          child: Icon(Icons.close, color: AppTheme.blueGray, size: 20),
         ),
       ],
     );

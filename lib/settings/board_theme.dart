@@ -33,40 +33,40 @@ class BordThemeValues {
 
 extension BoardThemeExtension on BoardTheme {
   BordThemeValues get values {
-    Color bgColor = Apptheme.transparent;
-    Color borderColor = Apptheme.royalGold.withAlpha(0x4C);
-    Color color1 = Apptheme.royalGold;
-    Color inputBorderColor = Apptheme.royalGold;
-    String fontFamily = Apptheme.fontPlayfairDisplay;
-    Color inputBackgroundColor = Apptheme.burntLeather;
+    Color bgColor = AppTheme.transparent;
+    Color borderColor = AppTheme.royalGold.withAlpha(0x4C);
+    Color color1 = AppTheme.royalGold;
+    Color inputBorderColor = AppTheme.royalGold;
+    String fontFamily = AppTheme.fontPlayfairDisplay;
+    Color inputBackgroundColor = AppTheme.burntLeather;
     BoxDecoration mainHeaderDecoration = BoxDecoration();
     BoxDecoration layoutBtnContainerDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(4),
-      color: Apptheme.burntClove,
-      border: Border.all(color: Apptheme.royalGold),
+      color: AppTheme.burntClove,
+      border: Border.all(color: AppTheme.royalGold),
     );
     switch (this) {
       case BoardTheme.darkAcademia:
         mainHeaderDecoration = BoxDecoration(
-          color: Apptheme.fadedEmber,
+          color: AppTheme.fadedEmber,
           borderRadius: BorderRadius.circular(4),
           border: Border(
             bottom: BorderSide(
               width: 1,
-              color: Apptheme.royalGold.withAlpha(0x4C),
+              color: AppTheme.royalGold.withAlpha(0x4C),
             ),
           ),
         );
       case BoardTheme.nature:
-        bgColor = Apptheme.mintCream;
-        borderColor = Apptheme.sageMist;
-        color1 = Apptheme.deepMoss;
-        fontFamily = Apptheme.fontLibreBaskerville;
-        inputBorderColor = Apptheme.burntLeather.withAlpha(0x4C);
-        inputBackgroundColor = Apptheme.lightSage;
+        bgColor = AppTheme.mintCream;
+        borderColor = AppTheme.sageMist;
+        color1 = AppTheme.deepMoss;
+        fontFamily = AppTheme.fontLibreBaskerville;
+        inputBorderColor = AppTheme.burntLeather.withAlpha(0x4C);
+        inputBackgroundColor = AppTheme.lightSage;
         layoutBtnContainerDecoration = layoutBtnContainerDecoration.copyWith(
-          border: Border.all(color: Apptheme.sageMist.withAlpha(0x4C)),
-          color: Apptheme.linen,
+          border: Border.all(color: AppTheme.sageMist.withAlpha(0x4C)),
+          color: AppTheme.linen,
         );
     }
     return BordThemeValues(

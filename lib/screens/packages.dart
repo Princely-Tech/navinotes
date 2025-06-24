@@ -28,3 +28,4 @@ export 'main/choose_board/nature/note_page/index.dart';
 export 'auth/reset_password/change/index.dart';
 export 'auth/reset_password/email/index.dart';
 export 'auth/reset_password/verify/index.dart';
+export 'main/choose_board/nature/mind_map/index.dart';

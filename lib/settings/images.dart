@@ -101,6 +101,15 @@ class Images {
   static const String checkRect = '$iconPath/check_rect.svg';
   static const String pers = '$iconPath/pers.svg';
   static const String menu2 = '$iconPath/menu2.svg';
+  static const String star2 = '$iconPath/star2.svg';
+  static const String file2 = '$iconPath/file2.svg';
+  static const String check = '$iconPath/check.svg';
+  static const String ques3 = '$iconPath/ques3.svg';
+  static const String waterDrop = '$iconPath/water_drop.svg';
+  static const String circle = '$iconPath/circle.svg';
+  static const String rect = '$iconPath/rect.svg';
+  static const String connection = '$iconPath/connection.svg';
+  // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
@@ -135,13 +144,24 @@ class Images {
   static const String boardDarkAcadNoteThermodynamics =
       '$boardsDarkAcademiaPath/thermodynamics.png';
   // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
-  
+
   //Board nature
   static const String boardNaturePreview = '$boardsNaturePath/preview.png';
+  static const String boardNatureThermodynamics =
+      '$boardsNaturePath/thermodynamics.png';
+  static const String boardNatureWave = '$boardsNaturePath/wave.png';
+  static const String boardNatureNewton = '$boardsNaturePath/newton.png';
+  static const String boardNatureQuantum = '$boardsNaturePath/quantum.png';
+  static const String boardNatureOptics = '$boardsNaturePath/optics.png';
+  static const String boardNatureElectromagnetism =
+      '$boardsNaturePath/electromagnetism.png';
   // static const String boardNature = '$boardsNaturePath/.png';
   // static const String boardNature = '$boardsNaturePath/.png';
-  // static const String boardNature = '$boardsNaturePath/preview.png';
   
+  static const String boardNatureWaveLine = '$boardsNaturePath/wave_line.svg';
+  static const String boardNatureQuantumIcon = '$boardsNaturePath/quantum_icon.svg';
+  static const String boardNatureThermometer = '$boardsNaturePath/thermometer.svg';
+
   //boards create
   static const String boardPlain = '$boardsCreatePath/plain.png';
   static const String boardMinimalist = '$boardsCreatePath/minimalist.png';

@@ -7,15 +7,15 @@ class GoNewNoteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BordThemeValues params = theme.values;
-    Color bgColor = Apptheme.burntLeather.withAlpha(0xFF);
+    Color bgColor = AppTheme.burntLeather.withAlpha(0xFF);
     Color txtColor = params.color1;
-    String fontFamily = Apptheme.fontCrimsonPro;
+    String fontFamily = AppTheme.fontCrimsonPro;
     double radius = 4;
     switch (theme) {
       case BoardTheme.nature:
         bgColor = params.color1;
-        txtColor = Apptheme.white;
-        fontFamily = Apptheme.fontCrimsonText;
+        txtColor = AppTheme.white;
+        fontFamily = AppTheme.fontCrimsonText;
         radius = 999;
       default:
     }
@@ -30,7 +30,7 @@ class GoNewNoteButton extends StatelessWidget {
         side: BorderSide(color: params.color1),
       ),
       prefix: Icon(Icons.add, color: txtColor, size: 20),
-      style: Apptheme.text.copyWith(
+      style: AppTheme.text.copyWith(
         color: txtColor,
         fontSize: 16.0,
         fontFamily: fontFamily,

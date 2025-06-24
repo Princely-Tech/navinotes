@@ -18,9 +18,9 @@ class BoardNotesAside extends StatelessWidget {
             return Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Apptheme.white,
+                color: AppTheme.white,
                 border: Border(
-                  right: BorderSide(width: 2, color: Apptheme.lightGray),
+                  right: BorderSide(width: 2, color: AppTheme.lightGray),
                 ),
               ),
               child: Column(
@@ -73,14 +73,14 @@ class BoardNotesAside extends StatelessWidget {
           prefix: SVGImagePlaceHolder(
             imagePath: Images.logo,
             size: 16,
-            color: Apptheme.white,
+            color: AppTheme.white,
           ),
         ),
         Text(
           'See how your notes are connected',
           textAlign: TextAlign.center,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.steelMist,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.steelMist,
             fontSize: 12.0,
           ),
         ),
@@ -94,7 +94,7 @@ class BoardNotesAside extends StatelessWidget {
       children: [
         OutlinedChild(
           size: 32,
-          decoration: BoxDecoration(color: Apptheme.paleBlue),
+          decoration: BoxDecoration(color: AppTheme.paleBlue),
           child: SVGImagePlaceHolder(imagePath: Images.file, size: 16),
         ),
         Expanded(
@@ -102,11 +102,11 @@ class BoardNotesAside extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 4,
             children: [
-              Text(title, style: Apptheme.text),
+              Text(title, style: AppTheme.text),
               Text(
                 lastEdited,
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.steelMist,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.steelMist,
                   fontSize: 12.0,
                 ),
               ),
@@ -122,7 +122,7 @@ class BoardNotesAside extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 30,
       children: [
-        Text('Recently Viewed', style: Apptheme.text),
+        Text('Recently Viewed', style: AppTheme.text),
         _recentItem(title: 'Wave Properties', lastEdited: '2 hours ago'),
         _recentItem(title: 'Newton\'s Laws', lastEdited: 'Yesterday'),
         _recentItem(title: 'Thermodynamics', lastEdited: '3 days ago'),
@@ -139,11 +139,11 @@ class BoardNotesAside extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: 20,
           children: [
-            Flexible(child: Text('Tags', style: Apptheme.text)),
+            Flexible(child: Text('Tags', style: AppTheme.text)),
             AppButton.text(
               onTap: () {},
               text: 'Edit',
-              color: Apptheme.strongBlue,
+              color: AppTheme.strongBlue,
             ),
           ],
         ),
@@ -153,23 +153,23 @@ class BoardNotesAside extends StatelessWidget {
           children: [
             CustomTag(
               'Physics',
-              color: Apptheme.paleBlue,
-              textColor: Apptheme.electricIndigo,
+              color: AppTheme.paleBlue,
+              textColor: AppTheme.electricIndigo,
             ),
             CustomTag(
               'Science',
-              color: Apptheme.lightMintGreen,
-              textColor: Apptheme.emeraldGreen,
+              color: AppTheme.lightMintGreen,
+              textColor: AppTheme.emeraldGreen,
             ),
             CustomTag(
               'Study',
-              color: Apptheme.purple,
-              textColor: Apptheme.royalViolet,
+              color: AppTheme.purple,
+              textColor: AppTheme.royalViolet,
             ),
             CustomTag(
               'Exam Prep',
-              color: Apptheme.yellow,
-              textColor: Apptheme.burntSienna,
+              color: AppTheme.yellow,
+              textColor: AppTheme.burntSienna,
             ),
           ],
         ),
@@ -178,7 +178,7 @@ class BoardNotesAside extends StatelessWidget {
   }
 
   Widget _divider() {
-    return Divider(color: Apptheme.lightGray, height: 40);
+    return Divider(color: AppTheme.lightGray, height: 40);
   }
 
   Widget _detailItem({
@@ -196,11 +196,11 @@ class BoardNotesAside extends StatelessWidget {
               children: [
                 TextSpan(
                   text: '$title:  ',
-                  style: Apptheme.text.copyWith(color: Apptheme.steelMist),
+                  style: AppTheme.text.copyWith(color: AppTheme.steelMist),
                 ),
                 TextSpan(
                   text: value,
-                  style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
+                  style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
                 ),
               ],
             ),
@@ -215,7 +215,7 @@ class BoardNotesAside extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 15,
       children: [
-        Text('Board Details', style: Apptheme.text.copyWith(fontSize: 18.0)),
+        Text('Board Details', style: AppTheme.text.copyWith(fontSize: 18.0)),
         _detailItem(
           title: 'Created',
           value: 'April 10, 2025',

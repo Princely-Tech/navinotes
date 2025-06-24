@@ -12,20 +12,20 @@ class EmptyRecentNotesMain extends StatelessWidget {
         children: [
           OutlinedChild(
             decoration: BoxDecoration(
-              color: Apptheme.lightAsh,
+              color: AppTheme.lightAsh,
               shape: BoxShape.circle,
             ),
             size: 96,
             child: SVGImagePlaceHolder(
               imagePath: Images.copy3,
               size: 40,
-              color: Apptheme.jungleTeal,
+              color: AppTheme.jungleTeal,
             ),
           ),
           Text(
             'No Recent Notes Yet',
             textAlign: TextAlign.center,
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               fontSize: 24.0,
               fontWeight: getFontWeight(600),
               height: 1.33,
@@ -36,8 +36,8 @@ class EmptyRecentNotesMain extends StatelessWidget {
             child: Text(
               'Your recently accessed notes will appear here once you start writing and reviewing.',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(
-                color: Apptheme.stormGray,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.stormGray,
                 fontSize: 16.0,
                 height: 1.50,
               ),
@@ -47,7 +47,7 @@ class EmptyRecentNotesMain extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             onTap: () {},
             text: 'Create Your First Note',
-            color: Apptheme.jungleTeal,
+            color: AppTheme.jungleTeal,
           ),
           Row(
             spacing: 15,
@@ -59,7 +59,7 @@ class EmptyRecentNotesMain extends StatelessWidget {
                 prefix: SVGImagePlaceHolder(imagePath: Images.folder, size: 18),
                 onTap: () {},
                 text: 'Browse Your Boards',
-                color: Apptheme.jungleTeal,
+                color: AppTheme.jungleTeal,
               ),
               AppButton.text(
                 wrapWithFlexible: true,
@@ -67,7 +67,7 @@ class EmptyRecentNotesMain extends StatelessWidget {
                 prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
                 onTap: () {},
                 text: 'Import from PDF',
-                color: Apptheme.jungleTeal,
+                color: AppTheme.jungleTeal,
               ),
             ],
           ),

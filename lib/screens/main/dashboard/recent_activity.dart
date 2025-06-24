@@ -7,14 +7,14 @@ class RecentActivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget divider = Divider(color: Apptheme.lightGray, height: 40);
+    Widget divider = Divider(color: AppTheme.lightGray, height: 40);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 20,
       children: [
         Text(
           'Recent Activity',
-          style: Apptheme.text.copyWith(
+          style: AppTheme.text.copyWith(
             fontSize: 24.0,
             fontWeight: FontWeight.w700,
           ),
@@ -27,7 +27,7 @@ class RecentActivity extends StatelessWidget {
                 body: 'You added new equations to the Schrödinger section',
                 image: _imgCard(
                   imagePath: Images.file,
-                  color: Apptheme.paleBlue,
+                  color: AppTheme.paleBlue,
                 ),
                 lastUpdated: 'Today, 10:23 AM',
                 subject: 'Physics 101',
@@ -38,7 +38,7 @@ class RecentActivity extends StatelessWidget {
                 body: 'You connected 3 new nodes to the UI/UX branch',
                 image: _imgCard(
                   imagePath: Images.share,
-                  color: Apptheme.lightMintGreen,
+                  color: AppTheme.lightMintGreen,
                 ),
                 lastUpdated: 'Yesterday, 4:15 PM',
                 subject: 'Project Ideas',
@@ -47,7 +47,7 @@ class RecentActivity extends StatelessWidget {
               divider,
               _activityCard(
                 body: 'You highlighted 5 quotes and added commentary',
-                image: _imgCard(imagePath: Images.pen, color: Apptheme.purple),
+                image: _imgCard(imagePath: Images.pen, color: AppTheme.purple),
                 lastUpdated: 'April 30, 2025',
                 subject: 'Literature Notes',
                 title: 'Hamlet Character Analysis',
@@ -57,7 +57,7 @@ class RecentActivity extends StatelessWidget {
                 body: 'You created a new diagram of mitosis phases',
                 image: _imgCard(
                   imagePath: Images.flask,
-                  color: Apptheme.yellow,
+                  color: AppTheme.yellow,
                 ),
                 lastUpdated: 'April 29, 2025',
                 subject: 'Biology 202',
@@ -110,7 +110,7 @@ class RecentActivity extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: Apptheme.text.copyWith(
+                          style: AppTheme.text.copyWith(
                             fontSize: 16.0,
                             fontWeight: getFontWeight(500),
                           ),
@@ -121,14 +121,14 @@ class RecentActivity extends StatelessWidget {
                           children: [
                             Text(
                               body,
-                              style: Apptheme.text.copyWith(
-                                color: Apptheme.stormGray,
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.stormGray,
                               ),
                             ),
                             Text(
                               subject,
-                              style: Apptheme.text.copyWith(
-                                color: Apptheme.vividRose,
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.vividRose,
                                 fontSize: 12.0,
                               ),
                             ),
@@ -147,8 +147,8 @@ class RecentActivity extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 30),
                 child: Text(
                   lastUpdated,
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.steelMist,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.steelMist,
                     fontSize: 12.0,
                   ),
                 ),

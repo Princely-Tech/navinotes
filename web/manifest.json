@@ -1,6 +1,6 @@
 {
-    "name": "navinotes",
-    "short_name": "navinotes",
+    "name": "NaviNotes",
+    "short_name": "NaviNotes",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

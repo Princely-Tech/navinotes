@@ -26,7 +26,7 @@ class LoginForm extends StatelessWidget {
                 label: 'Password',
                 controller: vm.passwordController,
                 labelRight: AppButton.text(
-                  onTap: () => NavigationHelper.push(Routes.forgotPassword), 
+                  onTap: () => NavigationHelper.push(Routes.forgotPassword),
                   text: 'Forgot Password?',
                 ),
                 keyboardType: TextInputType.visiblePassword,
@@ -40,7 +40,7 @@ class LoginForm extends StatelessWidget {
                   }
                 },
                 text: 'Sign In',
-                suffix: Icon(Icons.arrow_forward, color: Apptheme.white),
+                suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
               ),
             ],
           ),

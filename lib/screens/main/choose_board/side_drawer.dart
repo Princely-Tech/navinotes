@@ -14,9 +14,9 @@ class ChooseBoardAside extends StatelessWidget {
         return Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Apptheme.white,
+            color: AppTheme.white,
             border: Border(
-              right: BorderSide(width: 2, color: Apptheme.lightGray),
+              right: BorderSide(width: 2, color: AppTheme.lightGray),
             ),
           ),
           child: Column(
@@ -48,8 +48,8 @@ class ChooseBoardAside extends StatelessWidget {
   Widget _brainyTip() {
     return CustomCard(
       decoration: BoxDecoration(
-        color: Apptheme.ivoryGlow,
-        border: Border.all(color: Apptheme.amber),
+        color: AppTheme.ivoryGlow,
+        border: Border.all(color: AppTheme.amber),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,15 +63,15 @@ class ChooseBoardAside extends StatelessWidget {
               children: [
                 Text(
                   'Navi Tip',
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.abyssTeal,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.abyssTeal,
                     fontWeight: getFontWeight(500),
                   ),
                 ),
                 Text(
                   'Choose a style that helps you focus. Different aesthetics can stimulate different types of thinking and creativity!',
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.black,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.black,
                     fontSize: 12.0,
                   ),
                 ),
@@ -89,11 +89,11 @@ class ChooseBoardAside extends StatelessWidget {
       label: 'Font Style',
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: Apptheme.pastelBlue),
+        borderSide: BorderSide(color: AppTheme.pastelBlue),
       ),
       selectItems: ['Sans Serif', 'Serif', 'Monospace'],
       controller: TextEditingController(text: 'Sans Serif'),
-      labelStyle: Apptheme.text.copyWith(color: Apptheme.black, fontSize: 12.0),
+      labelStyle: AppTheme.text.copyWith(color: AppTheme.black, fontSize: 12.0),
     );
   }
 
@@ -104,8 +104,8 @@ class ChooseBoardAside extends StatelessWidget {
       children: [
         Text(
           'Customization',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.black,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.black,
             fontWeight: getFontWeight(500),
           ),
         ),
@@ -115,8 +115,8 @@ class ChooseBoardAside extends StatelessWidget {
           children: [
             Text(
               'Accent Color',
-              style: Apptheme.text.copyWith(
-                color: Apptheme.black,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.black,
                 fontSize: 12.0,
               ),
             ),
@@ -125,11 +125,11 @@ class ChooseBoardAside extends StatelessWidget {
               child: Row(
                 spacing: 10,
                 children: [
-                  ColorWidget(Apptheme.vividBlue),
-                  ColorWidget(Apptheme.primaryColor),
-                  ColorWidget(Apptheme.lavenderPurple),
-                  ColorWidget(Apptheme.coralRed),
-                  ColorWidget(Apptheme.amber),
+                  ColorWidget(AppTheme.vividBlue),
+                  ColorWidget(AppTheme.primaryColor),
+                  ColorWidget(AppTheme.lavenderPurple),
+                  ColorWidget(AppTheme.coralRed),
+                  ColorWidget(AppTheme.amber),
                 ],
               ),
             ),
@@ -147,7 +147,7 @@ class ChooseBoardAside extends StatelessWidget {
       children: [
         Text(
           'Background Pattern',
-          style: Apptheme.text.copyWith(color: Apptheme.black, fontSize: 12.0),
+          style: AppTheme.text.copyWith(color: AppTheme.black, fontSize: 12.0),
         ),
         Column(
           spacing: 7,
@@ -167,8 +167,8 @@ class ChooseBoardAside extends StatelessWidget {
                         (str) => Flexible(
                           child: Text(
                             str,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.black,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.black,
                               fontSize: 12.0,
                             ),
                           ),
@@ -189,18 +189,18 @@ class ChooseBoardAside extends StatelessWidget {
       children: [
         Text(
           'Color Palette',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.black,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.black,
             fontWeight: getFontWeight(500),
           ),
         ),
         ScrollableRow(
           children: [
-            ColorWidget(Apptheme.white, size: 32),
-            ColorWidget(Apptheme.lightGray, size: 32),
-            ColorWidget(Apptheme.vividBlue, size: 32),
-            ColorWidget(Apptheme.mintyGreen, size: 32),
-            ColorWidget(Apptheme.defaultBlack, size: 32),
+            ColorWidget(AppTheme.white, size: 32),
+            ColorWidget(AppTheme.lightGray, size: 32),
+            ColorWidget(AppTheme.vividBlue, size: 32),
+            ColorWidget(AppTheme.mintyGreen, size: 32),
+            ColorWidget(AppTheme.defaultBlack, size: 32),
           ],
         ),
       ],
@@ -214,15 +214,15 @@ class ChooseBoardAside extends StatelessWidget {
       children: [
         Text(
           'Plain',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.abyssTeal,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.abyssTeal,
             fontSize: 16.0,
             fontWeight: getFontWeight(500),
           ),
         ),
         Text(
           'A clean, distraction-free interface that keeps the focus on your ideas and connections. Perfect for academic study and professional planning.',
-          style: Apptheme.text.copyWith(color: Apptheme.black),
+          style: AppTheme.text.copyWith(color: AppTheme.black),
         ),
       ],
     );
@@ -235,15 +235,15 @@ class ChooseBoardAside extends StatelessWidget {
       children: [
         Text(
           'Preview',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.vividRose,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.vividRose,
             fontSize: 16.0,
             fontWeight: getFontWeight(600),
           ),
         ),
         CustomCard(
           decoration: BoxDecoration(
-            border: Border.all(color: Apptheme.paleBlue),
+            border: Border.all(color: AppTheme.paleBlue),
           ),
           child: ImagePlaceHolder(imagePath: Images.boardPreview),
         ),

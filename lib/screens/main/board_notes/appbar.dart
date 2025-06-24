@@ -14,9 +14,9 @@ class BoardNotesAppBar extends StatelessWidget {
       builder: (_, vm, _) {
         return Container(
           decoration: ShapeDecoration(
-            color: Apptheme.white,
+            color: AppTheme.white,
             shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Apptheme.lightGray),
+              side: BorderSide(width: 1, color: AppTheme.lightGray),
             ),
           ),
           padding: EdgeInsets.all(15),
@@ -35,7 +35,7 @@ class BoardNotesAppBar extends StatelessWidget {
               ResponsiveSection(
                 mobile: InkWell(
                   onTap: vm.openDrawer,
-                  child: Icon(Icons.menu, color: Apptheme.stormGray),
+                  child: Icon(Icons.menu, color: AppTheme.stormGray),
                 ),
                 desktop: NotesAppBarActions(),
               ),
@@ -48,12 +48,12 @@ class BoardNotesAppBar extends StatelessWidget {
 
   Widget _searchField() {
     return CustomInputField(
-      prefixIcon: Icon(Icons.search, color: Apptheme.slateGray, size: 20),
+      prefixIcon: Icon(Icons.search, color: AppTheme.slateGray, size: 20),
       hintText: 'Search in this board',
-      fillColor: Apptheme.lightAsh,
+      fillColor: AppTheme.lightAsh,
       side: BorderSide.none,
-      hintStyle: Apptheme.text.copyWith(
-        color: Apptheme.slateGray,
+      hintStyle: AppTheme.text.copyWith(
+        color: AppTheme.slateGray,
         height: 1.43,
       ),
     );
@@ -66,7 +66,7 @@ class BoardNotesAppBar extends StatelessWidget {
       children: [
         InkWell(
           onTap: NavigationHelper.pop,
-          child: Icon(Icons.arrow_back, size: 24, color: Apptheme.strongBlue),
+          child: Icon(Icons.arrow_back, size: 24, color: AppTheme.strongBlue),
         ),
 
         VisibleController(
@@ -78,11 +78,11 @@ class BoardNotesAppBar extends StatelessWidget {
               spacing: 10,
               children: [
                 OutlinedChild(
-                  decoration: BoxDecoration(color: Apptheme.paleBlue),
+                  decoration: BoxDecoration(color: AppTheme.paleBlue),
                   child: Text(
                     'N',
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.strongBlue,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.strongBlue,
                       fontSize: 16.0,
                       fontWeight: getFontWeight(600),
                     ),
@@ -94,23 +94,23 @@ class BoardNotesAppBar extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: AppStrings.appName,
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.persianBlue,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.persianBlue,
                             fontSize: 18.0,
                             fontWeight: getFontWeight(500),
                           ),
                         ),
                         TextSpan(
                           text: '  /  ',
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.blueGray,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.blueGray,
                             fontSize: 16.0,
                           ),
                         ),
                         TextSpan(
                           text: 'Physics 101',
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.darkSlateGray,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.darkSlateGray,
                             fontSize: 16.0,
                             fontWeight: getFontWeight(500),
                           ),

@@ -84,16 +84,16 @@ class BoardNoteAppBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(theme.isNature ? 999 : 8),
         borderSide: BorderSide(color: params.inputBorderColor),
       ),
-      style: Apptheme.text.copyWith(
+      style: AppTheme.text.copyWith(
         color: params.color1,
         fontSize: 16.0,
-        fontFamily: Apptheme.fontCrimsonPro,
+        fontFamily: AppTheme.fontCrimsonPro,
         height: 1.50,
       ),
-      hintStyle: Apptheme.text.copyWith(
-        color: Apptheme.slateGray,
+      hintStyle: AppTheme.text.copyWith(
+        color: AppTheme.slateGray,
         fontSize: 16.0,
-        fontFamily: Apptheme.fontCrimsonPro,
+        fontFamily: AppTheme.fontCrimsonPro,
         height: 1.50,
       ),
     );
@@ -104,7 +104,7 @@ class BoardNoteAppBar extends StatelessWidget {
     Color appNameColor = params.color1;
     bool isDarkAcademia = theme.isDarkAcademia;
     if (isDarkAcademia) {
-      appNameColor = Apptheme.vanilaDust.withAlpha(0xE5);
+      appNameColor = AppTheme.vanillaDust.withAlpha(0xE5);
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -125,10 +125,10 @@ class BoardNoteAppBar extends StatelessWidget {
                 if (isDarkAcademia)
                   Text(
                     'N',
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.royalGold,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.royalGold,
                       fontSize: 24.0,
-                      fontFamily: Apptheme.fontPlayfairDisplay,
+                      fontFamily: AppTheme.fontPlayfairDisplay,
                       fontWeight: getFontWeight(700),
                       height: 1.33,
                     ),
@@ -143,7 +143,7 @@ class BoardNoteAppBar extends StatelessWidget {
                     child: Text(
                       'N',
                       style: TextStyle(
-                        color: Apptheme.linen,
+                        color: AppTheme.linen,
                         fontSize: 16.0,
                         fontFamily: params.fontFamily,
                       ),
@@ -155,7 +155,7 @@ class BoardNoteAppBar extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: '${AppStrings.appName} /',
-                          style: Apptheme.text.copyWith(
+                          style: AppTheme.text.copyWith(
                             color: appNameColor,
                             fontSize: 16.0,
                             fontFamily: params.fontFamily,
@@ -164,7 +164,7 @@ class BoardNoteAppBar extends StatelessWidget {
                         ),
                         TextSpan(
                           text: 'Physics 101',
-                          style: Apptheme.text.copyWith(
+                          style: AppTheme.text.copyWith(
                             color: params.color1,
                             fontSize: 16.0,
                             fontFamily: params.fontFamily,

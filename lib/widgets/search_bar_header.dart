@@ -18,10 +18,10 @@ class SearchBarHeader extends StatelessWidget {
       builder: (_, layoutVm, _) {
         return Container(
           decoration: BoxDecoration(
-            color: borderBottom ? Apptheme.white : Apptheme.transparent,
+            color: borderBottom ? AppTheme.white : AppTheme.transparent,
             border: Border(
               bottom: BorderSide(
-                color: borderBottom ? Apptheme.lightGray : Colors.transparent,
+                color: borderBottom ? AppTheme.lightGray : Colors.transparent,
               ),
             ),
           ),
@@ -47,7 +47,7 @@ class SearchBarHeader extends StatelessWidget {
                             child: Icon(
                               Icons.menu,
                               size: 24,
-                              color: Apptheme.steelMist,
+                              color: AppTheme.steelMist,
                             ),
                           ),
                         ),
@@ -60,13 +60,13 @@ class SearchBarHeader extends StatelessWidget {
                             child: CustomInputField(
                               prefixIcon: Icon(
                                 Icons.search,
-                                color: Apptheme.slateGray,
+                                color: AppTheme.slateGray,
                                 size: 20,
                               ),
                               hintText:
                                   'Search your notes, boards, and more...',
-                              hintStyle: Apptheme.text.copyWith(
-                                color: Apptheme.slateGray,
+                              hintStyle: AppTheme.text.copyWith(
+                                color: AppTheme.slateGray,
                                 fontSize: 16.0,
                                 height: 1.50,
                               ),
@@ -84,9 +84,9 @@ class SearchBarHeader extends StatelessWidget {
                     SVGImagePlaceHolder(
                       imagePath: Images.settings,
                       size: 16,
-                      color: Apptheme.steelMist,
+                      color: AppTheme.steelMist,
                     ),
-                   ProfilePic(),
+                    ProfilePic(),
                   ],
                 ),
               ],

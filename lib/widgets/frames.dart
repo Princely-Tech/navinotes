@@ -27,7 +27,7 @@ class ScaffoldFrame extends StatelessWidget {
         body: body,
         drawer: drawer,
         endDrawer: endDrawer,
-        backgroundColor: backgroundColor ?? Apptheme.lightGray,
+        backgroundColor: backgroundColor ?? AppTheme.lightGray,
         floatingActionButton: floatingActionButton,
       ),
     );

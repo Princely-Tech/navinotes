@@ -5,10 +5,11 @@ class TextRowSelect extends StatelessWidget {
     super.key,
     required this.items,
     required this.selected,
-    this.borderColor = Apptheme.caramelMist,
-    this.selectedTextColor = Apptheme.white,
-    this.textColor = Apptheme.white,
+    this.borderColor = AppTheme.caramelMist,
+    this.selectedTextColor = AppTheme.white,
+    this.textColor = AppTheme.white,
     this.padding,
+    // this.minWidth,
   });
   final List<String> items;
   final String selected;
@@ -16,14 +17,19 @@ class TextRowSelect extends StatelessWidget {
   final Color? textColor;
   final Color borderColor;
   final EdgeInsetsGeometry? padding;
+  // final double? minWidth;
   @override
-  Widget build(BuildContext context) {
+  Widget build(_) {
     return LayoutBuilder(
-      builder: (context, constraints) {
+      builder: (_, constraints) {
+        double minWidth = constraints.maxWidth;
+        if (minWidth == double.infinity) {
+          minWidth = 0;
+        }
         return ScrollableController(
           scrollDirection: Axis.horizontal,
           child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+            constraints: BoxConstraints(minWidth: minWidth),
             child: Row(
               children:
                   items.map((str) {
@@ -47,7 +53,7 @@ class TextRowSelect extends StatelessWidget {
                         padding: padding ?? EdgeInsets.only(bottom: 5),
                         child: Text(
                           str,
-                          style: Apptheme.text.copyWith(
+                          style: AppTheme.text.copyWith(
                             color: isSelected ? selectedTextColor : textColor,
                             fontSize: 16.0,
                           ),

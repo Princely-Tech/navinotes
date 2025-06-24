@@ -25,7 +25,7 @@ class AppButton extends StatelessWidget {
     this.shape,
     required this.onTap,
     this.prefix,
-    this.color = Apptheme.vividRose,
+    this.color = AppTheme.vividRose,
     this.wrapWithFlexible = false,
     this.suffix,
     this.minHeight = defaultMinHeight,
@@ -50,7 +50,7 @@ class AppButton extends StatelessWidget {
     required this.onTap,
     this.prefix,
     this.suffix,
-    this.color = Apptheme.vividRose,
+    this.color = AppTheme.vividRose,
     this.loading = false,
     this.wrapWithFlexible = false,
     this.style,
@@ -77,7 +77,7 @@ class AppButton extends StatelessWidget {
     this.wrapWithFlexible = false,
     this.prefix,
     this.suffix,
-    this.color = Apptheme.vividRose,
+    this.color = AppTheme.vividRose,
     this.padding,
     this.style,
     this.loading = false,
@@ -144,7 +144,7 @@ class AppButton extends StatelessWidget {
   }
 
   Widget _text() {
-    return Text(text!, style: style ?? Apptheme.text.copyWith(color: color));
+    return Text(text!, style: style ?? AppTheme.text.copyWith(color: color));
   }
 
   Widget _body() {
@@ -155,7 +155,7 @@ class AppButton extends StatelessWidget {
         shape ??
         RoundedRectangleBorder(
           side: BorderSide(
-            color: isNotNull(gradient) ? Apptheme.transparent : runBorderColor,
+            color: isNotNull(gradient) ? AppTheme.transparent : runBorderColor,
           ),
           borderRadius: radius,
         );
@@ -195,9 +195,9 @@ class AppButton extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-              decoration: BoxDecoration(color: Apptheme.black.withAlpha(60)),
+              decoration: BoxDecoration(color: AppTheme.black.withAlpha(60)),
               child: Center(
-                child: CircularProgressIndicator(color: Apptheme.white),
+                child: CircularProgressIndicator(color: AppTheme.white),
               ),
             ),
           ),
@@ -206,7 +206,7 @@ class AppButton extends StatelessWidget {
   }
 
   Widget _btnMain() {
-    Color? runTextColor = textColor ?? Apptheme.white;
+    Color? runTextColor = textColor ?? AppTheme.white;
     if (_type.isSecondary) {
       runTextColor = textColor ?? color;
     }
@@ -227,7 +227,7 @@ class AppButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style:
                     style ??
-                    Apptheme.text.copyWith(color: runTextColor, fontSize: 16.0),
+                    AppTheme.text.copyWith(color: runTextColor, fontSize: 16.0),
               ),
             ),
           if (isNotNull(child)) child!,
@@ -246,7 +246,7 @@ class MenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onPressed,
-      icon: Icon(Icons.menu, color: decoration?.color ?? Apptheme.stormGray),
+      icon: Icon(Icons.menu, color: decoration?.color ?? AppTheme.stormGray),
     );
   }
 }

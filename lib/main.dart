@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+
 void main() async {
   await dotenv.load(fileName: ".env");
   runApp(const MyApp());
@@ -12,8 +13,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: Apptheme.fontFamily),
-        initialRoute: Routes.auth,
+        theme: ThemeData(fontFamily: AppTheme.fontFamily),
+        initialRoute: Routes.boardNatureMindMap,
         // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,

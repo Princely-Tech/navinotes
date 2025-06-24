@@ -1,9 +1,9 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-final titleTextStyle = Apptheme.text.copyWith(
+final titleTextStyle = AppTheme.text.copyWith(
   color: const Color(0xCCF4F1E8),
-  fontFamily: Apptheme.fontPlayfairDisplay,
+  fontFamily: AppTheme.fontPlayfairDisplay,
 );
 
 class DarkAcademiaMindMapRight extends StatelessWidget {
@@ -14,14 +14,15 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
     return Consumer<DarkAcademiaMindMapVm>(
       builder: (_, vm, _) {
         return Container(
-          decoration: BoxDecoration(color: Apptheme.burntClove.withAlpha(255)),
+          decoration: BoxDecoration(color: AppTheme.burntClove.withAlpha(255)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.all(15),
-                  child: RoyalGoldHeaderSection(
+                  child: EditHeaderSection(
+                    theme: BoardTheme.darkAcademia,
                     title: 'Customization',
                     child: Column(
                       spacing: 30,
@@ -32,11 +33,11 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
                         AppButton(
                           onTap: () {},
                           text: 'Apply Changes',
-                          color: Apptheme.goldenSaffron,
-                          style: TextStyle(
-                            color: Apptheme.burntClove.withAlpha(0xFF),
+                          color: AppTheme.goldenSaffron,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.burntClove.withAlpha(0xFF),
                             fontSize: 16.0,
-                            fontFamily: Apptheme.fontPlayfairDisplay,
+                            fontFamily: AppTheme.fontPlayfairDisplay,
                             fontWeight: getFontWeight(500),
                           ),
                         ),
@@ -62,8 +63,8 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 5),
           child: Text(
             'Export',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.whiteSmoke,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.whiteSmoke,
               fontSize: 12.0,
               fontWeight: getFontWeight(600),
               height: 1.33,
@@ -76,9 +77,9 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
           text: 'Export Mind Map',
           prefix: SVGImagePlaceHolder(
             imagePath: Images.upload,
-            color: Apptheme.white,
+            color: AppTheme.white,
           ),
-          style: Apptheme.text.copyWith(color: Apptheme.white),
+          style: AppTheme.text.copyWith(color: AppTheme.white),
         ),
         LayoutBuilder(
           builder: (context, constraints) {
@@ -93,7 +94,7 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
                           .map(
                             (str) => Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: Apptheme.white),
+                                border: Border.all(color: AppTheme.white),
                               ),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -102,8 +103,8 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
                               child: Text(
                                 str,
                                 textAlign: TextAlign.center,
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.whiteSmoke,
+                                style: AppTheme.text.copyWith(
+                                  color: AppTheme.whiteSmoke,
                                   fontSize: 12.0,
                                 ),
                               ),
@@ -126,11 +127,11 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
       onTap: () => vm.updateShape(index),
       child: Container(
         decoration: ShapeDecoration(
-          color: isSelected ? Apptheme.iceBlue : Apptheme.transparent,
+          color: isSelected ? AppTheme.iceBlue : AppTheme.transparent,
           shape: RoundedRectangleBorder(
             side: BorderSide(
               width: 1,
-              color: isSelected ? Apptheme.vividBlue : Apptheme.lightGray,
+              color: isSelected ? AppTheme.vividBlue : AppTheme.lightGray,
             ),
             borderRadius: BorderRadius.circular(8),
           ),
@@ -140,7 +141,7 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
           width: 32,
           height: 24,
           decoration: BoxDecoration(
-            color: Apptheme.white,
+            color: AppTheme.white,
             borderRadius: BorderRadius.circular(radiusIs2 ? 2 : 8),
           ),
         ),
@@ -150,13 +151,13 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
 
   Widget _lineItem(DarkAcademiaMindMapVm vm, String line) {
     bool isSelected = vm.selectedLine == line;
-    Color color = isSelected ? Apptheme.vividBlue : Apptheme.white;
+    Color color = isSelected ? AppTheme.vividBlue : AppTheme.white;
     return InkWell(
       onTap: () => vm.updateLine(line),
       child: OutlinedChild(
         size: 48,
         decoration: BoxDecoration(
-          color: isSelected ? Apptheme.iceBlue : Apptheme.transparent,
+          color: isSelected ? AppTheme.iceBlue : AppTheme.transparent,
           border: Border.all(color: color),
         ),
         child: SVGImagePlaceHolder(imagePath: line, color: color),
@@ -206,10 +207,10 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children:
                             [
-                                  Apptheme.goldenSaffron,
-                                  Apptheme.walnutBronze,
-                                  Apptheme.rustWood,
-                                  Apptheme.gumMetalBlue,
+                                  AppTheme.goldenSaffron,
+                                  AppTheme.walnutBronze,
+                                  AppTheme.rustWood,
+                                  AppTheme.gumMetalBlue,
                                 ]
                                 .map(
                                   (color) => Container(
@@ -274,11 +275,11 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
       onTap: () => vm.updateBorderItem(item),
       child: Container(
         decoration: ShapeDecoration(
-          color: isSelected ? Apptheme.iceBlue : Apptheme.transparent,
+          color: isSelected ? AppTheme.iceBlue : AppTheme.transparent,
           shape: RoundedRectangleBorder(
             side: BorderSide(
               width: 1,
-              color: isSelected ? Apptheme.transparent : Apptheme.white,
+              color: isSelected ? AppTheme.transparent : AppTheme.white,
             ),
             borderRadius: BorderRadius.circular(4),
           ),
@@ -287,8 +288,8 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: Apptheme.text.copyWith(
-            color: isSelected ? Apptheme.strongBlue : Apptheme.pastelBloom,
+          style: AppTheme.text.copyWith(
+            color: isSelected ? AppTheme.strongBlue : AppTheme.pastelBloom,
             fontSize: 12.0,
           ),
         ),
@@ -305,10 +306,10 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
         children: [
           CustomInputField(
             constraints: BoxConstraints(minHeight: 30),
-            fillColor: Apptheme.moltenBrown,
+            fillColor: AppTheme.moltenBrown,
             label: 'Font Family',
             labelStyle: titleTextStyle,
-            style: Apptheme.text.copyWith(color: Apptheme.walnutBronze),
+            style: AppTheme.text.copyWith(color: AppTheme.walnutBronze),
             selectItems: [],
           ),
           _titleSection(
@@ -385,14 +386,14 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
       onTap: () => vm.updateFontWeight(fontWeight),
       child: Container(
         decoration: ShapeDecoration(
-          color: Apptheme.moltenBrown,
+          color: AppTheme.moltenBrown,
           shape: RoundedRectangleBorder(
             side: BorderSide(
               width: 1,
               color:
                   isSelected
-                      ? Apptheme.goldenSaffron.withAlpha(0x66)
-                      : Apptheme.walnutBronze.withAlpha(0x33),
+                      ? AppTheme.goldenSaffron.withAlpha(0x66)
+                      : AppTheme.walnutBronze.withAlpha(0x33),
             ),
             borderRadius: BorderRadius.circular(4),
           ),
@@ -401,13 +402,13 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: Apptheme.text.copyWith(
+          style: AppTheme.text.copyWith(
             color:
                 isSelected
-                    ? Apptheme.goldenSaffron
-                    : Apptheme.creamMist.withAlpha(0xB2),
+                    ? AppTheme.goldenSaffron
+                    : AppTheme.creamMist.withAlpha(0xB2),
             fontSize: 12.0,
-            fontFamily: Apptheme.fontPlayfairDisplay,
+            fontFamily: AppTheme.fontPlayfairDisplay,
           ),
         ),
       ),
@@ -433,10 +434,10 @@ class DarkAcademiaMindMapRight extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.creamMist.withAlpha(0xE5),
+          style: AppTheme.text.copyWith(
+            color: AppTheme.creamMist.withAlpha(0xE5),
             fontSize: 16.0,
-            fontFamily: Apptheme.fontPlayfairDisplay,
+            fontFamily: AppTheme.fontPlayfairDisplay,
             height: 1.50,
           ),
         ),

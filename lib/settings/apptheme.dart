@@ -3,7 +3,7 @@ import 'package:navinotes/packages.dart';
 double mobilePadding = 10;
 double tabletPadding = 20;
 
-Color shadowColor = Apptheme.black.withAlpha(0x19);
+Color shadowColor = AppTheme.black.withAlpha(0x19);
 List<BoxShadow> boxShadows = [
   BoxShadow(
     color: shadowColor,
@@ -19,14 +19,14 @@ List<BoxShadow> boxShadows = [
   ),
 ];
 
-class Apptheme {
-  Apptheme._();
+class AppTheme {
+  AppTheme._();
   static const Color primaryColor = Color(0xFF10B981);
   static const Color black = Color(0xFF000000);
   static const Color mintCream = Color(0xFFE8F5E8);
   static const Color paleSage = Color(0xFFE0E8D9);
   static const Color softLinen = Color(0xFFF8F6F0);
-  static const Color vanilaDust = Color(0xFFF5F5DC);
+  static const Color vanillaDust = Color(0xFFF5F5DC);
   static const Color caramelMist = Color(0xFFC4A484);
   static const Color royalGold = Color(0xFFD4AF37);
   static const Color cocoaVeil = Color(0x333C2A1E);
@@ -129,13 +129,17 @@ class Apptheme {
   static const Color lightSage = Color(0xFFF0F4E8);
   static const Color coffee = Color(0xFF6F4E37);
   static const Color darkMossGreen = Color(0xFF1B4332);
+  static const Color lightSkyBlue = Color(0xFFE0F2FE);
+  static const Color babyBlue = Color(0xFFBAE6FD);
+  static const Color cerulean = Color(0xFF0369A1);
+  static const Color deepPeach = Color(0x19FF8C42);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';
   static const String fontPlayfairDisplay = 'Playfair Display';
-  static const String fontCrimsonPro = 'Crimson Pro'; 
-  static const String fontCrimsonText = 'Crimson Text'; 
-  static const String fontLibreBaskerville = 'Libre Baskerville'; //TODO bring font in
+  static const String fontCrimsonPro = 'Crimson Pro';
+  static const String fontCrimsonText = 'Crimson Text';
+  static const String fontLibreBaskerville = 'Libre Baskerville';
 
   static get text => TextStyle(
     color: defaultBlack,

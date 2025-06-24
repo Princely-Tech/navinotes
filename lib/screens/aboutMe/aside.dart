@@ -31,7 +31,7 @@ class AboutMeAside extends StatelessWidget {
         children: [
           Text(
             'Profile Preview',
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               fontSize: 16.0,
               fontWeight: getFontWeight(500),
             ),
@@ -39,7 +39,7 @@ class AboutMeAside extends StatelessWidget {
           Container(
             decoration: ShapeDecoration(
               shape: RoundedRectangleBorder(
-                side: BorderSide(color: Apptheme.lightGray),
+                side: BorderSide(color: AppTheme.lightGray),
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -62,7 +62,7 @@ class AboutMeAside extends StatelessWidget {
                             builder: (_, controller, __) {
                               return Text(
                                 controller.text,
-                                style: Apptheme.text.copyWith(
+                                style: AppTheme.text.copyWith(
                                   fontSize: 16.0,
                                   fontWeight: getFontWeight(500),
                                 ),
@@ -80,8 +80,8 @@ class AboutMeAside extends StatelessWidget {
                                       educationLevelController.text;
                                   return Text(
                                     '$role ${role.isNotEmpty && educationLevel.isNotEmpty ? "•" : ""} $educationLevel',
-                                    style: Apptheme.text.copyWith(
-                                      color: Apptheme.stormGray,
+                                    style: AppTheme.text.copyWith(
+                                      color: AppTheme.stormGray,
                                     ),
                                   );
                                 },
@@ -98,8 +98,8 @@ class AboutMeAside extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: 'Uses ${AppStrings.appName} for:',
-                        style: Apptheme.text.copyWith(
-                          color: Apptheme.stormGray,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.stormGray,
                         ),
                       ),
                       TextSpan(
@@ -107,8 +107,8 @@ class AboutMeAside extends StatelessWidget {
                             .map((e) => e.shortName())
                             .join(", "),
                         // text: ' Studying, Research, Notes',
-                        style: Apptheme.text.copyWith(
-                          color: Apptheme.vividRose,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.vividRose,
                         ),
                       ),
                     ],
@@ -122,8 +122,8 @@ class AboutMeAside extends StatelessWidget {
                           .map(
                             (str) => CustomTag(
                               str,
-                              color: Apptheme.pastelBloom,
-                              textColor: Apptheme.vividRose,
+                              color: AppTheme.pastelBloom,
+                              textColor: AppTheme.vividRose,
                             ),
                           )
                           .toList(),
@@ -139,8 +139,8 @@ class AboutMeAside extends StatelessWidget {
   Widget _proTip() {
     return CustomCard(
       decoration: BoxDecoration(
-        color: Apptheme.pastelBloom,
-        border: Border.all(color: Apptheme.paleBlue),
+        color: AppTheme.pastelBloom,
+        border: Border.all(color: AppTheme.paleBlue),
       ),
       padding: EdgeInsets.all(30),
       child: Row(
@@ -172,7 +172,7 @@ class AboutMeAside extends StatelessWidget {
                   margin: EdgeInsets.only(left: 8),
                   child: Text(
                     'We value your privacy. Your information is never shared with third parties.',
-                    style: Apptheme.text.copyWith(color: Apptheme.black),
+                    style: AppTheme.text.copyWith(color: AppTheme.black),
                   ),
                 ),
                 Positioned(

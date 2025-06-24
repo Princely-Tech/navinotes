@@ -1,4 +1,4 @@
-# navinotes
+# NaviNotes
 
 A new Flutter project.
 

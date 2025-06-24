@@ -13,9 +13,9 @@ class NoteTemplateAside extends StatelessWidget {
       builder: (_, vm, _) {
         return Container(
           decoration: BoxDecoration(
-            color: Apptheme.white,
+            color: AppTheme.white,
             border: Border(
-              right: BorderSide(width: 2, color: Apptheme.lightGray),
+              right: BorderSide(width: 2, color: AppTheme.lightGray),
             ),
           ),
           child: Column(
@@ -30,7 +30,7 @@ class NoteTemplateAside extends StatelessWidget {
                       _btns(vm),
                       Text(
                         'Template Preview',
-                        style: Apptheme.text.copyWith(
+                        style: AppTheme.text.copyWith(
                           fontSize: 18.0,
                           fontWeight: getFontWeight(600),
                         ),
@@ -38,8 +38,8 @@ class NoteTemplateAside extends StatelessWidget {
                       _templateReview(),
                       Text(
                         'A versatile bullet journal style template with dot grid pattern. Perfect for creative note-taking, sketching, and planning.',
-                        style: Apptheme.text.copyWith(
-                          color: Apptheme.stormGray,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.stormGray,
                         ),
                       ),
                       _bestFor(),
@@ -60,8 +60,8 @@ class NoteTemplateAside extends StatelessWidget {
   Widget _recentCard({required String title, String? imagePath}) {
     return CustomCard(
       decoration: BoxDecoration(
-        color: Apptheme.whiteSmoke,
-        border: Border.all(color: Apptheme.transparent),
+        color: AppTheme.whiteSmoke,
+        border: Border.all(color: AppTheme.transparent),
       ),
       padding: EdgeInsets.all(10),
       child: Row(
@@ -69,7 +69,7 @@ class NoteTemplateAside extends StatelessWidget {
         children: [
           OutlinedChild(
             size: 32,
-            decoration: BoxDecoration(color: Apptheme.white),
+            decoration: BoxDecoration(color: AppTheme.white),
             child: Center(
               child:
                   isNotNull(imagePath)
@@ -78,7 +78,7 @@ class NoteTemplateAside extends StatelessWidget {
                         width: 24,
                         height: 24,
                         decoration: ShapeDecoration(
-                          color: Apptheme.yellow,
+                          color: AppTheme.yellow,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -89,7 +89,7 @@ class NoteTemplateAside extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
+              style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
             ),
           ),
         ],
@@ -104,8 +104,8 @@ class NoteTemplateAside extends StatelessWidget {
       children: [
         Text(
           'Recently Used',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.darkSlateGray,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.darkSlateGray,
             fontSize: 16.0,
             fontWeight: getFontWeight(500),
           ),
@@ -119,7 +119,7 @@ class NoteTemplateAside extends StatelessWidget {
 
   Widget _brainsTip() {
     return CustomCard(
-      decoration: BoxDecoration(color: Apptheme.iceBlue),
+      decoration: BoxDecoration(color: AppTheme.iceBlue),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
@@ -132,15 +132,15 @@ class NoteTemplateAside extends StatelessWidget {
               children: [
                 Text(
                   'Brain\'s Tip',
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.electricIndigo,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.electricIndigo,
                     fontWeight: getFontWeight(500),
                   ),
                 ),
                 Text(
                   'Dotted paper works great with our pen tools! Try using different colors to organize related ideas visually.',
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.strongBlue,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.strongBlue,
                     fontSize: 12.0,
                   ),
                 ),
@@ -159,8 +159,8 @@ class NoteTemplateAside extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.stormGray,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.stormGray,
             fontSize: 12.0,
           ),
         ),
@@ -176,8 +176,8 @@ class NoteTemplateAside extends StatelessWidget {
       children: [
         Text(
           'Customization',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.darkSlateGray,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.darkSlateGray,
             fontSize: 16.0,
             fontWeight: getFontWeight(500),
           ),
@@ -189,8 +189,8 @@ class NoteTemplateAside extends StatelessWidget {
             children: [
               Text(
                 'Small',
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.steelMist,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.steelMist,
                   fontSize: 12.0,
                 ),
               ),
@@ -205,8 +205,8 @@ class NoteTemplateAside extends StatelessWidget {
               ),
               Text(
                 'Large',
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.steelMist,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.steelMist,
                   fontSize: 12.0,
                 ),
               ),
@@ -217,11 +217,11 @@ class NoteTemplateAside extends StatelessWidget {
           title: 'Dot Color',
           child: ScrollableRow(
             children: [
-              ColorWidget(Apptheme.blueGray),
-              ColorWidget(Apptheme.lightBlue),
-              ColorWidget(Apptheme.mintyGreen),
-              ColorWidget(Apptheme.violet),
-              ColorWidget(Apptheme.softCoral),
+              ColorWidget(AppTheme.blueGray),
+              ColorWidget(AppTheme.lightBlue),
+              ColorWidget(AppTheme.mintyGreen),
+              ColorWidget(AppTheme.violet),
+              ColorWidget(AppTheme.softCoral),
             ],
           ),
         ),
@@ -229,11 +229,11 @@ class NoteTemplateAside extends StatelessWidget {
           title: 'Background Color',
           child: ScrollableRow(
             children: [
-              ColorWidget(Apptheme.white, addBorder: true),
-              ColorWidget(Apptheme.ivory, addBorder: true),
-              ColorWidget(Apptheme.iceBlue, addBorder: true),
-              ColorWidget(Apptheme.honeyDew, addBorder: true),
-              ColorWidget(Apptheme.pastelViolet, addBorder: true),
+              ColorWidget(AppTheme.white, addBorder: true),
+              ColorWidget(AppTheme.ivory, addBorder: true),
+              ColorWidget(AppTheme.iceBlue, addBorder: true),
+              ColorWidget(AppTheme.honeyDew, addBorder: true),
+              ColorWidget(AppTheme.pastelViolet, addBorder: true),
             ],
           ),
         ),
@@ -248,8 +248,8 @@ class NoteTemplateAside extends StatelessWidget {
       children: [
         Text(
           'Best For:',
-          style: Apptheme.text.copyWith(
-            color: Apptheme.darkSlateGray,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.darkSlateGray,
             fontSize: 16.0,
             fontWeight: getFontWeight(500),
           ),
@@ -268,12 +268,12 @@ class NoteTemplateAside extends StatelessWidget {
                     (str) => Row(
                       spacing: 5,
                       children: [
-                        Icon(Icons.check, color: Apptheme.primaryColor),
+                        Icon(Icons.check, color: AppTheme.primaryColor),
                         Expanded(
                           child: Text(
                             str,
-                            style: Apptheme.text.copyWith(
-                              color: Apptheme.stormGray,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.stormGray,
                             ),
                           ),
                         ),
@@ -292,7 +292,7 @@ class NoteTemplateAside extends StatelessWidget {
       spacing: 15,
       children: [
         CustomCard(
-          decoration: BoxDecoration(color: Apptheme.whiteSmoke),
+          decoration: BoxDecoration(color: AppTheme.whiteSmoke),
           child: SVGImagePlaceHolder(
             imagePath: Images.noteTemplateDottedWhite,
             center: true,
@@ -302,7 +302,7 @@ class NoteTemplateAside extends StatelessWidget {
         ),
         Text(
           'Dotted Paper',
-          style: Apptheme.text.copyWith(
+          style: AppTheme.text.copyWith(
             fontSize: 16.0,
             fontWeight: getFontWeight(600),
           ),
@@ -321,15 +321,15 @@ class NoteTemplateAside extends StatelessWidget {
           text: 'Upload pdf',
           mainAxisSize: MainAxisSize.min,
           minHeight: 42,
-          color: Apptheme.coolGray,
-          textColor: Apptheme.darkSlateGray,
+          color: AppTheme.coolGray,
+          textColor: AppTheme.darkSlateGray,
           prefix: SVGImagePlaceHolder(imagePath: Images.upload, size: 16),
         ),
         AppButton.text(
           wrapWithFlexible: true,
           onTap: vm.goToImportNotes,
           text: 'Import Notes',
-          color: Apptheme.strongBlue,
+          color: AppTheme.strongBlue,
         ),
       ],
     );

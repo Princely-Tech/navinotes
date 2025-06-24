@@ -15,7 +15,7 @@ class RecentNotesFilter extends StatelessWidget {
               laptop: false,
               child: Text(
                 'Recent Notes ${vm.hasData ? '(12)' : ''}',
-                style: Apptheme.text.copyWith(
+                style: AppTheme.text.copyWith(
                   fontSize: 24.0,
                   fontWeight: getFontWeight(600),
                 ),
@@ -40,14 +40,14 @@ class RecentNotesFilter extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           prefix: SVGImagePlaceHolder(imagePath: Images.filter),
                           onTap: () {},
-                          color: Apptheme.white,
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.stormGray,
+                          color: AppTheme.white,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.stormGray,
                           ),
                           minHeight: 35,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6),
-                            side: BorderSide(color: Apptheme.coolGray),
+                            side: BorderSide(color: AppTheme.coolGray),
                           ),
                           padding: EdgeInsets.symmetric(
                             horizontal: 10,
@@ -73,9 +73,9 @@ class RecentNotesFilter extends StatelessWidget {
       mobile: 210,
       child: CustomInputField(
         hintText: 'Search recent notes...',
-        hintStyle: Apptheme.text.copyWith(color: Apptheme.slateGray),
+        hintStyle: AppTheme.text.copyWith(color: AppTheme.slateGray),
         constraints: BoxConstraints(maxHeight: 35),
-        prefixIcon: Icon(Icons.search, color: Apptheme.slateGray),
+        prefixIcon: Icon(Icons.search, color: AppTheme.slateGray),
       ),
     );
   }
@@ -87,7 +87,7 @@ class RecentNotesFilter extends StatelessWidget {
         hintText: 'Most Recent',
         controller: TextEditingController(text: 'Most Recent'),
         selectItems: ['Most Recent', 'Date Created'],
-        style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
+        style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
         constraints: BoxConstraints(maxHeight: 35),
         prefixIcon: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +95,7 @@ class RecentNotesFilter extends StatelessWidget {
             Text(
               'Sort by:',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
+              style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
             ),
           ],
         ),

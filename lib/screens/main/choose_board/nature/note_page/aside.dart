@@ -2,8 +2,8 @@ import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
 class NatureNotePageAside extends StatelessWidget {
-  const NatureNotePageAside({super.key, this.isFull = false});
-  final bool isFull;
+  const NatureNotePageAside({super.key});
+  // final bool isFull;
   @override
   Widget build(BuildContext context) {
     return Consumer<NatureNotePageVm>(
@@ -12,96 +12,103 @@ class NatureNotePageAside extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ExpandableController(
-              isFlexible: !isFull,
-              child: CustomCard(
-                padding: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  color: Apptheme.burntClove.withAlpha(0x7F),
-                  border: Border.all(color: Apptheme.royalGold.withAlpha(0x4C)),
-                  borderRadius: BorderRadius.circular(isFull ? 4 : 8),
-                ),
-                child: ScrollableController(
-                  mobilePadding: EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 20,
-                  ),
-                  tabletPadding: EdgeInsets.all(20),
-                  child: Column(
-                    spacing: 30,
-                    children: [
-                      _boardDetails(),
-                      _tags(),
-                      _recentlyViewed(),
-                      Column(
-                        children: [
-                          VisibleController(
-                            mobile: true,
-                            desktop: false,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 15),
-                              child: AppButton(
-                                onTap: vm.gotToCreateNotePage,
-                                text: 'New Note Page',
-                                minHeight: 40,
-                                color: Apptheme.burntLeather.withAlpha(0xFF),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                  side: BorderSide(color: Apptheme.royalGold),
-                                ),
-                                prefix: Icon(
-                                  Icons.add,
-                                  color: Apptheme.royalGold,
-                                  size: 20,
-                                ),
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.royalGold,
-                                  fontSize: 16.0,
-                                  fontFamily: Apptheme.fontCrimsonPro,
-                                ),
+              child: ScrollableController(
+                mobilePadding: EdgeInsets.all(10),
+                desktopPadding: EdgeInsets.fromLTRB(10, 30, 10, 20),
+                child: Column(
+                  spacing: 30,
+                  children: [
+                    _boardDetails(),
+                    _tags(),
+                    _recentlyViewed(),
+                    Column(
+                      children: [
+                        VisibleController(
+                          mobile: true,
+                          desktop: false,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: AppButton(
+                              onTap: vm.gotToCreateNotePage,
+                              text: 'New Note Page',
+                              minHeight: 40,
+                              color: AppTheme.deepMoss,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              prefix: Icon(
+                                Icons.add,
+                                color: AppTheme.white,
+                                size: 20,
+                              ),
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.white,
+                                fontSize: 16.0,
+                                fontFamily: AppTheme.fontCrimsonPro,
                               ),
                             ),
                           ),
-                          Column(
-                            spacing: 15,
-                            children: [
-                              AppButton(
-                                onTap:
-                                    () => NavigationHelper.push(
-                                      Routes.boardDarkAcademiaMindMap,
+                        ),
+                        AppButton(
+                          onTap:
+                              () => NavigationHelper.push(
+                                Routes.boardNatureMindMap,
+                              ),
+                          color: AppTheme.burntLeather.withAlpha(0xFF),
+                          child: Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Row(
+                                spacing: 15,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      spacing: 5,
+                                      children: [
+                                        Text(
+                                          'View Mind Map',
+                                          textAlign: TextAlign.center,
+                                          style: AppTheme.text.copyWith(
+                                            color: AppTheme.linen,
+                                            fontSize: 16.0,
+                                            fontFamily:
+                                                AppTheme.fontLibreBaskerville,
+                                          ),
+                                        ),
+                                        Text(
+                                          'See connections between notes',
+                                          textAlign: TextAlign.center,
+                                          style: AppTheme.text.copyWith(
+                                            color: AppTheme.linen,
+                                            fontSize: 12.0,
+                                            fontFamily:
+                                                AppTheme.fontCrimsonText,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                text: 'View Mind Map',
-                                color: Apptheme.fadedEmber.withAlpha(0xFF),
-                                borderColor: Apptheme.royalGold.withAlpha(0x7F),
-                                prefix: Padding(
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: SVGImagePlaceHolder(
-                                    imagePath: Images.share,
-                                    size: 16,
-                                    color: Apptheme.royalGold,
                                   ),
-                                ),
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.royalGold,
-                                  fontSize: 16.0,
-                                  fontFamily: Apptheme.fontPlayfairDisplay,
-                                ),
+                                  OutlinedChild(
+                                    size: 40,
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.linen.withAlpha(0x33),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: SVGImagePlaceHolder(
+                                      imagePath: Images.share,
+                                      color: AppTheme.white,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Visualize connections between notes',
-                                textAlign: TextAlign.center,
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.vanilaDust.withAlpha(0x99),
-                                  fontSize: 12.0,
-                                  fontFamily: Apptheme.fontCrimsonPro,
-                                  height: 1.33,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -111,39 +118,35 @@ class NatureNotePageAside extends StatelessWidget {
     );
   }
 
-  Widget _viewedItem({required String title, required String time}) {
+  Widget _viewedItem({
+    required String title,
+    required String time,
+    required Widget icon,
+  }) {
     return Row(
+      spacing: 10,
       children: [
+        icon,
         Expanded(
-          child: Row(
-            spacing: 10,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SVGImagePlaceHolder(
-                imagePath: Images.file,
-                size: 16,
-                color: Apptheme.royalGold,
+              Text(
+                title,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.darkMossGreen,
+                  fontFamily: AppTheme.fontCrimsonText,
+                ),
               ),
-              Expanded(
-                child: Text(
-                  title,
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.vanilaDust,
-                    fontSize: 16.0,
-                    fontFamily: Apptheme.fontCrimsonPro,
-                    height: 1.50,
-                  ),
+              Text(
+                time,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.coffee,
+                  fontSize: 12.0,
+                  fontFamily: AppTheme.fontCrimsonText,
                 ),
               ),
             ],
-          ),
-        ),
-        Text(
-          time,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.vanilaDust.withAlpha(0x99),
-            fontSize: 12.0,
-            fontFamily: Apptheme.fontCrimsonPro,
-            height: 1.33,
           ),
         ),
       ],
@@ -151,50 +154,120 @@ class NatureNotePageAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return RoyalGoldHeaderSection(
+    return EditHeaderSection(
+      theme: BoardTheme.nature,
       title: 'Recently Viewed',
       child: Column(
         spacing: 15,
         children: [
-          _viewedItem(title: 'Wave Properties', time: '2h ago'),
-          _viewedItem(title: 'Newton\'s Laws', time: '5h ago'),
-          _viewedItem(title: 'Thermodynamics', time: '1d ago'),
+          _viewedItem(
+            title: 'Wave Properties',
+            time: '2 hours ago',
+            icon: OutlinedChild(
+              size: 32,
+              decoration: BoxDecoration(
+                color: AppTheme.deepMoss.withAlpha(0x33),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: SVGImagePlaceHolder(
+                imagePath: Images.boardNatureWaveLine,
+                size: 14,
+              ),
+            ),
+          ),
+          _viewedItem(
+            title: 'Quantum Mechanics',
+            time: 'yesterday',
+            icon: OutlinedChild(
+              size: 32,
+              decoration: BoxDecoration(
+                color: AppTheme.deepPeach.withAlpha(0x33),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: SVGImagePlaceHolder(
+                imagePath: Images.boardNatureQuantumIcon,
+                size: 14,
+              ),
+            ),
+          ),
+          _viewedItem(
+            title: 'Thermodynamics',
+            time: '2 days ago',
+            icon: OutlinedChild(
+              size: 32,
+              decoration: BoxDecoration(
+                color: AppTheme.sageMist.withAlpha(0x33),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: SVGImagePlaceHolder(
+                imagePath: Images.boardNatureThermometer,
+                size: 14,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _tagItem({required String text, required Color color}) {
+  Widget _tagItem({
+    required String text,
+    required Color color,
+    required Color textColor,
+    required Color borderColor,
+  }) {
     return Container(
       decoration: ShapeDecoration(
-        color: const Color(0xB22C1810),
+        color: color,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: const Color(0x4CD4AF37)),
+          side: BorderSide(width: 1, color: borderColor),
           borderRadius: BorderRadius.circular(9999),
         ),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: Text(
         text,
-        style: Apptheme.text.copyWith(
-          color: color,
-          fontFamily: Apptheme.fontCrimsonPro,
+        style: AppTheme.text.copyWith(
+          fontSize: 12.0,
+          color: textColor,
+          fontFamily: AppTheme.fontCrimsonText,
         ),
       ),
     );
   }
 
   Widget _tags() {
-    return RoyalGoldHeaderSection(
+    return EditHeaderSection(
+      theme: BoardTheme.nature,
       title: 'Tags',
       child: Wrap(
         runSpacing: 15,
         spacing: 10,
         children: [
-          _tagItem(color: Apptheme.softSkyBlue, text: 'Physics'),
-          _tagItem(color: Apptheme.deepMoss, text: 'Science'),
-          _tagItem(color: Apptheme.fadedEmber.withAlpha(0xFF), text: 'Study'),
-          _tagItem(color: Apptheme.blazingCopper, text: 'Exam Prep'),
+          _tagItem(
+            color: AppTheme.lightSkyBlue,
+            borderColor: AppTheme.babyBlue,
+            textColor: AppTheme.cerulean,
+            text: 'Physics',
+          ),
+          _tagItem(
+            color: AppTheme.lightSage,
+            textColor: AppTheme.deepMoss,
+            borderColor: AppTheme.deepMoss.withAlpha(0x33),
+            text: 'Science',
+          ),
+          _tagItem(
+            color: AppTheme.linen,
+            textColor: AppTheme.burntLeather.withAlpha(0xFF),
+            borderColor: AppTheme.burntLeather.withAlpha(0x33),
+            text: 'Study',
+          ),
+          _tagItem(
+            color: AppTheme.deepPeach,
+            textColor: AppTheme.deepPeach.withAlpha(0xFF),
+            borderColor: AppTheme.deepPeach.withAlpha(0x33),
+            text: 'Exam Prep',
+          ),
         ],
       ),
     );
@@ -206,22 +279,22 @@ class NatureNotePageAside extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.vanilaDust.withAlpha(0xB2),
-            fontSize: 16.0,
-            fontFamily: Apptheme.fontCrimsonPro,
-            height: 1.50,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.coffee,
+            fontSize: 14.0,
+            fontFamily: AppTheme.fontCrimsonText,
+            height: 1.43,
           ),
         ),
         Expanded(
           child: Text(
             textAlign: TextAlign.right,
             value,
-            style: Apptheme.text.copyWith(
-              color: Apptheme.vanilaDust,
-              fontSize: 16.0,
-              fontFamily: Apptheme.fontCrimsonPro,
-              height: 1.50,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.darkMossGreen,
+              fontSize: 14.0,
+              fontFamily: AppTheme.fontCrimsonText,
+              height: 1.43,
             ),
           ),
         ),
@@ -230,7 +303,8 @@ class NatureNotePageAside extends StatelessWidget {
   }
 
   Widget _boardDetails() {
-    return RoyalGoldHeaderSection(
+    return EditHeaderSection(
+      theme: BoardTheme.nature,
       title: 'Board Details',
       child: Column(
         spacing: 15,

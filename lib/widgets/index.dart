@@ -10,3 +10,4 @@ export 'side_drawer.dart';
 export 'row_selects.dart';
 export 'sections.dart';
 export 'board/index.dart';
+export 'verify_frame.dart';

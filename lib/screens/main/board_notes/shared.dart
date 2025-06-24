@@ -13,17 +13,17 @@ class NotesAppBarActions extends StatelessWidget {
         SVGImagePlaceHolder(
           imagePath: Images.settings,
           size: 16,
-          color: Apptheme.stormGray,
+          color: AppTheme.stormGray,
         ),
         OutlinedChild(
           decoration: BoxDecoration(
-            color: Apptheme.electricIndigo,
+            color: AppTheme.electricIndigo,
             shape: BoxShape.circle,
           ),
           child: Text(
             'J',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.white,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.white,
               fontSize: 16.0,
               fontWeight: getFontWeight(600),
             ),
@@ -42,14 +42,14 @@ class NewNotesButton extends StatelessWidget {
     return Consumer<BoardNotesVm>(
       builder: (context, vm, child) {
         return AppButton(
-          color: Apptheme.primaryColor,
+          color: AppTheme.primaryColor,
           wrapWithFlexible: true,
           mainAxisSize: MainAxisSize.min,
           onTap: vm.gotToCreateNotePage,
           text: isAside ? 'New Note' : 'New Note Page',
           minHeight: 36,
-          prefix: Icon(Icons.add, color: Apptheme.white),
-          style: Apptheme.text.copyWith(color: Apptheme.white),
+          prefix: Icon(Icons.add, color: AppTheme.white),
+          style: AppTheme.text.copyWith(color: AppTheme.white),
         );
       },
     );

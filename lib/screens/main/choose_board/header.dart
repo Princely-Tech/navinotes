@@ -16,7 +16,7 @@ class ChooseBoardHeader extends StatelessWidget {
           builder: (_, vm, _) {
             return Container(
               padding: EdgeInsets.all(15),
-              color: Apptheme.white,
+              color: AppTheme.white,
               child: Row(
                 spacing: 30,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,7 +32,7 @@ class ChooseBoardHeader extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.arrow_back,
-                                  color: Apptheme.vividRose,
+                                  color: AppTheme.vividRose,
                                 ),
                                 VisibleController(
                                   mobile: false,
@@ -45,17 +45,17 @@ class ChooseBoardHeader extends StatelessWidget {
                                         children: [
                                           Text(
                                             AppStrings.appName,
-                                            style: Apptheme.text.copyWith(
+                                            style: AppTheme.text.copyWith(
                                               overflow: TextOverflow.ellipsis,
-                                              color: Apptheme.vividRose,
+                                              color: AppTheme.vividRose,
                                               fontSize: 24.0,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                           Text(
                                             'Choose Board Style',
-                                            style: Apptheme.text.copyWith(
-                                              color: Apptheme.vividRose,
+                                            style: AppTheme.text.copyWith(
+                                              color: AppTheme.vividRose,
                                             ),
                                           ),
                                         ],
@@ -86,9 +86,9 @@ class ChooseBoardHeader extends StatelessWidget {
                         height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Apptheme.pastelBloom,
+                          color: AppTheme.pastelBloom,
                         ),
-                        child: Icon(Icons.person, color: Apptheme.vividRose),
+                        child: Icon(Icons.person, color: AppTheme.vividRose),
                       ),
                       VisibleController(
                         mobile: getMenuVisible(layoutVm.deviceType),
@@ -99,7 +99,7 @@ class ChooseBoardHeader extends StatelessWidget {
                             child: Icon(
                               Icons.precision_manufacturing_outlined,
                               size: 24,
-                              color: Apptheme.steelMist,
+                              color: AppTheme.steelMist,
                             ),
                           ),
                         ),

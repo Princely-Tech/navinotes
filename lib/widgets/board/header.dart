@@ -1,13 +1,12 @@
 import 'package:navinotes/packages.dart';
 
 class BoardPageMainHeader extends StatelessWidget {
-  const BoardPageMainHeader({super.key, this.theme = BoardTheme.darkAcademia});
+  const BoardPageMainHeader({super.key, required this.theme});
   final BoardTheme theme;
   @override
   Widget build(BuildContext context) {
     BordThemeValues params = theme.values;
     return Container(
-      // constraints: BoxConstraints(minHeight: 60),
       decoration: params.mainHeaderDecoration,
       padding: EdgeInsets.all(10),
       child: Row(
@@ -15,7 +14,7 @@ class BoardPageMainHeader extends StatelessWidget {
         children: [
           Text(
             '8 Note Pages',
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               color: params.color1,
               fontSize: 20.0,
               fontFamily: params.fontFamily,
@@ -61,13 +60,13 @@ class BoardPageMainHeader extends StatelessWidget {
   }
 
   Widget _sortBy() {
-    Color txtColor = Apptheme.vanilaDust.withAlpha(0xCC);
-    Color fillColor = Apptheme.burntLeather;
+    Color txtColor = AppTheme.vanillaDust.withAlpha(0xCC);
+    Color fillColor = AppTheme.burntLeather;
     BordThemeValues params = theme.values;
     switch (theme) {
       case BoardTheme.nature:
-        txtColor = Apptheme.coffee;
-        fillColor = Apptheme.transparent;
+        txtColor = AppTheme.coffee;
+        fillColor = AppTheme.transparent;
         break;
       default:
     }
@@ -78,10 +77,10 @@ class BoardPageMainHeader extends StatelessWidget {
         children: [
           Text(
             'Sort by:',
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               color: txtColor,
               fontSize: 16.0,
-              fontFamily: Apptheme.fontCrimsonPro,
+              fontFamily: AppTheme.fontCrimsonPro,
               height: 1.50,
             ),
           ),
@@ -90,7 +89,7 @@ class BoardPageMainHeader extends StatelessWidget {
               fillColor: fillColor,
               side: BorderSide(color: params.color1),
               selectItems: [],
-              style: Apptheme.text.copyWith(color: params.color1),
+              style: AppTheme.text.copyWith(color: params.color1),
               constraints: BoxConstraints(maxHeight: 40),
             ),
           ),
@@ -125,7 +124,7 @@ class _DisplayFormatSelectState extends State<DisplayFormatSelect> {
               imagePath: Images.ques,
               color:
                   widget.theme == BoardTheme.darkAcademia
-                      ? Apptheme.vanilaDust.withAlpha(204)
+                      ? AppTheme.vanillaDust.withAlpha(204)
                       : params.color1,
               size: 16,
             ),
@@ -151,11 +150,11 @@ class _DisplayFormatSelectState extends State<DisplayFormatSelect> {
     BordThemeValues params = widget.theme.values;
     bool isGrid = format == PageDisplayFormat.grid;
     bool isActive = pageDisplayFormat == format;
-    Color activeBgColor = Apptheme.burntLeather.withAlpha(102);
-    Color inActiveColor = Apptheme.vanilaDust;
+    Color activeBgColor = AppTheme.burntLeather.withAlpha(102);
+    Color inActiveColor = AppTheme.vanillaDust;
     switch (widget.theme) {
       case BoardTheme.nature:
-        activeBgColor = Apptheme.lightSage;
+        activeBgColor = AppTheme.lightSage;
         inActiveColor = params.color1;
         break;
       default:
@@ -165,7 +164,7 @@ class _DisplayFormatSelectState extends State<DisplayFormatSelect> {
       child: OutlinedChild(
         size: 40,
         decoration: BoxDecoration(
-          color: isActive ? activeBgColor : Apptheme.transparent,
+          color: isActive ? activeBgColor : AppTheme.transparent,
           borderRadius: BorderRadius.circular(0),
         ),
         child: SVGImagePlaceHolder(

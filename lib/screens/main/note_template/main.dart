@@ -161,7 +161,7 @@ class NoteTemplateMain extends StatelessWidget {
             padding: padding,
             child: SVGImagePlaceHolder(imagePath: image),
           ),
-          Divider(color: Apptheme.lightGray, height: 1),
+          Divider(color: AppTheme.lightGray, height: 1),
           Padding(
             padding: padding,
             child: Row(
@@ -174,7 +174,7 @@ class NoteTemplateMain extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: TextStyle(
+                        style: AppTheme.text.copyWith(
                           color: const Color(0xFF1F2937),
                           fontSize: 16.0,
                           fontFamily: 'Inter',
@@ -184,7 +184,7 @@ class NoteTemplateMain extends StatelessWidget {
                       ),
                       Text(
                         description,
-                        style: TextStyle(
+                        style: AppTheme.text.copyWith(
                           color: const Color(0xFF6B7280),
                           fontSize: 12.0,
                           fontFamily: 'Inter',
@@ -198,8 +198,8 @@ class NoteTemplateMain extends StatelessWidget {
                 if (isPopular)
                   CustomTag(
                     'Popular',
-                    color: Apptheme.paleBlue,
-                    textColor: Apptheme.electricIndigo,
+                    color: AppTheme.paleBlue,
+                    textColor: AppTheme.electricIndigo,
                   ),
               ],
             ),
@@ -216,7 +216,7 @@ class NoteTemplateMain extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: AppTheme.text.copyWith(
             color: const Color(0xFF1F2937),
             fontSize: 18.0,
             fontFamily: 'Inter',

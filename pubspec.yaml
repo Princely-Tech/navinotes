@@ -86,9 +86,13 @@ flutter:
       fonts:
         - asset: assets/fonts/Crimson_Text/CrimsonText-Regular.ttf
           weight: 400
-        # - asset: assets/fonts/Crimson_Text/CrimsonText-Medium.ttf
-        #   weight: 500
         - asset: assets/fonts/Crimson_Text/CrimsonText-SemiBold.ttf
           weight: 600
         - asset: assets/fonts/Crimson_Text/CrimsonText-Bold.ttf
           weight: 700
+    - family: Libre Baskerville
+      fonts:
+        - asset: assets/fonts/Libre_Baskerville/LibreBaskerville-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Libre_Baskerville/LibreBaskerville-Bold.ttf
+          weight: 600

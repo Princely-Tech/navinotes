@@ -31,14 +31,14 @@ class CustomCard extends StatelessWidget {
       height: height,
       margin: margin,
       decoration: decoration.copyWith(
-        color: decoration.color ?? Apptheme.white,
+        color: decoration.color ?? AppTheme.white,
         borderRadius: decoration.shape == BoxShape.circle ? null : radius,
         shape: null,
         boxShadow: addShadow ? boxShadows : null,
         border:
             decoration.border ??
             Border.all(
-              color: addBorder ? Apptheme.lightGray : Apptheme.transparent,
+              color: addBorder ? AppTheme.lightGray : AppTheme.transparent,
             ),
       ),
       padding: padding,
@@ -81,26 +81,26 @@ class CreateCard extends StatelessWidget {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: Apptheme.babyIce,
+                      color: AppTheme.babyIce,
                       shape: BoxShape.circle,
                     ),
                     padding: EdgeInsets.zero,
-                    child: Icon(Icons.add, color: Apptheme.vividRose),
+                    child: Icon(Icons.add, color: AppTheme.vividRose),
                   ),
                   Column(
                     spacing: 5,
                     children: [
                       Text(
                         text,
-                        style: Apptheme.text.copyWith(
+                        style: AppTheme.text.copyWith(
                           fontSize: 16.0,
                           fontWeight: getFontWeight(500),
                         ),
                       ),
                       Text(
                         'Start organizing your ideas',
-                        style: Apptheme.text.copyWith(
-                          color: Apptheme.steelMist,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.steelMist,
                         ),
                       ),
                     ],

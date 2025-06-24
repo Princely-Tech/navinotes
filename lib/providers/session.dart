@@ -3,6 +3,8 @@ import 'package:navinotes/packages.dart';
 class SessionManager extends ChangeNotifier {
   User? user;
   String? token;
+  String? email;
+  String? otp;
 
   updateSession({User? user, String? token}) {
     this.user = user;
@@ -17,22 +19,24 @@ class SessionManager extends ChangeNotifier {
     return headers;
   }
 
-  void updateEmail(String email) {
-    user?.updateEmail(email);
+  void updateEmail(String value) {
+    email = value;
+    user?.updateEmail(value);
     notifyListeners();
   }
 
-  void updateOtp(String otp) {
-    user?.updateOtp(otp);
+  void updateOtp(String value) {
+    otp = value;
+    user?.updateOtp(value);
     notifyListeners();
   }
 
   String? getEmail() {
-    return user?.email;
+    return user?.email ?? email;
   }
 
   String? getOtp() {
-    return user?.otp;
+    return user?.otp ?? otp;
   }
 
   String? getName() {

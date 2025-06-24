@@ -11,7 +11,7 @@ class DarkAcademiaScreen extends StatelessWidget {
       child: Consumer<DarkAcademiaVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
-            backgroundColor: Apptheme.deepRoast,
+            backgroundColor: AppTheme.deepRoast,
             body: ScrollableController(
               mobilePadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               tabletPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -27,7 +27,7 @@ class DarkAcademiaScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(right: 15),
                         child: MenuButton(
                           onPressed: () {},
-                          decoration: BoxDecoration(color: Apptheme.oatCream),
+                          decoration: BoxDecoration(color: AppTheme.oatCream),
                         ),
                       ),
                     ),
@@ -50,13 +50,13 @@ class DarkAcademiaScreen extends StatelessWidget {
                             _features(),
                             AppButton(
                               mainAxisSize: MainAxisSize.min,
-                              color: Apptheme.royalGold,
+                              color: AppTheme.royalGold,
                               text: 'Create My Academic Board',
                               onTap: vm.createHandler,
-                              style: Apptheme.text.copyWith(
-                                color: Apptheme.deepRoast,
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.deepRoast,
                                 fontSize: 16.0,
-                                fontFamily: Apptheme.fontPlayfairDisplay,
+                                fontFamily: AppTheme.fontPlayfairDisplay,
                               ),
                             ),
                             WidthLimiter(
@@ -64,10 +64,10 @@ class DarkAcademiaScreen extends StatelessWidget {
                               child: Text(
                                 'Don\'t worry - you can always change these details later.',
                                 textAlign: TextAlign.center,
-                                style: Apptheme.text.copyWith(
-                                  color: Apptheme.velvetCream,
+                                style: AppTheme.text.copyWith(
+                                  color: AppTheme.velvetCream,
                                   fontSize: 16.0,
-                                  fontFamily: Apptheme.fontPlayfairDisplay,
+                                  fontFamily: AppTheme.fontPlayfairDisplay,
                                   height: 1.50,
                                 ),
                               ),
@@ -99,20 +99,20 @@ class DarkAcademiaScreen extends StatelessWidget {
         children: [
           SVGImagePlaceHolder(
             imagePath: img,
-            color: Apptheme.royalGold,
+            color: AppTheme.royalGold,
             size: 27,
           ),
           Text(
             title,
-            style: Apptheme.text.copyWith(
-              color: Apptheme.deepRoast,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.deepRoast,
               fontSize: 20.0,
-              fontFamily: Apptheme.fontPlayfairDisplay,
+              fontFamily: AppTheme.fontPlayfairDisplay,
             ),
           ),
           Text(
             body,
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               color: const Color(0xCC3C2A1E),
               fontSize: 16.0,
             ),
@@ -154,18 +154,18 @@ class DarkAcademiaScreen extends StatelessWidget {
         children: [
           Text(
             'Your Board Preview',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.deepRoast,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.deepRoast,
               fontSize: 24.0,
-              fontFamily: Apptheme.fontPlayfairDisplay,
+              fontFamily: AppTheme.fontPlayfairDisplay,
             ),
           ),
           Container(
             width: double.infinity,
             decoration: ShapeDecoration(
-              color: Apptheme.shadowBark,
+              color: AppTheme.shadowBark,
               shape: RoundedRectangleBorder(
-                side: BorderSide(color: Apptheme.lightGray),
+                side: BorderSide(color: AppTheme.lightGray),
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -187,7 +187,7 @@ class DarkAcademiaScreen extends StatelessWidget {
 
   Widget _oatCreamCard({required Widget child, double tabletPadding = 30}) {
     return CustomCard(
-      decoration: BoxDecoration(color: Apptheme.oatCream),
+      decoration: BoxDecoration(color: AppTheme.oatCream),
       padding: EdgeInsets.zero,
       child: ResponsivePadding(
         mobile: EdgeInsets.all(20),
@@ -198,10 +198,10 @@ class DarkAcademiaScreen extends StatelessWidget {
   }
 
   Widget _form(DarkAcademiaVm vm) {
-    TextStyle labelStyle = Apptheme.text.copyWith(
-      color: Apptheme.deepRoast,
+    TextStyle labelStyle = AppTheme.text.copyWith(
+      color: AppTheme.deepRoast,
       fontSize: 20.0,
-      fontFamily: Apptheme.fontPlayfairDisplay,
+      fontFamily: AppTheme.fontPlayfairDisplay,
     );
     return _oatCreamCard(
       child: Form(
@@ -239,10 +239,10 @@ class DarkAcademiaScreen extends StatelessWidget {
                 children: [
                   Text(
                     'Privacy Setting',
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.deepRoast,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.deepRoast,
                       fontSize: 16.0,
-                      fontFamily: Apptheme.fontPlayfairDisplay,
+                      fontFamily: AppTheme.fontPlayfairDisplay,
                     ),
                   ),
                   Column(
@@ -289,8 +289,8 @@ class DarkAcademiaScreen extends StatelessWidget {
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Apptheme.cocoaVeil, width: 2),
-          color: Apptheme.transparent,
+          border: Border.all(color: AppTheme.cocoaVeil, width: 2),
+          color: AppTheme.transparent,
         ),
         child: Row(
           spacing: 15,
@@ -299,7 +299,7 @@ class DarkAcademiaScreen extends StatelessWidget {
               decoration: ShapeDecoration(
                 shape: CircleBorder(
                   side: BorderSide(
-                    color: isChecked ? Apptheme.dodgerBlue : Apptheme.black,
+                    color: isChecked ? AppTheme.dodgerBlue : AppTheme.black,
                   ),
                 ),
               ),
@@ -310,7 +310,7 @@ class DarkAcademiaScreen extends StatelessWidget {
                   height: 10,
                   decoration: ShapeDecoration(
                     shape: CircleBorder(),
-                    color: isChecked ? Apptheme.dodgerBlue : null,
+                    color: isChecked ? AppTheme.dodgerBlue : null,
                   ),
                 ),
               ),
@@ -321,8 +321,8 @@ class DarkAcademiaScreen extends StatelessWidget {
                 children: [
                   Text(
                     icon, //TODO download icons
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.black,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.black,
                       fontSize: 16.0,
                       height: 1.50,
                     ),
@@ -334,16 +334,16 @@ class DarkAcademiaScreen extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.deepRoast,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.deepRoast,
                             fontSize: 16.0,
                             fontWeight: getFontWeight(500),
                           ),
                         ),
                         Text(
                           body,
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.espressoShadow,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.espressoShadow,
                           ),
                         ),
                       ],
@@ -371,17 +371,17 @@ class DarkAcademiaScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 prefix: Icon(
                   Icons.arrow_back,
-                  color: Apptheme.oatCream,
+                  color: AppTheme.oatCream,
                   size: 18,
                 ),
                 onTap: NavigationHelper.pop,
-                color: Apptheme.oatCream,
+                color: AppTheme.oatCream,
                 text: 'Choose Different Style',
               ),
               Text(
                 'Create Your Academic Board',
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.oatCream,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.oatCream,
                   fontSize: getDeviceResponsiveValue(
                     deviceType: layoutVm.deviceType,
                     mobile: 24.0,
@@ -389,13 +389,13 @@ class DarkAcademiaScreen extends StatelessWidget {
                     laptop: 32.0,
                     desktop: 36.0,
                   ),
-                  fontFamily: Apptheme.fontPlayfairDisplay,
+                  fontFamily: AppTheme.fontPlayfairDisplay,
                 ),
               ),
               Text(
                 'Step 1 of 2 • Set up your scholarly workspace',
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.velvetCream,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.velvetCream,
                   fontSize: 16.0,
                   height: 1.50,
                 ),

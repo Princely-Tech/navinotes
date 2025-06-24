@@ -16,9 +16,9 @@ class DarkAcademiaCreateNoteScreen extends StatelessWidget {
             builder: (_, layoutVm, _) {
               return ScaffoldFrame(
                 scaffoldKey: _scaffoldKey,
-                backgroundColor: Apptheme.deepRoast,
+                backgroundColor: AppTheme.deepRoast,
                 endDrawer: CustomDrawer(
-                  bgColor: Apptheme.deepRoast,
+                  bgColor: AppTheme.deepRoast,
                   child: DarkAcademiaCreateNoteAside(isFull: true),
                 ),
                 body: Column(

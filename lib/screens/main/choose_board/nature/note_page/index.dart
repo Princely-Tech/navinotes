@@ -16,17 +16,9 @@ class NatureNotePageScreen extends StatelessWidget {
             builder: (_, layoutVm, _) {
               return ScaffoldFrame(
                 scaffoldKey: _scaffoldKey,
-                backgroundColor: Apptheme.linen,
-                endDrawer: CustomDrawer(
-                  bgColor: Apptheme.deepRoast,
-                  child: NatureNotePageAside(isFull: true),
-                ),
+                backgroundColor: AppTheme.linen,
+                endDrawer: CustomDrawer(child: NatureNotePageAside()),
                 body: Column(
-                  spacing: getDeviceResponsiveValue(
-                    deviceType: layoutVm.deviceType,
-                    mobile: 10,
-                    desktop: 30,
-                  ),
                   children: [
                     BoardNoteAppBar(
                       scaffoldKey: _scaffoldKey,
@@ -37,13 +29,20 @@ class NatureNotePageScreen extends StatelessWidget {
                         child: ResponsiveSection(
                           mobile: NatureNotePageMain(),
                           desktop: Row(
-                            spacing: getDeviceResponsiveValue(
-                              deviceType: layoutVm.deviceType,
-                              mobile: 10,
-                              desktop: 30,
-                            ),
+                            // spacing: getDeviceResponsiveValue(
+                            //   deviceType: layoutVm.deviceType,
+                            //   mobile: 10,
+                            //   desktop: 30,
+                            // ),
                             children: [
                               Expanded(child: NatureNotePageMain()),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: VerticalDivider(
+                                  color: AppTheme.sageMist.withAlpha(0x4C),
+                                  width: 1,
+                                ),
+                              ),
                               WidthLimiter(
                                 mobile: 288,
                                 largeDesktop: 312,

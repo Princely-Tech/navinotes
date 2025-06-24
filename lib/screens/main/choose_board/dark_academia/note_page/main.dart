@@ -10,7 +10,7 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
       builder: (_, vm, _) {
         return Column(
           children: [
-            BoardPageMainHeader(),
+            BoardPageMainHeader(theme: BoardTheme.darkAcademia),
             Expanded(
               child: ScrollableController(
                 mobilePadding: EdgeInsets.symmetric(
@@ -61,9 +61,9 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                             child: CustomCard(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: Apptheme.burntLeather.withAlpha(0x99),
+                                color: AppTheme.burntLeather.withAlpha(0x99),
                                 border: Border.all(
-                                  color: Apptheme.royalGold.withAlpha(0x4CD),
+                                  color: AppTheme.royalGold.withAlpha(0x4CD),
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
@@ -76,22 +76,22 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                                     width: 56,
                                     height: 56,
                                     decoration: BoxDecoration(
-                                      color: Apptheme.royalGold.withAlpha(0x33),
+                                      color: AppTheme.royalGold.withAlpha(0x33),
                                       shape: BoxShape.circle,
                                     ),
                                     padding: EdgeInsets.zero,
                                     child: Icon(
                                       Icons.add,
-                                      color: Apptheme.royalGold,
+                                      color: AppTheme.royalGold,
                                       size: 30,
                                     ),
                                   ),
                                   Text(
                                     'Create New Note Page',
-                                    style: Apptheme.text.copyWith(
-                                      color: Apptheme.royalGold,
+                                    style: AppTheme.text.copyWith(
+                                      color: AppTheme.royalGold,
                                       fontSize: 18.0,
-                                      fontFamily: Apptheme.fontPlayfairDisplay,
+                                      fontFamily: AppTheme.fontPlayfairDisplay,
                                     ),
                                   ),
                                 ],
@@ -121,10 +121,10 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
     return CustomCard(
       padding: EdgeInsets.zero,
       decoration: BoxDecoration(
-        color: Apptheme.burntLeather.withAlpha(204),
+        color: AppTheme.burntLeather.withAlpha(204),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: Apptheme.royalGold.withAlpha(0x4CD),
+          color: AppTheme.royalGold.withAlpha(0x4CD),
           width: 1,
         ),
       ),
@@ -132,7 +132,7 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Apptheme.royalGold.withAlpha(76),
+              color: AppTheme.royalGold.withAlpha(76),
               borderRadius: BorderRadius.only(
                 topLeft: radius,
                 topRight: radius,
@@ -157,18 +157,18 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.royalGold,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.royalGold,
                     fontSize: 18.0,
-                    fontFamily: Apptheme.fontPlayfairDisplay,
+                    fontFamily: AppTheme.fontPlayfairDisplay,
                     height: 1.56,
                   ),
                 ),
                 Text(
                   body,
-                  style: Apptheme.text.copyWith(
+                  style: AppTheme.text.copyWith(
                     color: const Color(0xB2F5F5DC),
-                    fontFamily: Apptheme.fontCrimsonPro,
+                    fontFamily: AppTheme.fontCrimsonPro,
                     height: 1.43,
                   ),
                 ),
@@ -179,19 +179,19 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Last edited: $lastEdited',
-                        style: Apptheme.text.copyWith(
-                          color: Apptheme.vanilaDust.withAlpha(0x99),
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.vanillaDust.withAlpha(0x99),
                           fontSize: 12.0,
                           fontStyle: FontStyle.italic,
-                          fontFamily: Apptheme.fontCrimsonPro,
+                          fontFamily: AppTheme.fontCrimsonPro,
                           height: 1.33,
                         ),
                       ),
                     ),
                     Row(
                       children: [
-                        Icon(Icons.star, color: Apptheme.royalGold),
-                        Icon(Icons.more_vert, color: Apptheme.royalGold),
+                        Icon(Icons.star, color: AppTheme.royalGold),
+                        Icon(Icons.more_vert, color: AppTheme.royalGold),
                       ],
                     ),
                   ],

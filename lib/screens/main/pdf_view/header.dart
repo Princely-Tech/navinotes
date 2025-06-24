@@ -19,7 +19,7 @@ class PdfViewHeader extends StatelessWidget {
               decoration: ShapeDecoration(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: Apptheme.lightGray),
+                  side: BorderSide(width: 1, color: AppTheme.lightGray),
                 ),
               ),
               child: Row(
@@ -35,7 +35,7 @@ class PdfViewHeader extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.arrow_back,
-                            color: Apptheme.stormGray,
+                            color: AppTheme.stormGray,
                             size: 20,
                           ),
                           Flexible(
@@ -43,7 +43,7 @@ class PdfViewHeader extends StatelessWidget {
                               'Cellular Biology - Chapter 4',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: Apptheme.text.copyWith(
+                              style: AppTheme.text.copyWith(
                                 fontSize: 18.0,
                                 fontWeight: getFontWeight(500),
                               ),
@@ -66,7 +66,7 @@ class PdfViewHeader extends StatelessWidget {
                             imagePath: Images.share2,
                             size: 16,
                           ),
-                          Icon(Icons.more_horiz, color: Apptheme.stormGray),
+                          Icon(Icons.more_horiz, color: AppTheme.stormGray),
                         ],
                       ),
                       VisibleController(

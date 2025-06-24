@@ -14,9 +14,9 @@ class NavigationSideBar extends StatelessWidget {
       mobile: shrinkWrap ? 100 : double.infinity,
       child: Container(
         decoration: BoxDecoration(
-          color: Apptheme.white,
+          color: AppTheme.white,
           border: Border(
-            right: BorderSide(width: 2, color: Apptheme.lightGray),
+            right: BorderSide(width: 2, color: AppTheme.lightGray),
           ),
         ),
         child: Column(
@@ -24,7 +24,7 @@ class NavigationSideBar extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Apptheme.lightGray)),
+                border: Border(bottom: BorderSide(color: AppTheme.lightGray)),
               ),
               padding: EdgeInsets.all(15),
               child: Row(
@@ -39,8 +39,8 @@ class NavigationSideBar extends StatelessWidget {
                         child: Text(
                           AppStrings.appName,
                           overflow: TextOverflow.ellipsis,
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.vividRose,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.vividRose,
                             fontSize: 20.0,
                             fontWeight: FontWeight.w700,
                           ),
@@ -92,8 +92,8 @@ class NavigationSideBar extends StatelessWidget {
         children: [
           Text(
             'Storage Usage',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.steelMist,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.steelMist,
               fontSize: shrinkWrap ? 10.0 : 12.0,
             ),
           ),
@@ -103,15 +103,15 @@ class NavigationSideBar extends StatelessWidget {
             children: [
               LinearProgressIndicator(
                 value: 3.5 / 10,
-                backgroundColor: Apptheme.lightGray,
+                backgroundColor: AppTheme.lightGray,
                 borderRadius: BorderRadius.circular(100),
                 minHeight: 8,
-                color: Apptheme.vividBlue,
+                color: AppTheme.vividBlue,
               ),
               Text(
                 '3.5 GB / 10 GB',
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.steelMist,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.steelMist,
                   fontSize: shrinkWrap ? 10.0 : 12.0,
                 ),
               ),
@@ -132,14 +132,14 @@ class NavigationSideBar extends StatelessWidget {
     String? route, //TODO make required
   }) {
     bool isActive = activeRoute == route;
-    final color = isActive ? Apptheme.vividRose : Apptheme.defaultBlack;
+    final color = isActive ? AppTheme.vividRose : AppTheme.defaultBlack;
     Radius radius = Radius.circular(100);
     return Material(
       color: Colors.transparent,
       child: ListTile(
         leading: shrinkWrap ? null : _itemIcon(icon: icon, color: color),
         selected: isActive,
-        selectedTileColor: Apptheme.polarGlow,
+        selectedTileColor: AppTheme.polarGlow,
         shape: RoundedRectangleBorder(
           borderRadius:
               shrinkWrap
@@ -155,7 +155,7 @@ class NavigationSideBar extends StatelessWidget {
                 )
                 : Text(
                   title,
-                  style: Apptheme.text.copyWith(
+                  style: AppTheme.text.copyWith(
                     color: color,
                     fontSize: 16.0,
                     fontWeight: getFontWeight(isActive ? 500 : 400),

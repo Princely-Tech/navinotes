@@ -5,6 +5,7 @@ class ApiEndpoints {
   static const String authLoginProvider = '/auth/login-with-provider';
   static const String authLogin = '/auth/login';
   static const String verifyEmail = '/profile/verify-email';
+  static const String getVerifyOtp = '/profile/get-verification-code';
   static const String profile = '/profile';
   static const String profileImage = '/profile/picture';
   static const String passwordOtp = '/auth/password/recovery-otp';

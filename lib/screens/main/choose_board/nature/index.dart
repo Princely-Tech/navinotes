@@ -11,7 +11,7 @@ class BoardNatureScreen extends StatelessWidget {
       child: Consumer<BoardNatureVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
-            backgroundColor: Apptheme.softLinen,
+            backgroundColor: AppTheme.softLinen,
             body: ScrollableController(
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 20),
@@ -26,7 +26,7 @@ class BoardNatureScreen extends StatelessWidget {
                         tablet: EdgeInsets.only(left: tabletPadding, top: 5),
                         child: MenuButton(
                           onPressed: () {},
-                          decoration: BoxDecoration(color: Apptheme.vividRose),
+                          decoration: BoxDecoration(color: AppTheme.vividRose),
                         ),
                       ),
                     ),
@@ -69,11 +69,11 @@ class BoardNatureScreen extends StatelessWidget {
                                           begin: Alignment(0.00, 0.50),
                                           end: Alignment(1.00, 0.50),
                                           colors: [
-                                            Apptheme.sageMist,
-                                            Apptheme.mossGreen,
+                                            AppTheme.sageMist,
+                                            AppTheme.mossGreen,
                                           ],
                                         ),
-                                        style: Apptheme.text.copyWith(
+                                        style: AppTheme.text.copyWith(
                                           fontSize: 18.0,
                                           fontWeight: getFontWeight(500),
                                         ),
@@ -87,8 +87,8 @@ class BoardNatureScreen extends StatelessWidget {
                                             child: Text(
                                               'Don\'t worry - you can always change these details later.',
                                               textAlign: TextAlign.center,
-                                              style: Apptheme.text.copyWith(
-                                                color: Apptheme.walnutBronze,
+                                              style: AppTheme.text.copyWith(
+                                                color: AppTheme.walnutBronze,
                                                 height: 1.43,
                                               ),
                                             ),
@@ -121,7 +121,7 @@ class BoardNatureScreen extends StatelessWidget {
     required String image,
     required Color color,
   }) {
-    Color shadowColor = Apptheme.black.withAlpha(0x19);
+    Color shadowColor = AppTheme.black.withAlpha(0x19);
     return CustomCard(
       decoration: BoxDecoration(
         color: color,
@@ -146,21 +146,21 @@ class BoardNatureScreen extends StatelessWidget {
           SVGImagePlaceHolder(
             imagePath: image,
             size: 30,
-            color: Apptheme.mossGreen,
+            color: AppTheme.mossGreen,
           ),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               fontSize: 20.0,
-              fontFamily: Apptheme.fontCrimsonText,
+              fontFamily: AppTheme.fontCrimsonText,
             ),
           ),
           Text(
             body,
             textAlign: TextAlign.center,
-            style: Apptheme.text.copyWith(
-              color: Apptheme.walnutBronze,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.walnutBronze,
               fontSize: 16.0,
             ),
           ),
@@ -173,7 +173,7 @@ class BoardNatureScreen extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Apptheme.walnutBronze.withAlpha(0x19),
+        color: AppTheme.walnutBronze.withAlpha(0x19),
         borderRadius: BorderRadius.circular(16),
       ),
       child: ResponsivePadding(
@@ -185,28 +185,28 @@ class BoardNatureScreen extends StatelessWidget {
             Text(
               'What Grows Next',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(
-                color: Apptheme.mossGreen,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.mossGreen,
                 fontSize: 24.0,
-                fontFamily: Apptheme.fontCrimsonText,
+                fontFamily: AppTheme.fontCrimsonText,
               ),
             ),
             CustomGrid(
               children: [
                 _whatGrowsItem(
-                  color: Apptheme.sageMist.withAlpha(0x33),
+                  color: AppTheme.sageMist.withAlpha(0x33),
                   title: 'Plant Your Syllabus',
                   body: 'Cultivate course timeline & growth plan',
                   image: Images.plant,
                 ),
                 _whatGrowsItem(
-                  color: Apptheme.walnutBronze.withAlpha(0x33),
+                  color: AppTheme.walnutBronze.withAlpha(0x33),
                   title: 'AI Growth Analysis',
                   body: 'Nurture study habits & learning insights',
                   image: Images.brain,
                 ),
                 _whatGrowsItem(
-                  color: Apptheme.sageMist.withAlpha(0x33),
+                  color: AppTheme.sageMist.withAlpha(0x33),
                   title: 'Organic Organization',
                   body: 'Natural material categorization & flow',
                   image: Images.stack,
@@ -227,10 +227,10 @@ class BoardNatureScreen extends StatelessWidget {
         children: [
           Text(
             'Your Sanctuary Preview',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.mossGreen,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.mossGreen,
               fontSize: 24.0,
-              fontFamily: Apptheme.fontCrimsonText,
+              fontFamily: AppTheme.fontCrimsonText,
             ),
           ),
           ClipRRect(
@@ -246,8 +246,8 @@ class BoardNatureScreen extends StatelessWidget {
           ),
           Text(
             'This preview shows how your academic sanctuary will flourish with the Nature aesthetic.',
-            style: Apptheme.text.copyWith(
-              color: Apptheme.walnutBronze,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.walnutBronze,
               fontSize: 16.0,
               height: 1.50,
             ),
@@ -264,7 +264,7 @@ class BoardNatureScreen extends StatelessWidget {
                     .map(
                       (str) => Text(
                         str,
-                        style: Apptheme.text.copyWith(
+                        style: AppTheme.text.copyWith(
                           fontSize: 16.0,
                           height: 1.50,
                         ),
@@ -278,10 +278,10 @@ class BoardNatureScreen extends StatelessWidget {
   }
 
   Widget _whiteCard({required Widget child}) {
-    Color shadowColor = Apptheme.black.withAlpha(0x19);
+    Color shadowColor = AppTheme.black.withAlpha(0x19);
     return CustomCard(
       decoration: BoxDecoration(
-        color: Apptheme.white,
+        color: AppTheme.white,
         boxShadow: [
           BoxShadow(
             color: shadowColor,
@@ -302,14 +302,14 @@ class BoardNatureScreen extends StatelessWidget {
   }
 
   Widget _form(BoardNatureVm vm) {
-    final labelStyle = Apptheme.text.copyWith(
-      color: Apptheme.mossGreen,
+    final labelStyle = AppTheme.text.copyWith(
+      color: AppTheme.mossGreen,
       fontSize: 18.0,
-      fontFamily: Apptheme.fontCrimsonText,
+      fontFamily: AppTheme.fontCrimsonText,
     );
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(width: 2, color: Apptheme.sageMist),
+      borderSide: BorderSide(width: 2, color: AppTheme.sageMist),
     );
     return _whiteCard(
       child: Form(
@@ -394,7 +394,7 @@ class BoardNatureScreen extends StatelessWidget {
             decoration: ShapeDecoration(
               shape: CircleBorder(
                 side: BorderSide(
-                  color: isChecked ? Apptheme.dodgerBlue : Apptheme.black,
+                  color: isChecked ? AppTheme.dodgerBlue : AppTheme.black,
                 ),
               ),
             ),
@@ -405,7 +405,7 @@ class BoardNatureScreen extends StatelessWidget {
                 height: 12,
                 decoration: ShapeDecoration(
                   shape: CircleBorder(),
-                  color: isChecked ? Apptheme.dodgerBlue : null,
+                  color: isChecked ? AppTheme.dodgerBlue : null,
                 ),
               ),
             ),
@@ -416,7 +416,7 @@ class BoardNatureScreen extends StatelessWidget {
               children: [
                 SVGImagePlaceHolder(
                   imagePath: icon,
-                  color: Apptheme.mossGreen,
+                  color: AppTheme.mossGreen,
                   size: 16,
                 ),
                 Expanded(
@@ -425,15 +425,15 @@ class BoardNatureScreen extends StatelessWidget {
                       children: [
                         TextSpan(
                           text: '$title ',
-                          style: Apptheme.text.copyWith(
+                          style: AppTheme.text.copyWith(
                             fontSize: 16.0,
                             height: 1.50,
                           ),
                         ),
                         TextSpan(
                           text: body,
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.walnutBronze,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.walnutBronze,
                             height: 1.43,
                           ),
                         ),
@@ -453,7 +453,7 @@ class BoardNatureScreen extends StatelessWidget {
     return SVGImagePlaceHolder(
       imagePath: Images.leaf,
       size: 12,
-      color: Apptheme.sageMist,
+      color: AppTheme.sageMist,
     );
   }
 
@@ -466,7 +466,7 @@ class BoardNatureScreen extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment(0.00, 0.50),
               end: Alignment(1.00, 0.50),
-              colors: [Apptheme.softLinen, Apptheme.paleSage],
+              colors: [AppTheme.softLinen, AppTheme.paleSage],
             ),
           ),
           padding: EdgeInsets.only(bottom: 30),
@@ -494,11 +494,11 @@ class BoardNatureScreen extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               prefix: Icon(
                                 Icons.arrow_back,
-                                color: Apptheme.mossGreen,
+                                color: AppTheme.mossGreen,
                                 size: 18,
                               ),
                               onTap: NavigationHelper.pop,
-                              color: Apptheme.mossGreen,
+                              color: AppTheme.mossGreen,
                               suffix: _leafSvg(),
                               text: 'Choose Different Style',
                             ),
@@ -508,8 +508,8 @@ class BoardNatureScreen extends StatelessWidget {
                         SizedBox(height: 15),
                         Text(
                           'Create Your Academic Sanctuary',
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.mossGreen,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.mossGreen,
                             fontSize: getDeviceResponsiveValue(
                               deviceType: layoutVm.deviceType,
                               mobile: 24.0,
@@ -517,13 +517,13 @@ class BoardNatureScreen extends StatelessWidget {
                               laptop: 32.0,
                               desktop: 36.0,
                             ),
-                            fontFamily: Apptheme.fontCrimsonText,
+                            fontFamily: AppTheme.fontCrimsonText,
                           ),
                         ),
                         Text(
                           'Step 1 of 2 • Set up your scholarly workspace',
-                          style: Apptheme.text.copyWith(
-                            color: Apptheme.walnutBronze,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.walnutBronze,
                             fontSize: 18.0,
                             height: 1.56,
                           ),

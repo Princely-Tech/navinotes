@@ -7,7 +7,7 @@ class ChangePasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScaffoldFrame(
-      backgroundColor: Apptheme.white,
+      backgroundColor: AppTheme.white,
       body: ApiServiceComponent(
         child: Consumer<ApiServiceProvider>(
           builder: (_, apiServiceProvider, _) {
@@ -31,13 +31,14 @@ class ChangePasswordScreen extends StatelessWidget {
                             spacing: 24,
                             children: [
                               CustomInputField(
-                                hintText: 'Password',
-                                label: 'Password',
+                                hintText: 'New Password',
+                                label: 'New Password',
                                 controller: vm.passwordController,
                                 keyboardType: TextInputType.visiblePassword,
                                 validator: passwordValidator,
                               ),
                               CustomInputField(
+                                controller: vm.confirmPasswordController,
                                 validator:
                                     (String? input) => confirmPasswordValidator(
                                       input,
@@ -64,6 +65,7 @@ class ChangePasswordScreen extends StatelessWidget {
                                     },
                                   ),
                                   AppButton.text(
+                                    mainAxisSize: MainAxisSize.min,
                                     onTap:
                                         () =>
                                             NavigationHelper.push(Routes.auth),

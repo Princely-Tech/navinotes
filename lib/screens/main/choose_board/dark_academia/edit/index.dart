@@ -6,8 +6,6 @@ double mobileHorPadding = 20;
 double laptopHorPadding = 30;
 double desktopHorPadding = 40;
 
-
-
 class DarkAcademiaEditScreen extends StatelessWidget {
   const DarkAcademiaEditScreen({super.key});
 
@@ -18,7 +16,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
       child: Consumer<DarkAcademiaEditVM>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
-            backgroundColor: Apptheme.warmSand,
+            backgroundColor: AppTheme.warmSand,
             body: Column(
               children: [
                 DarkAcademiaEditHeader(),
@@ -56,17 +54,17 @@ class DarkAcademiaEditScreen extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Apptheme.text.copyWith(
-            color: Apptheme.white,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.white,
             fontSize: 24.0,
-            fontFamily: Apptheme.fontPlayfairDisplay,
+            fontFamily: AppTheme.fontPlayfairDisplay,
             height: 1.33,
           ),
         ),
         ...items.map(
           (str) => Text(
             str,
-            style: Apptheme.text.copyWith(
+            style: AppTheme.text.copyWith(
               color: Colors.white.withAlpha(178),
               fontSize: 16.0,
               height: 1.50,
@@ -79,7 +77,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
 
   Widget _footer() {
     return Container(
-      decoration: BoxDecoration(color: Apptheme.espressoBrown),
+      decoration: BoxDecoration(color: AppTheme.espressoBrown),
       margin: EdgeInsets.only(top: 40),
       child: ResponsiveHorizontalPadding(
         child: ResponsivePadding(
@@ -118,12 +116,12 @@ class DarkAcademiaEditScreen extends StatelessWidget {
       title: 'Course Materials',
       child: Container(
         decoration: DottedDecoration(
-          color: Apptheme.espressoBrown.withAlpha(0x4C),
+          color: AppTheme.espressoBrown.withAlpha(0x4C),
           shape: Shape.box,
           borderRadius: BorderRadius.circular(12),
         ),
         child: CustomCard(
-          decoration: BoxDecoration(color: Apptheme.transparent),
+          decoration: BoxDecoration(color: AppTheme.transparent),
           child: Column(
             spacing: 15,
             children: [
@@ -133,13 +131,13 @@ class DarkAcademiaEditScreen extends StatelessWidget {
                   SVGImagePlaceHolder(
                     imagePath: Images.upload2,
                     size: 60,
-                    color: Apptheme.espressoBrown.withAlpha(76),
+                    color: AppTheme.espressoBrown.withAlpha(76),
                   ),
                   Text(
                     'Upload and organize your study materials',
                     textAlign: TextAlign.center,
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.espressoBrown,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.espressoBrown,
                       fontSize: 20.0,
                       height: 1.40,
                     ),
@@ -149,8 +147,8 @@ class DarkAcademiaEditScreen extends StatelessWidget {
               Text(
                 'Drag and drop files here',
                 textAlign: TextAlign.center,
-                style: Apptheme.text.copyWith(
-                  color: Apptheme.espressoBrown.withAlpha(0xB2),
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.espressoBrown.withAlpha(0xB2),
                   fontSize: 16.0,
                   height: 1.50,
                 ),
@@ -173,8 +171,8 @@ class DarkAcademiaEditScreen extends StatelessWidget {
             Text(
               'Assignment tracking will appear after syllabus upload',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(
-                color: Apptheme.espressoBrown,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.espressoBrown,
                 fontSize: 20.0,
               ),
             ),
@@ -192,10 +190,10 @@ class DarkAcademiaEditScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: Apptheme.text.copyWith(
-              color: Apptheme.espressoBrown,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.espressoBrown,
               fontSize: 30.0,
-              fontFamily: Apptheme.fontPlayfairDisplay,
+              fontFamily: AppTheme.fontPlayfairDisplay,
               height: 1.20,
             ),
           ),
@@ -220,7 +218,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
       },
       child: CustomCard(
         decoration: BoxDecoration(
-          color: isCaramelMist ? Apptheme.caramelMist : Apptheme.white,
+          color: isCaramelMist ? AppTheme.caramelMist : AppTheme.white,
           boxShadow: boxShadows,
         ),
         child: Column(
@@ -229,15 +227,15 @@ class DarkAcademiaEditScreen extends StatelessWidget {
             SVGImagePlaceHolder(
               imagePath: icon,
               size: 36,
-              color: Apptheme.espressoBrown,
+              color: AppTheme.espressoBrown,
             ),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(
-                color: isCaramelMist ? Apptheme.white : Apptheme.espressoBrown,
+              style: AppTheme.text.copyWith(
+                color: isCaramelMist ? AppTheme.white : AppTheme.espressoBrown,
                 fontSize: 24.0,
-                fontFamily: Apptheme.fontPlayfairDisplay,
+                fontFamily: AppTheme.fontPlayfairDisplay,
               ),
             ),
             Padding(
@@ -245,11 +243,11 @@ class DarkAcademiaEditScreen extends StatelessWidget {
               child: Text(
                 body,
                 textAlign: TextAlign.center,
-                style: Apptheme.text.copyWith(
+                style: AppTheme.text.copyWith(
                   color:
                       isCaramelMist
                           ? Colors.white.withAlpha(204)
-                          : Apptheme.espressoBrown,
+                          : AppTheme.espressoBrown,
                   fontSize: 16.0,
                 ),
               ),
@@ -271,8 +269,8 @@ class DarkAcademiaEditScreen extends StatelessWidget {
             height: 20,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Apptheme.espressoBrown,
-              border: Border.all(color: Apptheme.transparent),
+              color: AppTheme.espressoBrown,
+              border: Border.all(color: AppTheme.transparent),
             ),
           ),
         ),
@@ -306,7 +304,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
   Widget _courseTimeLine() {
     return Container(
       width: double.infinity,
-      color: Apptheme.espressoBrown,
+      color: AppTheme.espressoBrown,
       child: ResponsivePadding(
         mobile: EdgeInsets.fromLTRB(mobileHorPadding, 20, mobileHorPadding, 40),
         laptop: EdgeInsets.fromLTRB(laptopHorPadding, 20, laptopHorPadding, 50),
@@ -322,46 +320,46 @@ class DarkAcademiaEditScreen extends StatelessWidget {
           children: [
             Text(
               'Course Timeline',
-              style: Apptheme.text.copyWith(
-                color: Apptheme.white,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.white,
                 fontSize: 30.0,
-                fontFamily: Apptheme.fontPlayfairDisplay,
+                fontFamily: AppTheme.fontPlayfairDisplay,
                 height: 1.20,
               ),
             ),
             CustomCard(
               decoration: BoxDecoration(
-                color: Apptheme.white.withAlpha(25),
-                border: Border.all(color: Apptheme.transparent),
+                color: AppTheme.white.withAlpha(25),
+                border: Border.all(color: AppTheme.transparent),
               ),
               child: Column(
                 spacing: 20,
                 children: [
                   Icon(
                     Icons.access_time,
-                    color: Apptheme.caramelMist,
+                    color: AppTheme.caramelMist,
                     size: 50,
                   ),
                   Text(
                     'Your course schedule will appear here',
                     textAlign: TextAlign.center,
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.white,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.white,
                       fontSize: 20.0,
                     ),
                   ),
                   AppButton.secondary(
                     mainAxisSize: MainAxisSize.min,
-                    color: Apptheme.caramelMist,
+                    color: AppTheme.caramelMist,
                     prefix: SVGImagePlaceHolder(
                       imagePath: Images.upload,
                       size: 16,
-                      color: Apptheme.caramelMist,
+                      color: AppTheme.caramelMist,
                     ),
                     onTap: () {},
                     text: 'Upload syllabus to generate timeline',
-                    style: Apptheme.text.copyWith(
-                      color: Apptheme.caramelMist,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.caramelMist,
                       fontSize: 16.0,
                     ),
                   ),

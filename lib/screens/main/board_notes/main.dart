@@ -28,7 +28,7 @@ class BoardNotesMain extends StatelessWidget {
                         outline1: _outline(),
                         outline2: _outline(
                           image: Images.img,
-                          color: Apptheme.paleJade,
+                          color: AppTheme.paleJade,
                         ),
                       ),
                     ),
@@ -40,7 +40,7 @@ class BoardNotesMain extends StatelessWidget {
                         outline1: _outline(),
                         outline2: _outline(
                           image: Images.video,
-                          color: Apptheme.pastelPurple,
+                          color: AppTheme.pastelPurple,
                         ),
                       ),
                     ),
@@ -52,7 +52,7 @@ class BoardNotesMain extends StatelessWidget {
                         outline1: _outline(),
                         outline2: _outline(
                           image: Images.copy2,
-                          color: Apptheme.softGold,
+                          color: AppTheme.softGold,
                         ),
                       ),
                     ),
@@ -64,7 +64,7 @@ class BoardNotesMain extends StatelessWidget {
                         outline1: _outline(),
                         outline2: _outline(
                           image: Images.chart,
-                          color: Apptheme.blushPink,
+                          color: AppTheme.blushPink,
                         ),
                       ),
                     ),
@@ -76,7 +76,7 @@ class BoardNotesMain extends StatelessWidget {
                         outline1: _outline(),
                         outline2: _outline(
                           image: Images.calculator,
-                          color: Apptheme.periwinkle,
+                          color: AppTheme.periwinkle,
                         ),
                       ),
                     ),
@@ -88,7 +88,7 @@ class BoardNotesMain extends StatelessWidget {
                         outline1: _outline(),
                         outline2: _outline(
                           image: Images.img,
-                          color: Apptheme.paleJade,
+                          color: AppTheme.paleJade,
                         ),
                       ),
                     ),
@@ -108,7 +108,7 @@ class BoardNotesMain extends StatelessWidget {
 
   Widget _outline({
     String image = Images.hook,
-    Color color = Apptheme.pastelBlue,
+    Color color = AppTheme.pastelBlue,
   }) {
     return OutlinedChild(
       size: 20,
@@ -144,7 +144,7 @@ class BoardNotesMain extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Apptheme.iceBlue,
+              color: AppTheme.iceBlue,
               borderRadius: BorderRadius.only(
                 topLeft: radius,
                 topRight: radius,
@@ -168,8 +168,8 @@ class BoardNotesMain extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Apptheme.text.copyWith(
-                    color: Apptheme.charcoalBlue,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.charcoalBlue,
                     fontSize: 16.0,
                   ),
                 ),
@@ -180,8 +180,8 @@ class BoardNotesMain extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Last edited: $lastEdited',
-                        style: Apptheme.text.copyWith(
-                          color: Apptheme.steelMist,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.steelMist,
                           fontSize: 12.0,
                         ),
                       ),
@@ -201,16 +201,16 @@ class BoardNotesMain extends StatelessWidget {
     return Container(
       constraints: BoxConstraints(minHeight: 60),
       decoration: ShapeDecoration(
-        color: Apptheme.white,
+        color: AppTheme.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: Apptheme.lightGray),
+          side: BorderSide(width: 1, color: AppTheme.lightGray),
         ),
       ),
       padding: EdgeInsets.all(10),
       child: Row(
         spacing: 20,
         children: [
-          Text('8 Note Pages', style: Apptheme.text.copyWith(fontSize: 16.0)),
+          Text('8 Note Pages', style: AppTheme.text.copyWith(fontSize: 16.0)),
           VisibleController(
             mobile: false,
             tablet: true,
@@ -227,7 +227,7 @@ class BoardNotesMain extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Apptheme.lightAsh,
+                        color: AppTheme.lightAsh,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Padding(
@@ -237,7 +237,7 @@ class BoardNotesMain extends StatelessWidget {
                           children: [
                             OutlinedChild(
                               size: 32,
-                              decoration: BoxDecoration(color: Apptheme.white),
+                              decoration: BoxDecoration(color: AppTheme.white),
                               child: SVGImagePlaceHolder(
                                 imagePath: Images.ques2,
                                 size: 16,
@@ -272,12 +272,12 @@ class BoardNotesMain extends StatelessWidget {
     return WidthLimiter(
       mobile: 210,
       child: CustomInputField(
-        fillColor: Apptheme.lightAsh,
+        fillColor: AppTheme.lightAsh,
         side: BorderSide.none,
         hintText: 'Last Modified',
         controller: TextEditingController(text: 'Last modified'),
         selectItems: ['Last modified', 'Date Created'],
-        style: Apptheme.text.copyWith(color: Apptheme.strongBlue),
+        style: AppTheme.text.copyWith(color: AppTheme.strongBlue),
         constraints: BoxConstraints(maxHeight: 40),
         prefixIcon: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -285,7 +285,7 @@ class BoardNotesMain extends StatelessWidget {
             Text(
               'Sort by:',
               textAlign: TextAlign.center,
-              style: Apptheme.text.copyWith(color: Apptheme.darkSlateGray),
+              style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
             ),
           ],
         ),
