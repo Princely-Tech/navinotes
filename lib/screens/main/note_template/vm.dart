@@ -31,7 +31,7 @@ class NoteTemplateVm extends ChangeNotifier {
   }
 
   void createNote() {
-    NavigationHelper.pushReplacement(Routes.boardNotes);
+    NavigationHelper.push(Routes.boardNotes);
   }
 }
 
