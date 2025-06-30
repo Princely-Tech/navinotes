@@ -1,17 +1,27 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/settings/navigation_helper.dart';
-import 'package:navinotes/settings/routes.dart';
+import 'package:navinotes/packages.dart';
 
 class DashboardVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  DashboardVm({required this.scaffoldKey});
-  bool hasData = false;
-
-  void initialize() {
-    Future.delayed(Duration(seconds: 5), () {
-      hasData = true;
-      notifyListeners();
+  SessionManager sessionVm;
+  DashboardVm({required this.scaffoldKey, required this.sessionVm}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initialize(scaffoldKey.currentContext!);
     });
+  }
+
+  void initialize(BuildContext context) async {
+    try {
+      await sessionVm.getAllBoard();
+    } catch (err) {
+      if (context.mounted) {
+        ErrorDisplayService.showMessage(
+          context,
+          'Error occurred while fetching boards',
+          isError: true,
+        );
+      }
+      debugPrint(err.toString());
+    }
   }
 
   void openDrawer() {

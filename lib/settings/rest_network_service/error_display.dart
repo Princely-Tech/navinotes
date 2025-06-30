@@ -44,16 +44,22 @@ class ErrorDisplayService {
       );
     }
   }
-  static void showMessage(BuildContext context,String message) {
+
+  static void showMessage(
+    BuildContext context,
+    String message, {
+    bool isError = false,
+  }) {
     final fToast = FToast();
     fToast.init(context);
     fToast.showToast(
-      child: MessageDisplayContainer(message,isError:false),
+      child: MessageDisplayContainer(message, isError: isError),
       gravity: AppConstants.toastGravity,
       toastDuration: AppConstants.toastDuration,
     );
   }
- static void showDefaultError(BuildContext context) {
+
+  static void showDefaultError(BuildContext context) {
     final fToast = FToast();
     fToast.init(context);
     fToast.showToast(
@@ -62,11 +68,12 @@ class ErrorDisplayService {
       toastDuration: AppConstants.toastDuration,
     );
   }
-   static void showFormInValidError(BuildContext context) {
+
+  static void showFormInValidError(BuildContext context) {
     final fToast = FToast();
     fToast.init(context);
     fToast.showToast(
-      child: MessageDisplayContainer( 'Please fill in all the required fields'),
+      child: MessageDisplayContainer('Please fill in all the required fields'),
       gravity: AppConstants.toastGravity,
       toastDuration: AppConstants.toastDuration,
     );

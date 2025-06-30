@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/dashboard/boards.dart';
-import 'package:navinotes/screens/main/dashboard/empty_dashboard.dart';
-import 'package:navinotes/screens/main/dashboard/recent_activity.dart';
-import 'package:navinotes/screens/main/dashboard/vm.dart';
+import 'boards.dart';
+import 'empty_dashboard.dart';
+import 'recent_activity.dart';
+import 'vm.dart';
 
 class DashboardMain extends StatelessWidget {
   const DashboardMain({super.key});
@@ -11,12 +11,10 @@ class DashboardMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DashboardVm>(
       builder: (_, vm, _) {
+        bool hasData = vm.sessionVm.userBoards.isNotEmpty;
         return Column(
           children: [
-            SearchBarHeader(
-              openDrawer: vm.openDrawer,
-              borderBottom: !vm.hasData,
-            ),
+            SearchBarHeader(openDrawer: vm.openDrawer, borderBottom: !hasData),
             Expanded(
               child: ScrollableController(
                 mobilePadding: EdgeInsets.all(10),
@@ -27,7 +25,7 @@ class DashboardMain extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 100),
                   child:
-                      vm.hasData
+                      hasData
                           ? Column(
                             spacing: 30,
                             children: [YourBoards(), RecentActivity()],

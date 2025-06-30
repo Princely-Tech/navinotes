@@ -1,6 +1,6 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/dashboard/vm.dart';
-import 'package:navinotes/screens/main/dashboard/widgets.dart';
+import 'vm.dart';
+import 'widgets.dart';
 
 class EmptyDashboardMain extends StatelessWidget {
   const EmptyDashboardMain({super.key});
@@ -231,27 +231,31 @@ class EmptyDashboardMain extends StatelessWidget {
   }
 
   Widget _welcome() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 3,
-      children: [
-        Text(
-          'Welcome to NaviNotes, Alex!',
-          style: AppTheme.text.copyWith(
-            color: AppTheme.graphite,
-            fontSize: 22.29,
-            fontWeight: getFontWeight(700),
-            height: 1.33,
-          ),
-        ),
-        Text(
-          'Ready to organize your Computer Science studies? Let\'s get started.',
-          style: AppTheme.text.copyWith(
-            color: AppTheme.stormGray,
-            height: 1.50,
-          ),
-        ),
-      ],
+    return Consumer<SessionManager>(
+      builder: (_, sessionManager, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 3,
+          children: [
+            Text(
+              'Welcome to ${AppStrings.appName}, ${sessionManager.getName()}!',
+              style: AppTheme.text.copyWith(
+                color: AppTheme.graphite,
+                fontSize: 22.29,
+                fontWeight: getFontWeight(700),
+                height: 1.33,
+              ),
+            ),
+            Text(
+              'Ready to organize your Computer Science studies? Let\'s get started.',
+              style: AppTheme.text.copyWith(
+                color: AppTheme.stormGray,
+                height: 1.50,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

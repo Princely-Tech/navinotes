@@ -67,11 +67,12 @@ class DashboardCreateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DashboardVm>(
       builder: (_, vm, _) {
+        bool hasData = vm.sessionVm.userBoards.isNotEmpty;
         return CreateCard(
           onTap: vm.goToCreateBoard,
           text: 'Create New Board',
-          width: vm.hasData ? double.infinity : 356,
-          height: vm.hasData ? null : 237,
+          width: hasData ? double.infinity : 356,
+          height: hasData ? null : 237,
         );
       },
     );

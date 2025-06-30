@@ -28,8 +28,16 @@ class ChangePasswordVm extends ChangeNotifier {
         'email': apiServiceProvider.sessionManager.getEmail(),
       };
       final request = JsonRequest.post(ApiEndpoints.passwordChange, body);
-     dynamic response = await apiServiceProvider.apiService.sendJsonRequest(request);
-       ErrorDisplayService.showMessage(context,response['message']??'Password changed successfully. Login with your new password');
+      dynamic response = await apiServiceProvider.apiService.sendJsonRequest(
+        request,
+      );
+      if (context.mounted) {
+        ErrorDisplayService.showMessage(
+          context,
+          response['message'] ??
+              'Password changed successfully. Login with your new password',
+        );
+      }
       NavigationHelper.pushAndRemoveUntil(Routes.auth);
     } catch (err) {
       if (context.mounted) {

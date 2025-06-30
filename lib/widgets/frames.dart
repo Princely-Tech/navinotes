@@ -21,14 +21,20 @@ class ScaffoldFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        key: scaffoldKey,
-        bottomNavigationBar: bottomNavigationBar,
-        body: body,
-        drawer: drawer,
-        endDrawer: endDrawer,
-        backgroundColor: backgroundColor ?? AppTheme.lightGray,
-        floatingActionButton: floatingActionButton,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          key: scaffoldKey,
+          bottomNavigationBar: bottomNavigationBar,
+          body: body,
+          drawer: drawer,
+          endDrawer: endDrawer,
+          backgroundColor: backgroundColor ?? AppTheme.lightGray,
+          floatingActionButton: floatingActionButton,
+        ),
       ),
     );
   }

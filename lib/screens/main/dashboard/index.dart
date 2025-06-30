@@ -9,43 +9,46 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        DashboardVm vm = DashboardVm(scaffoldKey: _scaffoldKey);
-        vm.initialize();
-        return vm;
-      },
-      child: Consumer<DashboardVm>(
-        builder: (_, vm, _) {
-          String activeRoute = Routes.dashboard;
-          return ScaffoldFrame(
-            backgroundColor: vm.hasData ? AppTheme.lightGray : AppTheme.white,
-            scaffoldKey: _scaffoldKey,
-            drawer: CustomDrawer(
-              child: NavigationSideBar(activeRoute: activeRoute),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: vm.goToCreateBoard,
-              backgroundColor:
-                  vm.hasData ? AppTheme.vividRose : AppTheme.tropicalTeal,
-              shape: CircleBorder(),
-              child: Icon(Icons.add, color: AppTheme.white),
-            ),
-            body: ResponsiveSection(
-              mobile: DashboardMain(),
-              desktop: Row(
-                children: [
-                  WidthLimiter(
-                    mobile: 255,
-                    child: NavigationSideBar(activeRoute: activeRoute),
+    return Consumer<SessionManager>(
+      builder: (_, sessionVm, _) {
+        return ChangeNotifierProvider(
+          create:
+              (_) =>
+                  DashboardVm(scaffoldKey: _scaffoldKey, sessionVm: sessionVm),
+          child: Consumer<DashboardVm>(
+            builder: (_, vm, _) {
+              bool hasData = sessionVm.userBoards.isNotEmpty;
+              String activeRoute = Routes.dashboard;
+              return ScaffoldFrame(
+                backgroundColor: hasData ? AppTheme.lightGray : AppTheme.white,
+                scaffoldKey: _scaffoldKey,
+                drawer: CustomDrawer(
+                  child: NavigationSideBar(activeRoute: activeRoute),
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: vm.goToCreateBoard,
+                  backgroundColor:
+                      hasData ? AppTheme.vividRose : AppTheme.tropicalTeal,
+                  shape: CircleBorder(),
+                  child: Icon(Icons.add, color: AppTheme.white),
+                ),
+                body: ResponsiveSection(
+                  mobile: DashboardMain(),
+                  desktop: Row(
+                    children: [
+                      WidthLimiter(
+                        mobile: 255,
+                        child: NavigationSideBar(activeRoute: activeRoute),
+                      ),
+                      Expanded(child: DashboardMain()),
+                    ],
                   ),
-                  Expanded(child: DashboardMain()),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

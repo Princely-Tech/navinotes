@@ -455,17 +455,20 @@ class ProfilePic extends StatelessWidget {
   final double size;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: borderColor),
-      ),
-      child: ImagePlaceHolder.network(
-        imagePath:
-            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
-        size: size,
-        borderRadius: BorderRadius.circular(999),
-      ),
+    return Consumer<SessionManager>(
+      builder: (_, sessionManager, _) {
+        return Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: borderColor),
+          ),
+          child: SVGImagePlaceHolder(
+            imagePath: Images.avatar,
+            size: size,
+          ), //TODO show user image
+        );
+      },
     );
   }
 }
@@ -476,16 +479,20 @@ class MessageDisplayContainer extends StatelessWidget {
   final bool isError;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        color: isError ? AppTheme.bloodFire : AppTheme.vitalGreen,
-      ),
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-        style: AppTheme.text.copyWith(color: AppTheme.white),
+    final double maxWidth = screenWidth(context) * 0.9;
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: isError ? AppTheme.bloodFire : AppTheme.vitalGreen,
+        ),
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: AppTheme.text.copyWith(color: AppTheme.white),
+        ),
       ),
     );
   }

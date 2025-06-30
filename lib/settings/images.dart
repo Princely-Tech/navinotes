@@ -109,7 +109,7 @@ class Images {
   static const String circle = '$iconPath/circle.svg';
   static const String rect = '$iconPath/rect.svg';
   static const String connection = '$iconPath/connection.svg';
-  // static const String card = '$iconPath/card.svg';
+  static const String avatar = '$iconPath/avatar.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';

@@ -5,10 +5,22 @@ class SessionManager extends ChangeNotifier {
   String? token;
   String? email;
   String? otp;
+  List<Board> userBoards = [];
+
+  void initializeUserValues() {
+    //
+  }
+
+  Future<void> getAllBoard() async {
+    List<Board> boards = await DatabaseHelper.instance.getAllBoards();
+    userBoards = boards;
+    notifyListeners();
+  }
 
   updateSession({User? user, String? token}) {
     this.user = user;
     this.token = token;
+    initializeUserValues();
     notifyListeners();
   }
 

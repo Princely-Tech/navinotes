@@ -165,7 +165,6 @@ class BoardNatureMindMapRight extends StatelessWidget {
 
   Widget _lineItem(BoardNatureMindMapVm vm, BordeLineType line) {
     bool isSelected = vm.selectedLine == line;
-    Color color = isSelected ? AppTheme.vividBlue : AppTheme.white;
     return _selectContainer(
       isSelected: isSelected,
       onTap: () => vm.updateLine(line),

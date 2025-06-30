@@ -1,5 +1,73 @@
 import 'package:navinotes/packages.dart';
 
+class Board {
+  final int? id;
+  final int userId;
+  final String type;
+  final String name;
+  final Map<String, dynamic> customization;
+  final bool isPublic;
+  final String? description;
+  final String? subject;
+  final String? level;
+  final String? term;
+  final String? coverImage;
+  final int createdAt;
+  final int updatedAt;
+  final int? syncedAt;
+
+  Board({
+    this.id,
+    required this.userId,
+    required this.type,
+    required this.name,
+    required this.customization,
+    this.isPublic = false,
+    this.description,
+    this.subject,
+    this.level,
+    this.term,
+    this.coverImage,
+    required this.createdAt,
+    required this.updatedAt,
+    this.syncedAt,
+  });
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'user_id': userId,
+    'type': type,
+    'name': name,
+    'customization': jsonEncode(customization),
+    'is_public': isPublic ? 1 : 0,
+    'description': description,
+    'subject': subject,
+    'level': level,
+    'term': term,
+    'cover_image': coverImage,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+    'synced_at': syncedAt,
+  };
+
+  factory Board.fromMap(Map<String, dynamic> map) => Board(
+    id: map['id'],
+    userId: map['user_id'],
+    type: map['type'],
+    name: map['name'],
+    customization: jsonDecode(map['customization']),
+    isPublic: map['is_public'] == 1,
+    description: map['description'],
+    subject: map['subject'],
+    level: map['level'],
+    term: map['term'],
+    coverImage: map['cover_image'],
+    createdAt: map['created_at'],
+    updatedAt: map['updated_at'],
+    syncedAt: map['synced_at'],
+  );
+}
+
 class BoardType {
   final String name;
   final String image;
@@ -58,3 +126,91 @@ List<BoardType> boardTypes = [
     route: '',
   ),
 ];
+
+class Content {
+  final int? id;
+  final String type; // note, mindmap, syllabus, etc.
+  final Map<String, dynamic> metaData; // JSON as Map
+  final int boardId;
+  final String? tags; // Comma-separated tags
+  final String? content; // Large text
+  final String? file; // File name or path
+  final int createdAt; // Unix timestamp
+  final int updatedAt; // Unix timestamp
+  final int? syncedAt; // Unix timestamp, nullable
+
+  Content({
+    this.id,
+    required this.type,
+    required this.metaData,
+    required this.boardId,
+    this.tags,
+    this.content,
+    this.file,
+    required this.createdAt,
+    required this.updatedAt,
+    this.syncedAt,
+  });
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'type': type,
+    'meta_data': jsonEncode(metaData),
+    'board_id': boardId,
+    'tags': tags,
+    'content': content,
+    'file': file,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+    'synced_at': syncedAt,
+  };
+
+  factory Content.fromMap(Map<String, dynamic> map) => Content(
+    id: map['id'],
+    type: map['type'],
+    metaData: jsonDecode(map['meta_data']),
+    boardId: map['board_id'],
+    tags: map['tags'],
+    content: map['content'],
+    file: map['file'],
+    createdAt: map['created_at'],
+    updatedAt: map['updated_at'],
+    syncedAt: map['synced_at'],
+  );
+}
+
+class Tag {
+  final int? id;
+  final int userId;
+  final String name;
+  final int createdAt; // Unix timestamp
+  final int updatedAt; // Unix timestamp
+  final int? syncedAt; // Nullable
+
+  Tag({
+    this.id,
+    required this.userId,
+    required this.name,
+    required this.createdAt,
+    required this.updatedAt,
+    this.syncedAt,
+  });
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'user_id': userId,
+    'name': name,
+    'created_at': createdAt,
+    'updated_at': updatedAt,
+    'synced_at': syncedAt,
+  };
+
+  factory Tag.fromMap(Map<String, dynamic> map) => Tag(
+    id: map['id'],
+    userId: map['user_id'],
+    name: map['name'],
+    createdAt: map['created_at'],
+    updatedAt: map['updated_at'],
+    syncedAt: map['synced_at'],
+  );
+}

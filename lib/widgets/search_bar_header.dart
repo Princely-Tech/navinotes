@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/providers/layout.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'package:navinotes/packages.dart';
 
 class SearchBarHeader extends StatelessWidget {
   const SearchBarHeader({
@@ -21,7 +17,8 @@ class SearchBarHeader extends StatelessWidget {
             color: borderBottom ? AppTheme.white : AppTheme.transparent,
             border: Border(
               bottom: BorderSide(
-                color: borderBottom ? AppTheme.lightGray : Colors.transparent,
+                color:
+                    borderBottom ? AppTheme.lightGray : Colors.transparent,
               ),
             ),
           ),
