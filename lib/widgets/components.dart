@@ -249,7 +249,7 @@ class OutlinedChild extends StatelessWidget {
       height: size,
       decoration: decoration.copyWith(
         borderRadius: decoration.shape == BoxShape.circle ? null : borderRadius,
-        // border: decoration.border ?? Border.all(color: AppTheme.lightGray),
+        // border: decoration.border,
       ),
       child: Center(child: child),
     );
@@ -647,6 +647,74 @@ class AuthHeader extends StatelessWidget {
             fontFamily: AppTheme.fontPoppins,
           ),
         ),
+      ],
+    );
+  }
+}
+
+class CustomCheckBoxItem extends StatefulWidget {
+  const CustomCheckBoxItem({super.key, this.title, this.child});
+  final String? title;
+  final Widget? child;
+  @override
+  State<CustomCheckBoxItem> createState() => _CustomCheckBoxItemState();
+}
+
+class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
+  bool? _value = false;
+
+  updateValue(bool? value) {
+    setState(() {
+      _value = value!;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Checkbox(
+          value: _value,
+          onChanged: updateValue,
+          activeColor: AppTheme.royalBlue,
+        ),
+        if (isNotNull(widget.child)) Flexible(child: widget.child!),
+        if (isNotNull(widget.title))
+          Flexible(
+            child: Text(
+              widget.title!,
+              style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class StarRows extends StatelessWidget {
+  const StarRows({
+    super.key,
+    required this.fullStars,
+    required this.emptyStars,
+  });
+  final int fullStars;
+  final int emptyStars;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (int i = 0; i < fullStars; i++)
+          SVGImagePlaceHolder(
+            imagePath: Images.star2,
+            color: AppTheme.orangeYellow,
+          ),
+        for (int i = 0; i < emptyStars; i++)
+          SVGImagePlaceHolder(
+            imagePath: Images.star,
+            color: AppTheme.orangeYellow,
+          ),
       ],
     );
   }
