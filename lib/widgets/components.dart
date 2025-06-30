@@ -719,3 +719,58 @@ class StarRows extends StatelessWidget {
     );
   }
 }
+
+class CustomPaination extends StatelessWidget {
+  const CustomPaination({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      spacing: 5,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _paignationItem(
+          child: Icon(Icons.keyboard_arrow_left, color: AppTheme.darkSlateGray),
+        ),
+        ...List.generate(
+          2,
+          (index) => _paignationItem(
+            text: (index + 1).toString(),
+            isActive: index == 0,
+          ),
+        ),
+        _paignationItem(
+          child: Icon(
+            Icons.keyboard_arrow_right,
+            color: AppTheme.darkSlateGray,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _paignationItem({Widget? child, String? text, bool isActive = false}) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      decoration: ShapeDecoration(
+        color: isActive ? AppTheme.tealStone : AppTheme.white,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(width: 1, color: AppTheme.coolGray),
+          borderRadius: BorderRadius.circular(6),
+        ),
+      ),
+      constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+      child: Center(
+        child:
+            child ??
+            Text(
+              text ?? '',
+              style: AppTheme.text.copyWith(
+                color: isActive ? AppTheme.white : AppTheme.darkSlateGray,
+                fontSize: 16.0,
+              ),
+            ),
+      ),
+    );
+  }
+}

@@ -16,11 +16,7 @@ class MarketplaceMain extends StatelessWidget {
               mobilePadding: EdgeInsets.symmetric(vertical: 20),
               child: Column(
                 spacing: 30,
-                children: [
-                  // _featured(),
-                  _allContent(),
-                  //
-                ],
+                children: [_featured(), _allContent(), CustomPaination()],
               ),
             ),
           ),
@@ -33,18 +29,111 @@ class MarketplaceMain extends StatelessWidget {
     return _section(
       title: 'All Content',
       titleRight: Row(
+        spacing: 10,
         children: [
           _layoutBtn(PageDisplayFormat.grid),
           _layoutBtn(PageDisplayFormat.list),
         ],
       ),
       child: CustomGrid(
-        spacing: 10,
+        spacing: 20,
         children: [
-          _featureItem(Images.marketPlaceBiochemistry),
-          _featureItem(Images.marketPlaceFlashcards),
-          _featureItem(Images.marketPlaceOrganicChemistry),
-          _featureItem(Images.marketPlaceSpanish),
+          _contentItem(Images.marketPlaceNeuroanatomy),
+          _contentItem(Images.marketPlacePhysics),
+          _contentItem(Images.marketPlaceLogic),
+          _contentItem(Images.marketPlaceBiomedesty),
+          _contentItem(Images.marketPlacePmpCertification),
+          _contentItem(Images.marketPlaceMandarin),
+        ],
+      ),
+    );
+  }
+
+  Widget _contentItem(String image) {
+    return CustomCard(
+      padding: EdgeInsets.zero,
+      addBorder: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AspectRatio(
+            aspectRatio: 3,
+            child: ImagePlaceHolder(imagePath: image, isCardHeader: true),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 15,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    Text(
+                      'Neuroanatomy & Function Mind Map',
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.charcoalBlue,
+                        fontSize: 16.0,
+                        fontWeight: getFontWeight(500),
+                      ),
+                    ),
+                    Text(
+                      'by Neuroscience Hub',
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.stormGray,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        StarRows(fullStars: 5, emptyStars: 0),
+                        Text(
+                          '(87)',
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.stormGray,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  spacing: 10,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 5,
+                      children: [
+                        SVGImagePlaceHolder(
+                          imagePath: Images.share,
+                          color: AppTheme.steelMist,
+                          size: 13,
+                        ),
+                        Text(
+                          'Mind Map',
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.steelMist,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    AppButton(
+                      onTap: () {},
+                      text: 'Add To Cart',
+                      mainAxisSize: MainAxisSize.min,
+                      color: AppTheme.strongBlue,
+                      minHeight: 28,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -53,10 +142,9 @@ class MarketplaceMain extends StatelessWidget {
   Widget _layoutBtn(PageDisplayFormat format) {
     bool isGrid = format == PageDisplayFormat.grid;
     return OutlinedChild(
-      size: 40,
+      size: 30,
       decoration: BoxDecoration(
-        border: Border.all(color: AppTheme.lightGray),
-        shape: BoxShape.rectangle,
+        border: Border.all(width: 2, color: AppTheme.lightGray),
       ),
       child: SVGImagePlaceHolder(
         imagePath: isGrid ? Images.grid : Images.menu,
@@ -125,22 +213,17 @@ class MarketplaceMain extends StatelessWidget {
               children: [
                 Text(
                   'Comprehensive MCAT Biochemistry Mind Map',
-                  style: TextStyle(
-                    color: const Color(0xFF111827),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w500,
-                    height: 1,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.charcoalBlue,
+                    fontSize: 16.0,
+                    fontWeight: getFontWeight(500),
                   ),
                 ),
                 Text(
                   'by Dr. Sarah Johnson',
-                  style: TextStyle(
-                    color: const Color(0xFF4B5563),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    height: 1,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.stormGray,
+                    fontSize: 12.0,
                   ),
                 ),
 
@@ -157,24 +240,19 @@ class MarketplaceMain extends StatelessWidget {
                           StarRows(fullStars: 4, emptyStars: 0),
                           Text(
                             '(128)',
-                            style: TextStyle(
-                              color: const Color(0xFF4B5563),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 1,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.stormGray,
+                              fontSize: 12.0,
                             ),
                           ),
                         ],
                       ),
                       Text(
                         '\$24.99',
-                        style: TextStyle(
-                          color: const Color(0xFF059669),
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                          height: 1,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.jungleGreen,
+                          fontSize: 16.0,
+                          fontWeight: getFontWeight(500),
                         ),
                       ),
                     ],
@@ -203,12 +281,9 @@ class MarketplaceMain extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
-                  color: const Color(0xFF1F2937),
-                  fontSize: 20,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                  height: 1,
+                style: AppTheme.text.copyWith(
+                  fontSize: 20.0,
+                  fontWeight: getFontWeight(500),
                 ),
               ),
             ),
@@ -253,11 +328,9 @@ class MarketplaceMain extends StatelessWidget {
                       child: Text(
                         '2',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: const Color(0xFF1E40AF),
-                          fontSize: 12,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.persianBlue,
+                          fontSize: 12.0,
                         ),
                       ),
                     ),

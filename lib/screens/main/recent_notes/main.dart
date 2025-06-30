@@ -125,31 +125,6 @@ class RecentNotesMain extends StatelessWidget {
     );
   }
 
-  Widget _paignationItem({Widget? child, String? text, bool isActive = false}) {
-    return Container(
-      padding: EdgeInsets.all(5),
-      decoration: ShapeDecoration(
-        color: isActive ? AppTheme.tealStone : AppTheme.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: AppTheme.coolGray),
-          borderRadius: BorderRadius.circular(6),
-        ),
-      ),
-      constraints: BoxConstraints(minWidth: 32, minHeight: 32),
-      child: Center(
-        child:
-            child ??
-            Text(
-              text ?? '',
-              style: AppTheme.text.copyWith(
-                color: isActive ? AppTheme.white : AppTheme.darkSlateGray,
-                fontSize: 16.0,
-              ),
-            ),
-      ),
-    );
-  }
-
   Widget _footer() {
     return LayoutBuilder(
       builder: (_, constraints) {
@@ -171,31 +146,7 @@ class RecentNotesMain extends StatelessWidget {
                   ),
                   style: AppTheme.text.copyWith(color: AppTheme.tealStone),
                 ),
-                Row(
-                  spacing: 5,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _paignationItem(
-                      child: Icon(
-                        Icons.keyboard_arrow_left,
-                        color: AppTheme.darkSlateGray,
-                      ),
-                    ),
-                    ...List.generate(
-                      2,
-                      (index) => _paignationItem(
-                        text: (index + 1).toString(),
-                        isActive: index == 0,
-                      ),
-                    ),
-                    _paignationItem(
-                      child: Icon(
-                        Icons.keyboard_arrow_right,
-                        color: AppTheme.darkSlateGray,
-                      ),
-                    ),
-                  ],
-                ),
+                CustomPaination(),
                 AppButton.text(
                   onTap: () {},
                   text: 'View All Notes',

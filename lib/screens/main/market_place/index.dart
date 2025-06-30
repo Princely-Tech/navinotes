@@ -17,6 +17,7 @@ class MarketPlaceScreen extends StatelessWidget {
       child: ScaffoldFrame(
         scaffoldKey: _scaffoldKey,
         drawer: CustomDrawer(child: MarketPlaceAside()),
+        backgroundColor: AppTheme.whiteSmoke,
         body: Column(
           children: [
             MarketplaceAppBar(),
