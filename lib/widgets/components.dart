@@ -249,7 +249,7 @@ class OutlinedChild extends StatelessWidget {
       height: size,
       decoration: decoration.copyWith(
         borderRadius: decoration.shape == BoxShape.circle ? null : borderRadius,
-        // border: decoration.border ?? Border.all(color: AppTheme.lightGray),
+        // border: decoration.border,
       ),
       child: Center(child: child),
     );
@@ -648,6 +648,129 @@ class AuthHeader extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class CustomCheckBoxItem extends StatefulWidget {
+  const CustomCheckBoxItem({super.key, this.title, this.child});
+  final String? title;
+  final Widget? child;
+  @override
+  State<CustomCheckBoxItem> createState() => _CustomCheckBoxItemState();
+}
+
+class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
+  bool? _value = false;
+
+  updateValue(bool? value) {
+    setState(() {
+      _value = value!;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Checkbox(
+          value: _value,
+          onChanged: updateValue,
+          activeColor: AppTheme.royalBlue,
+        ),
+        if (isNotNull(widget.child)) Flexible(child: widget.child!),
+        if (isNotNull(widget.title))
+          Flexible(
+            child: Text(
+              widget.title!,
+              style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class StarRows extends StatelessWidget {
+  const StarRows({
+    super.key,
+    required this.fullStars,
+    required this.emptyStars,
+  });
+  final int fullStars;
+  final int emptyStars;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (int i = 0; i < fullStars; i++)
+          SVGImagePlaceHolder(
+            imagePath: Images.star2,
+            color: AppTheme.orangeYellow,
+          ),
+        for (int i = 0; i < emptyStars; i++)
+          SVGImagePlaceHolder(
+            imagePath: Images.star,
+            color: AppTheme.orangeYellow,
+          ),
+      ],
+    );
+  }
+}
+
+class CustomPaination extends StatelessWidget {
+  const CustomPaination({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      spacing: 5,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _paignationItem(
+          child: Icon(Icons.keyboard_arrow_left, color: AppTheme.darkSlateGray),
+        ),
+        ...List.generate(
+          2,
+          (index) => _paignationItem(
+            text: (index + 1).toString(),
+            isActive: index == 0,
+          ),
+        ),
+        _paignationItem(
+          child: Icon(
+            Icons.keyboard_arrow_right,
+            color: AppTheme.darkSlateGray,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _paignationItem({Widget? child, String? text, bool isActive = false}) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      decoration: ShapeDecoration(
+        color: isActive ? AppTheme.tealStone : AppTheme.white,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(width: 1, color: AppTheme.coolGray),
+          borderRadius: BorderRadius.circular(6),
+        ),
+      ),
+      constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+      child: Center(
+        child:
+            child ??
+            Text(
+              text ?? '',
+              style: AppTheme.text.copyWith(
+                color: isActive ? AppTheme.white : AppTheme.darkSlateGray,
+                fontSize: 16.0,
+              ),
+            ),
+      ),
     );
   }
 }

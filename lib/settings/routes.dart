@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/market_place/index.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
   Routes.auth: (context) => const AuthScreen(),
@@ -23,6 +24,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardNatureNotePage: (context) => NatureNotePageScreen(),
   Routes.verify: (context) => VerifyScreen(),
   Routes.boardNatureMindMap: (context) => BoardNatureMindMapScreen(),
+  Routes.marketplace: (context) => MarketPlaceScreen(),
 };
 
 class Routes {
@@ -49,6 +51,11 @@ class Routes {
   static const boardNatureEdit = 'board_nature_edit';
   static const boardNatureNotePage = 'board_nature_note_page';
   static const boardNatureMindMap = 'board_nature_mind_map';
+  static const marketplace = 'marketplace';
+  // static const marketplace = 'marketplace';
+  // static const marketplace = 'marketplace';
+  // static const marketplace = 'marketplace';
+  // static const marketplace = 'marketplace';
 }
 //Documentation
 //https://documenter.getpostman.com/view/45960961/2sB2x8GXet

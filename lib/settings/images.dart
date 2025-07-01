@@ -7,6 +7,7 @@ const boardsNaturePath = 'assets/images/boards/nature';
 const boardsCreatePath = 'assets/images/boards/create';
 const boardsNotesPath = 'assets/images/boards/notes';
 const noteTemplatePath = 'assets/images/boards/note_templates';
+const marketPlacePath = 'assets/images/marketplace';
 
 class Images {
   Images._();
@@ -110,6 +111,11 @@ class Images {
   static const String rect = '$iconPath/rect.svg';
   static const String connection = '$iconPath/connection.svg';
   static const String avatar = '$iconPath/avatar.svg';
+  static const String flashCards2 = '$iconPath/flash_cards2.svg';
+  static const String store2 = '$iconPath/store2.svg';
+  static const String shoppingBag = '$iconPath/shoping_bag.svg';
+  static const String store3 = '$iconPath/store3.svg';
+  static const String shoppingCart = '$iconPath/shoping_cart.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
@@ -125,6 +131,24 @@ class Images {
   static const String board3 = '$boardsPath/board3.png';
   static const String board4 = '$boardsPath/board4.png';
   static const String board5 = '$boardsPath/board5.png';
+
+  static const String marketPlaceBiochemistry =
+      '$marketPlacePath/mcat_biochemistry.png';
+  static const String marketPlaceOrganicChemistry =
+      '$marketPlacePath/organic_chemistry.png';
+  static const String marketPlaceSpanish = '$marketPlacePath/spanish.png';
+  static const String marketPlacePhysics = '$marketPlacePath/mcat_physics.png';
+  static const String marketPlacePmpCertification =
+      '$marketPlacePath/pmp_certification.png';
+  static const String marketPlaceMandarin = '$marketPlacePath/mandarin.png';
+  static const String marketPlaceFlashcards =
+      '$marketPlacePath/lsat_flashcards.png';
+  static const String marketPlaceNeuroanatomy =
+      '$marketPlacePath/neuroanatomy.png';
+  static const String marketPlaceLogic = '$marketPlacePath/lsat_logic.png';
+  static const String marketPlaceBiomedesty = '$marketPlacePath/biomedesty.png';
+  // static const String marketPlace = '$marketPlacePath/.png';
+  // static const String marketPlace = '$marketPlacePath/.png';
 
   //board dark academia
   static const String boardDarkAcadPreview =
@@ -157,10 +181,12 @@ class Images {
       '$boardsNaturePath/electromagnetism.png';
   // static const String boardNature = '$boardsNaturePath/.png';
   // static const String boardNature = '$boardsNaturePath/.png';
-  
+
   static const String boardNatureWaveLine = '$boardsNaturePath/wave_line.svg';
-  static const String boardNatureQuantumIcon = '$boardsNaturePath/quantum_icon.svg';
-  static const String boardNatureThermometer = '$boardsNaturePath/thermometer.svg';
+  static const String boardNatureQuantumIcon =
+      '$boardsNaturePath/quantum_icon.svg';
+  static const String boardNatureThermometer =
+      '$boardsNaturePath/thermometer.svg';
 
   //boards create
   static const String boardPlain = '$boardsCreatePath/plain.png';
