@@ -116,7 +116,18 @@ class Images {
   static const String shoppingBag = '$iconPath/shoping_bag.svg';
   static const String store3 = '$iconPath/store3.svg';
   static const String shoppingCart = '$iconPath/shoping_cart.svg';
-  // static const String card = '$iconPath/card.svg';
+  static const String shoppingCart2 = '$iconPath/shoping_cart2.svg';
+  static const String starHalf = '$iconPath/star_half.svg';
+  static const String shield = '$iconPath/shield.svg';
+  static const String refresh = '$iconPath/refresh.svg';
+  static const String personPlus = '$iconPath/person_plus.svg';
+  static const String like = '$iconPath/like.svg';
+  static const String capture = '$iconPath/capture.svg';
+  static const String upload4 = '$iconPath/upload4.svg';
+  static const String dollar = '$iconPath/dollar.svg';
+  static const String clipboard = '$iconPath/clipboard.svg';
+  static const String arrowUp = '$iconPath/arrow_up.svg';
+  static const String chart2 = '$iconPath/chart2.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
 
@@ -147,6 +158,13 @@ class Images {
       '$marketPlacePath/neuroanatomy.png';
   static const String marketPlaceLogic = '$marketPlacePath/lsat_logic.png';
   static const String marketPlaceBiomedesty = '$marketPlacePath/biomedesty.png';
+  static const String marketPlaceDetail = '$marketPlacePath/detail.png';
+  static const String marketPlacePreview1 = '$marketPlacePath/preview1.png';
+  static const String marketPlacePreview2 = '$marketPlacePath/preview2.png';
+  static const String marketPlacePreview3 = '$marketPlacePath/preview3.png';
+  static const String marketPlacePreview4 = '$marketPlacePath/preview4.png';
+  // static const String marketPlace = '$marketPlacePath/.png';
+  // static const String marketPlace = '$marketPlacePath/.png';
   // static const String marketPlace = '$marketPlacePath/.png';
   // static const String marketPlace = '$marketPlacePath/.png';
 

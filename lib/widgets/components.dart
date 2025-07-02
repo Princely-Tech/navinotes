@@ -171,11 +171,13 @@ class CustomTag extends StatelessWidget {
     super.key,
     required this.color,
     required this.textColor,
+    this.borderRadius,
   });
 
   final String data;
   final Color color;
   final Color textColor;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +186,7 @@ class CustomTag extends StatelessWidget {
         color: color,
         shape: RoundedRectangleBorder(
           side: BorderSide(color: AppTheme.whisperGrey),
-          borderRadius: BorderRadius.circular(9999),
+          borderRadius: borderRadius ?? BorderRadius.circular(9999),
         ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -695,13 +697,16 @@ class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
 class StarRows extends StatelessWidget {
   const StarRows({
     super.key,
-    required this.fullStars,
-    required this.emptyStars,
+    this.fullStars = 0,
+    this.emptyStars = 0,
+    this.halfStars = 0,
   });
   final int fullStars;
   final int emptyStars;
+  final int halfStars;
   @override
   Widget build(BuildContext context) {
+    double size = 12;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -709,11 +714,19 @@ class StarRows extends StatelessWidget {
           SVGImagePlaceHolder(
             imagePath: Images.star2,
             color: AppTheme.orangeYellow,
+            size: size,
           ),
         for (int i = 0; i < emptyStars; i++)
           SVGImagePlaceHolder(
             imagePath: Images.star,
             color: AppTheme.orangeYellow,
+            size: size,
+          ),
+        for (int i = 0; i < halfStars; i++)
+          SVGImagePlaceHolder(
+            imagePath: Images.starHalf,
+            color: AppTheme.orangeYellow,
+            size: size,
           ),
       ],
     );

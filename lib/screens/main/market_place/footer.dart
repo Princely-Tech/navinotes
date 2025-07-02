@@ -11,7 +11,7 @@ class MarketplaceFooter extends StatelessWidget {
         color: AppTheme.white,
         border: Border(top: BorderSide(color: AppTheme.lightGray)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.all( 10),
       child: Row(
         spacing: 5,
         children: [
@@ -21,8 +21,16 @@ class MarketplaceFooter extends StatelessWidget {
             isCurrent: true,
             route: Routes.marketplace,
           ),
-          _item(name: 'My Purchases', imagePath: Images.shoppingBag),
-          _item(name: 'My Store', imagePath: Images.store3),
+          _item(
+            name: 'My Purchases',
+            imagePath: Images.shoppingBag,
+            route: Routes.myPurchases,
+          ),
+          _item(
+            name: 'My Store',
+            imagePath: Images.store3,
+            route: Routes.myStore,
+          ),
           _item(name: 'Cart', imagePath: Images.shoppingCart),
         ],
       ),
@@ -37,33 +45,44 @@ class MarketplaceFooter extends StatelessWidget {
   }) {
     Color color = isCurrent ? AppTheme.strongBlue : AppTheme.steelMist;
     return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Flexible(
-            child: InkWell(
-              onTap: () {
-                if (isNotNull(route) && !isCurrent) {
-                  NavigationHelper.push(route!);
-                }
-              },
-              child: Column(
-                spacing: 5,
-                children: [
-                  SVGImagePlaceHolder(
-                    imagePath: imagePath,
-                    color: color,
-                    size: 20,
-                  ),
-                  Text(
-                    name,
-                    style: AppTheme.text.copyWith(color: color, fontSize: 12.0),
-                  ),
-                ],
+      child: InkWell(
+        onTap: () {
+          if (isNotNull(route) && !isCurrent) {
+            NavigationHelper.push(route!);
+          }
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: InkWell(
+                onTap: () {
+                  if (isNotNull(route) && !isCurrent) {
+                    NavigationHelper.push(route!);
+                  }
+                },
+                child: Column(
+                  spacing: 5,
+                  children: [
+                    SVGImagePlaceHolder(
+                      imagePath: imagePath,
+                      color: color,
+                      size: 20,
+                    ),
+                    Text(
+                      name,
+                      textAlign: TextAlign.center,
+                      style: AppTheme.text.copyWith(
+                        color: color,
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

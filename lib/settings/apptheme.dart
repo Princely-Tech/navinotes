@@ -18,6 +18,20 @@ List<BoxShadow> boxShadows = [
     spreadRadius: 0,
   ),
 ];
+List<BoxShadow> cardShadows = [
+  BoxShadow(
+    color: shadowColor,
+    blurRadius: 3,
+    offset: Offset(0, 1),
+    spreadRadius: 0,
+  ),
+  BoxShadow(
+    color: shadowColor,
+    blurRadius: 2,
+    offset: Offset(0, 1),
+    spreadRadius: 0,
+  ),
+];
 
 class AppTheme {
   AppTheme._();
@@ -133,6 +147,7 @@ class AppTheme {
   static const Color babyBlue = Color(0xFFBAE6FD);
   static const Color cerulean = Color(0xFF0369A1);
   static const Color deepPeach = Color(0x19FF8C42);
+  static const Color lightRed = Color(0xFFFEE2E2);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';

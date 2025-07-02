@@ -1,5 +1,7 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/market_place/index.dart'; //TODO
+import 'package:navinotes/screens/main/market_place/index.dart';
+import 'package:navinotes/screens/main/market_place/my_store/index.dart';
+import 'package:navinotes/screens/main/market_place/product_detail/index.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
   Routes.auth: (context) => const AuthScreen(),
@@ -25,6 +27,8 @@ Map<String, WidgetBuilder> routes = {
   Routes.verify: (context) => VerifyScreen(),
   Routes.boardNatureMindMap: (context) => BoardNatureMindMapScreen(),
   Routes.marketplace: (context) => MarketPlaceScreen(),
+  Routes.productDetail: (context) => ProductDetailScreen(),
+  Routes.myStore: (context) => MyStoreScreen(),
 };
 
 class Routes {
@@ -52,8 +56,9 @@ class Routes {
   static const boardNatureNotePage = 'board_nature_note_page';
   static const boardNatureMindMap = 'board_nature_mind_map';
   static const marketplace = 'marketplace';
-  // static const marketplace = 'marketplace';
-  // static const marketplace = 'marketplace';
+  static const productDetail = 'productDetail';
+  static const myPurchases = 'myPurchases';
+  static const myStore = 'myStore';
   // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';
 }

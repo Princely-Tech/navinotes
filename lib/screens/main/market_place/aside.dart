@@ -18,7 +18,7 @@ class MarketPlaceAside extends StatelessWidget {
               padding: const EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 25,
+                spacing: 20,
                 children: [
                   Text(
                     'Filters',

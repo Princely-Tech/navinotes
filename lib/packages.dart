@@ -50,4 +50,6 @@ export 'package:google_sign_in/google_sign_in.dart';
 export 'package:pin_code_fields/pin_code_fields.dart';
 export 'package:image_picker/image_picker.dart';
 export 'package:sqflite/sqflite.dart';
-
+export 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+export 'package:navinotes/screens/main/market_place/widgets.dart';
+export 'package:fl_chart/fl_chart.dart';

@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-class MarketplaceAppBar extends StatelessWidget {
-  const MarketplaceAppBar({super.key});
+class MyStoreAppBar extends StatelessWidget {
+  const MyStoreAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +10,7 @@ class MarketplaceAppBar extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppTheme.white,
-        border: Border(bottom: BorderSide(color: AppTheme.lightGray)),
+        // border: Border(bottom: BorderSide(color: AppTheme.lightGray)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -20,7 +20,7 @@ class MarketplaceAppBar extends StatelessWidget {
               mobile: largeDesktopSize,
               child: LayoutBuilder(
                 builder: (_, constraints) {
-                  return Consumer<MarketPlaceVm>(
+                  return Consumer<MyStoreVm>(
                     builder: (_, vm, _) {
                       return ScrollableController(
                         scrollDirection: Axis.horizontal,
@@ -37,7 +37,7 @@ class MarketplaceAppBar extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               spacing: 20,
                               children: [
-                                RichTextHeader(title: 'Marketplace'),
+                                RichTextHeader(title: 'My Store'),
                                 _trailing(vm),
                               ],
                             ),
@@ -55,9 +55,33 @@ class MarketplaceAppBar extends StatelessWidget {
     );
   }
 
-  Widget _trailing(MarketPlaceVm vm) {
+  Widget _searchField() {
+    return CustomInputField(
+      prefixIcon: Icon(Icons.search, color: AppTheme.blueGray, size: 20),
+      hintText: 'Search store',
+      fillColor: AppTheme.lightAsh,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(999),
+        borderSide: BorderSide.none,
+      ),
+      hintStyle: AppTheme.text.copyWith(
+        color: AppTheme.slateGray,
+        height: 1.43,
+      ),
+    );
+  }
+
+  Widget _trailing(MyStoreVm vm) {
     return Row(
       children: [
+        VisibleController(
+          mobile: false,
+          laptop: true,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: WidthLimiter(mobile: 256, child: _searchField()),
+          ),
+        ),
         Row(
           spacing: 10,
           children: [
@@ -70,7 +94,7 @@ class MarketplaceAppBar extends StatelessWidget {
           desktop: false,
           child: Padding(
             padding: const EdgeInsets.only(left: 10),
-            child: MenuButton(onPressed: vm.openDrawer),
+            child: MenuButton(onPressed: vm.openEndDrawer),
           ),
         ),
       ],

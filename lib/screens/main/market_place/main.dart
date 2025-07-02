@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'vm.dart';
 
 class MarketplaceMain extends StatelessWidget {
   const MarketplaceMain({super.key});
@@ -50,92 +51,99 @@ class MarketplaceMain extends StatelessWidget {
   }
 
   Widget _contentItem(String image) {
-    return CustomCard(
-      padding: EdgeInsets.zero,
-      addBorder: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 3,
-            child: ImagePlaceHolder(imagePath: image, isCardHeader: true),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
+    return Consumer<MarketPlaceVm>(
+      builder: (_, vm, _) {
+        return InkWell(
+          onTap: vm.goToProductDetail,
+          child: CustomCard(
+            padding: EdgeInsets.zero,
+            addBorder: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 15,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 10,
-                  children: [
-                    Text(
-                      'Neuroanatomy & Function Mind Map',
-                      style: AppTheme.text.copyWith(
-                        color: AppTheme.charcoalBlue,
-                        fontSize: 16.0,
-                        fontWeight: getFontWeight(500),
-                      ),
-                    ),
-                    Text(
-                      'by Neuroscience Hub',
-                      style: AppTheme.text.copyWith(
-                        color: AppTheme.stormGray,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        StarRows(fullStars: 5, emptyStars: 0),
-                        Text(
-                          '(87)',
-                          style: AppTheme.text.copyWith(
-                            color: AppTheme.stormGray,
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                AspectRatio(
+                  aspectRatio: 3,
+                  child: ImagePlaceHolder(imagePath: image, isCardHeader: true),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  spacing: 10,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 5,
-                      children: [
-                        SVGImagePlaceHolder(
-                          imagePath: Images.share,
-                          color: AppTheme.steelMist,
-                          size: 13,
-                        ),
-                        Text(
-                          'Mind Map',
-                          style: AppTheme.text.copyWith(
-                            color: AppTheme.steelMist,
-                            fontSize: 12.0,
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 15,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 10,
+                        children: [
+                          Text(
+                            'Neuroanatomy & Function Mind Map',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.charcoalBlue,
+                              fontSize: 16.0,
+                              fontWeight: getFontWeight(500),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    AppButton(
-                      onTap: () {},
-                      text: 'Add To Cart',
-                      mainAxisSize: MainAxisSize.min,
-                      color: AppTheme.strongBlue,
-                      minHeight: 28,
-                    ),
-                  ],
+                          Text(
+                            'by Neuroscience Hub',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.stormGray,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              StarRows(fullStars: 5, emptyStars: 0),
+                              Text(
+                                '(87)',
+                                style: AppTheme.text.copyWith(
+                                  color: AppTheme.stormGray,
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        spacing: 10,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            spacing: 5,
+                            children: [
+                              SVGImagePlaceHolder(
+                                imagePath: Images.share,
+                                color: AppTheme.steelMist,
+                                size: 13,
+                              ),
+                              Text(
+                                'Mind Map',
+                                style: AppTheme.text.copyWith(
+                                  color: AppTheme.steelMist,
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          AppButton(
+                            onTap: () {},
+                            text: 'Add To Cart',
+                            mainAxisSize: MainAxisSize.min,
+                            color: AppTheme.strongBlue,
+                            minHeight: 28,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -193,66 +201,73 @@ class MarketplaceMain extends StatelessWidget {
   }
 
   Widget _featureItem(String image) {
-    return CustomCard(
-      padding: EdgeInsets.zero,
-      addBorder: true,
-      width: 254,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            height: 144,
-            child: ImagePlaceHolder(imagePath: image, isCardHeader: true),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
+    return Consumer<MarketPlaceVm>(
+      builder: (_, vm, _) {
+        return InkWell(
+          onTap: vm.goToProductDetail,
+          child: CustomCard(
+            padding: EdgeInsets.zero,
+            addBorder: true,
+            width: 254,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 15,
               children: [
-                Text(
-                  'Comprehensive MCAT Biochemistry Mind Map',
-                  style: AppTheme.text.copyWith(
-                    color: AppTheme.charcoalBlue,
-                    fontSize: 16.0,
-                    fontWeight: getFontWeight(500),
-                  ),
-                ),
-                Text(
-                  'by Dr. Sarah Johnson',
-                  style: AppTheme.text.copyWith(
-                    color: AppTheme.stormGray,
-                    fontSize: 12.0,
-                  ),
-                ),
-
                 SizedBox(
                   width: double.infinity,
-                  child: Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    runSpacing: 10,
-                    spacing: 10,
+                  height: 144,
+                  child: ImagePlaceHolder(imagePath: image, isCardHeader: true),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 15,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          StarRows(fullStars: 4, emptyStars: 0),
-                          Text(
-                            '(128)',
-                            style: AppTheme.text.copyWith(
-                              color: AppTheme.stormGray,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ],
-                      ),
                       Text(
-                        '\$24.99',
+                        'Comprehensive MCAT Biochemistry Mind Map',
                         style: AppTheme.text.copyWith(
-                          color: AppTheme.jungleGreen,
+                          color: AppTheme.charcoalBlue,
                           fontSize: 16.0,
                           fontWeight: getFontWeight(500),
+                        ),
+                      ),
+                      Text(
+                        'by Dr. Sarah Johnson',
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.stormGray,
+                          fontSize: 12.0,
+                        ),
+                      ),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          runSpacing: 10,
+                          spacing: 10,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                StarRows(fullStars: 4, emptyStars: 0),
+                                Text(
+                                  '(128)',
+                                  style: AppTheme.text.copyWith(
+                                    color: AppTheme.stormGray,
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              '\$24.99',
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.jungleGreen,
+                                fontSize: 16.0,
+                                fontWeight: getFontWeight(500),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -261,8 +276,8 @@ class MarketplaceMain extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

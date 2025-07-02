@@ -68,3 +68,59 @@ class TextRowSelect extends StatelessWidget {
     );
   }
 }
+
+class CustomRowSelect extends StatefulWidget {
+  const CustomRowSelect({super.key});
+
+  @override
+  State<CustomRowSelect> createState() => _CustomRowSelectState();
+}
+
+class _CustomRowSelectState extends State<CustomRowSelect> {
+  String selected = 'Daily';
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: AppTheme.lightGray),
+          borderRadius: BorderRadius.circular(6),
+        ),
+      ),
+      child: Row(
+        children:
+            ['Daily', 'Weekly', 'Monthly'].map((str) {
+              bool isSelected = str == selected;
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    selected = str;
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color:
+                        isSelected ? AppTheme.paleBlue : AppTheme.transparent,
+                    border: Border(
+                      right: BorderSide(color: AppTheme.lightGray),
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Text(
+                    str,
+                    textAlign: TextAlign.center,
+                    style: AppTheme.text.copyWith(
+                      color:
+                          isSelected
+                              ? AppTheme.persianBlue
+                              : AppTheme.stormGray,
+                      fontWeight: getFontWeight(500),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+      ),
+    );
+  }
+}
