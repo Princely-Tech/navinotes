@@ -44,7 +44,7 @@ class ChooseBoardMain extends StatelessWidget {
                               ...boardTypes.map(
                                 (board) => _board(vm, board: board),
                               ),
-                              _customCreateBoard(),
+                              // _customCreateBoard(),
                             ],
                           ),
                         ],

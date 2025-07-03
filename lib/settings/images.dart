@@ -4,6 +4,7 @@ const imagePath = 'assets/images';
 const boardsPath = 'assets/images/boards';
 const boardsDarkAcademiaPath = 'assets/images/boards/dark_academia';
 const boardsNaturePath = 'assets/images/boards/nature';
+const boardsMinimalistPath = 'assets/images/boards/minimalist';
 const boardsCreatePath = 'assets/images/boards/create';
 const boardsNotesPath = 'assets/images/boards/notes';
 const noteTemplatePath = 'assets/images/boards/note_templates';
@@ -198,7 +199,11 @@ class Images {
   static const String boardNatureElectromagnetism =
       '$boardsNaturePath/electromagnetism.png';
   // static const String boardNature = '$boardsNaturePath/.png';
-  // static const String boardNature = '$boardsNaturePath/.png';
+
+  static const String boardMinimalistPreview =
+      '$boardsMinimalistPath/preview.png';
+  // static const String boardMinimalist = '$boardsMinimalistPath/.png';
+  // static const String boardMinimalist = '$boardsMinimalistPath/.png';
 
   static const String boardNatureWaveLine = '$boardsNaturePath/wave_line.svg';
   static const String boardNatureQuantumIcon =

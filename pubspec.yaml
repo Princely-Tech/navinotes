@@ -1,5 +1,5 @@
 name: navinotes
-description: "A new Flutter project."
+description: "NaviNotes - Your smart notes app."
 publish_to: "none"
 version: 1.0.0+1
 
@@ -60,6 +60,7 @@ flutter:
     - assets/images/boards/
     - assets/images/boards/dark_academia/
     - assets/images/boards/nature/
+    - assets/images/boards/minimalist/
     - assets/images/del/
     - assets/images/boards/notes/
     - assets/images/boards/create/
@@ -68,12 +69,46 @@ flutter:
     - .env
 
   fonts:
+    # - family: Inter
+    #   fonts:
+    #     - asset: assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf
+    # - family: Playfair Display
+    #   fonts:
+    #     - asset: assets/fonts/play_fair/PlayfairDisplay-VariableFont_wght.ttf
     - family: Inter
       fonts:
-        - asset: assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf
+        - asset: assets/fonts/Inter/static/Inter_18pt-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Inter/static/Inter_18pt-Thin.ttf
+          weight: 200
+        - asset: assets/fonts/Inter/static/Inter_18pt-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Inter/static/Inter_18pt-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter/static/Inter_18pt-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter/static/Inter_18pt-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter/static/Inter_18pt-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter/static/Inter_18pt-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Inter/static/Inter_18pt-Black.ttf
+          weight: 900
     - family: Playfair Display
       fonts:
-        - asset: assets/fonts/play_fair/PlayfairDisplay-VariableFont_wght.ttf
+        - asset: assets/fonts/play_fair/static/PlayfairDisplay-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/play_fair/static/PlayfairDisplay-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/play_fair/static/PlayfairDisplay-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/play_fair/static/PlayfairDisplay-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/play_fair/static/PlayfairDisplay-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/play_fair/static/PlayfairDisplay-Black.ttf
+          weight: 900
     - family: Poppins
       fonts:
         - asset: assets/fonts/poppins/Poppins-Regular.ttf

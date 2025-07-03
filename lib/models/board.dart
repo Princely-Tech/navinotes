@@ -93,7 +93,7 @@ List<BoardType> boardTypes = [
     name: 'Minimalist',
     image: Images.boardMinimalist,
     description: 'Simplified, essential elements only',
-    route: '',
+    route: Routes.boardMinimalist,
   ),
   BoardType(
     name: 'Dark Academia',

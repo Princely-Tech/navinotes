@@ -148,6 +148,9 @@ class AppTheme {
   static const Color cerulean = Color(0xFF0369A1);
   static const Color deepPeach = Color(0x19FF8C42);
   static const Color lightRed = Color(0xFFFEE2E2);
+  static const Color midGray = Color(0xFF8A8A8A);
+  static const Color graniteGray = Color(0xFF4A4A4A);
+  static const Color ghostWhite = Color(0xFFF5F5F5);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';
