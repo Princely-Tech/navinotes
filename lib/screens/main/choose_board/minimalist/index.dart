@@ -388,7 +388,6 @@ class MinimalistScreen extends StatelessWidget {
                                 size: 18,
                               ),
                               onTap: NavigationHelper.pop,
-
                               text: 'Choose Different Style',
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.midGray,

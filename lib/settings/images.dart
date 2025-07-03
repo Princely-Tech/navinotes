@@ -129,6 +129,8 @@ class Images {
   static const String clipboard = '$iconPath/clipboard.svg';
   static const String arrowUp = '$iconPath/arrow_up.svg';
   static const String chart2 = '$iconPath/chart2.svg';
+  static const String menu3 = '$iconPath/menu3.svg';
+  // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
   // static const String card = '$iconPath/card.svg';
 
@@ -200,8 +202,14 @@ class Images {
       '$boardsNaturePath/electromagnetism.png';
   // static const String boardNature = '$boardsNaturePath/.png';
 
+ //Board minimalist
   static const String boardMinimalistPreview =
       '$boardsMinimalistPath/preview.png';
+  static const String boardMinimalistScience =
+      '$boardsMinimalistPath/science.png';
+  // static const String boardMinimalist = '$boardsMinimalistPath/.png';
+  // static const String boardMinimalist = '$boardsMinimalistPath/.png';
+  // static const String boardMinimalist = '$boardsMinimalistPath/.png';
   // static const String boardMinimalist = '$boardsMinimalistPath/.png';
   // static const String boardMinimalist = '$boardsMinimalistPath/.png';
 

@@ -8,6 +8,6 @@ class MinimalistVm extends ChangeNotifier {
     notifyListeners();
   }
   void createHandler(){
-    // NavigationHelper.push(Routes.boardMinimalistEdit);
+    NavigationHelper.push(Routes.boardMinimalistEdit);
   }
 }

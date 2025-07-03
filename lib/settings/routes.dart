@@ -1,5 +1,7 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/choose_board/minimalist/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/index.dart';
+import 'package:navinotes/screens/main/choose_board/minimalist/note_page/index.dart';
 import 'package:navinotes/screens/main/market_place/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
 import 'package:navinotes/screens/main/market_place/product_detail/index.dart'; //TODO
@@ -31,6 +33,8 @@ Map<String, WidgetBuilder> routes = {
   Routes.productDetail: (context) => ProductDetailScreen(),
   Routes.myStore: (context) => MyStoreScreen(),
   Routes.boardMinimalist: (context) => MinimalistScreen(),
+  Routes.boardMinimalistEdit: (context) => BoardMinimalistEditScreen(),
+  Routes.boardMinimalistNotePage: (context) => BoardMinimalistNotePageScreen(),
 };
 
 class Routes {
@@ -62,8 +66,8 @@ class Routes {
   static const myPurchases = 'myPurchases';
   static const myStore = 'myStore';
   static const boardMinimalist = 'boardMinimalist';
-  // static const marketplace = 'marketplace';
-  // static const marketplace = 'marketplace';
+  static const boardMinimalistEdit = 'boardMinimalistEdit';
+  static const boardMinimalistNotePage = 'boardMinimalistNotePage';
   // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';
 }

@@ -9,7 +9,9 @@ class TextRowSelect extends StatelessWidget {
     this.selectedTextColor = AppTheme.white,
     this.textColor = AppTheme.white,
     this.padding,
-    // this.minWidth,
+    this.selectedTextStyle,
+    this.style,
+    this.inActiveBorderColor = AppTheme.transparent,
   });
   final List<String> items;
   final String selected;
@@ -17,7 +19,9 @@ class TextRowSelect extends StatelessWidget {
   final Color? textColor;
   final Color borderColor;
   final EdgeInsetsGeometry? padding;
-  // final double? minWidth;
+  final TextStyle? selectedTextStyle;
+  final TextStyle? style;
+  final Color inActiveBorderColor;
   @override
   Widget build(_) {
     return LayoutBuilder(
@@ -28,12 +32,17 @@ class TextRowSelect extends StatelessWidget {
         }
         return ScrollableController(
           scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
+          child: Container(
             constraints: BoxConstraints(minWidth: minWidth),
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: inActiveBorderColor)),
+            ),
             child: Row(
               children:
                   items.map((str) {
                     bool isSelected = str == selected;
+                    TextStyle? runTextStyle =
+                        isSelected ? selectedTextStyle : style;
                     return TextButton(
                       onPressed: () {},
                       style: TextButton.styleFrom(
@@ -53,10 +62,13 @@ class TextRowSelect extends StatelessWidget {
                         padding: padding ?? EdgeInsets.only(bottom: 5),
                         child: Text(
                           str,
-                          style: AppTheme.text.copyWith(
-                            color: isSelected ? selectedTextColor : textColor,
-                            fontSize: 16.0,
-                          ),
+                          style:
+                              runTextStyle ??
+                              AppTheme.text.copyWith(
+                                color:
+                                    isSelected ? selectedTextColor : textColor,
+                                fontSize: 16.0,
+                              ),
                         ),
                       ),
                     );

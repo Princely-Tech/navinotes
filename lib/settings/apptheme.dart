@@ -151,6 +151,8 @@ class AppTheme {
   static const Color midGray = Color(0xFF8A8A8A);
   static const Color graniteGray = Color(0xFF4A4A4A);
   static const Color ghostWhite = Color(0xFFF5F5F5);
+  static const Color offWhite = Color(0xFFF0F0F0);
+  static const Color snowGray = Color(0xFFFAFAFA);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';
