@@ -153,6 +153,13 @@ class AppTheme {
   static const Color ghostWhite = Color(0xFFF5F5F5);
   static const Color offWhite = Color(0xFFF0F0F0);
   static const Color snowGray = Color(0xFFFAFAFA);
+  static const Color aliceBlue = Color(0xFFECF0F1);
+  static const Color wetAsphalt = Color(0xFF2C3E50);
+  static const Color steelBlue = Color(0xFF3498DB);
+  static const Color asbestos = Color(0xFF7F8C8D);
+  static const Color papayaWhip = Color(0xFFFFEDD5);
+  static const Color burntOrange = Color(0xFFEA580C);
+  static const Color silver = Color(0xFFBDC3C7);
 
   static const String fontFamily = 'Inter';
   static const String fontPoppins = 'Poppins';

@@ -16,13 +16,13 @@ class BoardMinimalistNotePageScreen extends StatelessWidget {
             builder: (_, layoutVm, _) {
               return ScaffoldFrame(
                 scaffoldKey: _scaffoldKey,
-                backgroundColor: AppTheme.linen,
+                backgroundColor: AppTheme.white,
                 endDrawer: CustomDrawer(child: MinimalistNotePageAside()),
                 body: Column(
                   children: [
                     BoardNoteAppBar(
                       scaffoldKey: _scaffoldKey,
-                      theme: BoardTheme.nature,
+                      theme: BoardTheme.minimalist,
                     ),
                     Expanded(
                       child: ResponsiveHorizontalPadding(
@@ -39,8 +39,7 @@ class BoardMinimalistNotePageScreen extends StatelessWidget {
                                 ),
                               ),
                               WidthLimiter(
-                                mobile: 288,
-                                largeDesktop: 312,
+                                mobile: 256,
                                 child: MinimalistNotePageAside(),
                               ),
                             ],

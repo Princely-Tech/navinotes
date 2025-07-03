@@ -12,10 +12,10 @@ class MinimalistNotePageAside extends StatelessWidget {
           children: [
             ExpandableController(
               child: ScrollableController(
-                mobilePadding: EdgeInsets.all(10),
-                desktopPadding: EdgeInsets.fromLTRB(10, 30, 10, 20),
+                mobilePadding: EdgeInsets.all(20),
                 child: Column(
                   spacing: 30,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _boardDetails(),
                     _tags(),
@@ -31,7 +31,7 @@ class MinimalistNotePageAside extends StatelessWidget {
                               onTap: vm.gotToCreateNotePage,
                               text: 'New Note Page',
                               minHeight: 40,
-                              color: AppTheme.deepMoss,
+                              color: AppTheme.steelBlue,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4),
                               ),
@@ -43,7 +43,7 @@ class MinimalistNotePageAside extends StatelessWidget {
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.white,
                                 fontSize: 16.0,
-                                fontFamily: AppTheme.fontCrimsonPro,
+                                fontWeight: FontWeight.w300,
                               ),
                             ),
                           ),
@@ -51,9 +51,9 @@ class MinimalistNotePageAside extends StatelessWidget {
                         AppButton(
                           onTap:
                               () => NavigationHelper.push(
-                                Routes.boardNatureMindMap,
+                                Routes.boardMinimalistMindMap,
                               ),
-                          color: AppTheme.burntLeather.withAlpha(0xFF),
+                          color: AppTheme.steelBlue.withAlpha(0x19),
                           child: Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(5),
@@ -61,43 +61,33 @@ class MinimalistNotePageAside extends StatelessWidget {
                                 spacing: 15,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  SVGImagePlaceHolder(
+                                    imagePath: Images.share,
+                                    color: AppTheme.steelBlue,
+                                    size: 18,
+                                  ),
                                   Flexible(
                                     child: Column(
-                                      spacing: 5,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'View Mind Map',
                                           textAlign: TextAlign.center,
                                           style: AppTheme.text.copyWith(
-                                            color: AppTheme.linen,
-                                            fontSize: 16.0,
-                                            fontFamily:
-                                                AppTheme.fontLibreBaskerville,
+                                            color: AppTheme.steelBlue,
+                                            fontWeight: getFontWeight(500),
                                           ),
                                         ),
                                         Text(
-                                          'See connections between notes',
+                                          'See connections',
                                           textAlign: TextAlign.center,
                                           style: AppTheme.text.copyWith(
-                                            color: AppTheme.linen,
+                                            color: AppTheme.steelBlue,
                                             fontSize: 12.0,
-                                            fontFamily:
-                                                AppTheme.fontCrimsonText,
                                           ),
                                         ),
                                       ],
-                                    ),
-                                  ),
-                                  OutlinedChild(
-                                    size: 40,
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.linen.withAlpha(0x33),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: SVGImagePlaceHolder(
-                                      imagePath: Images.share,
-                                      color: AppTheme.white,
-                                      size: 18,
                                     ),
                                   ),
                                 ],
@@ -117,15 +107,22 @@ class MinimalistNotePageAside extends StatelessWidget {
     );
   }
 
-  Widget _viewedItem({
-    required String title,
-    required String time,
-    required Widget icon,
-  }) {
+  Widget _viewedItem({required String title, required String time}) {
     return Row(
       spacing: 10,
       children: [
-        icon,
+        OutlinedChild(
+          size: 32,
+          decoration: BoxDecoration(
+            color: AppTheme.steelBlue.withAlpha(0x19),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: SVGImagePlaceHolder(
+            imagePath: Images.file2,
+            size: 16,
+            color: AppTheme.steelBlue,
+          ),
+        ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,16 +130,16 @@ class MinimalistNotePageAside extends StatelessWidget {
               Text(
                 title,
                 style: AppTheme.text.copyWith(
-                  color: AppTheme.darkMossGreen,
-                  fontFamily: AppTheme.fontCrimsonText,
+                  color: AppTheme.wetAsphalt,
+                  fontSize: 12.0,
+                  fontWeight: getFontWeight(500),
                 ),
               ),
               Text(
                 time,
                 style: AppTheme.text.copyWith(
-                  color: AppTheme.coffee,
+                  color: AppTheme.asbestos,
                   fontSize: 12.0,
-                  fontFamily: AppTheme.fontCrimsonText,
                 ),
               ),
             ],
@@ -153,57 +150,14 @@ class MinimalistNotePageAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return EditHeaderSection(
-      theme: BoardTheme.nature,
+    return _section(
       title: 'Recently Viewed',
       child: Column(
         spacing: 15,
         children: [
-          _viewedItem(
-            title: 'Wave Properties',
-            time: '2 hours ago',
-            icon: OutlinedChild(
-              size: 32,
-              decoration: BoxDecoration(
-                color: AppTheme.deepMoss.withAlpha(0x33),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: SVGImagePlaceHolder(
-                imagePath: Images.boardNatureWaveLine,
-                size: 14,
-              ),
-            ),
-          ),
-          _viewedItem(
-            title: 'Quantum Mechanics',
-            time: 'yesterday',
-            icon: OutlinedChild(
-              size: 32,
-              decoration: BoxDecoration(
-                color: AppTheme.deepPeach.withAlpha(0x33),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: SVGImagePlaceHolder(
-                imagePath: Images.boardNatureQuantumIcon,
-                size: 14,
-              ),
-            ),
-          ),
-          _viewedItem(
-            title: 'Thermodynamics',
-            time: '2 days ago',
-            icon: OutlinedChild(
-              size: 32,
-              decoration: BoxDecoration(
-                color: AppTheme.sageMist.withAlpha(0x33),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: SVGImagePlaceHolder(
-                imagePath: Images.boardNatureThermometer,
-                size: 14,
-              ),
-            ),
-          ),
+          _viewedItem(title: 'Wave Properties', time: '2 hours ago'),
+          _viewedItem(title: 'Quantum Mechanics', time: 'yesterday'),
+          _viewedItem(title: 'Thermodynamics', time: '2 days ago'),
         ],
       ),
     );
@@ -213,58 +167,45 @@ class MinimalistNotePageAside extends StatelessWidget {
     required String text,
     required Color color,
     required Color textColor,
-    required Color borderColor,
   }) {
     return Container(
-      decoration: ShapeDecoration(
+      decoration: BoxDecoration(
         color: color,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: borderColor),
-          borderRadius: BorderRadius.circular(9999),
-        ),
+        borderRadius: BorderRadius.circular(6),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Text(
         text,
-        style: AppTheme.text.copyWith(
-          fontSize: 12.0,
-          color: textColor,
-          fontFamily: AppTheme.fontCrimsonText,
-        ),
+        style: AppTheme.text.copyWith(fontSize: 12.0, color: textColor),
       ),
     );
   }
 
   Widget _tags() {
-    return EditHeaderSection(
-      theme: BoardTheme.nature,
+    return _section(
       title: 'Tags',
       child: Wrap(
-        runSpacing: 15,
+        runSpacing: 10,
         spacing: 10,
         children: [
           _tagItem(
-            color: AppTheme.lightSkyBlue,
-            borderColor: AppTheme.babyBlue,
-            textColor: AppTheme.cerulean,
+            color: AppTheme.steelBlue.withAlpha(0x19),
+            textColor: AppTheme.steelBlue,
             text: 'Physics',
           ),
           _tagItem(
-            color: AppTheme.lightSage,
-            textColor: AppTheme.deepMoss,
-            borderColor: AppTheme.deepMoss.withAlpha(0x33),
+            color: AppTheme.mintWhisper,
+            textColor: AppTheme.vitalGreen,
             text: 'Science',
           ),
           _tagItem(
-            color: AppTheme.linen,
-            textColor: AppTheme.burntLeather.withAlpha(0xFF),
-            borderColor: AppTheme.burntLeather.withAlpha(0x33),
+            color: AppTheme.lavenderBlush,
+            textColor: AppTheme.electricViolet,
             text: 'Study',
           ),
           _tagItem(
-            color: AppTheme.deepPeach,
-            textColor: AppTheme.deepPeach.withAlpha(0xFF),
-            borderColor: AppTheme.deepPeach.withAlpha(0x33),
+            color: AppTheme.papayaWhip,
+            textColor: AppTheme.burntOrange,
             text: 'Exam Prep',
           ),
         ],
@@ -274,26 +215,26 @@ class MinimalistNotePageAside extends StatelessWidget {
 
   Widget _detailsItem({required String title, required String value}) {
     return Row(
-      spacing: 15,
+      spacing: 10,
       children: [
-        Text(
-          title,
-          style: AppTheme.text.copyWith(
-            color: AppTheme.coffee,
-            fontSize: 14.0,
-            fontFamily: AppTheme.fontCrimsonText,
-            height: 1.43,
+        ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 50),
+          child: Text(
+            '$title:',
+            style: AppTheme.text.copyWith(
+              color: AppTheme.asbestos,
+              fontSize: 12.0,
+              height: 1.33,
+            ),
           ),
         ),
         Expanded(
           child: Text(
-            textAlign: TextAlign.right,
             value,
             style: AppTheme.text.copyWith(
-              color: AppTheme.darkMossGreen,
-              fontSize: 14.0,
-              fontFamily: AppTheme.fontCrimsonText,
-              height: 1.43,
+              color: AppTheme.wetAsphalt,
+              fontSize: 12.0,
+              height: 1.33,
             ),
           ),
         ),
@@ -301,12 +242,29 @@ class MinimalistNotePageAside extends StatelessWidget {
     );
   }
 
+  Widget _section({required String title, required Widget child}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 10,
+      children: [
+        Text(
+          title,
+          style: AppTheme.text.copyWith(
+            color: AppTheme.wetAsphalt,
+            fontWeight: getFontWeight(500),
+            height: 1.43,
+          ),
+        ),
+        child,
+      ],
+    );
+  }
+
   Widget _boardDetails() {
-    return EditHeaderSection(
-      theme: BoardTheme.nature,
+    return _section(
       title: 'Board Details',
       child: Column(
-        spacing: 15,
+        spacing: 10,
         children: [
           _detailsItem(title: 'Created', value: 'Mar 15, 2025'),
           _detailsItem(title: 'Pages', value: '8'),

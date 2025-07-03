@@ -38,7 +38,24 @@ class BoardPageMainHeader extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           spacing: 10,
                           children: [
-                            DisplayFormatSelect(theme: theme),
+                            if (theme.isMinimalist)
+                              Row(
+                                spacing: 15,
+                                children: [
+                                  SVGImagePlaceHolder(
+                                    imagePath: Images.ques,
+                                    color: AppTheme.asbestos,
+                                    size: 16,
+                                  ),
+                                  SVGImagePlaceHolder(
+                                    imagePath: Images.menu,
+                                    color: AppTheme.asbestos,
+                                    size: 16,
+                                  ),
+                                ],
+                              )
+                            else
+                              DisplayFormatSelect(theme: theme),
                             _sortBy(),
                             VisibleController(
                               mobile: false,
@@ -66,6 +83,10 @@ class BoardPageMainHeader extends StatelessWidget {
     switch (theme) {
       case BoardTheme.nature:
         txtColor = AppTheme.coffee;
+        fillColor = AppTheme.transparent;
+        break;
+      case BoardTheme.minimalist:
+        txtColor = AppTheme.asbestos;
         fillColor = AppTheme.transparent;
         break;
       default:

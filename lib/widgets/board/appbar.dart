@@ -15,7 +15,7 @@ class BoardNoteAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dynamic params = theme.values;
+    BordThemeValues params = theme.values;
     return Container(
       decoration: BoxDecoration(
         color: params.backgroundColor,
@@ -50,20 +50,16 @@ class BoardNoteAppBar extends StatelessWidget {
 
   Widget _actions() {
     BordThemeValues params = theme.values;
+    Color color = params.color1;
+    if (theme.isMinimalist) {
+      color = AppTheme.asbestos;
+    }
     return Row(
       spacing: 15,
       children: [
-        SVGImagePlaceHolder(
-          imagePath: Images.settings,
-          size: 16,
-          color: params.color1,
-        ),
-        SVGImagePlaceHolder(
-          imagePath: Images.filter,
-          size: 18,
-          color: params.color1,
-        ),
-        ProfilePic(borderColor: params.color1),
+        SVGImagePlaceHolder(imagePath: Images.settings, size: 16, color: color),
+        SVGImagePlaceHolder(imagePath: Images.filter, size: 18, color: color),
+        ProfilePic(borderColor: color),
       ],
     );
   }
@@ -102,10 +98,21 @@ class BoardNoteAppBar extends StatelessWidget {
   Widget _leading() {
     BordThemeValues params = theme.values;
     Color appNameColor = params.color1;
+    Color subjectNameColor = params.color1;
     bool isDarkAcademia = theme.isDarkAcademia;
     if (isDarkAcademia) {
       appNameColor = AppTheme.vanillaDust.withAlpha(0xE5);
     }
+    switch (theme) {
+      case BoardTheme.darkAcademia:
+        appNameColor = AppTheme.vanillaDust.withAlpha(0xE5);
+        break;
+      case BoardTheme.minimalist:
+        subjectNameColor = AppTheme.asbestos;
+        break;
+      default:
+    }
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 10,
@@ -134,21 +141,7 @@ class BoardNoteAppBar extends StatelessWidget {
                     ),
                   )
                 else
-                  OutlinedChild(
-                    size: 32,
-                    decoration: BoxDecoration(
-                      color: params.color1,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      'N',
-                      style: TextStyle(
-                        color: AppTheme.linen,
-                        fontSize: 16.0,
-                        fontFamily: params.fontFamily,
-                      ),
-                    ),
-                  ),
+                  _outlinedProfileName(),
                 Flexible(
                   child: Text.rich(
                     TextSpan(
@@ -165,7 +158,7 @@ class BoardNoteAppBar extends StatelessWidget {
                         TextSpan(
                           text: 'Physics 101',
                           style: AppTheme.text.copyWith(
-                            color: params.color1,
+                            color: subjectNameColor,
                             fontSize: 16.0,
                             fontFamily: params.fontFamily,
                             height: 1.50,
@@ -180,6 +173,26 @@ class BoardNoteAppBar extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _outlinedProfileName() {
+    BordThemeValues params = theme.values;
+    Color color = params.color1;
+    if (theme.isMinimalist) {
+      color = AppTheme.steelBlue;
+    }
+    return OutlinedChild(
+      size: 32,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      child: Text(
+        'N',
+        style: TextStyle(
+          color: AppTheme.linen,
+          fontSize: 16.0,
+          fontFamily: params.fontFamily,
+        ),
+      ),
     );
   }
 }

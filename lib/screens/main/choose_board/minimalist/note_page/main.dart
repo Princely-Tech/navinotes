@@ -9,11 +9,11 @@ class MinimalistNotePageMain extends StatelessWidget {
     return Consumer<MinimalistNotePageVm>(
       builder: (_, vm, _) {
         return ResponsivePadding(
-          mobile: EdgeInsets.only(top: 10),
-          desktop: EdgeInsets.only(top: 30),
+          mobile: EdgeInsets.only(top: 5),
+          desktop: EdgeInsets.only(top: 20),
           child: Column(
             children: [
-              BoardPageMainHeader(theme: BoardTheme.nature),
+              BoardPageMainHeader(theme: BoardTheme.minimalist),
               Expanded(
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.only(bottom: 30),
@@ -22,73 +22,64 @@ class MinimalistNotePageMain extends StatelessWidget {
                       _noteCard(
                         lastEdited: 'Apr 28, 2025',
                         title: 'Wave Properties',
-                        image: Images.boardNatureWave,
+                        image: Images.boardMinimalistWave,
+                        icons: [Images.file2, Images.img, Images.hook],
                       ),
                       _noteCard(
                         lastEdited: 'Apr 25, 2025',
                         title: 'Newton\'s Laws',
-                        image: Images.boardNatureNewton,
+                        image: Images.boardMinimalistNewton,
+                        icons: [Images.file2, Images.calculator],
                       ),
                       _noteCard(
                         lastEdited: 'Apr 22, 2025',
                         title: 'Thermodynamics',
-                        image: Images.boardNatureThermodynamics,
+                        image: Images.boardMinimalistThermodynamics,
+                        icons: [Images.file2, Images.chart3],
                       ),
                       _noteCard(
                         lastEdited: 'Apr 20, 2025',
                         title: 'Electromagnetism',
-                        image: Images.boardNatureElectromagnetism,
+                        image: Images.boardMinimalistElectromagnetism,
+                        icons: [Images.file2, Images.img],
                       ),
                       _noteCard(
                         lastEdited: 'Apr 18, 2025',
                         title: 'Quantum Mechanics',
-                        image: Images.boardNatureQuantum,
-                      ),
-                      _noteCard(
-                        lastEdited: 'Apr 15, 2025',
-                        title: 'Optics & Light',
-                        image: Images.boardNatureOptics,
+                        image: Images.boardMinimalistQuantum,
+                        icons: [Images.file2, Images.calculator],
                       ),
                       Column(
                         children: [
                           InkWell(
                             onTap: vm.gotToCreateNotePage,
                             child: ConstrainedBox(
-                              constraints: BoxConstraints(minHeight: 220),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: DottedDecoration(
-                                  color: AppTheme.burntLeather,
-                                  shape: Shape.box,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                              constraints: BoxConstraints(minHeight: 200),
+                              child: CustomCard(
+                                addBorder: true,
+                                addCardShadow: true,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   spacing: 15,
                                   children: [
-                                    CustomCard(
-                                      width: 56,
-                                      height: 56,
+                                    OutlinedChild(
+                                      size: 48,
                                       decoration: BoxDecoration(
-                                        color: AppTheme.lightSage.withAlpha(
-                                          0x7F,
+                                        color: AppTheme.steelBlue.withAlpha(
+                                          0x19,
                                         ),
                                         shape: BoxShape.circle,
                                       ),
-                                      padding: EdgeInsets.zero,
                                       child: Icon(
                                         Icons.add,
-                                        color: AppTheme.coffee,
-                                        size: 30,
+                                        color: AppTheme.steelBlue,
+                                        size: 20,
                                       ),
                                     ),
                                     Text(
                                       'Create New Note Page',
                                       style: AppTheme.text.copyWith(
-                                        color: AppTheme.coffee,
-                                        fontSize: 18.0,
-                                        fontFamily:
-                                            AppTheme.fontPlayfairDisplay,
+                                        color: AppTheme.asbestos,
                                       ),
                                     ),
                                   ],
@@ -113,71 +104,71 @@ class MinimalistNotePageMain extends StatelessWidget {
     required String image,
     required String title,
     required String lastEdited,
+    required List<String> icons,
   }) {
     return CustomCard(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.burntLeather.withAlpha(0x33)),
-      ),
-      padding: EdgeInsets.all(15),
+      addCardShadow: true,
+      addBorder: true,
+      padding: EdgeInsets.zero,
       child: Column(
-        spacing: 15,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomCard(
-            addShadow: true,
+          Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: AppTheme.sageMist.withAlpha(0x4C),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
             ),
-            padding: EdgeInsets.zero,
+            clipBehavior: Clip.antiAlias,
             child: AspectRatio(
               aspectRatio: 5 / 2,
-              child: ImagePlaceHolder(
-                imagePath: image,
-                isCardHeader: true,
-                borderRadius: BorderRadius.circular(0),
-                fit: BoxFit.fill,
-              ),
+              child: SVGImagePlaceHolder(imagePath: image),
             ),
           ),
-          Row(
-            spacing: 10,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              spacing: 20,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
                   spacing: 5,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
                       style: AppTheme.text.copyWith(
-                        color: AppTheme.darkMossGreen,
+                        color: AppTheme.wetAsphalt,
                         fontSize: 16.0,
-                        fontFamily: AppTheme.fontLibreBaskerville,
+                        fontWeight: getFontWeight(500),
                         height: 1.50,
                       ),
                     ),
                     Text(
                       'Last edited: $lastEdited',
                       style: AppTheme.text.copyWith(
-                        color: AppTheme.coffee,
-                        fontSize: 12.0,
-                        fontFamily: AppTheme.fontCrimsonText,
-                        height: 1.33,
+                        color: AppTheme.asbestos,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
-              ),
-              Row(
-                children: [
-                  SVGImagePlaceHolder(imagePath: Images.star2, size: 18),
-                  Icon(Icons.more_vert, color: AppTheme.deepMoss),
-                ],
-              ),
-            ],
+                ScrollableController(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 10,
+                    children:
+                        icons
+                            .map(
+                              (icon) => SVGImagePlaceHolder(
+                                imagePath: icon,
+                                size: 16,
+                                color: AppTheme.silver,
+                              ),
+                            )
+                            .toList(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

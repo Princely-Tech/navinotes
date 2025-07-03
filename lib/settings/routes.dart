@@ -68,6 +68,9 @@ class Routes {
   static const boardMinimalist = 'boardMinimalist';
   static const boardMinimalistEdit = 'boardMinimalistEdit';
   static const boardMinimalistNotePage = 'boardMinimalistNotePage';
+  static const boardMinimalistMindMap = 'boardMinimalistMindMap';
+  // static const marketplace = 'marketplace';
+  // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';
 }

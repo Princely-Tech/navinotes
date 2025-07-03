@@ -10,6 +10,7 @@ class GoNewNoteButton extends StatelessWidget {
     Color bgColor = AppTheme.burntLeather.withAlpha(0xFF);
     Color txtColor = params.color1;
     String fontFamily = AppTheme.fontCrimsonPro;
+    Color borderColor = params.color1;
     double radius = 4;
     switch (theme) {
       case BoardTheme.nature:
@@ -17,6 +18,12 @@ class GoNewNoteButton extends StatelessWidget {
         txtColor = AppTheme.white;
         fontFamily = AppTheme.fontCrimsonText;
         radius = 999;
+      case BoardTheme.minimalist:
+        bgColor = AppTheme.strongBlue;
+        borderColor = AppTheme.strongBlue;
+        txtColor = AppTheme.white;
+        fontFamily = AppTheme.fontFamily;
+        radius = 8;
       default:
     }
     return AppButton(
@@ -27,7 +34,7 @@ class GoNewNoteButton extends StatelessWidget {
       color: bgColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radius),
-        side: BorderSide(color: params.color1),
+        side: BorderSide(color: borderColor),
       ),
       prefix: Icon(Icons.add, color: txtColor, size: 20),
       style: AppTheme.text.copyWith(
