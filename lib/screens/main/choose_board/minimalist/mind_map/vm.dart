@@ -1,6 +1,5 @@
 import 'package:navinotes/packages.dart';
 
-
 enum BorderStyleItem {
   shadow,
   border,
@@ -22,9 +21,10 @@ enum BorderStyleItem {
   }
 }
 
-class DarkAcademiaMindMapVm extends ChangeNotifier {
+class MinimalistMindMapVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  DarkAcademiaMindMapVm({required this.scaffoldKey});
+  MinimalistMindMapVm({required this.scaffoldKey});
+
   List<MindMapFilterType> selectedFilters = [
     MindMapFilterType.showPdf,
     MindMapFilterType.showNotes,
@@ -33,9 +33,9 @@ class DarkAcademiaMindMapVm extends ChangeNotifier {
   FontWeight fontWeight = FontWeight.w500;
   BorderStyleItem borderStyleItem = BorderStyleItem.shadow;
   int shape = 0;
-  String selectedLine = Images.squiglyLine;
+  int selectedLine = 0;
 
-  void updateLine(String line) {
+  void updateLine(int line) {
     selectedLine = line;
     notifyListeners();
   }

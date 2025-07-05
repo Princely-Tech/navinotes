@@ -1,6 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/index.dart';
+import 'package:navinotes/screens/main/choose_board/minimalist/mind_map/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/note_page/index.dart';
 import 'package:navinotes/screens/main/market_place/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
@@ -35,6 +36,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardMinimalist: (context) => MinimalistScreen(),
   Routes.boardMinimalistEdit: (context) => BoardMinimalistEditScreen(),
   Routes.boardMinimalistNotePage: (context) => BoardMinimalistNotePageScreen(),
+  Routes.boardMinimalistMindMap: (context) => BoardMinimalistMindMapScreen(),
 };
 
 class Routes {

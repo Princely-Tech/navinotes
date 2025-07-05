@@ -18,6 +18,9 @@ class EditHeaderSection extends StatelessWidget {
       case BoardTheme.nature:
         dividerColor = AppTheme.sageMist.withAlpha(0x4C);
         break;
+      case BoardTheme.minimalist:
+        dividerColor = AppTheme.aliceBlue;
+        break;
       default:
     }
     return Column(

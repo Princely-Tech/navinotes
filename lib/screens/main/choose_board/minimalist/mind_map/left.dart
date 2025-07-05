@@ -1,23 +1,25 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-class DarkAcademiaMindMapLeft extends StatelessWidget {
-  const DarkAcademiaMindMapLeft({super.key});
+class MinimalistMindMapLeft extends StatelessWidget {
+  const MinimalistMindMapLeft({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DarkAcademiaMindMapVm>(
-      builder: (_, vm, _) {
-        return Container(
-          decoration: BoxDecoration(color: AppTheme.burntClove.withAlpha(255)),
-          child: Column(
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(right: BorderSide(color: AppTheme.lightGray)),
+      ),
+      child: Consumer<MinimalistMindMapVm>(
+        builder: (_, vm, _) {
+          return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.all(15),
                   child: EditHeaderSection(
-                    theme: BoardTheme.darkAcademia,
+                    theme: BoardTheme.minimalist,
                     title: 'Advanced Biology',
                     child: Column(
                       spacing: 30,
@@ -27,10 +29,10 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
                           title: 'Documents',
                           count: 12,
                           child: Column(
-                            spacing: 25,
+                            spacing: 10,
                             children: [
                               _imgRow(
-                                img: Images.book2,
+                                img: Images.file2,
                                 title: 'Cell Division Notes',
                               ),
                               _imgRow(
@@ -38,7 +40,7 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
                                 title: 'Genetic Disorders.pdf',
                               ),
                               _imgRow(
-                                img: Images.scroll,
+                                img: Images.file2,
                                 title: 'Enzyme Kinetics',
                               ),
                             ],
@@ -49,7 +51,7 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
                           title: 'Recent Imports',
                           count: 3,
                           child: Column(
-                            spacing: 25,
+                            spacing: 10,
                             children: [
                               _imgRow(
                                 img: Images.pdf,
@@ -65,7 +67,7 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
                         _section(
                           title: 'Filters',
                           child: Column(
-                            spacing: 15,
+                            spacing: 10,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children:
                                 MindMapFilterType.values
@@ -80,10 +82,10 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
                             children: [
                               _imgRow(
                                 title: 'Cellular Processes',
-                                right: 'IIII',
+                                right: '111',
                               ),
-                              _imgRow(title: 'Genetic Studies', right: 'III'),
-                              _imgRow(title: 'Metabolic Pathways', right: 'II'),
+                              _imgRow(title: 'Genetic Studies', right: '111'),
+                              _imgRow(title: 'Metabolic Pathways', right: '11'),
                             ],
                           ),
                         ),
@@ -93,37 +95,32 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
-  Widget _filterItem(MindMapFilterType type, DarkAcademiaMindMapVm vm) {
+  Widget _filterItem(MindMapFilterType type, MinimalistMindMapVm vm) {
     bool isSelected = vm.selectedFilters.contains(type);
     return AppButton.text(
       onTap: () => vm.updateSelectedFilters(type),
       spacing: 10,
       text: type.toString(),
       mainAxisSize: MainAxisSize.min,
-      prefix: Container(
-        decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            side: BorderSide(width: 1, color: AppTheme.walnutBronze),
-          ),
-        ),
-        padding: EdgeInsets.all(3),
-        child: Container(
-          width: 8,
-          height: 8,
-          color: isSelected ? AppTheme.goldenSaffron : null,
-        ),
-      ),
-      style: AppTheme.text.copyWith(
-        color: AppTheme.creamMist,
-        fontFamily: AppTheme.fontPlayfairDisplay,
-        height: 1.43,
-      ),
+      prefix:
+          isSelected
+              ? Container(
+                width: 16,
+                height: 16,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: AppTheme.dodgerBlue),
+                  ),
+                ),
+              )
+              : Icon(Icons.check_box, color: AppTheme.dodgerBlue, size: 16),
+      style: AppTheme.text.copyWith(color: AppTheme.wetAsphalt),
     );
   }
 
@@ -137,15 +134,14 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
               if (isNotNull(img))
                 SVGImagePlaceHolder(
                   imagePath: img!,
-                  size: 18,
-                  color: AppTheme.walnutBronze,
+                  size: 14,
+                  color: AppTheme.steelBlue,
                 ),
               Expanded(
                 child: Text(
                   title,
                   style: AppTheme.text.copyWith(
-                    color: AppTheme.creamMist,
-                    fontFamily: AppTheme.fontPlayfairDisplay,
+                    color: AppTheme.wetAsphalt,
                     height: 1.43,
                   ),
                 ),
@@ -157,9 +153,8 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
           Text(
             right!,
             style: AppTheme.text.copyWith(
-              color: AppTheme.walnutBronze,
+              color: AppTheme.asbestos,
               fontSize: 12.0,
-              fontFamily: AppTheme.fontPlayfairDisplay,
               height: 1.33,
             ),
           ),
@@ -179,10 +174,9 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
               child: Text(
                 title,
                 style: AppTheme.text.copyWith(
-                  color: AppTheme.creamMist.withAlpha(0xE5),
-                  fontSize: 16.0,
-                  fontFamily: AppTheme.fontPlayfairDisplay,
-                  height: 1.50,
+                  color: AppTheme.wetAsphalt,
+                  fontWeight: getFontWeight(500),
+                  height: 1.43,
                 ),
               ),
             ),
@@ -190,9 +184,9 @@ class DarkAcademiaMindMapLeft extends StatelessWidget {
               Text(
                 count.toString(),
                 style: AppTheme.text.copyWith(
-                  color: AppTheme.goldenSaffron,
-                  fontFamily: AppTheme.fontPlayfairDisplay,
-                  height: 1.43,
+                  color: AppTheme.asbestos,
+                  fontSize: 12.0,
+                  height: 1.33,
                 ),
               ),
           ],

@@ -131,7 +131,7 @@ class Images {
   static const String chart2 = '$iconPath/chart2.svg';
   static const String menu3 = '$iconPath/menu3.svg';
   static const String chart3 = '$iconPath/chart3.svg';
-  // static const String card = '$iconPath/card.svg';
+  static const String sdCard = '$iconPath/sd_card.svg';
   // static const String card = '$iconPath/card.svg';
 
   //images
