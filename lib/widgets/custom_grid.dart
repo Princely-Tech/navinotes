@@ -10,6 +10,7 @@ class CustomGrid extends StatelessWidget {
     this.desktop,
     this.spacing,
     this.largeDesktop = 3,
+    this.wrapWithIntrinsicHeight = true,
   });
   final List<Widget> children;
   final int mobile;
@@ -18,17 +19,16 @@ class CustomGrid extends StatelessWidget {
   final int? desktop;
   final int? largeDesktop;
   final double? spacing;
+  final bool wrapWithIntrinsicHeight;
 
   @override
   Widget build(BuildContext context) {
-    double defaultSpacing = spacing?? 20;
     return Consumer<LayoutProviderVm>(
       builder: (context, vm, child) {
         int split = getSplit(vm.deviceType);
         List<List<Widget>> splitChildren = splitArray(children, split);
-
         return Column(
-          spacing: defaultSpacing,
+          spacing: getDefaultSpacing(),
           children:
               splitChildren.map((children) {
                 //Ensure each row is of equal length
@@ -37,18 +37,30 @@ class CustomGrid extends StatelessWidget {
                     children.add(SizedBox.shrink());
                   }
                 }
-                return IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: defaultSpacing,
-                    children:
-                        children.map((item) => Expanded(child: item)).toList(),
-                  ),
-                );
+                return wrapWithIntrinsicHeight
+                    ? IntrinsicHeight(
+                      child: _body(children: children),
+                    ) //TODO consider removing intinsic height
+                    : _body(children: children);
               }).toList(),
         );
       },
     );
+  }
+
+  Widget _body({required List<Widget> children}) {
+    return Row(
+      crossAxisAlignment:
+          wrapWithIntrinsicHeight
+              ? CrossAxisAlignment.stretch
+              : CrossAxisAlignment.center,
+      spacing: getDefaultSpacing(),
+      children: children.map((item) => Expanded(child: item)).toList(),
+    );
+  }
+
+  double getDefaultSpacing() {
+    return spacing ?? 20;
   }
 
   int getSplit(DeviceType deviceType) {

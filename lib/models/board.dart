@@ -87,7 +87,7 @@ List<BoardType> boardTypes = [
     name: 'Plain',
     image: Images.boardPlain,
     description: 'Clean, distraction-free interface',
-    route: '',
+    route: Routes.boardPlain,
   ),
   BoardType(
     name: 'Minimalist',

@@ -9,6 +9,7 @@ const boardsCreatePath = 'assets/images/boards/create';
 const boardsNotesPath = 'assets/images/boards/notes';
 const noteTemplatePath = 'assets/images/boards/note_templates';
 const marketPlacePath = 'assets/images/marketplace';
+const boardsPlainPath = 'assets/images/boards/plain';
 
 class Images {
   Images._();
@@ -132,7 +133,10 @@ class Images {
   static const String menu3 = '$iconPath/menu3.svg';
   static const String chart3 = '$iconPath/chart3.svg';
   static const String sdCard = '$iconPath/sd_card.svg';
-  // static const String card = '$iconPath/card.svg';
+  static const String bulb = '$iconPath/bulb.svg';
+  // static const String bulb = '$iconPath/bulb.svg';
+  // static const String bulb = '$iconPath/bulb.svg';
+  // static const String bulb = '$iconPath/bulb.svg';
 
   //images
   static const String brainPers = '$imagePath/brain_pers.png';
@@ -190,6 +194,13 @@ class Images {
       '$boardsDarkAcademiaPath/thermodynamics.png';
   // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
 
+  //board plain
+  static const String boardPlainPreview = '$boardsPlainPath/preview.png';
+  // static const String boardPlain = '$boardsPlainPath/.png';
+  // static const String boardPlain = '$boardsPlainPath/.png';
+  // static const String boardPlain = '$boardsPlainPath/.png';
+  // static const String boardPlain = '$boardsPlainPath/.png';
+
   //Board nature
   static const String boardNaturePreview = '$boardsNaturePath/preview.png';
   static const String boardNatureThermodynamics =
@@ -202,16 +213,20 @@ class Images {
       '$boardsNaturePath/electromagnetism.png';
   // static const String boardNature = '$boardsNaturePath/.png';
 
- //Board minimalist
+  //Board minimalist
   static const String boardMinimalistPreview =
       '$boardsMinimalistPath/preview.png';
   static const String boardMinimalistScience =
       '$boardsMinimalistPath/science.png';
   static const String boardMinimalistWave = '$boardsMinimalistPath/wave.svg';
-  static const String boardMinimalistElectromagnetism = '$boardsMinimalistPath/electromagnetism.svg';
-  static const String boardMinimalistNewton = '$boardsMinimalistPath/newton.svg';
-  static const String boardMinimalistQuantum = '$boardsMinimalistPath/quantum.svg';
-  static const String boardMinimalistThermodynamics = '$boardsMinimalistPath/thermodynamics.svg';
+  static const String boardMinimalistElectromagnetism =
+      '$boardsMinimalistPath/electromagnetism.svg';
+  static const String boardMinimalistNewton =
+      '$boardsMinimalistPath/newton.svg';
+  static const String boardMinimalistQuantum =
+      '$boardsMinimalistPath/quantum.svg';
+  static const String boardMinimalistThermodynamics =
+      '$boardsMinimalistPath/thermodynamics.svg';
   // static const String boardMinimalist = '$boardsMinimalistPath/.png';
 
   static const String boardNatureWaveLine = '$boardsNaturePath/wave_line.svg';

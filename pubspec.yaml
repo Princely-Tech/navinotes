@@ -61,6 +61,7 @@ flutter:
     - assets/images/boards/dark_academia/
     - assets/images/boards/nature/
     - assets/images/boards/minimalist/
+    - assets/images/boards/plain/
     - assets/images/del/
     - assets/images/boards/notes/
     - assets/images/boards/create/

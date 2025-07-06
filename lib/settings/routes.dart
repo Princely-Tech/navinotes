@@ -3,6 +3,7 @@ import 'package:navinotes/screens/main/choose_board/minimalist/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/mind_map/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/note_page/index.dart';
+import 'package:navinotes/screens/main/choose_board/plain/index.dart';
 import 'package:navinotes/screens/main/market_place/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
 import 'package:navinotes/screens/main/market_place/product_detail/index.dart'; //TODO
@@ -37,6 +38,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardMinimalistEdit: (context) => BoardMinimalistEditScreen(),
   Routes.boardMinimalistNotePage: (context) => BoardMinimalistNotePageScreen(),
   Routes.boardMinimalistMindMap: (context) => BoardMinimalistMindMapScreen(),
+  Routes.boardPlain: (context) => BoardPlainScreen(),
 };
 
 class Routes {
@@ -71,6 +73,9 @@ class Routes {
   static const boardMinimalistEdit = 'boardMinimalistEdit';
   static const boardMinimalistNotePage = 'boardMinimalistNotePage';
   static const boardMinimalistMindMap = 'boardMinimalistMindMap';
+  static const boardPlain = 'boardPlain';
+  static const boardPlainEdit = 'boardPlainEdit';
+  // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';

@@ -164,6 +164,8 @@ class AppTheme {
   static const Color mediumOrchid = Color(0xFFA855F7);
   static const Color orange = Color(0xFFF97316);
   static const Color lightOrange = Color(0xFFFDBA74);
+  static const Color almostWhite = Color(0xFFF8F9FA);
+  // static const Color mediumOrchid = Color(0xFFFDBA74);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
 
