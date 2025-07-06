@@ -20,7 +20,7 @@ class BoardPlainScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: Column(
-                        spacing: 30,
+                        spacing: 10,
                         children: [
                           _titleHeader(),
                           ResponsivePadding(
@@ -62,11 +62,8 @@ class BoardPlainScreen extends StatelessWidget {
                                       Text(
                                         'Don\'t worry - you can always change these details later.',
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: const Color(0xFF6B7280),
-                                          fontSize: 14,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w400,
+                                        style: AppTheme.text.copyWith(
+                                          color: AppTheme.steelMist,
                                           height: 1.43,
                                         ),
                                       ),
@@ -107,22 +104,15 @@ class BoardPlainScreen extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: const Color(0xFF1F2937),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
+            style: AppTheme.text.copyWith(
+              fontSize: 16.0,
+              fontWeight: getFontWeight(600),
             ),
           ),
           Text(
             body,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: const Color(0xFF6B7280),
-              fontSize: 14,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-            ),
+            style: AppTheme.text.copyWith(color: AppTheme.steelMist),
           ),
         ],
       ),
@@ -136,11 +126,9 @@ class BoardPlainScreen extends StatelessWidget {
         Text(
           'What\'s Next After Setup',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: const Color(0xFF1F2937),
-            fontSize: 20,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
+          style: AppTheme.text.copyWith(
+            fontSize: 20.0,
+            fontWeight: getFontWeight(600),
             height: 1.40,
           ),
         ),
@@ -175,11 +163,9 @@ class BoardPlainScreen extends StatelessWidget {
         children: [
           Text(
             'Your Board Preview',
-            style: TextStyle(
-              color: const Color(0xFF1F2937),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
+            style: AppTheme.text.copyWith(
+              fontSize: 16.0,
+              fontWeight: getFontWeight(600),
             ),
           ),
           CustomCard(
@@ -206,11 +192,8 @@ class BoardPlainScreen extends StatelessWidget {
             children: [
               Text(
                 'This preview shows how your academic board will look with the BoardPlain aesthetic.',
-                style: TextStyle(
-                  color: const Color(0xFF6B7280),
-                  fontSize: 14,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.steelMist,
                   height: 1.43,
                 ),
               ),
@@ -228,11 +211,8 @@ class BoardPlainScreen extends StatelessWidget {
                           .map(
                             (str) => Text(
                               str,
-                              style: TextStyle(
-                                color: const Color(0xFF6B7280),
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.steelMist,
                               ),
                             ),
                           )
@@ -255,17 +235,13 @@ class BoardPlainScreen extends StatelessWidget {
 
   Widget _form(BoardPlainVm vm) {
     final hintStyle = AppTheme.text.copyWith(
-      color: const Color(0xFFADAEBC),
-      fontSize: 16,
-      fontFamily: 'Inter',
-      fontWeight: FontWeight.w400,
+      color: AppTheme.slateGray,
+      fontSize: 16.0,
       height: 1.50,
     );
     final labelStyle = AppTheme.text.copyWith(
-      color: const Color(0xFF1F2937),
-      fontSize: 16,
-      fontFamily: 'Inter',
-      fontWeight: FontWeight.w500,
+      fontSize: 16.0,
+      fontWeight: getFontWeight(500),
     );
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(6),
@@ -362,13 +338,7 @@ class BoardPlainScreen extends StatelessWidget {
           color: isChecked ? AppTheme.dodgerBlue : null,
         ),
       ),
-      style: TextStyle(
-        color: const Color(0xFF1F2937),
-        fontSize: 16,
-        fontFamily: 'Inter',
-        fontWeight: FontWeight.w400,
-        height: 1.50,
-      ),
+      style: AppTheme.text.copyWith(fontSize: 16.0, height: 1.50),
     );
   }
 
@@ -413,11 +383,9 @@ class BoardPlainScreen extends StatelessWidget {
                             ),
                             onTap: NavigationHelper.pop,
                             text: 'Choose Different Style',
-                            style: TextStyle(
-                              color: const Color(0xFF6B7280),
-                              fontSize: 16,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.steelMist,
+                              fontSize: 16.0,
                               height: 1.50,
                             ),
                           ),
@@ -438,9 +406,8 @@ class BoardPlainScreen extends StatelessWidget {
   Widget _titleHeader() {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        return Container(
+        return SizedBox(
           width: double.infinity,
-          padding: EdgeInsets.only(bottom: 30),
           child: ResponsivePadding(
             mobile: EdgeInsets.all(mobilePadding),
             tablet: EdgeInsets.symmetric(
@@ -474,11 +441,9 @@ class BoardPlainScreen extends StatelessWidget {
                         Text(
                           'Step 1 of 2 • Set up your scholarly workspace',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: const Color(0xFF6B7280),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.steelMist,
+                            fontSize: 16.0,
                             height: 1.50,
                           ),
                         ),

@@ -60,32 +60,32 @@ class ChooseBoardMain extends StatelessWidget {
     );
   }
 
-  Widget _customCreateBoard() {
-    return _cardFrame(
-      title: 'Custom',
-      header: SizedBox(
-        height: 140,
-        width: double.infinity,
-        child: Column(
-          spacing: 6,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SVGImagePlaceHolder(imagePath: Images.draw, size: 36),
-            Text(
-              'Create your own',
-              textAlign: TextAlign.center,
-              style: AppTheme.text.copyWith(
-                color: AppTheme.vividBlue,
-                fontSize: 16.0,
-              ),
-            ),
-          ],
-        ),
-      ),
-      description: 'Personalize your own style',
-    );
-  }
+  // Widget _customCreateBoard() {
+  //   return _cardFrame(
+  //     title: 'Custom',
+  //     header: SizedBox(
+  //       height: 140,
+  //       width: double.infinity,
+  //       child: Column(
+  //         spacing: 6,
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           SVGImagePlaceHolder(imagePath: Images.draw, size: 36),
+  //           Text(
+  //             'Create your own',
+  //             textAlign: TextAlign.center,
+  //             style: AppTheme.text.copyWith(
+  //               color: AppTheme.vividBlue,
+  //               fontSize: 16.0,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //     description: 'Personalize your own style',
+  //   );
+  // }
 
   Widget _cardFrame({
     required String title,

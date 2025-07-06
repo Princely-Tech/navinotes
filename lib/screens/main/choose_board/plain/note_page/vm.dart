@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 
-class BoardNotesVm extends ChangeNotifier {
+class BoardPlainNotePageVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  BoardNotesVm({required this.scaffoldKey});
+  BoardPlainNotePageVm({required this.scaffoldKey});
   void openDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
   }

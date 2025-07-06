@@ -1,15 +1,16 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-class MinimalistMindMapMain extends StatelessWidget {
-  const MinimalistMindMapMain({super.key});
+class BoardPlainMindMapMain extends StatelessWidget {
+  const BoardPlainMindMapMain({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MinimalistMindMapVm>(
+    return Consumer<BoardPlainMindMapVm>(
       builder: (_, vm, _) {
         return Column(
           children: [
+            _header(vm),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -49,7 +50,7 @@ class MinimalistMindMapMain extends StatelessWidget {
     );
   }
 
-  Widget _header(MinimalistMindMapVm vm) {
+  Widget _header(BoardPlainMindMapVm vm) {
     return Container(
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(

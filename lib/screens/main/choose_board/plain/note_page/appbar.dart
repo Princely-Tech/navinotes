@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/screens/main/board_notes/shared.dart';
-import 'package:navinotes/screens/main/board_notes/vm.dart';
+import 'package:navinotes/screens/main/choose_board/plain/note_page/shared.dart';
+import 'package:navinotes/screens/main/choose_board/plain/note_page/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 
-class BoardNotesAppBar extends StatelessWidget {
-  const BoardNotesAppBar({super.key});
+class BoardPlainNotePageAppBar extends StatelessWidget {
+  const BoardPlainNotePageAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BoardNotesVm>(
+    return Consumer<BoardPlainNotePageVm>(
       builder: (_, vm, _) {
         return Container(
           decoration: ShapeDecoration(

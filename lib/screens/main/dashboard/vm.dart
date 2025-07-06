@@ -33,6 +33,6 @@ class DashboardVm extends ChangeNotifier {
   }
 
   goToBoardNotes() {
-    NavigationHelper.push(Routes.boardNotes);
+    // NavigationHelper.push(Routes.boardNotes); //TODO
   }
 }

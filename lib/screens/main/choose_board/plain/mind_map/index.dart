@@ -4,27 +4,27 @@ import 'main.dart';
 import 'vm.dart';
 import 'package:navinotes/packages.dart';
 
-class BoardMinimalistMindMapScreen extends StatelessWidget {
-  BoardMinimalistMindMapScreen({super.key});
+class BoardPlainMindMapScreen extends StatelessWidget {
+  BoardPlainMindMapScreen({super.key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => MinimalistMindMapVm(scaffoldKey: _scaffoldKey),
-      child: Consumer<MinimalistMindMapVm>(
+      create: (_) => BoardPlainMindMapVm(scaffoldKey: _scaffoldKey),
+      child: Consumer<BoardPlainMindMapVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
             backgroundColor: AppTheme.white,
-            endDrawer: CustomDrawer(child: MinimalistMindMapRight()),
-            drawer: CustomDrawer(child: MinimalistMindMapLeft()),
+            endDrawer: CustomDrawer(child: BoardPlainMindMapRight()),
+            drawer: CustomDrawer(child: BoardPlainMindMapLeft()),
             body: Column(
               children: [
                 CustomMindMapHeader(
                   openDrawer: vm.openDrawer,
-                  boardTheme: BoardTheme.minimalist,
+                  boardTheme: BoardTheme.plain,
                   openEndDrawer: vm.openEndDrawer,
                 ),
                 Expanded(
@@ -35,16 +35,16 @@ class BoardMinimalistMindMapScreen extends StatelessWidget {
                         desktop: true,
                         child: WidthLimiter(
                           mobile: 256,
-                          child: MinimalistMindMapLeft(),
+                          child: BoardPlainMindMapLeft(),
                         ),
                       ),
-                      Expanded(child: MinimalistMindMapMain()),
+                      Expanded(child: BoardPlainMindMapMain()),
                       VisibleController(
                         mobile: false,
                         laptop: true,
                         child: WidthLimiter(
                           mobile: 256,
-                          child: MinimalistMindMapRight(),
+                          child: BoardPlainMindMapRight(),
                         ),
                       ),
                     ],

@@ -39,7 +39,7 @@ class NewNotesButton extends StatelessWidget {
   final bool isAside;
   @override
   Widget build(BuildContext context) {
-    return Consumer<BoardNotesVm>(
+    return Consumer<BoardPlainNotePageVm>(
       builder: (context, vm, child) {
         return AppButton(
           color: AppTheme.primaryColor,

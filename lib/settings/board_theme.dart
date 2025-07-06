@@ -3,11 +3,13 @@ import 'package:navinotes/packages.dart';
 enum BoardTheme {
   darkAcademia,
   minimalist,
-  nature;
+  nature,
+  plain;
 
   bool get isDarkAcademia => this == darkAcademia;
   bool get isNature => this == nature;
   bool get isMinimalist => this == minimalist;
+  bool get isPlain => this == plain;
 }
 
 class BordThemeValues {
@@ -71,16 +73,17 @@ extension BoardThemeExtension on BoardTheme {
           color: AppTheme.linen,
         );
       case BoardTheme.minimalist:
-        // bgColor = AppTheme.mintCream;
         borderColor = AppTheme.aliceBlue;
         color1 = AppTheme.wetAsphalt;
         fontFamily = AppTheme.fontFamily;
         inputBorderColor = AppTheme.lightGray;
         inputBackgroundColor = AppTheme.transparent;
-      // layoutBtnContainerDecoration = layoutBtnContainerDecoration.copyWith(
-      //   border: Border.all(color: AppTheme.sageMist.withAlpha(0x4C)),
-      //   color: AppTheme.linen,
-      // );
+      case BoardTheme.plain:
+        // borderColor = AppTheme.aliceBlue;
+        // color1 = AppTheme.wetAsphalt;
+        fontFamily = AppTheme.fontFamily;
+        // inputBorderColor = AppTheme.lightGray;
+        // inputBackgroundColor = AppTheme.transparent;
     }
     return BordThemeValues(
       backgroundColor: bgColor,

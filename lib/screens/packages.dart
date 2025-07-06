@@ -6,7 +6,7 @@ export 'auth/utils.dart';
 
 //Main
 export 'main/pdf_view/vm.dart';
-export 'main/board_notes/index.dart';
+export 'main/choose_board/plain/note_page/index.dart';
 export 'main/dashboard/index.dart';
 export 'main/choose_board/index.dart';
 export 'main/import_pdf/index.dart';

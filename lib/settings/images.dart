@@ -196,7 +196,7 @@ class Images {
 
   //board plain
   static const String boardPlainPreview = '$boardsPlainPath/preview.png';
-  // static const String boardPlain = '$boardsPlainPath/.png';
+  static const String boardPlainScience = '$boardsPlainPath/science.png';
   // static const String boardPlain = '$boardsPlainPath/.png';
   // static const String boardPlain = '$boardsPlainPath/.png';
   // static const String boardPlain = '$boardsPlainPath/.png';

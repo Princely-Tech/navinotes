@@ -11,6 +11,7 @@ class CustomGrid extends StatelessWidget {
     this.spacing,
     this.largeDesktop = 3,
     this.wrapWithIntrinsicHeight = true,
+    this.mobileSpacing,
   });
   final List<Widget> children;
   final int mobile;
@@ -19,6 +20,7 @@ class CustomGrid extends StatelessWidget {
   final int? desktop;
   final int? largeDesktop;
   final double? spacing;
+  final double? mobileSpacing;
   final bool wrapWithIntrinsicHeight;
 
   @override
@@ -49,18 +51,27 @@ class CustomGrid extends StatelessWidget {
   }
 
   Widget _body({required List<Widget> children}) {
-    return Row(
-      crossAxisAlignment:
-          wrapWithIntrinsicHeight
-              ? CrossAxisAlignment.stretch
-              : CrossAxisAlignment.center,
-      spacing: getDefaultSpacing(),
-      children: children.map((item) => Expanded(child: item)).toList(),
+    return Consumer<LayoutProviderVm>(
+      builder: (context, vm, child) {
+        return Row(
+          crossAxisAlignment:
+              wrapWithIntrinsicHeight
+                  ? CrossAxisAlignment.stretch
+                  : CrossAxisAlignment.start,
+          spacing: getDefaultSpacing(),
+          children: children.map((item) => Expanded(child: item)).toList(),
+        );
+      },
     );
   }
 
   double getDefaultSpacing() {
     return spacing ?? 20;
+    // return getDeviceResponsiveValue(
+    //   deviceType: deviceType,
+    //   mobile: mobileSpacing ?? defaultSpace,
+    //   tablet: spacing ?? defaultSpace,
+    // );
   }
 
   int getSplit(DeviceType deviceType) {

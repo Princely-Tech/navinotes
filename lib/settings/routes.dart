@@ -3,7 +3,9 @@ import 'package:navinotes/screens/main/choose_board/minimalist/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/mind_map/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/note_page/index.dart';
+import 'package:navinotes/screens/main/choose_board/plain/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/plain/index.dart';
+import 'package:navinotes/screens/main/choose_board/plain/mind_map/index.dart';
 import 'package:navinotes/screens/main/market_place/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
 import 'package:navinotes/screens/main/market_place/product_detail/index.dart'; //TODO
@@ -16,7 +18,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.aboutMe: (context) => const AboutMeScreen(),
   Routes.dashboard: (context) => DashboardScreen(),
   Routes.chooseBoard: (context) => ChooseBoardScreen(),
-  Routes.boardNotes: (context) => BoardNotesScreen(),
+  Routes.boardPlainNotePage: (context) => BoardPlainNotePageScreen(),
   Routes.noteTemplate: (context) => NoteTemplateScreen(),
   Routes.uploadPdf: (context) => UploadPdfScreen(),
   Routes.pdf: (context) => PdfViewScreen(),
@@ -39,6 +41,8 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardMinimalistNotePage: (context) => BoardMinimalistNotePageScreen(),
   Routes.boardMinimalistMindMap: (context) => BoardMinimalistMindMapScreen(),
   Routes.boardPlain: (context) => BoardPlainScreen(),
+  Routes.boardPlainEdit: (context) => BoardPlainEditScreen(),
+  Routes.boardPlainMindMap: (context) => BoardPlainMindMapScreen(),
 };
 
 class Routes {
@@ -51,7 +55,6 @@ class Routes {
   static const aboutMe = 'aboutMe';
   static const dashboard = 'dashboard';
   static const chooseBoard = 'choose_board';
-  static const boardNotes = 'board_notes';
   static const noteTemplate = 'note_template';
   static const uploadPdf = 'upload_pdf';
   static const importNotes = 'import_notes'; //TODO build this screen
@@ -75,8 +78,8 @@ class Routes {
   static const boardMinimalistMindMap = 'boardMinimalistMindMap';
   static const boardPlain = 'boardPlain';
   static const boardPlainEdit = 'boardPlainEdit';
-  // static const marketplace = 'marketplace';
-  // static const marketplace = 'marketplace';
+  static const boardPlainNotePage = 'boardPlainNotePage';
+  static const boardPlainMindMap = 'boardPlainMindMap';
   // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';
   // static const marketplace = 'marketplace';

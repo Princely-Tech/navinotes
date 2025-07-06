@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/providers/layout.dart';
-import 'package:navinotes/screens/main/board_notes/shared.dart';
-import 'package:navinotes/screens/main/board_notes/vm.dart';
+import 'package:navinotes/screens/main/choose_board/plain/note_page/shared.dart';
+import 'package:navinotes/screens/main/choose_board/plain/note_page/vm.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/index.dart';
 
-class BoardNotesAside extends StatelessWidget {
-  const BoardNotesAside({super.key});
+class BoardPlainNotePageAside extends StatelessWidget {
+  const BoardPlainNotePageAside({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (context, layoutVm, child) {
-        return Consumer<BoardNotesVm>(
+        return Consumer<BoardPlainNotePageVm>(
           builder: (context, vm, child) {
             return Container(
               width: double.infinity,
@@ -67,7 +67,7 @@ class BoardNotesAside extends StatelessWidget {
       spacing: 10,
       children: [
         AppButton(
-          onTap: () {},
+          onTap: () => NavigationHelper.push(Routes.boardPlainMindMap),
           text: 'View Mind Map',
           minHeight: 40,
           prefix: SVGImagePlaceHolder(

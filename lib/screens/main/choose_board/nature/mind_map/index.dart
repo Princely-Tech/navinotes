@@ -1,4 +1,3 @@
-import 'header.dart';
 import 'left.dart';
 import 'right.dart';
 import 'main.dart';
@@ -34,7 +33,11 @@ class BoardNatureMindMapScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      BoardNatureMindMapHeader(),
+                      CustomMindMapHeader(
+                        openDrawer: vm.openDrawer,
+                        boardTheme: BoardTheme.nature,
+                        openEndDrawer: vm.openEndDrawer,
+                      ),
                       Expanded(
                         child: Row(
                           children: [

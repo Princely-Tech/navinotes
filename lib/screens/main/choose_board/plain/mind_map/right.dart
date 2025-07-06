@@ -6,8 +6,8 @@ final titleTextStyle = AppTheme.text.copyWith(
   fontSize: 12.0,
 );
 
-class MinimalistMindMapRight extends StatelessWidget {
-  const MinimalistMindMapRight({super.key});
+class BoardPlainMindMapRight extends StatelessWidget {
+  const BoardPlainMindMapRight({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class MinimalistMindMapRight extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(left: BorderSide(color: AppTheme.lightGray)),
       ),
-      child: Consumer<MinimalistMindMapVm>(
+      child: Consumer<BoardPlainMindMapVm>(
         builder: (_, vm, _) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,18 +23,22 @@ class MinimalistMindMapRight extends StatelessWidget {
               Expanded(
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.all(15),
-                  child: Column(
-                    spacing: 30,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _typography(vm),
-                      _nodeStyling(vm),
-                      AppButton(
-                        onTap: () {},
-                        text: 'Apply Changes',
-                        color: AppTheme.steelBlue,
-                      ),
-                    ],
+                  child: EditHeaderSection(
+                    theme: BoardTheme.minimalist,
+                    title: 'Customization',
+                    child: Column(
+                      spacing: 30,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _typography(vm),
+                        _nodeStyling(vm),
+                        AppButton(
+                          onTap: () {},
+                          text: 'Apply Changes',
+                          color: AppTheme.steelBlue,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -45,7 +49,7 @@ class MinimalistMindMapRight extends StatelessWidget {
     );
   }
 
-  Widget _shapeItem(MinimalistMindMapVm vm, int index) {
+  Widget _shapeItem(BoardPlainMindMapVm vm, int index) {
     bool isSelected = vm.shape == index;
     bool radiusIs2 = index == 1 || index == 3;
     return InkWell(
@@ -74,7 +78,7 @@ class MinimalistMindMapRight extends StatelessWidget {
     );
   }
 
-  Widget _lineItem(MinimalistMindMapVm vm, int index) {
+  Widget _lineItem(BoardPlainMindMapVm vm, int index) {
     bool isSelected = vm.selectedLine == index;
     return _selectItem(
       isSelected: isSelected,
@@ -83,7 +87,7 @@ class MinimalistMindMapRight extends StatelessWidget {
     );
   }
 
-  Widget _connectionLines(MinimalistMindMapVm vm) {
+  Widget _connectionLines(BoardPlainMindMapVm vm) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: _section(
@@ -137,7 +141,7 @@ class MinimalistMindMapRight extends StatelessWidget {
     );
   }
 
-  Widget _nodeStyling(MinimalistMindMapVm vm) {
+  Widget _nodeStyling(BoardPlainMindMapVm vm) {
     return _section(
       title: 'Node Styling',
       child: Column(
@@ -173,7 +177,7 @@ class MinimalistMindMapRight extends StatelessWidget {
     );
   }
 
-  Widget _borderStyleItem(MinimalistMindMapVm vm, BorderStyleItem item) {
+  Widget _borderStyleItem(BoardPlainMindMapVm vm, BorderStyleItem item) {
     String text = item.toString();
     bool isSelected = vm.borderStyleItem == item;
     return _selectItem(
@@ -183,7 +187,7 @@ class MinimalistMindMapRight extends StatelessWidget {
     );
   }
 
-  Widget _typography(MinimalistMindMapVm vm) {
+  Widget _typography(BoardPlainMindMapVm vm) {
     return _section(
       title: 'Typography',
       child: Column(
@@ -263,7 +267,7 @@ class MinimalistMindMapRight extends StatelessWidget {
     );
   }
 
-  Widget _weightItem(MinimalistMindMapVm vm, FontWeight fontWeight) {
+  Widget _weightItem(BoardPlainMindMapVm vm, FontWeight fontWeight) {
     String text = '';
     switch (fontWeight) {
       case FontWeight.w300:

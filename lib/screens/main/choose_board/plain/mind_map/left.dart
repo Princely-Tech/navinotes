@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-class MinimalistMindMapLeft extends StatelessWidget {
-  const MinimalistMindMapLeft({super.key});
+class BoardPlainMindMapLeft extends StatelessWidget {
+  const BoardPlainMindMapLeft({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +10,7 @@ class MinimalistMindMapLeft extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(right: BorderSide(color: AppTheme.lightGray)),
       ),
-      child: Consumer<MinimalistMindMapVm>(
+      child: Consumer<BoardPlainMindMapVm>(
         builder: (_, vm, _) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -18,72 +18,79 @@ class MinimalistMindMapLeft extends StatelessWidget {
               Expanded(
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.all(15),
-                  child: Column(
-                    spacing: 30,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _section(
-                        title: 'Documents',
-                        count: 12,
-                        child: Column(
-                          spacing: 10,
-                          children: [
-                            _imgRow(
-                              img: Images.file2,
-                              title: 'Cell Division Notes',
-                            ),
-                            _imgRow(
-                              img: Images.pdf,
-                              title: 'Genetic Disorders.pdf',
-                            ),
-                            _imgRow(
-                              img: Images.file2,
-                              title: 'Enzyme Kinetics',
-                            ),
-                          ],
+                  child: EditHeaderSection(
+                    theme: BoardTheme.minimalist,
+                    title: 'Advanced Biology',
+                    child: Column(
+                      spacing: 30,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _section(
+                          title: 'Documents',
+                          count: 12,
+                          child: Column(
+                            spacing: 10,
+                            children: [
+                              _imgRow(
+                                img: Images.file2,
+                                title: 'Cell Division Notes',
+                              ),
+                              _imgRow(
+                                img: Images.pdf,
+                                title: 'Genetic Disorders.pdf',
+                              ),
+                              _imgRow(
+                                img: Images.file2,
+                                title: 'Enzyme Kinetics',
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
 
-                      _section(
-                        title: 'Recent Imports',
-                        count: 3,
-                        child: Column(
-                          spacing: 10,
-                          children: [
-                            _imgRow(
-                              img: Images.pdf,
-                              title: 'Immunology Review.pdf',
-                            ),
-                            _imgRow(
-                              img: Images.imgCopy,
-                              title: 'Neuron Structure.jpg',
-                            ),
-                          ],
+                        _section(
+                          title: 'Recent Imports',
+                          count: 3,
+                          child: Column(
+                            spacing: 10,
+                            children: [
+                              _imgRow(
+                                img: Images.pdf,
+                                title: 'Immunology Review.pdf',
+                              ),
+                              _imgRow(
+                                img: Images.imgCopy,
+                                title: 'Neuron Structure.jpg',
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      _section(
-                        title: 'Filters',
-                        child: Column(
-                          spacing: 10,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:
-                              MindMapFilterType.values
-                                  .map((filter) => _filterItem(filter, vm))
-                                  .toList(),
+                        _section(
+                          title: 'Filters',
+                          child: Column(
+                            spacing: 10,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:
+                                MindMapFilterType.values
+                                    .map((filter) => _filterItem(filter, vm))
+                                    .toList(),
+                          ),
                         ),
-                      ),
-                      _section(
-                        title: 'Tags',
-                        child: Column(
-                          spacing: 25,
-                          children: [
-                            _imgRow(title: 'Cellular Processes', right: '111'),
-                            _imgRow(title: 'Genetic Studies', right: '111'),
-                            _imgRow(title: 'Metabolic Pathways', right: '11'),
-                          ],
+                        _section(
+                          title: 'Tags',
+                          child: Column(
+                            spacing: 25,
+                            children: [
+                              _imgRow(
+                                title: 'Cellular Processes',
+                                right: '111',
+                              ),
+                              _imgRow(title: 'Genetic Studies', right: '111'),
+                              _imgRow(title: 'Metabolic Pathways', right: '11'),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -94,7 +101,7 @@ class MinimalistMindMapLeft extends StatelessWidget {
     );
   }
 
-  Widget _filterItem(MindMapFilterType type, MinimalistMindMapVm vm) {
+  Widget _filterItem(MindMapFilterType type, BoardPlainMindMapVm vm) {
     bool isSelected = vm.selectedFilters.contains(type);
     return AppButton.text(
       onTap: () => vm.updateSelectedFilters(type),
