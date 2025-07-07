@@ -352,51 +352,39 @@ class BoardPlainScreen extends StatelessWidget {
         mobile: EdgeInsets.symmetric(horizontal: mobilePadding),
         tablet: EdgeInsets.symmetric(horizontal: tabletPadding),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 15,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(
-              child: WidthLimiter(
-                mobile: largeDesktopSize,
-                child: Row(
-                  spacing: 15,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: MenuButton(
-                              onPressed: () {},
-                              decoration: BoxDecoration(
-                                color: AppTheme.vividRose,
-                              ),
-                            ),
-                          ),
-                          AppButton.text(
-                            wrapWithFlexible: true,
-                            mainAxisSize: MainAxisSize.min,
-                            prefix: Icon(
-                              Icons.arrow_back,
-                              color: Color(0xFF6B7280),
-                              size: 18,
-                            ),
-                            onTap: NavigationHelper.pop,
-                            text: 'Choose Different Style',
-                            style: AppTheme.text.copyWith(
-                              color: AppTheme.steelMist,
-                              fontSize: 16.0,
-                              height: 1.50,
-                            ),
-                          ),
-                        ],
-                      ),
+            Expanded(
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: MenuButton(
+                      onPressed: () {},
+                      decoration: BoxDecoration(color: AppTheme.vividRose),
                     ),
-                    ProfilePic(),
-                  ],
-                ),
+                  ),
+                  AppButton.text(
+                    wrapWithFlexible: true,
+                    mainAxisSize: MainAxisSize.min,
+                    prefix: Icon(
+                      Icons.arrow_back,
+                      color: Color(0xFF6B7280),
+                      size: 18,
+                    ),
+                    onTap: NavigationHelper.pop,
+                    text: 'Choose Different Style',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.steelMist,
+                      fontSize: 16.0,
+                      height: 1.50,
+                    ),
+                  ),
+                ],
               ),
             ),
+            ProfilePic(),
           ],
         ),
       ),
