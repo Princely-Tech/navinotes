@@ -62,6 +62,7 @@ flutter:
     - assets/images/boards/nature/
     - assets/images/boards/minimalist/
     - assets/images/boards/plain/
+    - assets/images/boards/light_academia/
     - assets/images/del/
     - assets/images/boards/notes/
     - assets/images/boards/create/
@@ -70,12 +71,6 @@ flutter:
     - .env
 
   fonts:
-    # - family: Inter
-    #   fonts:
-    #     - asset: assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf
-    # - family: Playfair Display
-    #   fonts:
-    #     - asset: assets/fonts/play_fair/PlayfairDisplay-VariableFont_wght.ttf
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter/static/Inter_18pt-Thin.ttf
@@ -110,6 +105,18 @@ flutter:
           weight: 800
         - asset: assets/fonts/play_fair/static/PlayfairDisplay-Black.ttf
           weight: 900
+    - family: EB Garamond
+      fonts:
+        - asset: assets/fonts/EB_Garamond/static/EBGaramond-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/EB_Garamond/static/EBGaramond-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/EB_Garamond/static/EBGaramond-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/EB_Garamond/static/EBGaramond-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/EB_Garamond/static/EBGaramond-ExtraBold.ttf
+          weight: 800
     - family: Poppins
       fonts:
         - asset: assets/fonts/poppins/Poppins-Regular.ttf

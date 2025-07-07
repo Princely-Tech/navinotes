@@ -45,3 +45,22 @@ class GoNewNoteButton extends StatelessWidget {
     );
   }
 }
+
+class BoardPageFooter extends StatelessWidget {
+  const BoardPageFooter({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 50),
+      child: Text(
+        '© 2023 Academic Board Builder',
+        textAlign: TextAlign.center,
+        style: AppTheme.text.copyWith(
+          color: AppTheme.sepiaBrown,
+          fontFamily: AppTheme.fontOpenSans,
+        ),
+      ),
+    );
+  }
+}

@@ -105,7 +105,7 @@ List<BoardType> boardTypes = [
     name: 'Light Academia',
     image: Images.boardAcademiaLight,
     description: 'Bright scholarly, cream tones',
-    route: '',
+    route: Routes.boardLightAcademia,
   ),
   BoardType(
     name: 'Nature',
@@ -113,12 +113,12 @@ List<BoardType> boardTypes = [
     description: 'Organic patterns, natural colors',
     route: Routes.boardNature,
   ),
-  BoardType(
-    name: 'Pastel',
-    image: Images.boardPastel,
-    description: 'Soft, muted color palette',
-    route: '',
-  ),
+  // BoardType(
+  //   name: 'Pastel',
+  //   image: Images.boardPastel,
+  //   description: 'Soft, muted color palette',
+  //   route: '',
+  // ),
   BoardType(
     name: 'Tech/Neon',
     image: Images.boardNeon,

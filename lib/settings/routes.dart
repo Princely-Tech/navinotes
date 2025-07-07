@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/choose_board/light_academia/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/mind_map/index.dart';
@@ -43,6 +44,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardPlain: (context) => BoardPlainScreen(),
   Routes.boardPlainEdit: (context) => BoardPlainEditScreen(),
   Routes.boardPlainMindMap: (context) => BoardPlainMindMapScreen(),
+  Routes.boardLightAcademia: (context) => BoardLightAcademiaScreen(),
 };
 
 class Routes {
@@ -80,9 +82,14 @@ class Routes {
   static const boardPlainEdit = 'boardPlainEdit';
   static const boardPlainNotePage = 'boardPlainNotePage';
   static const boardPlainMindMap = 'boardPlainMindMap';
-  // static const marketplace = 'marketplace';
-  // static const marketplace = 'marketplace';
-  // static const marketplace = 'marketplace';
+  static const boardLightAcademia = 'boardLightAcademia';
+  static const boardLightAcademiaEdit = 'boardLightAcademiaEdit';
+  static const boardLightAcademiaNotePage = 'boardLightAcademiaNotePage';
+  static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+
+  // static const board = 'board';
+  // static const board = 'board';
+  // static const board = 'board';
 }
 //Documentation
 //https://documenter.getpostman.com/view/45960961/2sB2x8GXet

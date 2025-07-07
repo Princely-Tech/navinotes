@@ -165,6 +165,13 @@ class AppTheme {
   static const Color orange = Color(0xFFF97316);
   static const Color lightOrange = Color(0xFFFDBA74);
   static const Color almostWhite = Color(0xFFF8F9FA);
+  static const Color yellowishOrange = Color(0x33E6B800);
+  static const Color pearl = Color(0x7FFEF9E7);
+  static const Color eggShell = Color(0x33F5F2E8);
+  static const Color ivoryCream = Color(0xFFFAF7F0);
+  static const Color almondCream = Color(0xFFF0EBE0);
+  static const Color goldenTan = Color(0xFFBB8F59);
+  static const Color sepiaBrown = Color(0xFF654321);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
@@ -175,6 +182,8 @@ class AppTheme {
   static const String fontCrimsonPro = 'Crimson Pro';
   static const String fontCrimsonText = 'Crimson Text';
   static const String fontLibreBaskerville = 'Libre Baskerville';
+  static const String fontEBGaramond = 'EB Garamond';
+  static const String fontOpenSans = 'Open Sans'; //TODO bring in font
 
   static get text => TextStyle(
     color: defaultBlack,
