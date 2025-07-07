@@ -12,6 +12,8 @@ class TextRowSelect extends StatelessWidget {
     this.selectedTextStyle,
     this.style,
     this.inActiveBorderColor = AppTheme.transparent,
+    this.fillWidth = true,
+    this.btnStyle,
   });
   final List<String> items;
   final String selected;
@@ -22,6 +24,8 @@ class TextRowSelect extends StatelessWidget {
   final TextStyle? selectedTextStyle;
   final TextStyle? style;
   final Color inActiveBorderColor;
+  final bool fillWidth;
+  final ButtonStyle? btnStyle;
   @override
   Widget build(_) {
     return LayoutBuilder(
@@ -33,42 +37,51 @@ class TextRowSelect extends StatelessWidget {
         return ScrollableController(
           scrollDirection: Axis.horizontal,
           child: Container(
-            constraints: BoxConstraints(minWidth: minWidth),
+            constraints: fillWidth ? BoxConstraints(minWidth: minWidth) : null,
             decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: inActiveBorderColor)),
             ),
             child: Row(
+              spacing: 5,
               children:
                   items.map((str) {
                     bool isSelected = str == selected;
                     TextStyle? runTextStyle =
                         isSelected ? selectedTextStyle : style;
-                    return TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    ButtonStyle buttonStyle = TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    );
+                    if (isNotNull(btnStyle) && isSelected) {
+                      buttonStyle = btnStyle!;
+                    }
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom:
+                              isSelected
+                                  ? BorderSide(color: borderColor)
+                                  : BorderSide.none,
                         ),
                       ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom:
-                                isSelected
-                                    ? BorderSide(color: borderColor)
-                                    : BorderSide.none,
+                      child: TextButton(
+                        onPressed: () {},
+                        style: buttonStyle.copyWith(),
+                        child: Container(
+                          padding: padding ?? EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            str,
+                            style:
+                                runTextStyle ??
+                                AppTheme.text.copyWith(
+                                  color:
+                                      isSelected
+                                          ? selectedTextColor
+                                          : textColor,
+                                  fontSize: 16.0,
+                                ),
                           ),
-                        ),
-                        padding: padding ?? EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          str,
-                          style:
-                              runTextStyle ??
-                              AppTheme.text.copyWith(
-                                color:
-                                    isSelected ? selectedTextColor : textColor,
-                                fontSize: 16.0,
-                              ),
                         ),
                       ),
                     );

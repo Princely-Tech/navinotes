@@ -3,7 +3,7 @@ import 'package:navinotes/packages.dart';
 
 class BoardPlainEditScreen extends StatelessWidget {
   const BoardPlainEditScreen({super.key});
-
+//TODO use apptheme to replace Teaxtstyles
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

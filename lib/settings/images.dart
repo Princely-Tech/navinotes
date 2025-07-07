@@ -197,6 +197,7 @@ class Images {
 
   static const String boardLightAcadPreview =
       '$boardsLightAcademiaPath/preview.png';
+  static const String boardLightAcadScience = '$boardsLightAcademiaPath/science.png';
   // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
   // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
 

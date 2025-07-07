@@ -460,14 +460,13 @@ class ProfilePic extends StatelessWidget {
     return Consumer<SessionManager>(
       builder: (_, sessionManager, _) {
         return Container(
-          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: borderColor),
+            border: Border.all(color: borderColor, width: 2),
           ),
-          child: SVGImagePlaceHolder(
-            imagePath: Images.avatar,
-            size: size,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: SVGImagePlaceHolder(imagePath: Images.avatar, size: size),
           ), //TODO show user image
         );
       },

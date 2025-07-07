@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/choose_board/light_academia/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/light_academia/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/index.dart';
@@ -45,6 +46,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardPlainEdit: (context) => BoardPlainEditScreen(),
   Routes.boardPlainMindMap: (context) => BoardPlainMindMapScreen(),
   Routes.boardLightAcademia: (context) => BoardLightAcademiaScreen(),
+  Routes.boardLightAcademiaEdit: (context) => BoardLightAcadEditScreen(),
 };
 
 class Routes {

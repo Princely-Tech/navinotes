@@ -63,21 +63,18 @@ class BoardLightAcademiaScreen extends StatelessWidget {
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 25,
                                           ),
-                                          style: TextStyle(
-                                            color: const Color(0xFFFAF7F0),
-                                            fontSize: 18,
-                                            fontFamily: 'EB Garamond',
-                                            fontWeight: FontWeight.w400,
+                                          style: AppTheme.text.copyWith(
+                                            color: AppTheme.ivoryCream,
+                                            fontSize: 18.0,
+                                            fontFamily: AppTheme.fontEBGaramond,
                                           ),
                                         ),
                                         Text(
                                           'Don\'t worry - you can always change these details later.',
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: const Color(0xFF6B7280),
-                                            fontSize: 14,
-                                            fontFamily: 'Open Sans',
-                                            fontWeight: FontWeight.w400,
+                                          style: AppTheme.text.copyWith(
+                                            color: AppTheme.steelMist,
+                                            fontFamily: AppTheme.fontOpenSans,
                                             height: 1.43,
                                           ),
                                         ),
@@ -132,21 +129,19 @@ class BoardLightAcademiaScreen extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: const Color(0xFF8B4513),
-              fontSize: 20,
-              fontFamily: 'EB Garamond',
-              fontWeight: FontWeight.w400,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.burntLeather.withAlpha(0xFF),
+              fontSize: 20.0,
+              fontFamily: AppTheme.fontEBGaramond,
             ),
           ),
           Text(
             body,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: const Color(0xFF654321),
-              fontSize: 16,
-              fontFamily: 'EB Garamond',
-              fontWeight: FontWeight.w400,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.sepiaBrown,
+              fontSize: 16.0,
+              fontFamily: AppTheme.fontEBGaramond,
             ),
           ),
         ],
@@ -162,10 +157,9 @@ class BoardLightAcademiaScreen extends StatelessWidget {
           'What\'s Next After Setup',
           textAlign: TextAlign.center,
           style: AppTheme.text.copyWith(
-            color: const Color(0xFF8B4513),
-            fontSize: 24,
-            fontFamily: 'EB Garamond',
-            fontWeight: FontWeight.w400,
+            color: AppTheme.burntLeather.withAlpha(0xFF),
+            fontSize: 24.0,
+            fontFamily: AppTheme.fontEBGaramond,
             height: 1.33,
           ),
         ),
@@ -200,11 +194,10 @@ class BoardLightAcademiaScreen extends StatelessWidget {
         children: [
           Text(
             'Your Board Preview',
-            style: TextStyle(
-              color: const Color(0xFF8B4513),
-              fontSize: 24,
-              fontFamily: 'EB Garamond',
-              fontWeight: FontWeight.w400,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.burntLeather.withAlpha(0xFF),
+              fontSize: 24.0,
+              fontFamily: AppTheme.fontEBGaramond,
             ),
           ),
           Column(
@@ -230,11 +223,10 @@ class BoardLightAcademiaScreen extends StatelessWidget {
             children: [
               Text(
                 'This preview shows how your academic board will look with the BoardPlain aesthetic.',
-                style: TextStyle(
-                  color: const Color(0xFF654321),
-                  fontSize: 16,
-                  fontFamily: 'EB Garamond',
-                  fontWeight: FontWeight.w400,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.sepiaBrown,
+                  fontSize: 16.0,
+                  fontFamily: AppTheme.fontEBGaramond,
                   height: 1.50,
                 ),
               ),
@@ -253,21 +245,19 @@ class BoardLightAcademiaScreen extends StatelessWidget {
                               children: [
                                 TextSpan(
                                   text: '❦   ',
-                                  style: TextStyle(
-                                    color: const Color(0xFFD4AF37),
-                                    fontSize: 16,
-                                    fontFamily: 'EB Garamond',
-                                    fontWeight: FontWeight.w400,
+                                  style: AppTheme.text.copyWith(
+                                    color: AppTheme.royalGold,
+                                    fontSize: 16.0,
+                                    fontFamily: AppTheme.fontEBGaramond,
                                     height: 1.50,
                                   ),
                                 ),
                                 TextSpan(
                                   text: str,
-                                  style: TextStyle(
-                                    color: const Color(0xFF654321),
-                                    fontSize: 16,
-                                    fontFamily: 'EB Garamond',
-                                    fontWeight: FontWeight.w400,
+                                  style: AppTheme.text.copyWith(
+                                    color: AppTheme.sepiaBrown,
+                                    fontSize: 16.0,
+                                    fontFamily: AppTheme.fontEBGaramond,
                                     height: 1.50,
                                   ),
                                 ),
@@ -297,18 +287,16 @@ class BoardLightAcademiaScreen extends StatelessWidget {
 
   Widget _form(BoardLightAcadVm vm) {
     final hintStyle = AppTheme.text.copyWith(
-      color: const Color(0xFFADAEBC),
-      fontSize: 16,
-      fontFamily: 'EB Garamond',
-      fontWeight: FontWeight.w400,
+      color: AppTheme.slateGray,
+      fontSize: 16.0,
+      fontFamily: AppTheme.fontEBGaramond,
       height: 1.50,
     );
     Color fillColor = AppTheme.eggShell.withAlpha(0xFF);
     final labelStyle = AppTheme.text.copyWith(
-      color: const Color(0xFF654321),
-      fontSize: 16,
-      fontFamily: 'EB Garamond',
-      fontWeight: FontWeight.w400,
+      color: AppTheme.sepiaBrown,
+      fontSize: 16.0,
+      fontFamily: AppTheme.fontEBGaramond,
     );
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(6),
@@ -400,10 +388,9 @@ class BoardLightAcademiaScreen extends StatelessWidget {
         ),
       ),
       style: AppTheme.text.copyWith(
-        color: isChecked ? const Color(0xFFBB8F59) : const Color(0xFF2F2F2F),
-        fontSize: 16,
-        fontFamily: 'EB Garamond',
-        fontWeight: FontWeight.w400,
+        color: isChecked ? AppTheme.goldenTan : AppTheme.jetCharcoal,
+        fontSize: 16.0,
+        fontFamily: AppTheme.fontEBGaramond,
       ),
     );
   }
@@ -414,7 +401,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment(0.00, 0.50),
           end: Alignment(1.00, 0.50),
-          colors: [const Color(0xFFF5F2E8), const Color(0xFFFAF7F0)],
+          colors: [AppTheme.eggShell.withAlpha(0xFF), AppTheme.ivoryCream],
         ),
         border: Border(bottom: BorderSide(color: AppTheme.yellowishOrange)),
       ),
@@ -446,11 +433,10 @@ class BoardLightAcademiaScreen extends StatelessWidget {
                     ),
                     onTap: NavigationHelper.pop,
                     text: 'Choose Different Style',
-                    style: TextStyle(
-                      color: const Color(0xFF654321),
-                      fontSize: 16,
-                      fontFamily: 'EB Garamond',
-                      fontWeight: FontWeight.w400,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.sepiaBrown,
+                      fontSize: 16.0,
+                      fontFamily: AppTheme.fontEBGaramond,
                       height: 1.50,
                     ),
                   ),
@@ -497,9 +483,8 @@ class BoardLightAcademiaScreen extends StatelessWidget {
                               desktop: 35.0,
                               largeDesktop: 48.0,
                             ),
-                            color: const Color(0xFF2F2F2F),
-                            fontFamily: 'EB Garamond',
-                            fontWeight: FontWeight.w400,
+                            color: AppTheme.jetCharcoal,
+                            fontFamily: AppTheme.fontEBGaramond,
                             height: 1,
                           ),
                         ),
@@ -507,10 +492,9 @@ class BoardLightAcademiaScreen extends StatelessWidget {
                           'Step 1 of 2 • Set up your scholarly workspace',
                           textAlign: TextAlign.center,
                           style: AppTheme.text.copyWith(
-                            color: const Color(0xFF654321),
-                            fontSize: 18,
-                            fontFamily: 'EB Garamond',
-                            fontWeight: FontWeight.w400,
+                            color: AppTheme.sepiaBrown,
+                            fontSize: 18.0,
+                            fontFamily: AppTheme.fontEBGaramond,
                             height: 1.56,
                           ),
                         ),

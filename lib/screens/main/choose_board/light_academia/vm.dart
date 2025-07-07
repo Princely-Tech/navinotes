@@ -7,7 +7,8 @@ class BoardLightAcadVm extends ChangeNotifier {
     isPrivate = value;
     notifyListeners();
   }
-  void createHandler(){
-    NavigationHelper.push(Routes.boardPlainEdit);
+
+  void createHandler() {
+    NavigationHelper.push(Routes.boardLightAcademiaEdit);
   }
 }

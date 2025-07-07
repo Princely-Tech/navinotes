@@ -172,6 +172,9 @@ class AppTheme {
   static const Color almondCream = Color(0xFFF0EBE0);
   static const Color goldenTan = Color(0xFFBB8F59);
   static const Color sepiaBrown = Color(0xFF654321);
+  static const Color jetCharcoal = Color(0xFF2F2F2F);
+  static const Color lightBrown = Color(0xFFBC8F59);
+  // static const Color mediumOrchid = Color(0xFFFDBA74);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
