@@ -64,6 +64,7 @@ class CustomInputField extends StatefulWidget {
     this.labelRight,
     this.constraints,
     this.side,
+    this.onChanged,
   }) : controller = controller ?? TextEditingController();
 
   final String? label;
@@ -91,6 +92,7 @@ class CustomInputField extends StatefulWidget {
   final TextStyle? hintStyle;
   final TextStyle? labelStyle;
   final BoxConstraints? constraints;
+  final void Function(String)? onChanged; 
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
@@ -182,6 +184,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
             ],
           ),
         TextFormField(
+          onChanged: widget.onChanged,  
           readOnly: isSelect,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: widget.validator,

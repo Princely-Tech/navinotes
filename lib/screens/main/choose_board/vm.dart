@@ -7,9 +7,30 @@ class ChooseBoardVm extends ChangeNotifier {
   ChooseBoardVm({required this.scaffoldKey});
 
   double backgroundPatternOpacity = 0;
-
   bool saveAsFavoriteStyle = false;
   BoardType selectedBoard = boardTypes.first;
+  final TextEditingController searchController = TextEditingController();
+  List<BoardType> filteredBoards = List.from(boardTypes);
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void updateSearchQuery(String query) {
+    debugPrint(query);
+    if (query.isEmpty) {
+      filteredBoards = List.from(boardTypes);
+    } else {
+      filteredBoards = boardTypes
+          .where((board) =>
+              board.name.toLowerCase().contains(query.toLowerCase()) ||
+              board.description.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+    notifyListeners();
+  }
 
   void updateBackgroundPatternOpacity(double value) {
     backgroundPatternOpacity = value;

@@ -41,7 +41,7 @@ class ChooseBoardMain extends StatelessWidget {
                           ),
                           CustomGrid(
                             children: [
-                              ...boardTypes.map(
+                              ...vm.filteredBoards.map(
                                 (board) => _board(vm, board: board),
                               ),
                               // _customCreateBoard(),
@@ -173,21 +173,36 @@ class ChooseBoardMain extends StatelessWidget {
   Widget _searchInput() {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: CustomInputField(
-        label: 'Board Name',
-        hintText: 'Enter Board Title...',
-        labelStyle: AppTheme.text.copyWith(
-          color: AppTheme.abyssTeal,
-          fontWeight: getFontWeight(500),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: AppTheme.pastelBlue, width: 1),
-        ),
-        hintStyle: AppTheme.text.copyWith(
-          color: AppTheme.slateGray,
-          height: 1.50,
-        ),
+      child: Consumer<ChooseBoardVm>(
+        builder: (context, vm, _) {
+          return CustomInputField(
+            controller: vm.searchController,
+            label: 'Search Boards',
+            hintText: 'Search by name or description...',
+            onChanged: vm.updateSearchQuery,
+            labelStyle: AppTheme.text.copyWith(
+              color: AppTheme.abyssTeal,
+              fontWeight: getFontWeight(500),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: AppTheme.pastelBlue, width: 1),
+            ),
+            hintStyle: AppTheme.text.copyWith(
+              color: AppTheme.slateGray,
+              height: 1.50,
+            ),
+            suffixIcon: vm.searchController.text.isNotEmpty
+                ? IconButton(
+                    icon: Icon(Icons.clear, size: 20),
+                    onPressed: () {
+                      vm.searchController.clear();
+                      vm.updateSearchQuery('');
+                    },
+                  )
+                : Icon(Icons.search, size: 20),
+          );
+        },
       ),
     );
   }
