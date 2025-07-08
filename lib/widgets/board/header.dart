@@ -102,7 +102,7 @@ class BoardPageMainHeader extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: const Color(0xFF654321),
-              fontSize: 16,
+              fontSize: 16.0,
               fontFamily: 'Crimson Text',
               fontWeight: FontWeight.w400,
             ),

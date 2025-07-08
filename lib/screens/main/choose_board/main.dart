@@ -93,9 +93,11 @@ class ChooseBoardMain extends StatelessWidget {
     required String description,
     bool selected = false,
     void Function()? onTap,
+    void Function()? onDoubleTap,
   }) {
     return InkWell(
       onTap: onTap,
+      onDoubleTap: onDoubleTap,
       child: Stack(
         children: [
           CustomCard(
@@ -156,6 +158,10 @@ class ChooseBoardMain extends StatelessWidget {
     return _cardFrame(
       selected: vm.selectedBoard.name == board.name,
       onTap: () => vm.updateSelectedBoard(board),
+      onDoubleTap: () {
+        vm.updateSelectedBoard(board);
+        vm.createBoard();
+      },
       title: board.name,
       header: AspectRatio(
         aspectRatio: 5 / 2,

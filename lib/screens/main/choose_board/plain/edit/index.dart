@@ -48,7 +48,7 @@ class BoardPlainEditScreen extends StatelessWidget {
                                           'Upload syllabus to generate timeline',
                                       style: TextStyle(
                                         color: const Color(0xFF3B82F6),
-                                        fontSize: 16,
+                                        fontSize: 16.0,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -95,7 +95,7 @@ class BoardPlainEditScreen extends StatelessWidget {
                                           'Upload syllabus to see assignments',
                                       style: AppTheme.text.copyWith(
                                         color: const Color(0xFF3B82F6),
-                                        fontSize: 16,
+                                        fontSize: 16.0,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -116,7 +116,7 @@ class BoardPlainEditScreen extends StatelessWidget {
                                       text: 'Browse files',
                                       style: TextStyle(
                                         color: const Color(0xFF1F2937),
-                                        fontSize: 16,
+                                        fontSize: 16.0,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -172,7 +172,7 @@ class BoardPlainEditScreen extends StatelessWidget {
           title,
           style: TextStyle(
             color: const Color(0xFF6B7280),
-            fontSize: 16,
+            fontSize: 16.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w400,
             height: 1.50,
@@ -183,7 +183,7 @@ class BoardPlainEditScreen extends StatelessWidget {
             value,
             style: TextStyle(
               color: const Color(0xFF9CA3AF),
-              fontSize: 16,
+              fontSize: 16.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
               height: 1.50,
@@ -289,7 +289,7 @@ class BoardPlainEditScreen extends StatelessWidget {
               title,
               style: TextStyle(
                 color: const Color(0xFF1F2937),
-                fontSize: 18,
+                fontSize: 18.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
               ),
@@ -298,7 +298,7 @@ class BoardPlainEditScreen extends StatelessWidget {
               body,
               style: TextStyle(
                 color: const Color(0xFF6B7280),
-                fontSize: 16,
+                fontSize: 16.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
               ),
@@ -311,7 +311,7 @@ class BoardPlainEditScreen extends StatelessWidget {
                 suffix: Icon(Icons.arrow_forward, color: AppTheme.vividBlue),
                 style: AppTheme.text.copyWith(
                   color: AppTheme.vividBlue,
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
                 ),
@@ -339,7 +339,7 @@ class BoardPlainEditScreen extends StatelessWidget {
           header,
           style: AppTheme.text.copyWith(
             color: const Color(0xFF1F2937),
-            fontSize: 20,
+            fontSize: 20.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w600,
             height: 1.40,
@@ -375,7 +375,7 @@ class BoardPlainEditScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: const Color(0xFF1F2937),
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
                 ),
@@ -387,7 +387,7 @@ class BoardPlainEditScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: const Color(0xFF6B7280),
-                    fontSize: 16,
+                    fontSize: 16.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w400,
                   ),
@@ -425,7 +425,7 @@ class BoardPlainEditScreen extends StatelessWidget {
               textAlign: textAlign,
               style: TextStyle(
                 color: const Color(0xFF1F2937),
-                fontSize: 24,
+                fontSize: 24.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
                 height: 1.33,
@@ -436,7 +436,7 @@ class BoardPlainEditScreen extends StatelessWidget {
               textAlign: textAlign,
               style: TextStyle(
                 color: const Color(0xFF6B7280),
-                fontSize: 16,
+                fontSize: 16.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
                 height: 1.50,
@@ -504,13 +504,13 @@ class BoardPlainEditScreen extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10),
       selectedTextStyle: AppTheme.text.copyWith(
         color: const Color(0xFF3B82F6),
-        fontSize: 16,
+        fontSize: 16.0,
         fontFamily: 'Inter',
         fontWeight: FontWeight.w500,
       ),
       style: TextStyle(
         color: const Color(0xFF6B7280),
-        fontSize: 16,
+        fontSize: 16.0,
         fontFamily: 'Inter',
         fontWeight: FontWeight.w500,
       ),
@@ -548,7 +548,7 @@ class BoardPlainEditScreen extends StatelessWidget {
                       text: 'BIOLOGY 101 - Fall Semester',
                       style: TextStyle(
                         color: const Color(0xFF1F2937),
-                        fontSize: 20,
+                        fontSize: 20.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w600,
                         height: 1.40,

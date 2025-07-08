@@ -86,7 +86,7 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                                         'Create New Note Page',
                                         style: TextStyle(
                                           color: const Color(0xFF654321),
-                                          fontSize: 16,
+                                          fontSize: 16.0,
                                           fontFamily: 'Crimson Text',
                                           fontWeight: FontWeight.w400,
                                         ),
@@ -155,7 +155,7 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                           title,
                           style: TextStyle(
                             color: const Color(0xFF654321),
-                            fontSize: 18,
+                            fontSize: 18.0,
                             fontFamily: 'Crimson Text',
                             fontWeight: FontWeight.w400,
                             height: 1.56,
