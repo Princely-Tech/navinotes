@@ -77,22 +77,28 @@ class User {
     otp = otp;
   }
 
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'name': name,
-  //     'email': email,
-  //     // 'country': country,
-  //     // 'country_code': countryCode,
-  //     'latitude': latitude,
-  //     'longitude': longitude,
-  //     'api_key': apiKey,
-  //     'otp_secret': otpSecret,
-  //     'token_secret': tokenSecret,
-  //     'referred_by': referredBy,
-  //     'referral_code': referralCode,
-  //     'updated_at': updatedAt.toIso8601String(),
-  //     'created_at': createdAt.toIso8601String(),
-  //     'id': id,
-  //   };
-  // }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'country': country,
+      'latitude': latitude,
+      'longitude': longitude,
+      'api_key': apiKey,
+      'otp_secret': otpSecret,
+      'token_secret': tokenSecret,
+      'referred_by': referredBy,
+      'referral_code': referralCode,
+      'updated_at': updatedAt,
+      'created_at': createdAt,
+      'email_verified_at': emailVerifiedAt,
+      'iam': iam,
+      'about': about,
+      'school_name': schoolName,
+      'school_field': schoolField,
+      'school_level': schoolLevel,
+      'otp': otp,
+    };
+  }
 }

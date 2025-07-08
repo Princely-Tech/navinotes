@@ -11,9 +11,11 @@ import 'package:navinotes/screens/main/choose_board/plain/index.dart';
 import 'package:navinotes/screens/main/choose_board/plain/mind_map/index.dart';
 import 'package:navinotes/screens/main/market_place/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
-import 'package:navinotes/screens/main/market_place/product_detail/index.dart'; //TODO
+import 'package:navinotes/screens/main/market_place/product_detail/index.dart';
+import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
+  Routes.splash: (context) => const SplashScreen(),
   Routes.auth: (context) => const AuthScreen(),
   Routes.forgotPassword: (context) => ForgotPasswordScreen(),
   Routes.resetPasswordVerify: (context) => ResetPasswordVerifyScreen(),
@@ -53,6 +55,7 @@ Map<String, WidgetBuilder> routes = {
 
 class Routes {
   Routes._();
+  static const splash = 'splash';
   static const auth = 'auth';
   static const String forgotPassword = 'forgot_password';
   static const String resetPasswordVerify = 'reset_password_verify';
@@ -90,10 +93,6 @@ class Routes {
   static const boardLightAcademiaEdit = 'boardLightAcademiaEdit';
   static const boardLightAcademiaNotePage = 'boardLightAcademiaNotePage';
   static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; //TODO create screen
-
-  // static const board = 'board';
-  // static const board = 'board';
-  // static const board = 'board';
 }
 //Documentation
 //https://documenter.getpostman.com/view/45960961/2sB2x8GXet
