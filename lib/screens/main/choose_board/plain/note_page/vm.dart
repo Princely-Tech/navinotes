@@ -8,6 +8,6 @@ class BoardPlainNotePageVm extends ChangeNotifier {
   }
 
   gotToCreateNotePage() {
-    NavigationHelper.push(Routes.noteTemplate);
+    // NavigationHelper.push(Routes.noteTemplate);
   }
 }

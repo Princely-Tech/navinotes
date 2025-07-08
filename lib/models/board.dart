@@ -73,12 +73,14 @@ class BoardType {
   final String image;
   final String description;
   final String route;
+  final String body;
 
   BoardType({
     required this.name,
     required this.route,
     required this.image,
     required this.description,
+    required this.body,
   });
 }
 
@@ -88,30 +90,36 @@ List<BoardType> boardTypes = [
     image: Images.boardPlain,
     description: 'Clean, distraction-free interface',
     route: Routes.boardPlain,
+    body:
+        'A clean, distraction-free interface that keeps the focus on your ideas and connections. Perfect for academic study and professional planning.',
   ),
   BoardType(
     name: 'Minimalist',
     image: Images.boardMinimalist,
     description: 'Simplified, essential elements only',
     route: Routes.boardMinimalist,
+    body: 'Some description',
   ),
   BoardType(
     name: 'Dark Academia',
     image: Images.boardAcademiaDark,
     description: 'Vintage scholarly, darker tones',
     route: Routes.boardDarkAcademia,
+    body: 'Some description',
   ),
   BoardType(
     name: 'Light Academia',
     image: Images.boardAcademiaLight,
     description: 'Bright scholarly, cream tones',
     route: Routes.boardLightAcademia,
+    body: 'Some description',
   ),
   BoardType(
     name: 'Nature',
     image: Images.boardNature,
     description: 'Organic patterns, natural colors',
     route: Routes.boardNature,
+    body: 'Some description',
   ),
   // BoardType(
   //   name: 'Pastel',
@@ -119,12 +127,12 @@ List<BoardType> boardTypes = [
   //   description: 'Soft, muted color palette',
   //   route: '',
   // ),
-  BoardType(
-    name: 'Tech/Neon',
-    image: Images.boardNeon,
-    description: 'Digital, vibrant highlights',
-    route: '',
-  ),
+  // BoardType(
+  //   name: 'Tech/Neon',
+  //   image: Images.boardNeon,
+  //   description: 'Digital, vibrant highlights',
+  //   route: '',
+  // ), //TODO uncoment this
 ];
 
 class Content {

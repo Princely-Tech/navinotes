@@ -28,8 +28,8 @@ class ChooseBoardAside extends StatelessWidget {
                     spacing: 30,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _preview(),
-                      _description(),
+                      _preview(vm),
+                      _description(vm),
                       _colorPalette(),
                       _customization(vm),
                       _fontStyle(),
@@ -207,13 +207,13 @@ class ChooseBoardAside extends StatelessWidget {
     );
   }
 
-  Widget _description() {
+  Widget _description(ChooseBoardVm vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 15,
       children: [
         Text(
-          'Plain',
+          vm.selectedBoard.name,
           style: AppTheme.text.copyWith(
             color: AppTheme.abyssTeal,
             fontSize: 16.0,
@@ -221,14 +221,14 @@ class ChooseBoardAside extends StatelessWidget {
           ),
         ),
         Text(
-          'A clean, distraction-free interface that keeps the focus on your ideas and connections. Perfect for academic study and professional planning.',
+          vm.selectedBoard.body,
           style: AppTheme.text.copyWith(color: AppTheme.black),
         ),
       ],
     );
   }
 
-  Widget _preview() {
+  Widget _preview(ChooseBoardVm vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
@@ -245,7 +245,10 @@ class ChooseBoardAside extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(color: AppTheme.paleBlue),
           ),
-          child: ImagePlaceHolder(imagePath: Images.boardPreview),
+          child: ImagePlaceHolder(
+            imagePath: vm.selectedBoard.image,
+            borderRadius: BorderRadius.zero,
+          ),
         ),
       ],
     );

@@ -16,9 +16,25 @@ class BoardNoteAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BordThemeValues params = theme.values;
+    Gradient? gradient;
+    Color? color = params.backgroundColor;
+    switch (theme) {
+      case BoardTheme.lightAcademia:
+        gradient = LinearGradient(
+          begin: Alignment(0.00, 0.50),
+          end: Alignment(1.00, 0.50),
+          colors: [
+            AppTheme.eggShell.withAlpha(0xCC),
+            AppTheme.eggShell.withAlpha(0xE5),
+            AppTheme.ivoryCream.withAlpha(0xCC),
+          ],
+        );
+      default:
+    }
     return Container(
       decoration: BoxDecoration(
-        color: params.backgroundColor,
+        color: isNotNull(gradient) ? null : color,
+        gradient: gradient,
         border: Border(bottom: BorderSide(color: params.borderColor)),
       ),
       padding: EdgeInsets.symmetric(vertical: 10),
@@ -107,6 +123,10 @@ class BoardNoteAppBar extends StatelessWidget {
       case BoardTheme.darkAcademia:
         appNameColor = AppTheme.vanillaDust.withAlpha(0xE5);
         break;
+      case BoardTheme.lightAcademia:
+        // appNameColor = AppTheme.sepiaBrown;
+        // subjectNameColor = AppTheme.asbestos;
+        break;
       case BoardTheme.minimalist:
         subjectNameColor = AppTheme.asbestos;
         break;
@@ -179,8 +199,14 @@ class BoardNoteAppBar extends StatelessWidget {
   Widget _outlinedProfileName() {
     BordThemeValues params = theme.values;
     Color color = params.color1;
-    if (theme.isMinimalist) {
-      color = AppTheme.steelBlue;
+    Color textColor = AppTheme.linen;
+    switch (theme) {
+      case BoardTheme.minimalist:
+        color = AppTheme.steelBlue;
+      case BoardTheme.lightAcademia:
+        color = AppTheme.royalGold.withAlpha(0x33);
+        textColor = AppTheme.royalGold;
+      default:
     }
     return OutlinedChild(
       size: 32,
@@ -188,7 +214,7 @@ class BoardNoteAppBar extends StatelessWidget {
       child: Text(
         'N',
         style: TextStyle(
-          color: AppTheme.linen,
+          color: textColor,
           fontSize: 16.0,
           fontFamily: params.fontFamily,
         ),

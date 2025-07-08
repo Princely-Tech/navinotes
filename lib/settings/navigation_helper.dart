@@ -44,6 +44,6 @@ class NavigationHelper {
   }
 
  static void gotToNoteTemplate() {
-    push(Routes.noteTemplate);
+    // push(Routes.noteTemplate);
   }
 }

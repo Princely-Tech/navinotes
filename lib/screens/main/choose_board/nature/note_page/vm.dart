@@ -16,6 +16,6 @@ class NatureNotePageVm extends ChangeNotifier {
   }
 
   void gotToCreateNotePage() {
-    NavigationHelper.push(Routes.noteTemplate);
+    // NavigationHelper.push(Routes.noteTemplate);
   }
 }

@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 
-class MinimalistNotePageVm extends ChangeNotifier {
+class BoardLightAcadNotePageVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  MinimalistNotePageVm({required this.scaffoldKey});
+  BoardLightAcadNotePageVm({required this.scaffoldKey});
 
 
   void openEndDrawer() {

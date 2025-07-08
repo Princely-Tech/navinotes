@@ -136,6 +136,8 @@ class Images {
   static const String sdCard = '$iconPath/sd_card.svg';
   static const String bulb = '$iconPath/bulb.svg';
   static const String leaf2 = '$iconPath/leaf2.svg';
+  static const String cloudUpload = '$iconPath/cloud_upload.svg';
+  // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
 
@@ -195,10 +197,23 @@ class Images {
       '$boardsDarkAcademiaPath/thermodynamics.png';
   // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
 
+  //board light academia
   static const String boardLightAcadPreview =
       '$boardsLightAcademiaPath/preview.png';
-  static const String boardLightAcadScience = '$boardsLightAcademiaPath/science.png';
-  // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
+  static const String boardLightAcadScience =
+      '$boardsLightAcademiaPath/science.png';
+  static const String boardLightAcadNoteNewton =
+      '$boardsLightAcademiaPath/newton.png';
+  static const String boardLightAcadNoteQuantum =
+      '$boardsLightAcademiaPath/quantum.png';
+  static const String boardLightAcadNoteWave =
+      '$boardsLightAcademiaPath/wave.png';
+  static const String boardLightAcadNoteElectromagnetism =
+      '$boardsLightAcademiaPath/electromagnetism.png';
+  static const String boardLightAcadNoteThermodynamics =
+      '$boardsLightAcademiaPath/thermodynamics.png';
+  static const String boardLightAcadNoteOptics =
+      '$boardsLightAcademiaPath/optics.png';
   // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
 
   //board plain
@@ -251,8 +266,9 @@ class Images {
   static const String boardNature = '$boardsCreatePath/nature.png';
   static const String boardPastel = '$boardsCreatePath/pastel.png';
   static const String boardNeon = '$boardsCreatePath/neon.png';
+  
+    //TODO might delete
   static const String boardPreview = '$boardsCreatePath/preview.png';
-  //TODO might delete
   static const String boardVintage = '$boardsCreatePath/vintage.png';
 
   //boards notes

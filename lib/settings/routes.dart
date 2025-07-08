@@ -1,6 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/choose_board/light_academia/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/light_academia/index.dart';
+import 'package:navinotes/screens/main/choose_board/light_academia/note_page/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/index.dart';
 import 'package:navinotes/screens/main/choose_board/minimalist/mind_map/index.dart';
@@ -47,6 +48,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardPlainMindMap: (context) => BoardPlainMindMapScreen(),
   Routes.boardLightAcademia: (context) => BoardLightAcademiaScreen(),
   Routes.boardLightAcademiaEdit: (context) => BoardLightAcadEditScreen(),
+  Routes.boardLightAcademiaNotePage: (context) => BoardLightAcadNotePageScreen(),
 };
 
 class Routes {
@@ -87,7 +89,7 @@ class Routes {
   static const boardLightAcademia = 'boardLightAcademia';
   static const boardLightAcademiaEdit = 'boardLightAcademiaEdit';
   static const boardLightAcademiaNotePage = 'boardLightAcademiaNotePage';
-  static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+  static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; //TODO create screen
 
   // static const board = 'board';
   // static const board = 'board';

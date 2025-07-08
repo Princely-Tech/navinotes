@@ -77,9 +77,11 @@ class BoardPageMainHeader extends StatelessWidget {
   }
 
   Widget _sortBy() {
+    BordThemeValues params = theme.values;
     Color txtColor = AppTheme.vanillaDust.withAlpha(0xCC);
     Color fillColor = AppTheme.burntLeather;
-    BordThemeValues params = theme.values;
+    Color borderColor = params.color1;
+    Widget? prefixIcon;
     switch (theme) {
       case BoardTheme.nature:
         txtColor = AppTheme.coffee;
@@ -89,6 +91,24 @@ class BoardPageMainHeader extends StatelessWidget {
         txtColor = AppTheme.asbestos;
         fillColor = AppTheme.transparent;
         break;
+      case BoardTheme.lightAcademia:
+        txtColor = AppTheme.asbestos;
+        fillColor = AppTheme.almondCream;
+        borderColor = AppTheme.royalGold.withAlpha(0x4C);
+        prefixIcon = Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: Text(
+            'Sort by:',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: const Color(0xFF654321),
+              fontSize: 16,
+              fontFamily: 'Crimson Text',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        );
+        break;
       default:
     }
     return WidthLimiter(
@@ -96,20 +116,23 @@ class BoardPageMainHeader extends StatelessWidget {
       child: Row(
         spacing: 10,
         children: [
-          Text(
-            'Sort by:',
-            style: AppTheme.text.copyWith(
-              color: txtColor,
-              fontSize: 16.0,
-              fontFamily: AppTheme.fontCrimsonPro,
-              height: 1.50,
+          if (isNull(prefixIcon))
+            Text(
+              'Sort by:',
+              style: AppTheme.text.copyWith(
+                color: txtColor,
+                fontSize: 16.0,
+                fontFamily: AppTheme.fontCrimsonPro,
+                height: 1.50,
+              ),
             ),
-          ),
           Expanded(
             child: CustomInputField(
+              prefixIcon: prefixIcon,
               fillColor: fillColor,
-              side: BorderSide(color: params.color1),
-              selectItems: [],
+              side: BorderSide(color: borderColor),
+              controller: TextEditingController(text: 'Last modified'),
+              selectItems: ['Last modified', 'Created', 'Alphabetical'],
               style: AppTheme.text.copyWith(color: params.color1),
               constraints: BoxConstraints(maxHeight: 40),
             ),
@@ -172,10 +195,16 @@ class _DisplayFormatSelectState extends State<DisplayFormatSelect> {
     bool isGrid = format == PageDisplayFormat.grid;
     bool isActive = pageDisplayFormat == format;
     Color activeBgColor = AppTheme.burntLeather.withAlpha(102);
+    Color inActiveBgColor = AppTheme.transparent;
     Color inActiveColor = AppTheme.vanillaDust;
     switch (widget.theme) {
       case BoardTheme.nature:
         activeBgColor = AppTheme.lightSage;
+        inActiveColor = params.color1;
+        break;
+      case BoardTheme.lightAcademia:
+        activeBgColor = AppTheme.almondCream;
+        inActiveBgColor = AppTheme.eggShell.withAlpha(0xFF);
         inActiveColor = params.color1;
         break;
       default:
@@ -185,7 +214,7 @@ class _DisplayFormatSelectState extends State<DisplayFormatSelect> {
       child: OutlinedChild(
         size: 40,
         decoration: BoxDecoration(
-          color: isActive ? activeBgColor : AppTheme.transparent,
+          color: isActive ? activeBgColor : inActiveBgColor,
           borderRadius: BorderRadius.circular(0),
         ),
         child: SVGImagePlaceHolder(

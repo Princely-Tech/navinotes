@@ -107,6 +107,8 @@ flutter:
           weight: 900
     - family: EB Garamond
       fonts:
+        - asset: assets/fonts/EB_Garamond/EBGaramond-Italic-VariableFont_wght.ttf
+          style: italic
         - asset: assets/fonts/EB_Garamond/static/EBGaramond-Regular.ttf
           weight: 400
         - asset: assets/fonts/EB_Garamond/static/EBGaramond-Medium.ttf

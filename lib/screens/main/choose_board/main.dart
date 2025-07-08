@@ -12,7 +12,7 @@ class ChooseBoardMain extends StatelessWidget {
   Widget build(BuildContext context) {
     BorderSide side = BorderSide(color: AppTheme.lightGray, width: 3);
     return Consumer<ChooseBoardVm>(
-      builder: (context, vm, child) {
+      builder: (_, vm, _) {
         return Container(
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(border: Border(top: side, right: side)),

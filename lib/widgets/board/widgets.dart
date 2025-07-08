@@ -24,6 +24,12 @@ class GoNewNoteButton extends StatelessWidget {
         txtColor = AppTheme.white;
         fontFamily = AppTheme.fontFamily;
         radius = 8;
+      case BoardTheme.lightAcademia:
+        bgColor = AppTheme.royalGold.withAlpha(0xE5);
+        borderColor = bgColor;
+        txtColor = AppTheme.eggShell.withAlpha(0xFF);
+        fontFamily = AppTheme.fontCrimsonText;
+        radius = 8;
       default:
     }
     return AppButton(
