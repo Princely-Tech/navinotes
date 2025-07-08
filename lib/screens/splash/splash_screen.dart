@@ -47,7 +47,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   Future<void> _navigateToNextScreen() async {
-    // Add your authentication logic here
+    // Ensure session is loaded before checking login status
+    await context.read<SessionManager>().init();
     final isLoggedIn = context.read<SessionManager>().isLoggedIn();
     
     // Small delay to ensure smooth transition
