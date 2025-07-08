@@ -50,15 +50,28 @@ class BoardPlainScreen extends StatelessWidget {
                                   Column(
                                     spacing: 15,
                                     children: [
-                                      AppButton(
-                                        mainAxisSize: MainAxisSize.min,
-                                        text: 'Create My Academic Board',
-                                        onTap: vm.createHandler,
-                                        color: AppTheme.vividBlue,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 25,
-                                        ),
+                                      Consumer<BoardPlainVm>(
+                                        builder: (context, vm, _) {
+                                          return AppButton(
+                                            mainAxisSize: MainAxisSize.min,
+                                            text:
+                                                vm.isLoading
+                                                    ? 'Creating...'
+                                                    : 'Create My Academic Board',
+                                            onTap: () {
+                                              if (!vm.isLoading) {
+                                                vm.createBoard();
+                                                return;
+                                              }
+                                            },
+                                            color: AppTheme.vividBlue,
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 25,
+                                            ),
+                                          );
+                                        },
                                       ),
+
                                       Text(
                                         'Don\'t worry - you can always change these details later.',
                                         textAlign: TextAlign.center,
@@ -254,6 +267,7 @@ class BoardPlainScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomInputField(
+              controller: vm.titleController,
               hintText: 'e.g., History 1302 - Semester 2',
               label: 'What will you be studying?',
               labelStyle: labelStyle,
@@ -264,12 +278,14 @@ class BoardPlainScreen extends StatelessWidget {
               largeDesktop: 2,
               children: [
                 CustomInputField(
+                  controller: vm.subjectController,
                   label: 'Subject',
                   labelStyle: labelStyle,
                   border: border,
                   hintStyle: hintStyle,
                 ),
                 CustomInputField(
+                  controller: vm.levelController,
                   label: 'Level',
                   labelStyle: labelStyle,
                   border: border,
@@ -278,6 +294,7 @@ class BoardPlainScreen extends StatelessWidget {
               ],
             ),
             CustomInputField(
+              controller: vm.termController,
               label: 'Academic Term',
               labelStyle: labelStyle,
               border: border,

@@ -2,12 +2,107 @@ import 'package:navinotes/packages.dart';
 
 class BoardPlainVm extends ChangeNotifier {
   bool isPrivate = true;
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController subjectController = TextEditingController();
+  final TextEditingController levelController = TextEditingController();
+  final TextEditingController termController = TextEditingController();
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+  
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    subjectController.dispose();
+    levelController.dispose();
+    termController.dispose();
+    super.dispose();
+  }
 
   void updateIsPrivate(bool value) {
     isPrivate = value;
     notifyListeners();
   }
-  void createHandler(){
-    NavigationHelper.push(Routes.boardPlainEdit);
+
+  Future<void> createBoard() async {
+    if (titleController.text.trim().isEmpty) {
+      _showError('Please enter a title for your board');
+      return;
+    }
+
+    _setLoading(true);
+    
+    try {
+      // Get current user ID from session
+      final sessionManager = NavigationHelper.navigatorKey.currentContext!.read<SessionManager>();
+      final currentUser = sessionManager.user;
+      
+      if (currentUser == null) {
+        throw Exception('User not logged in');
+      }
+
+      // Create a new board
+      final newBoard = Board(
+        userId: currentUser.id!,
+        type: 'plain',
+        name: titleController.text.trim(),
+        customization: {
+          'isPrivate': isPrivate,
+          'theme': 'default',
+        },
+        isPublic: !isPrivate,
+        description: descriptionController.text.trim().isNotEmpty 
+            ? descriptionController.text.trim() 
+            : null,
+        subject: subjectController.text.trim().isNotEmpty 
+            ? subjectController.text.trim() 
+            : null,
+        level: levelController.text.trim().isNotEmpty 
+            ? levelController.text.trim() 
+            : null,
+        term: termController.text.trim().isNotEmpty 
+            ? termController.text.trim() 
+            : null,
+        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      );
+
+      // Save to database
+      final dbHelper = DatabaseHelper.instance;
+      final boardId = await dbHelper.insertBoard(newBoard);
+      
+      if (boardId == 0) {
+        throw Exception('Failed to save board to database');
+      }
+      
+      // Navigate to edit screen with the new board ID
+      if (NavigationHelper.navigatorKey.currentContext != null) {
+        NavigationHelper.push(
+          Routes.boardPlainEdit,
+          arguments: {'showSuccess': true, 'message': 'Board created successfully!', 'boardId': boardId},
+        );
+      }
+      
+    } catch (e) {
+      debugPrint('Error creating board: $e');
+      _showError('Failed to create board: ${e.toString()}');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  void _setLoading(bool loading) {
+    _isLoading = loading;
+    notifyListeners();
+  }
+
+  void _showError(String message) {
+    if (NavigationHelper.navigatorKey.currentContext != null) {
+      ScaffoldMessenger.of(NavigationHelper.navigatorKey.currentContext!).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
   }
 }
