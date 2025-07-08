@@ -67,14 +67,14 @@ class ChooseBoardHeader extends StatelessWidget {
                             ),
                           ),
                         ),
-                        VisibleController(
-                          mobile: true,
-                          largeDesktop: false,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 5),
-                            child: MenuButton(onPressed: vm.openDrawer),
-                          ),
-                        ),
+                        // VisibleController(
+                        //   mobile: true,
+                        //   largeDesktop: false,
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.only(left: 5),
+                        //     child: MenuButton(onPressed: vm.openDrawer),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

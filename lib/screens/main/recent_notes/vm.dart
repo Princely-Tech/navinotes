@@ -6,10 +6,10 @@ class RecentNotesVm extends ChangeNotifier {
   bool hasData = false; 
 
   void initialize() {
-    Future.delayed(Duration(seconds: 5), () {
-      hasData = true;
-      notifyListeners();
-    });
+    // Future.delayed(Duration(seconds: 5), () {
+    //   hasData = true;
+    //   notifyListeners();
+    // });
   }
 
   void openDrawer() {

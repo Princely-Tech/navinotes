@@ -209,7 +209,7 @@ class PdfViewAside extends StatelessWidget {
                 fontSize: 12.0,
                 fontFamily: 'Inter',
                 fontWeight: getFontWeight(400),
-                height: 1,
+                height: 1.0,
               ),
             ),
           ],
@@ -245,7 +245,7 @@ class PdfViewAside extends StatelessWidget {
             fontSize: 16.0,
             fontFamily: 'Inter',
             fontWeight: getFontWeight(500),
-            height: 1,
+            height: 1.0,
           ),
         ),
         CustomCard(

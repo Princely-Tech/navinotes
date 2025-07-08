@@ -41,7 +41,14 @@ class CustomMindMapHeader extends StatelessWidget {
                 spacing: 30,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(children: [_menuButton(), _title()]),
+                  Row(children: [ InkWell(
+                            onTap: NavigationHelper.pop,
+                            child: 
+                                Icon(
+                                  Icons.arrow_back,
+                                  color: AppTheme.vividRose,
+                                ),),
+                                   _menuButton(), _title()]),
                   VisibleController(
                     mobile: false,
                     laptop: true,

@@ -485,7 +485,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
                             ),
                             color: AppTheme.jetCharcoal,
                             fontFamily: AppTheme.fontEBGaramond,
-                            height: 1,
+                            height: 1.0,
                           ),
                         ),
                         Text(
@@ -538,7 +538,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
     return Expanded(
       child: Divider(
         color: AppTheme.yellowishOrange.withAlpha(0x66),
-        height: 1,
+        height: 1.0,
       ),
     );
   }

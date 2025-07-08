@@ -436,7 +436,7 @@ class BoardLightAcadEditScreen extends StatelessWidget {
                   largeDesktop: 48,
                 ),
                 fontFamily: AppTheme.fontPlayfairDisplay,
-                height: 1,
+                height: 1.0,
               ),
             ),
             Text(

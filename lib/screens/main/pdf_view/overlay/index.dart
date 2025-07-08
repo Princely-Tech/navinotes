@@ -237,7 +237,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                     fontSize: 18.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w700,
-                    height: 1,
+                    height: 1.0,
                   ),
                 ),
               ),
