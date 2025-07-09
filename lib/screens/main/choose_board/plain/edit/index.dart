@@ -9,12 +9,12 @@ class BoardPlainEditScreen extends StatefulWidget {
 }
 
 class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
-  late final BoardPlainEditVm _viewModel;
+  late final BoardEditVm _viewModel;
 
   @override
   void initState() {
     super.initState();
-    _viewModel = BoardPlainEditVm();
+    _viewModel = BoardEditVm();
   }
 
   @override
@@ -40,7 +40,7 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,
-      child: Consumer<BoardPlainEditVm>(
+      child: Consumer<BoardEditVm>(
         builder: (_, vm, __) {
           if (vm.isLoading) {
             return const Scaffold(
@@ -64,17 +64,14 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
            // Main content
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,
-            body:
-                vm.board == null
-                    ? const Center(child: Text('No board data available'))
-                    : _buildContent(vm),
+            body:_buildContent(vm),
           );
         },
       ),
     );
   }
 
-  Widget _buildContent(BoardPlainEditVm vm) {
+  Widget _buildContent(BoardEditVm vm) {
     final board = vm.board!;
     
     return Column(
@@ -264,6 +261,7 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
+          textAlign: TextAlign.center,
         ),
         if (board.description?.isNotEmpty ?? false)
           Padding(

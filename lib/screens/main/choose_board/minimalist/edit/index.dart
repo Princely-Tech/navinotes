@@ -1,20 +1,78 @@
-import 'vm.dart';
+import '../../common/edit_vm.dart';
 import 'package:navinotes/packages.dart';
 
-class BoardMinimalistEditScreen extends StatelessWidget {
+class BoardMinimalistEditScreen extends StatefulWidget {
   const BoardMinimalistEditScreen({super.key});
 
   @override
+  State<BoardMinimalistEditScreen> createState() =>
+      _BoardMinimalistEditScreenState();
+}
+
+class _BoardMinimalistEditScreenState extends State<BoardMinimalistEditScreen> {
+  late final BoardEditVm _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = BoardEditVm();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Get the board ID from route arguments
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null && mounted) {
+      final boardId = args['boardId'] as int? ?? 0;
+      final showSuccess = args['showSuccess'] as bool? ?? false;
+      final message = args['message'] as String?;
+
+      _viewModel.initialize(
+        boardId,
+        showSuccess: showSuccess,
+        message: message,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => BoardMinimalistEditVm(),
-      child: Consumer<BoardMinimalistEditVm>(
-        builder: (_, vm, _) {
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: Consumer<BoardEditVm>(
+        builder: (_, vm, __) {
+          if (vm.isLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          if (vm.error != null) {
+            return Scaffold(body: Center(child: Text(vm.error!)));
+          }
+
+          if (vm.board == null) {
+            return const Scaffold(
+              body: Center(child: Text('No board data available')),
+            );
+          }
+
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,
-            body: Column(
+            body:  _buildContent(vm),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildContent(BoardEditVm vm) {
+    final board = vm.board!;
+    return Column(
               children: [
-                _header(),
+                _header(board),
                 _selectRows(),
                 Expanded(
                   child: ScrollableController(
@@ -32,7 +90,7 @@ class BoardMinimalistEditScreen extends StatelessWidget {
                               child: Column(
                                 spacing: 30,
                                 children: [
-                                  _welcome(),
+                                  _welcome(board),
                                   _sectionCard(
                                     header: 'Course Timeline',
                                     color: AppTheme.snowGray,
@@ -126,11 +184,8 @@ class BoardMinimalistEditScreen extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          );
-        },
-      ),
-    );
+            );
+         
   }
 
   Widget _courseItem({required String title, required List<Widget> children}) {
@@ -360,14 +415,14 @@ class BoardMinimalistEditScreen extends StatelessWidget {
     );
   }
 
-  Widget _welcome() {
+  Widget _welcome(Board board) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return Column(
           spacing: 15,
           children: [
             Text(
-              'Welcome to your Biology 101 workspace',
+              'Welcome to your ${board.name} workspace',
               style: AppTheme.text.copyWith(
                 color: AppTheme.graniteGray,
                 fontWeight: getFontWeight(200),
@@ -380,6 +435,7 @@ class BoardMinimalistEditScreen extends StatelessWidget {
                   laptop: 30.0,
                 ),
               ),
+              textAlign: TextAlign.center,
             ),
             Text(
               'Upload your syllabus to unlock AI-powered course insights',
@@ -464,7 +520,7 @@ class BoardMinimalistEditScreen extends StatelessWidget {
     );
   }
 
-  Widget _header() {
+  Widget _header(Board board) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return Container(
@@ -500,7 +556,7 @@ class BoardMinimalistEditScreen extends StatelessWidget {
                                 size: 18,
                               ),
                               onTap: NavigationHelper.pop,
-                              text: 'BIOLOGY 101 - Fall Semester',
+                              text: board.name,
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.graniteGray,
                                 fontWeight: getFontWeight(300),

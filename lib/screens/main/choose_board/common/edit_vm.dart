@@ -1,8 +1,6 @@
-import 'package:navinotes/models/board.dart';
-import 'package:navinotes/settings/db_helpers.dart';
 import 'package:navinotes/packages.dart';
 
-class BoardPlainEditVm extends ChangeNotifier {
+class BoardEditVm extends ChangeNotifier {
   Board? _board;
   bool _isLoading = true;
   String? _error;
