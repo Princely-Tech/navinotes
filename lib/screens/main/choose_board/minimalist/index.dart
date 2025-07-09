@@ -1,4 +1,4 @@
-import 'vm.dart';
+import 'package:navinotes/screens/main/choose_board/common/create_vm.dart';
 import 'package:navinotes/packages.dart';
 
 class MinimalistScreen extends StatelessWidget {
@@ -7,8 +7,8 @@ class MinimalistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => MinimalistVm(),
-      child: Consumer<MinimalistVm>(
+      create: (_) => BoardCreateVm(boardType: BoardTypeCodes.minimalist),
+      child: Consumer<BoardCreateVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,
@@ -63,8 +63,11 @@ class MinimalistScreen extends StatelessWidget {
                                     children: [
                                       AppButton.secondary(
                                         mainAxisSize: MainAxisSize.min,
-                                        text: 'Create My Academic Board',
-                                        onTap: vm.createHandler,
+                                        text:
+                                            vm.isLoading
+                                                ? 'Creating...'
+                                                : 'Create My Academic Board',
+                                        onTap: vm.createBoard,
                                         style: AppTheme.text.copyWith(
                                           color: AppTheme.vividRose,
                                           fontWeight: getFontWeight(300),
@@ -239,7 +242,7 @@ class MinimalistScreen extends StatelessWidget {
     );
   }
 
-  Widget _form(MinimalistVm vm) {
+  Widget _form(BoardCreateVm vm) {
     final hintStyle = AppTheme.text.copyWith(
       color: AppTheme.slateGray,
       fontSize: 16.0,
@@ -261,6 +264,7 @@ class MinimalistScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomInputField(
+            controller: vm.titleController,
             hintText: 'e.g., History 1302 - Semester 2',
             label: 'What will you be studying?',
             labelStyle: labelStyle,
@@ -268,18 +272,21 @@ class MinimalistScreen extends StatelessWidget {
             hintStyle: hintStyle,
           ),
           CustomInputField(
+            controller: vm.subjectController,
             label: 'Academic Subject',
             labelStyle: labelStyle,
             border: border,
             hintStyle: hintStyle,
           ),
           CustomInputField(
+            controller: vm.levelController,
             label: 'Academic Level',
             labelStyle: labelStyle,
             border: border,
             hintStyle: hintStyle,
           ),
           CustomInputField(
+            controller: vm.termController,
             label: 'Academic Term',
             labelStyle: labelStyle,
             border: border,
@@ -319,7 +326,7 @@ class MinimalistScreen extends StatelessWidget {
   }
 
   Widget _privacySettingItem(
-    MinimalistVm vm, {
+    BoardCreateVm vm, {
     required bool isChecked,
     required String body,
     required VoidCallback onTap,

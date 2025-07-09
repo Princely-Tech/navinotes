@@ -1,10 +1,9 @@
 import 'package:navinotes/packages.dart';
 
-class BoardVm extends ChangeNotifier {
+class BoardCreateVm extends ChangeNotifier {
+  final BoardTypeCodes boardType;
 
-   final BoardTypeCodes boardType;
-  
-  BoardVm({required this.boardType});
+  BoardCreateVm({required this.boardType});
 
   bool isPrivate = true;
   final TextEditingController titleController = TextEditingController();
@@ -15,7 +14,7 @@ class BoardVm extends ChangeNotifier {
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
-  
+
   @override
   void dispose() {
     titleController.dispose();
@@ -32,18 +31,25 @@ class BoardVm extends ChangeNotifier {
   }
 
   Future<void> createBoard() async {
+    debugPrint('createBoard called for ${boardType.name}');
+    if (isLoading) {
+      debugPrint('Already loading');
+      return;
+    }
+
     if (titleController.text.trim().isEmpty) {
       _showError('Please enter a title for your board');
       return;
     }
 
     _setLoading(true);
-    
+
     try {
       // Get current user ID from session
-      final sessionManager = NavigationHelper.navigatorKey.currentContext!.read<SessionManager>();
+      final sessionManager =
+          NavigationHelper.navigatorKey.currentContext!.read<SessionManager>();
       final currentUser = sessionManager.user;
-      
+
       if (currentUser == null) {
         throw Exception('User not logged in');
       }
@@ -53,23 +59,24 @@ class BoardVm extends ChangeNotifier {
         userId: currentUser.id!,
         type: boardType.name,
         name: titleController.text.trim(),
-        customization: {
-          'isPrivate': isPrivate,
-          'theme': 'default',
-        },
+        customization: {'isPrivate': isPrivate, 'theme': 'default'},
         isPublic: !isPrivate,
-        description: descriptionController.text.trim().isNotEmpty 
-            ? descriptionController.text.trim() 
-            : null,
-        subject: subjectController.text.trim().isNotEmpty 
-            ? subjectController.text.trim() 
-            : null,
-        level: levelController.text.trim().isNotEmpty 
-            ? levelController.text.trim() 
-            : null,
-        term: termController.text.trim().isNotEmpty 
-            ? termController.text.trim() 
-            : null,
+        description:
+            descriptionController.text.trim().isNotEmpty
+                ? descriptionController.text.trim()
+                : null,
+        subject:
+            subjectController.text.trim().isNotEmpty
+                ? subjectController.text.trim()
+                : null,
+        level:
+            levelController.text.trim().isNotEmpty
+                ? levelController.text.trim()
+                : null,
+        term:
+            termController.text.trim().isNotEmpty
+                ? termController.text.trim()
+                : null,
         createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
       );
@@ -77,18 +84,23 @@ class BoardVm extends ChangeNotifier {
       // Save to database
       final dbHelper = DatabaseHelper.instance;
       final boardId = await dbHelper.insertBoard(newBoard);
-      
+
       if (boardId == 0) {
         throw Exception('Failed to save board to database');
       }
-      
+
       newBoard.setIDAfterCreate(boardId);
 
       // Navigate to edit screen with the new board ID
       if (NavigationHelper.navigatorKey.currentContext != null) {
-        NavigationHelper.navigateToBoard(newBoard, arguments: {'showSuccess': true, 'message': 'Board created successfully!'});
+        NavigationHelper.navigateToBoard(
+          newBoard,
+          arguments: {
+            'showSuccess': true,
+            'message': 'Board created successfully!',
+          },
+        );
       }
-      
     } catch (e) {
       debugPrint('Error creating board: $e');
       _showError('Failed to create board: ${e.toString()}');
@@ -104,9 +116,9 @@ class BoardVm extends ChangeNotifier {
 
   void _showError(String message) {
     if (NavigationHelper.navigatorKey.currentContext != null) {
-      ScaffoldMessenger.of(NavigationHelper.navigatorKey.currentContext!).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        NavigationHelper.navigatorKey.currentContext!,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 }

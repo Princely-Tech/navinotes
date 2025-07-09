@@ -1,4 +1,4 @@
-import 'package:navinotes/screens/main/choose_board/common/vm.dart';
+import 'package:navinotes/screens/main/choose_board/common/create_vm.dart';
 
 import 'package:navinotes/packages.dart';
 
@@ -8,8 +8,8 @@ class BoardPlainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => BoardVm(boardType: BoardTypeCodes.plain),
-      child: Consumer<BoardVm>(
+      create: (_) => BoardCreateVm(boardType: BoardTypeCodes.plain),
+      child: Consumer<BoardCreateVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,
@@ -51,7 +51,7 @@ class BoardPlainScreen extends StatelessWidget {
                                   Column(
                                     spacing: 15,
                                     children: [
-                                      Consumer<BoardVm>(
+                                      Consumer<BoardCreateVm>(
                                         builder: (context, vm, _) {
                                           return AppButton(
                                             mainAxisSize: MainAxisSize.min,
@@ -59,12 +59,7 @@ class BoardPlainScreen extends StatelessWidget {
                                                 vm.isLoading
                                                     ? 'Creating...'
                                                     : 'Create My Academic Board',
-                                            onTap: () {
-                                              if (!vm.isLoading) {
-                                                vm.createBoard();
-                                                return;
-                                              }
-                                            },
+                                            onTap: vm.createBoard,
                                             color: AppTheme.vividBlue,
                                             padding: EdgeInsets.symmetric(
                                               horizontal: 25,
@@ -247,7 +242,7 @@ class BoardPlainScreen extends StatelessWidget {
     );
   }
 
-  Widget _form(BoardVm vm) {
+  Widget _form(BoardCreateVm vm) {
     final hintStyle = AppTheme.text.copyWith(
       color: AppTheme.slateGray,
       fontSize: 16.0,
@@ -336,7 +331,7 @@ class BoardPlainScreen extends StatelessWidget {
   }
 
   Widget _privacySettingItem(
-    BoardVm vm, {
+    BoardCreateVm vm, {
     required bool isChecked,
     required String body,
     required VoidCallback onTap,

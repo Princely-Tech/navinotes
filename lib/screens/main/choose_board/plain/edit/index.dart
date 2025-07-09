@@ -1,4 +1,4 @@
-import 'vm.dart';
+import '../../common/edit_vm.dart';
 import 'package:navinotes/packages.dart';
 
 class BoardPlainEditScreen extends StatefulWidget {
