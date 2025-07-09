@@ -1,4 +1,4 @@
-import 'vm.dart';
+import 'package:navinotes/screens/main/choose_board/common/create_vm.dart';
 import 'package:navinotes/packages.dart';
 
 class BoardLightAcademiaScreen extends StatelessWidget {
@@ -7,8 +7,8 @@ class BoardLightAcademiaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => BoardLightAcadVm(),
-      child: Consumer<BoardLightAcadVm>(
+      create: (_) => BoardCreateVm(boardType: BoardTypeCodes.lightAcademia),
+      child: Consumer<BoardCreateVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,
@@ -57,8 +57,10 @@ class BoardLightAcademiaScreen extends StatelessWidget {
                                       children: [
                                         AppButton(
                                           mainAxisSize: MainAxisSize.min,
-                                          text: 'Create My Academic Board',
-                                          onTap: vm.createHandler,
+                                          text: vm.isLoading
+                                              ? 'Creating...'
+                                              : 'Create My Academic Board',
+                                          onTap: vm.createBoard,
                                           color: AppTheme.goldenTan,
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 25,
@@ -285,7 +287,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
     );
   }
 
-  Widget _form(BoardLightAcadVm vm) {
+  Widget _form(BoardCreateVm vm) {
     final hintStyle = AppTheme.text.copyWith(
       color: AppTheme.slateGray,
       fontSize: 16.0,
@@ -309,6 +311,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomInputField(
+              controller: vm.titleController,
               fillColor: fillColor,
               hintText: 'e.g., History 1302 - Semester 2',
               label: 'What will you be studying?',
@@ -317,6 +320,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
               hintStyle: hintStyle,
             ),
             CustomInputField(
+              controller: vm.subjectController,
               fillColor: fillColor,
               label: 'Subject',
               labelStyle: labelStyle,
@@ -324,6 +328,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
               hintStyle: hintStyle,
             ),
             CustomInputField(
+              controller: vm.levelController,
               fillColor: fillColor,
               label: 'Level',
               labelStyle: labelStyle,
@@ -331,6 +336,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
               hintStyle: hintStyle,
             ),
             CustomInputField(
+              controller: vm.termController,
               fillColor: fillColor,
               label: 'Academic Term',
               labelStyle: labelStyle,
@@ -372,7 +378,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
   }
 
   Widget _privacySettingItem(
-    BoardLightAcadVm vm, {
+    BoardCreateVm vm, {
     required bool isChecked,
     required String body,
     required VoidCallback onTap,
@@ -385,6 +391,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
         height: 20,
         decoration: ShapeDecoration(
           shape: CircleBorder(side: BorderSide(color: AppTheme.royalGold)),
+          color: isChecked ? AppTheme.royalGold : null,
         ),
       ),
       style: AppTheme.text.copyWith(

@@ -89,6 +89,13 @@ class DatabaseHelper {
     return result.map((json) => Board.fromMap(json)).toList();
   }
 
+
+  Future<Board> getBoard(int boardId) async {
+    final db = await instance.database;
+    final result = await db.query('boards', where: 'id = ?', whereArgs: [boardId]);
+    return result.map((json) => Board.fromMap(json)).first;
+  }
+
   Future<List<Content>> getAllContents(int boardId) async {
     final db = await instance.database;
     final result = await db.query(

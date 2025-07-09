@@ -1,12 +1,17 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
+import 'package:navinotes/screens/main/choose_board/common/edit_vm.dart';
+
+
+List<String> darkAcadEditLinks = ['Overview', 'Uploads', 'Assignments'];
+String selectedLink = darkAcadEditLinks.first;
 
 class DarkAcademiaEditHeader extends StatelessWidget {
-  const DarkAcademiaEditHeader({super.key});
+  const DarkAcademiaEditHeader({super.key, required this.board});
+  final Board board;
   //TODO work on mobil responsive sidebar
   @override
   Widget build(BuildContext context) {
-    return Consumer<DarkAcademiaEditVM>(
+    return Consumer<BoardEditVm>(
       builder: (_, vm, _) {
         return Consumer<LayoutProviderVm>(
           builder: (_, layoutVm, _) {
@@ -26,9 +31,26 @@ class DarkAcademiaEditHeader extends StatelessWidget {
                               color: AppTheme.ivoryGlow,
                             ),
                           ),
+                          AppButton.text(
+                            wrapWithFlexible: true,
+                            mainAxisSize: MainAxisSize.min,
+                            prefix: Icon(
+                              Icons.arrow_back,
+                              color: AppTheme.white,
+                              size: 18,
+                            ),
+                            onTap: NavigationHelper.pop,
+                            text: '',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.white,
+                              fontWeight: getFontWeight(300),
+                              height: 1.43,
+                              letterSpacing: 0.70,
+                            ),
+                          ),
                           Expanded(
                             child: Text(
-                              'HISTORY 1302 - Semester 2',
+                              board.name,
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.white,
                                 fontSize: getDeviceResponsiveValue(
@@ -51,7 +73,7 @@ class DarkAcademiaEditHeader extends StatelessWidget {
                         children: [
                           TextRowSelect(
                             items: darkAcadEditLinks,
-                            selected: vm.selectedLink,
+                            selected: selectedLink,
                           ),
                           AppButton(
                             mainAxisSize: MainAxisSize.min,

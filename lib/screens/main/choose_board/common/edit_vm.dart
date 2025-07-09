@@ -15,6 +15,7 @@ class BoardEditVm extends ChangeNotifier {
 
   // Initialize the ViewModel with board data
   Future<void> initialize(int boardId, {bool showSuccess = false, String? message}) async {
+    debugPrint('Initializing board with ID: $boardId');
     _showSuccess = showSuccess;
     _successMessage = message;
     
@@ -35,11 +36,9 @@ class BoardEditVm extends ChangeNotifier {
       notifyListeners();
 
       final dbHelper = DatabaseHelper.instance;
-      final boards = await dbHelper.getAllBoards();
-      final board = boards.firstWhere(
-        (b) => b.id == boardId,
-        orElse: () => throw Exception('Board not found'),
-      );
+      final board = await dbHelper.getBoard(boardId);
+      
+      debugPrint('Board loaded: ${board.name}');
 
       _board = board;
       _error = null;

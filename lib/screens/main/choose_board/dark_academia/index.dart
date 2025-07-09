@@ -1,4 +1,4 @@
-import 'vm.dart';
+import 'package:navinotes/screens/main/choose_board/common/create_vm.dart';
 import 'package:navinotes/packages.dart';
 
 class DarkAcademiaScreen extends StatelessWidget {
@@ -7,8 +7,8 @@ class DarkAcademiaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => DarkAcademiaVm(),
-      child: Consumer<DarkAcademiaVm>(
+      create: (_) => BoardCreateVm(boardType: BoardTypeCodes.darkAcademia),
+      child: Consumer<BoardCreateVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.deepRoast,
@@ -51,8 +51,8 @@ class DarkAcademiaScreen extends StatelessWidget {
                             AppButton(
                               mainAxisSize: MainAxisSize.min,
                               color: AppTheme.royalGold,
-                              text: 'Create My Academic Board',
-                              onTap: vm.createHandler,
+                              text: vm.isLoading ? 'Creating...' : 'Create My Academic Board',
+                              onTap: vm.createBoard,
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.deepRoast,
                                 fontSize: 16.0,
@@ -197,7 +197,7 @@ class DarkAcademiaScreen extends StatelessWidget {
     );
   }
 
-  Widget _form(DarkAcademiaVm vm) {
+  Widget _form(BoardCreateVm vm) {
     TextStyle labelStyle = AppTheme.text.copyWith(
       color: AppTheme.deepRoast,
       fontSize: 20.0,
@@ -209,6 +209,7 @@ class DarkAcademiaScreen extends StatelessWidget {
           spacing: 15,
           children: [
             CustomInputField(
+              controller: vm.titleController,
               hintText: 'e.g., History 1302 - Semester 2',
               label: 'What will you be studying?',
               labelStyle: labelStyle,
@@ -217,6 +218,7 @@ class DarkAcademiaScreen extends StatelessWidget {
               spacing: 15,
               children: [
                 CustomInputField(
+                  controller: vm.subjectController,
                   wrapWithExpanded: true,
                   label: 'Subject',
                   labelStyle: labelStyle,
@@ -224,8 +226,9 @@ class DarkAcademiaScreen extends StatelessWidget {
                 CustomInputField(
                   wrapWithExpanded: true,
                   label: 'Level',
-                  hintText: 'Undergraduate',
-                  controller: TextEditingController(text: 'Undergraduate'),
+                  hintText: 'E.g Undergraduate',
+                  // controller: TextEditingController(text: 'Undergraduate'),
+                  controller: vm.levelController,
                   selectItems: ['Undergraduate', 'Postgraduate'],
                   labelStyle: labelStyle,
                 ),
@@ -276,7 +279,7 @@ class DarkAcademiaScreen extends StatelessWidget {
   }
 
   Widget _privacySettingItem(
-    DarkAcademiaVm vm, {
+    BoardCreateVm vm, {
     required bool isChecked,
     required String title,
     required String body,

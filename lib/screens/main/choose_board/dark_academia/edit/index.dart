@@ -1,25 +1,80 @@
-import 'header.dart';
-import 'vm.dart';
+import 'package:navinotes/screens/main/choose_board/dark_academia/edit/header.dart';
+
+import '../../common/edit_vm.dart';
 import 'package:navinotes/packages.dart';
+
 
 double mobileHorPadding = 20;
 double laptopHorPadding = 30;
 double desktopHorPadding = 40;
 
-class DarkAcademiaEditScreen extends StatelessWidget {
+class DarkAcademiaEditScreen extends StatefulWidget {
   const DarkAcademiaEditScreen({super.key});
 
   @override
+  State<DarkAcademiaEditScreen> createState() =>
+      _DarkAcademiaEditScreenState();
+}
+
+class _DarkAcademiaEditScreenState extends State<DarkAcademiaEditScreen> {
+  late final BoardEditVm _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = BoardEditVm();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Get the board ID from route arguments
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null && mounted) {
+      final boardId = args['boardId'] as int? ?? 0;
+      final showSuccess = args['showSuccess'] as bool? ?? false;
+      final message = args['message'] as String?;
+
+      _viewModel.initialize(
+        boardId,
+        showSuccess: showSuccess,
+        message: message,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => DarkAcademiaEditVM(),
-      child: Consumer<DarkAcademiaEditVM>(
-        builder: (_, vm, _) {
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: Consumer<BoardEditVm>(
+        builder: (_, vm, __) {
+          if (vm.isLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          if (vm.error != null) {
+            return Scaffold(
+              appBar: AppBar(),
+              body: Center(child: Text(vm.error!)),
+            );
+          }
+
+          if (vm.board == null) {
+            return const Scaffold(
+              body: Center(child: Text('No board data available')),
+            );
+          }
+
+          // Main content
           return ScaffoldFrame(
             backgroundColor: AppTheme.warmSand,
             body: Column(
               children: [
-                DarkAcademiaEditHeader(),
+                DarkAcademiaEditHeader(board: vm.board!),
                 Expanded(
                   child: ScrollableController(
                     child: Column(

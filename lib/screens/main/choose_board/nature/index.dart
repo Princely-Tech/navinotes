@@ -1,4 +1,4 @@
-import 'vm.dart';
+import 'package:navinotes/screens/main/choose_board/common/create_vm.dart';
 import 'package:navinotes/packages.dart';
 
 class BoardNatureScreen extends StatelessWidget {
@@ -7,8 +7,8 @@ class BoardNatureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => BoardNatureVm(),
-      child: Consumer<BoardNatureVm>(
+      create: (_) => BoardCreateVm(boardType: BoardTypeCodes.nature),
+      child: Consumer<BoardCreateVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.softLinen,
@@ -63,8 +63,10 @@ class BoardNatureScreen extends StatelessWidget {
                                     children: [
                                       AppButton(
                                         mainAxisSize: MainAxisSize.min,
-                                        text: 'Cultivate My Academic Sanctuary',
-                                        onTap: vm.createHandler,
+                                        text:  vm.isLoading
+                                                ? 'Creating...'
+                                                : 'Cultivate My Academic Sanctuary',
+                                        onTap: vm.createBoard,
                                         gradient: LinearGradient(
                                           begin: Alignment(0.00, 0.50),
                                           end: Alignment(1.00, 0.50),
@@ -301,7 +303,7 @@ class BoardNatureScreen extends StatelessWidget {
     );
   }
 
-  Widget _form(BoardNatureVm vm) {
+  Widget _form(BoardCreateVm vm) {
     final labelStyle = AppTheme.text.copyWith(
       color: AppTheme.mossGreen,
       fontSize: 18.0,
@@ -317,24 +319,28 @@ class BoardNatureScreen extends StatelessWidget {
           spacing: 15,
           children: [
             CustomInputField(
+              controller: vm.titleController,
               hintText: 'e.g., Environmental Science 101 - Spring Semester',
               label: 'What will you be studying?',
               labelStyle: labelStyle,
               border: border,
             ),
             CustomInputField(
+              controller: vm.subjectController,
               label: 'Field of Study',
               labelStyle: labelStyle,
               suffixIcon: _leafSvg(),
               border: border,
             ),
             CustomInputField(
+              controller: vm.levelController,
               label: 'Academic Level',
               labelStyle: labelStyle,
               suffixIcon: _leafSvg(),
               border: border,
             ),
             CustomInputField(
+              controller: vm.termController,
               label: 'Growing Season',
               labelStyle: labelStyle,
               suffixIcon: _leafSvg(),
@@ -378,7 +384,7 @@ class BoardNatureScreen extends StatelessWidget {
   }
 
   Widget _privacySettingItem(
-    BoardNatureVm vm, {
+    BoardCreateVm vm, {
     required bool isChecked,
     required String title,
     required String body,

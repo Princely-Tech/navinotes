@@ -1,224 +1,281 @@
-import 'vm.dart';
+import '../../common/edit_vm.dart';
 import 'package:navinotes/packages.dart';
 
-class BoardNatureEditScreen extends StatelessWidget {
+class BoardNatureEditScreen extends StatefulWidget {
   const BoardNatureEditScreen({super.key});
 
   @override
+  State<BoardNatureEditScreen> createState() => _BoardNatureEditScreenState();
+}
+
+class _BoardNatureEditScreenState extends State<BoardNatureEditScreen> {
+  late final BoardEditVm _viewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel = BoardEditVm();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Get the board ID from route arguments
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null && mounted) {
+      final boardId = args['boardId'] as int? ?? 0;
+      final showSuccess = args['showSuccess'] as bool? ?? false;
+      final message = args['message'] as String?;
+
+      _viewModel.initialize(
+        boardId,
+        showSuccess: showSuccess,
+        message: message,
+      );
+    }
+  }
+
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => BoardNatureEditVm(),
-      child: Consumer<BoardNatureEditVm>(
-        builder: (_, vm, _) {
+    return ChangeNotifierProvider.value(
+      value: _viewModel,
+      child: Consumer<BoardEditVm>(
+        builder: (_, vm, __) {
+          if (vm.isLoading) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          if (vm.error != null) {
+            return Scaffold(
+              appBar: AppBar(),
+              body: Center(child: Text(vm.error!)),
+            );
+          }
+
+          if (vm.board == null) {
+            return const Scaffold(
+              body: Center(child: Text('No board data available')),
+            );
+          }
+
+          // Main content
           return ScaffoldFrame(
             backgroundColor: AppTheme.softLinen,
-            body: Column(
-              children: [
-                _header(),
-                _selectRows(),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment(0.00, 0.50),
-                        end: Alignment(1.00, 0.50),
-                        colors: [
-                          AppTheme.dustyOlive.withAlpha(0x4C),
-                          AppTheme.softLinen,
-                        ],
-                      ),
-                    ),
-                    child: ScrollableController(
-                      mobilePadding: EdgeInsets.only(top: tabletPadding),
-                      tabletPadding: EdgeInsets.only(top: tabletPadding),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: WidthLimiter(
-                              mobile: largeDesktopSize,
-                              child: Column(
-                                spacing: 50,
-                                children: [
-                                  ResponsivePadding(
-                                    mobile: EdgeInsets.symmetric(
-                                      horizontal: tabletPadding,
-                                    ),
-                                    tablet: EdgeInsets.symmetric(
-                                      horizontal: tabletPadding,
-                                    ),
-                                    child: Column(
-                                      spacing: 30,
-                                      children: [
-                                        _welcome(),
-                                        _customCardSection(
-                                          header: _aiSection(
-                                            title: 'Course Timeline',
-                                          ),
-                                          title:
-                                              'Your learning journey will bloom here',
-                                          body:
-                                              'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
-                                          button: AppButton.text(
-                                            onTap: () {},
-                                            prefix: SVGImagePlaceHolder(
-                                              imagePath: Images.upload,
-                                              size: 16,
-                                              color: AppTheme.sageMist,
-                                            ),
-                                            text:
-                                                'Upload syllabus to generate timeline',
-                                            style: AppTheme.text.copyWith(
-                                              color: AppTheme.sageMist,
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        ),
-                                        CustomGrid(
-                                          children: [
-                                            _gridChild(
-                                              body:
-                                                  'Start here to unlock AI features and organize your course automatically',
-                                              btnText: 'Upload now',
-                                              color: AppTheme.sageMist,
-                                              image: Images.uploadFile,
-                                              title: 'Upload Syllabus',
-                                            ),
-                                            _gridChild(
-                                              body:
-                                                  'Begin taking notes right away with our nature-inspired note templates',
-                                              btnText: 'Create note',
-                                              color: AppTheme.walnutBronze,
-                                              image: Images.edit,
-                                              title: 'Create Note',
-                                              route: Routes.boardNatureNotePage,
-                                            ),
-                                            _gridChild(
-                                              body:
-                                                  'Add your course materials, readings, and research documents',
-                                              btnText: 'Import now',
-                                              color: AppTheme.mossGreen,
-                                              image: Images.folder,
-                                              title: 'Import Files',
-                                            ),
-                                          ],
-                                        ),
-
-                                        _customCardSection(
-                                          header: _aiSection(
-                                            title: 'Upcoming Assignments',
-                                            img: Images.menu2,
-                                          ),
-                                          img: Images.checkRect,
-                                          title: 'Track your academic growth',
-                                          body:
-                                              'We\'ll automatically identify and track all your assignments, quizzes, and exams after you upload your syllabus',
-                                          button: AppButton.text(
-                                            onTap: () {},
-                                            prefix: SVGImagePlaceHolder(
-                                              imagePath: Images.upload,
-                                              size: 16,
-                                              color: AppTheme.sageMist,
-                                            ),
-                                            text:
-                                                'Upload syllabus to see assignments',
-                                            style: AppTheme.text.copyWith(
-                                              color: AppTheme.sageMist,
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        ),
-                                        _customCardSection(
-                                          header: _aiSection(
-                                            title: 'Course Materials',
-                                            img: Images.book,
-                                            isAi: false,
-                                          ),
-                                          color: AppTheme.white.withAlpha(128),
-                                          img: Images.upload2,
-                                          title:
-                                              'Cultivate your resource library',
-                                          body:
-                                              'Drag and drop files here to upload and organize your study materials',
-                                          button: AppButton.secondary(
-                                            mainAxisSize: MainAxisSize.min,
-                                            color: AppTheme.sageMist,
-                                            onTap: () {},
-                                            minHeight: 35,
-                                            prefix: SVGImagePlaceHolder(
-                                              imagePath: Images.folder,
-                                              size: 16,
-                                              color: AppTheme.sageMist,
-                                            ),
-                                            text: 'Browse files',
-                                          ),
-                                        ),
-                                        _courseInformation(),
-                                        Column(
-                                          spacing: 10,
-                                          children: [
-                                            Text(
-                                              'Upload your syllabus to complete your academic ecosystem',
-                                              textAlign: TextAlign.center,
-                                              style: AppTheme.text.copyWith(
-                                                fontSize: 20.0,
-                                                height: 1.40,
-                                              ),
-                                            ),
-                                            AppButton(
-                                              mainAxisSize: MainAxisSize.min,
-                                              color: AppTheme.sageMist,
-                                              onTap: () {},
-                                              text: 'Upload Syllabus',
-                                              prefix: SVGImagePlaceHolder(
-                                                imagePath: Images.upload,
-                                                size: 16,
-                                                color: AppTheme.white,
-                                              ),
-                                              style: AppTheme.text.copyWith(
-                                                color: AppTheme.white,
-                                                fontSize: 16.0,
-                                              ),
-                                            ),
-                                            Text(
-                                              'Nurture your learning journey with organized, AI-powered insights',
-                                              textAlign: TextAlign.center,
-                                              style: AppTheme.text.copyWith(
-                                                color: AppTheme.steelMist,
-                                                fontSize: 16.0,
-                                                height: 1.50,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  _footer(),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            body: _buildContent(vm),
           );
         },
       ),
     );
   }
 
-  Widget _footer() {
+  Column _buildContent(BoardEditVm vm) {
+        final board = vm.board!;
+
+    return Column(
+            children: [
+              _header(board),
+              _selectRows(),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment(0.00, 0.50),
+                      end: Alignment(1.00, 0.50),
+                      colors: [
+                        AppTheme.dustyOlive.withAlpha(0x4C),
+                        AppTheme.softLinen,
+                      ],
+                    ),
+                  ),
+                  child: ScrollableController(
+                    mobilePadding: EdgeInsets.only(top: tabletPadding),
+                    tabletPadding: EdgeInsets.only(top: tabletPadding),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: WidthLimiter(
+                            mobile: largeDesktopSize,
+                            child: Column(
+                              spacing: 50,
+                              children: [
+                                ResponsivePadding(
+                                  mobile: EdgeInsets.symmetric(
+                                    horizontal: tabletPadding,
+                                  ),
+                                  tablet: EdgeInsets.symmetric(
+                                    horizontal: tabletPadding,
+                                  ),
+                                  child: Column(
+                                    spacing: 30,
+                                    children: [
+                                      _welcome(board),
+                                      _customCardSection(
+                                        header: _aiSection(
+                                          title: 'Course Timeline',
+                                        ),
+                                        title:
+                                            'Your learning journey will bloom here',
+                                        body:
+                                            'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
+                                        button: AppButton.text(
+                                          onTap: () {},
+                                          prefix: SVGImagePlaceHolder(
+                                            imagePath: Images.upload,
+                                            size: 16,
+                                            color: AppTheme.sageMist,
+                                          ),
+                                          text:
+                                              'Upload syllabus to generate timeline',
+                                          style: AppTheme.text.copyWith(
+                                            color: AppTheme.sageMist,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                      ),
+                                      CustomGrid(
+                                        children: [
+                                          _gridChild(
+                                            body:
+                                                'Start here to unlock AI features and organize your course automatically',
+                                            btnText: 'Upload now',
+                                            color: AppTheme.sageMist,
+                                            image: Images.uploadFile,
+                                            title: 'Upload Syllabus',
+                                          ),
+                                          _gridChild(
+                                            body:
+                                                'Begin taking notes right away with our nature-inspired note templates',
+                                            btnText: 'Create note',
+                                            color: AppTheme.walnutBronze,
+                                            image: Images.edit,
+                                            title: 'Create Note',
+                                            route: Routes.boardNatureNotePage,
+                                          ),
+                                          _gridChild(
+                                            body:
+                                                'Add your course materials, readings, and research documents',
+                                            btnText: 'Import now',
+                                            color: AppTheme.mossGreen,
+                                            image: Images.folder,
+                                            title: 'Import Files',
+                                          ),
+                                        ],
+                                      ),
+
+                                      _customCardSection(
+                                        header: _aiSection(
+                                          title: 'Upcoming Assignments',
+                                          img: Images.menu2,
+                                        ),
+                                        img: Images.checkRect,
+                                        title: 'Track your academic growth',
+                                        body:
+                                            'We\'ll automatically identify and track all your assignments, quizzes, and exams after you upload your syllabus',
+                                        button: AppButton.text(
+                                          onTap: () {},
+                                          prefix: SVGImagePlaceHolder(
+                                            imagePath: Images.upload,
+                                            size: 16,
+                                            color: AppTheme.sageMist,
+                                          ),
+                                          text:
+                                              'Upload syllabus to see assignments',
+                                          style: AppTheme.text.copyWith(
+                                            color: AppTheme.sageMist,
+                                            fontSize: 16.0,
+                                          ),
+                                        ),
+                                      ),
+                                      _customCardSection(
+                                        header: _aiSection(
+                                          title: 'Course Materials',
+                                          img: Images.book,
+                                          isAi: false,
+                                        ),
+                                        color: AppTheme.white.withAlpha(128),
+                                        img: Images.upload2,
+                                        title:
+                                            'Cultivate your resource library',
+                                        body:
+                                            'Drag and drop files here to upload and organize your study materials',
+                                        button: AppButton.secondary(
+                                          mainAxisSize: MainAxisSize.min,
+                                          color: AppTheme.sageMist,
+                                          onTap: () {},
+                                          minHeight: 35,
+                                          prefix: SVGImagePlaceHolder(
+                                            imagePath: Images.folder,
+                                            size: 16,
+                                            color: AppTheme.sageMist,
+                                          ),
+                                          text: 'Browse files',
+                                        ),
+                                      ),
+                                      _courseInformation(),
+                                      Column(
+                                        spacing: 10,
+                                        children: [
+                                          Text(
+                                            'Upload your syllabus to complete your academic ecosystem',
+                                            textAlign: TextAlign.center,
+                                            style: AppTheme.text.copyWith(
+                                              fontSize: 20.0,
+                                              height: 1.40,
+                                            ),
+                                          ),
+                                          AppButton(
+                                            mainAxisSize: MainAxisSize.min,
+                                            color: AppTheme.sageMist,
+                                            onTap: () {},
+                                            text: 'Upload Syllabus',
+                                            prefix: SVGImagePlaceHolder(
+                                              imagePath: Images.upload,
+                                              size: 16,
+                                              color: AppTheme.white,
+                                            ),
+                                            style: AppTheme.text.copyWith(
+                                              color: AppTheme.white,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Nurture your learning journey with organized, AI-powered insights',
+                                            textAlign: TextAlign.center,
+                                            style: AppTheme.text.copyWith(
+                                              color: AppTheme.steelMist,
+                                              fontSize: 16.0,
+                                              height: 1.50,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                _footer(board),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+  }
+
+  Widget _footer(Board board) {
     return Container(
       color: const Color(0x339CAF88),
       padding: EdgeInsets.all(15),
       width: double.infinity,
       child: Text(
-        '© 2023 Environmental Science 2401 - Fall Semester',
+        '${board.name} - ${board.subject} ${board.term}',
         textAlign: TextAlign.center,
         style: AppTheme.text.copyWith(
           color: AppTheme.stormGray,
@@ -539,7 +596,7 @@ class BoardNatureEditScreen extends StatelessWidget {
     );
   }
 
-  Widget _welcome() {
+  Widget _welcome(Board board) {
     return CustomCard(
       addShadow: true,
       child: Column(
@@ -547,7 +604,7 @@ class BoardNatureEditScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Welcome to your Environmental Science sanctuary',
+            'Welcome to your ${board.name} sanctuary',
             style: AppTheme.text.copyWith(
               fontSize: 24.0,
               fontWeight: getFontWeight(600),
@@ -620,7 +677,7 @@ class BoardNatureEditScreen extends StatelessWidget {
     );
   }
 
-  Widget _header() {
+  Widget _header(Board board) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return Container(
@@ -637,6 +694,12 @@ class BoardNatureEditScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                   color: AppTheme.white,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                const SizedBox(width: 10),
                 Flexible(
                   child: WidthLimiter(
                     mobile: largeDesktopSize,
@@ -650,7 +713,7 @@ class BoardNatureEditScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'ENVIRONMENTAL SCIENCE 2401',
+                                board.name,
                                 style: AppTheme.text.copyWith(
                                   color: AppTheme.white,
                                   fontSize: getDeviceResponsiveValue(
@@ -665,7 +728,7 @@ class BoardNatureEditScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Fall Semester',
+                                board.term ?? "",
                                 style: AppTheme.text.copyWith(
                                   color: AppTheme.white.withAlpha(204),
                                   fontSize: 16.0,
