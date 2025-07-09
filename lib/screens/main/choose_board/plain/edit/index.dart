@@ -37,9 +37,6 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
   }
 
 
-
-
-
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _viewModel,

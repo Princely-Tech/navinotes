@@ -23,7 +23,7 @@ class BoardPlainEditVm extends ChangeNotifier {
     if (boardId > 0) {
       await _loadBoard(boardId);
     } else {
-      _error = 'Invalid board ID';
+      _error = 'Your board cannot be loaded at this time. Please try again';
       _isLoading = false;
       notifyListeners();
     }

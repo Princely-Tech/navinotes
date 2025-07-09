@@ -1,4 +1,5 @@
-import 'vm.dart';
+import 'package:navinotes/screens/main/choose_board/common/vm.dart';
+
 import 'package:navinotes/packages.dart';
 
 class BoardPlainScreen extends StatelessWidget {
@@ -7,8 +8,8 @@ class BoardPlainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => BoardPlainVm(),
-      child: Consumer<BoardPlainVm>(
+      create: (_) => BoardVm(boardType: BoardTypeCodes.plain),
+      child: Consumer<BoardVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,
@@ -50,7 +51,7 @@ class BoardPlainScreen extends StatelessWidget {
                                   Column(
                                     spacing: 15,
                                     children: [
-                                      Consumer<BoardPlainVm>(
+                                      Consumer<BoardVm>(
                                         builder: (context, vm, _) {
                                           return AppButton(
                                             mainAxisSize: MainAxisSize.min,
@@ -246,7 +247,7 @@ class BoardPlainScreen extends StatelessWidget {
     );
   }
 
-  Widget _form(BoardPlainVm vm) {
+  Widget _form(BoardVm vm) {
     final hintStyle = AppTheme.text.copyWith(
       color: AppTheme.slateGray,
       fontSize: 16.0,
@@ -335,7 +336,7 @@ class BoardPlainScreen extends StatelessWidget {
   }
 
   Widget _privacySettingItem(
-    BoardPlainVm vm, {
+    BoardVm vm, {
     required bool isChecked,
     required String body,
     required VoidCallback onTap,

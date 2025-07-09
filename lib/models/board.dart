@@ -1,7 +1,7 @@
 import 'package:navinotes/packages.dart';
 
 class Board {
-  final int? id;
+  int? id;
   final int userId;
   final String type;
   final String name;
@@ -32,6 +32,18 @@ class Board {
     required this.updatedAt,
     this.syncedAt,
   });
+
+  BoardTypeCodes? get boardType {
+    try {
+      return BoardTypeCodes.values.firstWhere((e) => e.name == type);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  setIDAfterCreate(int id) {
+    this.id = id;
+  }
 
   Map<String, dynamic> toMap() => {
     'id': id,
@@ -68,8 +80,28 @@ class Board {
   );
 }
 
+// create enum to hold the board types names
+enum BoardTypeCodes { plain, minimalist, darkAcademia, lightAcademia, nature }
+
+// A function that convert the enum to string
+String boardTypeToString(BoardTypeCodes type) {
+  switch (type) {
+    case BoardTypeCodes.plain:
+      return 'Plain';
+    case BoardTypeCodes.minimalist:
+      return 'Minimalist';
+    case BoardTypeCodes.darkAcademia:
+      return 'Dark Academia';
+    case BoardTypeCodes.lightAcademia:
+      return 'Light Academia';
+    case BoardTypeCodes.nature:
+      return 'Nature';
+  }
+}
+
 class BoardType {
   final String name;
+  final String code;
   final String image;
   final String description;
   final String route;
@@ -77,6 +109,7 @@ class BoardType {
 
   BoardType({
     required this.name,
+    required this.code,
     required this.route,
     required this.image,
     required this.description,
@@ -84,9 +117,12 @@ class BoardType {
   });
 }
 
+
+
 List<BoardType> boardTypes = [
   BoardType(
     name: 'Plain',
+    code: BoardTypeCodes.plain.name,
     image: Images.boardPlain,
     description: 'Clean, distraction-free interface',
     route: Routes.boardPlain,
@@ -95,6 +131,7 @@ List<BoardType> boardTypes = [
   ),
   BoardType(
     name: 'Minimalist',
+    code: BoardTypeCodes.minimalist.name,
     image: Images.boardMinimalist,
     description: 'Simplified, essential elements only',
     route: Routes.boardMinimalist,
@@ -102,6 +139,7 @@ List<BoardType> boardTypes = [
   ),
   BoardType(
     name: 'Dark Academia',
+    code: BoardTypeCodes.darkAcademia.name,
     image: Images.boardAcademiaDark,
     description: 'Vintage scholarly, darker tones',
     route: Routes.boardDarkAcademia,
@@ -109,6 +147,7 @@ List<BoardType> boardTypes = [
   ),
   BoardType(
     name: 'Light Academia',
+    code: BoardTypeCodes.lightAcademia.name,
     image: Images.boardAcademiaLight,
     description: 'Bright scholarly, cream tones',
     route: Routes.boardLightAcademia,
@@ -116,6 +155,7 @@ List<BoardType> boardTypes = [
   ),
   BoardType(
     name: 'Nature',
+    code: BoardTypeCodes.nature.name,
     image: Images.boardNature,
     description: 'Organic patterns, natural colors',
     route: Routes.boardNature,

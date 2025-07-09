@@ -46,4 +46,45 @@ class NavigationHelper {
  static void gotToNoteTemplate() {
     // push(Routes.noteTemplate);
   }
+
+
+  static void navigateToBoard(Board board, {Object? arguments}) {
+
+     final boardType = board.boardType ?? BoardTypeCodes.plain;
+
+    final route = switch (boardType) {
+      BoardTypeCodes.plain => Routes.boardPlainEdit,
+      BoardTypeCodes.minimalist => Routes.boardMinimalistEdit,
+      BoardTypeCodes.darkAcademia => Routes.boardDarkAcademiaEdit,
+      BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaEdit,
+      BoardTypeCodes.nature => Routes.boardNatureEdit,
+    };
+  
+
+     // Create a new map with explicit types
+    final Map<String, dynamic> mergedArguments = {
+      'boardId': board.id,
+      'board': board,
+    };
+
+    // NOTE:  spread operator with a Map literal creates a Map<dynamic, dynamic>
+
+    // Safely add existing arguments if they're a map
+    if (arguments is Map<String, dynamic>) {
+      mergedArguments.addAll(arguments);
+    } else if (arguments is Map) {
+      // If it's a Map but not Map<String, dynamic>, cast the values
+      mergedArguments.addAll(
+        Map<String, dynamic>.fromEntries(
+          arguments.entries.map(
+            (e) => MapEntry(e.key.toString(), e.value),
+          ),
+        ),
+      );
+    }
+
+
+    NavigationHelper.push(route, arguments: mergedArguments);
+
+  }
 }

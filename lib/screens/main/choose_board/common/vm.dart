@@ -1,6 +1,11 @@
 import 'package:navinotes/packages.dart';
 
-class BoardPlainVm extends ChangeNotifier {
+class BoardVm extends ChangeNotifier {
+
+   final BoardTypeCodes boardType;
+  
+  BoardVm({required this.boardType});
+
   bool isPrivate = true;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -46,7 +51,7 @@ class BoardPlainVm extends ChangeNotifier {
       // Create a new board
       final newBoard = Board(
         userId: currentUser.id!,
-        type: 'plain',
+        type: boardType.name,
         name: titleController.text.trim(),
         customization: {
           'isPrivate': isPrivate,
@@ -77,12 +82,11 @@ class BoardPlainVm extends ChangeNotifier {
         throw Exception('Failed to save board to database');
       }
       
+      newBoard.setIDAfterCreate(boardId);
+
       // Navigate to edit screen with the new board ID
       if (NavigationHelper.navigatorKey.currentContext != null) {
-        NavigationHelper.push(
-          Routes.boardPlainEdit,
-          arguments: {'showSuccess': true, 'message': 'Board created successfully!', 'boardId': boardId},
-        );
+        NavigationHelper.navigateToBoard(newBoard, arguments: {'showSuccess': true, 'message': 'Board created successfully!'});
       }
       
     } catch (e) {
