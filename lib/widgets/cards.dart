@@ -12,6 +12,7 @@ class CustomCard extends StatelessWidget {
     this.addShadow = false,
     this.addCardShadow = false,
     this.addBorder = false,
+    this.dottedDecoration,
     // this.edgeClipRadius,
   });
   final Widget? child;
@@ -23,6 +24,7 @@ class CustomCard extends StatelessWidget {
   final bool addShadow;
   final bool addCardShadow;
   final bool addBorder;
+  final DottedDecoration? dottedDecoration;
   // final double? edgeClipRadius;
   @override
   Widget build(BuildContext context) {
@@ -32,22 +34,32 @@ class CustomCard extends StatelessWidget {
     if (addShadow) boxShadow = boxShadows;
     if (addCardShadow) boxShadow = cardShadows;
     return Container(
-      width: width,
-      height: height,
-      margin: margin,
-      decoration: decoration.copyWith(
-        color: decoration.color ?? AppTheme.white,
-        borderRadius: decoration.shape == BoxShape.circle ? null : radius,
-        shape: null,
-        boxShadow: boxShadow,
-        border:
-            decoration.border ??
-            Border.all(
-              color: addBorder ? AppTheme.lightGray : AppTheme.transparent,
-            ),
+      decoration:
+          isNotNull(dottedDecoration)
+              ? DottedDecoration(
+                shape: Shape.box,
+                borderRadius: BorderRadius.circular(8),
+                color: AppTheme.coolGray,
+              )
+              : null,
+      child: Container(
+        width: width,
+        height: height,
+        margin: margin,
+        decoration: decoration.copyWith(
+          color: decoration.color ?? AppTheme.white,
+          borderRadius: decoration.shape == BoxShape.circle ? null : radius,
+          shape: null,
+          boxShadow: boxShadow,
+          border:
+              decoration.border ??
+              Border.all(
+                color: addBorder ? AppTheme.lightGray : AppTheme.transparent,
+              ),
+        ),
+        padding: padding,
+        child: child,
       ),
-      padding: padding,
-      child: child,
     );
   }
 }

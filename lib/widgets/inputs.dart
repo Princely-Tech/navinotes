@@ -35,7 +35,7 @@ InputDecoration _inputDecoration({
     suffixIcon: suffixIcon,
     maintainHintHeight: true,
     constraints: constraints,
-    contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+    contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
   );
 }
 
@@ -92,7 +92,7 @@ class CustomInputField extends StatefulWidget {
   final TextStyle? hintStyle;
   final TextStyle? labelStyle;
   final BoxConstraints? constraints;
-  final void Function(String)? onChanged; 
+  final void Function(String)? onChanged;
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
@@ -166,25 +166,29 @@ class _CustomInputFieldState extends State<CustomInputField> {
     // Color fillColor = isSelect ? AppTheme.transparent : AppTheme.polar;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8,
+      // spacing: 8,
       children: [
-        if (isNotNull(widget.label))
-          Row(
-            spacing: 15,
-            children: [
-              Expanded(
-                child: Header6(
-                  title: widget.label!,
-                  required: widget.required,
-                  optional: widget.optional,
-                  style: widget.labelStyle,
-                ),
-              ),
-              if (isNotNull(widget.labelRight)) widget.labelRight!,
-            ],
+        if (isNotNull(widget.label) || isNotNull(widget.labelRight))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: Row(
+              spacing: 15,
+              children: [
+                if (isNotNull(widget.label))
+                  Expanded(
+                    child: Header6(
+                      title: widget.label!,
+                      required: widget.required,
+                      optional: widget.optional,
+                      style: widget.labelStyle,
+                    ),
+                  ),
+                if (isNotNull(widget.labelRight)) widget.labelRight!,
+              ],
+            ),
           ),
         TextFormField(
-          onChanged: widget.onChanged,  
+          onChanged: widget.onChanged,
           readOnly: isSelect,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: widget.validator,

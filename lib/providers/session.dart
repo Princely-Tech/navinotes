@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:navinotes/packages.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManager extends ChangeNotifier {
   static const String _tokenKey = 'user_token';

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/settings/routes.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

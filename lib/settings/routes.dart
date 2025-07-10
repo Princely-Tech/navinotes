@@ -10,8 +10,10 @@ import 'package:navinotes/screens/main/choose_board/plain/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/plain/index.dart';
 import 'package:navinotes/screens/main/choose_board/plain/mind_map/index.dart';
 import 'package:navinotes/screens/main/market_place/index.dart';
+import 'package:navinotes/screens/main/market_place/my_purchases/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
 import 'package:navinotes/screens/main/market_place/product_detail/index.dart';
+import 'package:navinotes/screens/main/market_place/seller_upload/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -51,6 +53,8 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardLightAcademia: (context) => BoardLightAcademiaScreen(),
   Routes.boardLightAcademiaEdit: (context) => BoardLightAcadEditScreen(),
   Routes.boardLightAcademiaNotePage: (context) => BoardLightAcadNotePageScreen(),
+  Routes.sellerUpload: (context) => SellerUploadScreen(),
+  Routes.myPurchases: (context) => MyPurchasesScreen(),
 };
 
 class Routes {
@@ -93,6 +97,11 @@ class Routes {
   static const boardLightAcademiaEdit = 'boardLightAcademiaEdit';
   static const boardLightAcademiaNotePage = 'boardLightAcademiaNotePage';
   static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; //TODO create screen
+
+  static const sellerUpload = 'sellerUpload'; 
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
 }
 //Documentation
 //https://documenter.getpostman.com/view/45960961/2sB2x8GXet

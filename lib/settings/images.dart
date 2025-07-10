@@ -137,7 +137,12 @@ class Images {
   static const String bulb = '$iconPath/bulb.svg';
   static const String leaf2 = '$iconPath/leaf2.svg';
   static const String cloudUpload = '$iconPath/cloud_upload.svg';
-  // static const String bulb = '$iconPath/bulb.svg';
+  static const String alertI = '$iconPath/alert_i.svg';
+  static const String cIcon = '$iconPath/c_icon.svg';
+  static const String ribbon = '$iconPath/ribbon.svg';
+  static const String folder2 = '$iconPath/folder2.svg';
+  static const String cap = '$iconPath/cap.svg';
+  static const String connection2 = '$iconPath/connection2.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
 

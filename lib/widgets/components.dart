@@ -149,7 +149,8 @@ class Header6 extends StatelessWidget {
             TextSpan(
               text: "*",
               style: AppTheme.text.copyWith(
-                color: AppTheme.strongBlue,
+                color: AppTheme.coralRed,
+                // color: AppTheme.strongBlue,
                 fontSize: 16.0,
                 fontWeight: getFontWeight(500),
               ),
@@ -467,7 +468,7 @@ class ProfilePic extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(999),
             child: SVGImagePlaceHolder(imagePath: Images.avatar, size: size),
-          ), //TODO show user image
+          ),
         );
       },
     );
@@ -654,9 +655,10 @@ class AuthHeader extends StatelessWidget {
 }
 
 class CustomCheckBoxItem extends StatefulWidget {
-  const CustomCheckBoxItem({super.key, this.title, this.child});
+  const CustomCheckBoxItem({super.key, this.title, this.child, this.shape});
   final String? title;
   final Widget? child;
+  final OutlinedBorder? shape;
   @override
   State<CustomCheckBoxItem> createState() => _CustomCheckBoxItemState();
 }
@@ -672,23 +674,28 @@ class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Checkbox(
-          value: _value,
-          onChanged: updateValue,
-          activeColor: AppTheme.royalBlue,
-        ),
-        if (isNotNull(widget.child)) Flexible(child: widget.child!),
-        if (isNotNull(widget.title))
-          Flexible(
-            child: Text(
-              widget.title!,
-              style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
-            ),
+    return InkWell(
+      onTap: () => updateValue(!_value!),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Checkbox(
+            value: _value,
+            onChanged: updateValue,
+            activeColor: AppTheme.royalBlue,
+            side: BorderSide(color: AppTheme.black, width: 1),
+            shape: widget.shape,
           ),
-      ],
+          if (isNotNull(widget.child)) Flexible(child: widget.child!),
+          if (isNotNull(widget.title))
+            Flexible(
+              child: Text(
+                widget.title!,
+                style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -783,6 +790,29 @@ class CustomPaination extends StatelessWidget {
               ),
             ),
       ),
+    );
+  }
+}
+
+class StarRowWithText extends StatelessWidget {
+  const StarRowWithText({
+    super.key,
+    required this.text,
+    required this.starRows,
+  });
+  final String text;
+  final Widget starRows;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      spacing: 5,
+      children: [
+        Flexible(child: starRows),
+        Text(
+          text,
+          style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
+        ),
+      ],
     );
   }
 }

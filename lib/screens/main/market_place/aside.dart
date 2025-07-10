@@ -81,21 +81,11 @@ class MarketPlaceAside extends StatelessWidget {
                     title: 'Rating',
                     child: Column(
                       children: [
-                        Row(
-                          spacing: 5,
-                          children: [
-                            Flexible(
-                              child: CustomCheckBoxItem(
-                                child: StarRows(fullStars: 4, emptyStars: 1),
-                              ),
-                            ),
-                            Text(
-                              '& up',
-                              style: AppTheme.text.copyWith(
-                                color: AppTheme.darkSlateGray,
-                              ),
-                            ),
-                          ],
+                        StarRowWithText(
+                          text: '& up',
+                          starRows: CustomCheckBoxItem(
+                            child: StarRows(fullStars: 4, emptyStars: 1),
+                          ),
                         ),
                         Row(
                           spacing: 5,

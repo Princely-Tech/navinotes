@@ -12,6 +12,7 @@ class CustomGrid extends StatelessWidget {
     this.largeDesktop = 3,
     this.wrapWithIntrinsicHeight = true,
     this.mobileSpacing,
+   
   });
   final List<Widget> children;
   final int mobile;
@@ -22,6 +23,7 @@ class CustomGrid extends StatelessWidget {
   final double? spacing;
   final double? mobileSpacing;
   final bool wrapWithIntrinsicHeight;
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,17 +53,14 @@ class CustomGrid extends StatelessWidget {
   }
 
   Widget _body({required List<Widget> children}) {
-    return Consumer<LayoutProviderVm>(
-      builder: (context, vm, child) {
-        return Row(
-          crossAxisAlignment:
-              wrapWithIntrinsicHeight
-                  ? CrossAxisAlignment.stretch
-                  : CrossAxisAlignment.start,
-          spacing: getDefaultSpacing(),
-          children: children.map((item) => Expanded(child: item)).toList(),
-        );
-      },
+    return Row(
+      crossAxisAlignment:
+          wrapWithIntrinsicHeight
+              ? CrossAxisAlignment.stretch
+              : CrossAxisAlignment.start,
+      spacing: getDefaultSpacing(),
+      children:
+          children.map((item) => ExpandableController(child: item)).toList(),
     );
   }
 
