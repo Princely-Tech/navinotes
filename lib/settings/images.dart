@@ -143,6 +143,9 @@ class Images {
   static const String folder2 = '$iconPath/folder2.svg';
   static const String cap = '$iconPath/cap.svg';
   static const String connection2 = '$iconPath/connection2.svg';
+  static const String headphone = '$iconPath/headphone.svg';
+  // static const String bulb = '$iconPath/bulb.svg';
+  // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
 
@@ -151,7 +154,7 @@ class Images {
   static const String authCardBg = '$imagePath/auth_card_bg.svg';
   //  static const String auth_card_bg = '$imagePath/auth_card_bg.png';
 
-  //boards
+  //boards 
   static const String board1 = '$boardsPath/board1.png';
   static const String board2 = '$boardsPath/board2.png';
   static const String board3 = '$boardsPath/board3.png';

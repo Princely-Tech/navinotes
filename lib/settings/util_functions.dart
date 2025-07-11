@@ -13,3 +13,7 @@ bool getMenuVisible(DeviceType deviceType) {
       deviceType == DeviceType.tablet ||
       deviceType == DeviceType.laptop;
 }
+T getRandomListElement<T>(List<T> items) {
+  final random = Random();
+  return items[random.nextInt(items.length)];
+}

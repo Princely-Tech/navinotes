@@ -1,9 +1,14 @@
 import 'package:navinotes/packages.dart';
 
 class CustomProviders extends StatelessWidget {
-  const CustomProviders({super.key, required this.child});
+  const CustomProviders({
+    super.key,
+    required this.child,
+    required this.sessionManager,
+  });
 
   final Widget child;
+  final SessionManager sessionManager;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class CustomProviders extends StatelessWidget {
                 context: context,
               ),
         ),
-        ChangeNotifierProvider(create: (_) => SessionManager()),
+        ChangeNotifierProvider(create: (_) => sessionManager),
       ],
       child: Builder(
         builder: (context) {
@@ -38,7 +43,8 @@ class ApiServiceComponent extends StatelessWidget {
     return ChangeNotifierProxyProvider<SessionManager, ApiServiceProvider>(
       create:
           (context) => ApiServiceProvider(
-            sessionManager: SessionManager(),
+            sessionManager: context.read<SessionManager>(),
+            // sessionManager: SessionManager(),
             context: context,
           ),
       update:

@@ -173,12 +173,14 @@ class CustomTag extends StatelessWidget {
     required this.color,
     required this.textColor,
     this.borderRadius,
+    this.prefix,
   });
 
   final String data;
   final Color color;
   final Color textColor;
   final BorderRadiusGeometry? borderRadius;
+  final Widget? prefix;
 
   @override
   Widget build(BuildContext context) {
@@ -191,10 +193,21 @@ class CustomTag extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Text(
-        data,
-        style: AppTheme.text.copyWith(color: textColor, fontSize: 12.0),
-      ),
+      child:
+          isNotNull(prefix)
+              ? Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 5,
+                children: [prefix!, _text()],
+              )
+              : _text(),
+    );
+  }
+
+  Widget _text() {
+    return Text(
+      data,
+      style: AppTheme.text.copyWith(color: textColor, fontSize: 12.0),
     );
   }
 }

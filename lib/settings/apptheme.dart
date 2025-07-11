@@ -175,7 +175,7 @@ class AppTheme {
   static const Color jetCharcoal = Color(0xFF2F2F2F);
   static const Color lightBrown = Color(0xFFBC8F59);
   static const Color asparagus = Color(0x1987A96B);
-  // static const Color mediumOrchid = Color(0xFFFDBA74);
+  static const Color deepTealGreen = Color(0xFF065F46);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
   // static const Color mediumOrchid = Color(0xFFFDBA74);
 

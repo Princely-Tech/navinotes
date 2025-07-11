@@ -23,12 +23,7 @@ class MyPurchasesScreen extends StatelessWidget {
             MyPurchasesAppBar(),
             Expanded(
               child: ResponsiveSection(
-                mobile: WidthLimiter(
-                  mobile: 256,
-                  largeDesktop: 300,
-                  child: MyPurchasesAside(),
-                ),
-                // mobile: MyPurchasesMain(),
+                mobile: MyPurchasesMain(),
                 desktop: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

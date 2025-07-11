@@ -10,31 +10,33 @@ void main() async {
   await dotenv.load(fileName: ".env");
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => sessionManager),
-        // Add other providers here
-      ],
-      child: const MyApp(),
-    ),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomProviders(
+    CustomProviders(
+      sessionManager: sessionManager,
       child: MaterialApp(
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),
-        initialRoute: Routes.marketplace,
+        initialRoute: Routes.auth,
         // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,
       ),
-    );
-  }
+    ),
+    // MultiProvider(
+    //   providers: [
+    //     ChangeNotifierProvider(create: (_) => sessionManager),
+    //     // Add other providers here
+    //   ],
+    //   child: const MyApp(),
+    // ),
+  );
 }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ;
+//   }
+// }
