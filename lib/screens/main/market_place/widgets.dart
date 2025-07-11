@@ -1,8 +1,9 @@
 import 'package:navinotes/packages.dart';
 
 class RichTextHeader extends StatelessWidget {
-  const RichTextHeader({super.key, required this.title});
+  const RichTextHeader({super.key, required this.title, this.showLogo = false});
   final String title;
+  final bool showLogo;
   @override
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
@@ -17,6 +18,8 @@ class RichTextHeader extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.arrow_back, color: AppTheme.darkSlateGray, size: 20),
+              if (!hideTxts && showLogo)
+                SVGImagePlaceHolder(imagePath: Images.logo, size: 40),
               Text.rich(
                 TextSpan(
                   children: [

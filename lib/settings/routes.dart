@@ -9,6 +9,7 @@ import 'package:navinotes/screens/main/choose_board/minimalist/note_page/index.d
 import 'package:navinotes/screens/main/choose_board/plain/edit/index.dart';
 import 'package:navinotes/screens/main/choose_board/plain/index.dart';
 import 'package:navinotes/screens/main/choose_board/plain/mind_map/index.dart';
+import 'package:navinotes/screens/main/flashcards/index.dart';
 import 'package:navinotes/screens/main/market_place/index.dart';
 import 'package:navinotes/screens/main/market_place/my_purchases/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
@@ -55,6 +56,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardLightAcademiaNotePage: (context) => BoardLightAcadNotePageScreen(),
   Routes.sellerUpload: (context) => SellerUploadScreen(),
   Routes.myPurchases: (context) => MyPurchasesScreen(),
+  Routes.flashCards: (context) => FlashCardsScreen(),
 };
 
 class Routes {
@@ -99,7 +101,7 @@ class Routes {
   static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; //TODO create screen
 
   static const sellerUpload = 'sellerUpload'; 
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
+  static const flashCards = 'flashCards'; 
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
 }

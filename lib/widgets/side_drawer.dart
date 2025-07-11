@@ -67,7 +67,11 @@ class NavigationSideBar extends StatelessWidget {
                         icon: Images.recent,
                         route: Routes.recentNotes,
                       ),
-                      _item(title: 'Flashcards', icon: Images.flashCards),
+                      _item(
+                        title: 'Flashcards',
+                        icon: Images.flashCards,
+                        route: Routes.flashCards,
+                      ),
                       _item(title: 'Pomodoro Timer', icon: Images.timer),
                       _item(title: 'Settings', icon: Images.settings),
                       _item(

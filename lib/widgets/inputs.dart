@@ -1,44 +1,5 @@
 import 'package:navinotes/packages.dart';
 
-InputDecoration _inputDecoration({
-  String? hintText,
-  Widget? prefixIcon,
-  Widget? suffixIcon,
-  OutlineInputBorder? border,
-  // bool isRectangle = true,
-  // required bool isTextArea,
-  Color? fillColor,
-  BoxConstraints? constraints,
-  BorderSide? side,
-}) {
-  OutlineInputBorder defaultBorder =
-      border ??
-      OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: side ?? BorderSide(color: AppTheme.coolGray, width: 1),
-      );
-
-  return InputDecoration(
-    hintText: hintText,
-    hintStyle: AppTheme.text.copyWith(
-      // color: AppTheme.inputPlaceholderColor,
-      fontSize: 16.0,
-    ),
-    border: defaultBorder,
-    enabledBorder: defaultBorder,
-    focusedBorder: defaultBorder.copyWith(
-      borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
-    ),
-    fillColor: fillColor ?? AppTheme.white,
-    filled: true,
-    prefixIcon: prefixIcon,
-    suffixIcon: suffixIcon,
-    maintainHintHeight: true,
-    constraints: constraints,
-    contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-  );
-}
-
 class CustomInputField extends StatefulWidget {
   CustomInputField({
     super.key,
@@ -65,6 +26,8 @@ class CustomInputField extends StatefulWidget {
     this.constraints,
     this.side,
     this.onChanged,
+    this.contentPadding,
+    this.focusNode,
   }) : controller = controller ?? TextEditingController();
 
   final String? label;
@@ -93,6 +56,8 @@ class CustomInputField extends StatefulWidget {
   final TextStyle? labelStyle;
   final BoxConstraints? constraints;
   final void Function(String)? onChanged;
+  final EdgeInsetsGeometry? contentPadding;
+  final FocusNode? focusNode;
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
@@ -143,6 +108,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
 
       // prefix = Padding(padding: prefPadding, child: widget.prefixIcon);
     }
+
     if (isNotNull(widget.suffixIcon)) {
       suffix = Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -195,14 +161,15 @@ class _CustomInputFieldState extends State<CustomInputField> {
           controller: widget.controller,
           maxLines: widget.maxLines,
           onTap: isSelect ? _showCenterDialog : null,
+          focusNode: widget.focusNode,
           decoration: _inputDecoration(
-            hintText: widget.hintText,
-            prefixIcon: prefix,
-            suffixIcon: suffix,
-            border: widget.border,
-            constraints: widget.constraints,
-            side: widget.side,
-            fillColor: widget.fillColor,
+            // hintText: widget.hintText,
+            // prefixIcon: prefix,
+            // suffixIcon: suffix,
+            // border: widget.border,
+            // constraints: widget.constraints,
+            // side: widget.side,
+            // fillColor: widget.fillColor,
           ).copyWith(
             hintStyle:
                 widget.hintStyle ??
@@ -216,6 +183,48 @@ class _CustomInputFieldState extends State<CustomInputField> {
           style: style,
         ),
       ],
+    );
+  }
+
+  InputDecoration _inputDecoration(
+    //   {
+    //   String? hintText,
+    //   Widget? prefixIcon,
+    //   Widget? suffixIcon,
+    //   OutlineInputBorder? border,
+    //   Color? fillColor,
+    //   BoxConstraints? constraints,
+    //   BorderSide? side,
+    // }
+  ) {
+    OutlineInputBorder defaultBorder =
+        widget.border ??
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide:
+              widget.side ?? BorderSide(color: AppTheme.coolGray, width: 1),
+        );
+
+    return InputDecoration(
+      hintText: widget.hintText,
+      hintStyle: AppTheme.text.copyWith(
+        // color: AppTheme.inputPlaceholderColor,
+        fontSize: 16.0,
+      ),
+      border: defaultBorder,
+      enabledBorder: defaultBorder,
+      focusedBorder: defaultBorder.copyWith(
+        borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
+      ),
+      fillColor: widget.fillColor ?? AppTheme.white,
+      filled: true,
+      prefixIcon: widget.prefixIcon,
+      suffixIcon: widget.suffixIcon,
+      maintainHintHeight: true,
+      constraints: widget.constraints,
+      contentPadding:
+          widget.contentPadding ??
+          EdgeInsets.symmetric(vertical: 15, horizontal: 10),
     );
   }
 
