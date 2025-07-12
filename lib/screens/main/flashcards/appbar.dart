@@ -42,7 +42,7 @@ class FlashCardsAppBar extends StatelessWidget {
                                   children: [
                                     VisibleController(
                                       mobile: true,
-                                      largeDesktop: false,
+                                      desktop: false,
                                       child: Padding(
                                         padding: const EdgeInsets.only(
                                           right: 5,
@@ -95,7 +95,7 @@ class FlashCardsAppBar extends StatelessWidget {
         ),
         VisibleController(
           mobile: true,
-          desktop: false,
+          laptop: false,
           child: Padding(
             padding: const EdgeInsets.only(left: 10),
             child: MenuButton(onPressed: vm.openEndDrawer),

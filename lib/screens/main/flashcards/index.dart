@@ -29,14 +29,13 @@ class FlashCardsScreen extends StatelessWidget {
             FlashCardsAppBar(),
             Expanded(
               child: ResponsiveSection(
-                mobile: WidthLimiter(mobile: 256, child: FlashcardsRight()),
-                // mobile: FlashCardsMain(),
-                desktop: Row(
+                mobile: FlashCardsMain(),
+                laptop: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     VisibleController(
                       mobile: false,
-                      largeDesktop: true,
+                      desktop: true,
                       child: WidthLimiter(mobile: 256, child: FlashCardsLeft()),
                     ),
                     Expanded(child: FlashCardsMain()),

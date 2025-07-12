@@ -144,6 +144,13 @@ class Images {
   static const String cap = '$iconPath/cap.svg';
   static const String connection2 = '$iconPath/connection2.svg';
   static const String headphone = '$iconPath/headphone.svg';
+  static const String trash2 = '$iconPath/trash2.svg';
+  static const String refresh2 = '$iconPath/refresh2.svg';
+  static const String eraser = '$iconPath/eraser.svg';
+  static const String pencil = '$iconPath/pencil.svg';
+  static const String menu4 = '$iconPath/menu4.svg';
+  static const String code = '$iconPath/code.svg';
+  static const String sdCard2 = '$iconPath/sd_card2.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';

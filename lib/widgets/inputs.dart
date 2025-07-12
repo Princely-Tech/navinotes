@@ -70,8 +70,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
 
   Widget _body() {
     TextStyle style = widget.style ?? AppTheme.text.copyWith(fontSize: 16.0);
-    Widget? prefix;
-    Widget? suffix;
+
     // bool isDate = widget.keyboardType == TextInputType.datetime;
     bool isPassword = widget.keyboardType == TextInputType.visiblePassword;
     double padding = 12;
@@ -79,6 +78,8 @@ class _CustomInputFieldState extends State<CustomInputField> {
     //   // prefix = Icon(Icons.search, color: AppTheme.inputPlaceholderColor);
     // }
     String? prefixImg;
+    Widget? prefix;
+    Widget? suffix;
     // switch (widget.keyboardType) {
     //   case TextInputType.emailAddress:
     //     prefixImg = Images.email;
@@ -119,14 +120,25 @@ class _CustomInputFieldState extends State<CustomInputField> {
 
     bool isSelect = isNotNull(widget.selectItems);
     if (isSelect) {
-      suffix = Padding(
-        padding: suffixPadding,
-        child: Icon(
-          Icons.keyboard_arrow_down,
-          color: style.color ?? AppTheme.black,
-          size: style.fontSize! + 5,
-        ),
+      suffix = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.keyboard_arrow_down,
+            color: style.color ?? AppTheme.black,
+            size: style.fontSize! + 5,
+          ),
+        ],
       );
+      // suffix = Padding(
+      //   padding: suffixPadding,
+      // child: Icon(
+      //   Icons.keyboard_arrow_down,
+      //   color: style.color ?? AppTheme.black,
+      //   size: style.fontSize! + 5,
+      // ),
+      // );
     }
 
     // Color fillColor = isSelect ? AppTheme.transparent : AppTheme.polar;
@@ -164,8 +176,8 @@ class _CustomInputFieldState extends State<CustomInputField> {
           focusNode: widget.focusNode,
           decoration: _inputDecoration(
             // hintText: widget.hintText,
-            // prefixIcon: prefix,
-            // suffixIcon: suffix,
+            prefixIcon: prefix,
+            suffixIcon: suffix,
             // border: widget.border,
             // constraints: widget.constraints,
             // side: widget.side,
@@ -186,17 +198,15 @@ class _CustomInputFieldState extends State<CustomInputField> {
     );
   }
 
-  InputDecoration _inputDecoration(
-    //   {
-    //   String? hintText,
-    //   Widget? prefixIcon,
-    //   Widget? suffixIcon,
-    //   OutlineInputBorder? border,
-    //   Color? fillColor,
-    //   BoxConstraints? constraints,
-    //   BorderSide? side,
-    // }
-  ) {
+  InputDecoration _inputDecoration({
+    // String? hintText,
+    Widget? prefixIcon,
+    Widget? suffixIcon,
+    // OutlineInputBorder? border,
+    // Color? fillColor,
+    // BoxConstraints? constraints,
+    // BorderSide? side,
+  }) {
     OutlineInputBorder defaultBorder =
         widget.border ??
         OutlineInputBorder(
@@ -218,8 +228,8 @@ class _CustomInputFieldState extends State<CustomInputField> {
       ),
       fillColor: widget.fillColor ?? AppTheme.white,
       filled: true,
-      prefixIcon: widget.prefixIcon,
-      suffixIcon: widget.suffixIcon,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
       maintainHintHeight: true,
       constraints: widget.constraints,
       contentPadding:

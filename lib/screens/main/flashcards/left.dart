@@ -23,7 +23,7 @@ class FlashCardsLeft extends StatelessWidget {
                     spacing: 20,
                     children: [_creationMode(), _deckManagement(vm)],
                   ),
-                ),
+                ), 
               ),
             ],
           ),

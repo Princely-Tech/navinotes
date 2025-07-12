@@ -1,5 +1,20 @@
 import 'package:navinotes/packages.dart';
 
+enum FlashCardsSide {
+  front,
+  back;
+
+  @override
+  String toString() {
+    switch (this) {
+      case front:
+        return 'Front Side';
+      case back:
+        return 'Back Side';
+    }
+  }
+}
+
 class TagField {
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -9,11 +24,30 @@ class TagField {
       focusNode = FocusNode();
 }
 
+List<String> flashCardsTextTypes = [
+  'Normal Text',
+  'Italic Text',
+  'Underlined Text',
+];
+
 class FlashCardsVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   FlashCardsVm({required this.scaffoldKey});
 
   List<TagField> tagFields = [TagField('#neuroscience'), TagField('#biology')];
+  TextEditingController textTypeController = TextEditingController(
+    text: flashCardsTextTypes.first,
+  );
+
+  FlashCardsSide currentSide = FlashCardsSide.front;
+
+  void toggleSide() {
+    currentSide =
+        currentSide == FlashCardsSide.front
+            ? FlashCardsSide.back
+            : FlashCardsSide.front;
+    notifyListeners();
+  }
 
   //For development purposes, will be removed in production
   void initialize() {

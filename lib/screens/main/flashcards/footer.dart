@@ -11,28 +11,87 @@ class FlashCardsFooter extends StatelessWidget {
         color: AppTheme.white,
         border: Border(top: BorderSide(color: AppTheme.lightGray)),
       ),
-      padding: const EdgeInsets.all( 10),
-      child: Row(
-        spacing: 5,
-        children: [
-          _item(
-            name: 'Browse',
-            imagePath: Images.store2,
-            isCurrent: true,
-            route: Routes.marketplace,
-          ),
-          _item(
-            name: 'My Purchases',
-            imagePath: Images.shoppingBag,
-            route: Routes.myPurchases,
-          ),
-          _item(
-            name: 'My Store',
-            imagePath: Images.store3,
-            route: Routes.myStore,
-          ),
-          _item(name: 'Cart', imagePath: Images.shoppingCart),
-        ],
+
+      child: LayoutBuilder(
+        builder: (_, constraints) {
+          return ScrollableController(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              constraints: BoxConstraints(minWidth: constraints.maxWidth),
+              child: Row(
+                spacing: 40,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    spacing: 15,
+                    children: [
+                      AppButton(
+                        onTap: () {},
+                        mainAxisSize: MainAxisSize.min,
+                        text: 'Add Card',
+                        minHeight: 40,
+                        color: AppTheme.primaryColor,
+                        prefix: Icon(
+                          Icons.add,
+                          size: 18,
+                          color: AppTheme.white,
+                        ),
+                      ),
+                      AppButton(
+                        onTap: () {},
+                        mainAxisSize: MainAxisSize.min,
+                        text: 'Save Deck',
+                        minHeight: 40,
+                        spacing: 10,
+                        prefix: SVGImagePlaceHolder(
+                          imagePath: Images.sdCard2,
+                          size: 16,
+                          color: AppTheme.white,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    spacing: 15,
+                    children: [
+                      AppButton.secondary(
+                        onTap: () {},
+                        mainAxisSize: MainAxisSize.min,
+                        text: 'Deck Settings',
+                        minHeight: 40,
+                        color: AppTheme.lightGray,
+                        spacing: 10,
+                        prefix: SVGImagePlaceHolder(
+                          imagePath: Images.settings,
+                          size: 14,
+                          color: AppTheme.darkSlateGray,
+                        ),
+                        textColor: AppTheme.darkSlateGray,
+                      ),
+                      AppButton(
+                        onTap: () {},
+                        mainAxisSize: MainAxisSize.min,
+                        text: 'Study Now',
+                        minHeight: 40,
+                        spacing: 10,
+                        color: AppTheme.iceBlue,
+                        borderColor: AppTheme.lightGray,
+                        prefix: SVGImagePlaceHolder(
+                          imagePath: Images.cap,
+                          size: 16,
+                          color: AppTheme.vividRose,
+                        ),
+                        textColor: AppTheme.vividRose,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

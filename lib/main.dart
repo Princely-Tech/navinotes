@@ -16,7 +16,7 @@ void main() async {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),
-        initialRoute: Routes.auth,
+        initialRoute: Routes.flashCards,
         // initialRoute: Routes.auth, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,
