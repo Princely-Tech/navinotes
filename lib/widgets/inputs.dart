@@ -77,7 +77,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
     // if (widget.keyboardType) {
     //   // prefix = Icon(Icons.search, color: AppTheme.inputPlaceholderColor);
     // }
-    String? prefixImg;
+    // String? prefixImg;
     Widget? prefix;
     Widget? suffix;
     // switch (widget.keyboardType) {
@@ -88,26 +88,24 @@ class _CustomInputFieldState extends State<CustomInputField> {
     //     prefixImg = Images.padlock;
     //     break;
     // }
-    EdgeInsets prefPadding = EdgeInsets.only(left: padding);
-    EdgeInsets suffixPadding = EdgeInsets.only(left: 5, right: padding);
+    // EdgeInsets prefPadding = EdgeInsets.only(left: padding);
+    // EdgeInsets suffixPadding = EdgeInsets.only(left: 5, right: padding);
 
-    if (isNotNull(prefixImg)) {
-      prefix = Padding(
-        padding: prefPadding,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [SVGImagePlaceHolder(imagePath: prefixImg!, size: 16)],
-        ),
-      );
-    }
+    // if (isNotNull(prefixImg)) {
+    //   prefix = Padding(
+    //     padding: prefPadding,
+    //     child: Row(
+    //       mainAxisSize: MainAxisSize.min,
+    //       children: [SVGImagePlaceHolder(imagePath: prefixImg!, size: 16)],
+    //     ),
+    //   );
+    // }
     if (isNotNull(widget.prefixIcon)) {
       prefix = Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [Flexible(child: widget.prefixIcon!)],
+        children: [widget.prefixIcon!],
       );
-
-      // prefix = Padding(padding: prefPadding, child: widget.prefixIcon);
     }
 
     if (isNotNull(widget.suffixIcon)) {

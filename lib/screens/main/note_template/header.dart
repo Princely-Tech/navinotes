@@ -11,64 +11,56 @@ class NoteTemplateHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<NoteTemplateVm>(
       builder: (context, vm, _) {
-        return Container(
-          color: AppTheme.white,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  spacing: 5,
-                  children: [_leading(), _actions(vm)],
+        return Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(color: AppTheme.vividRose),
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                spacing: 15,
+                children: [_leading(), _trailing(vm)],
+              ),
+            ),
+            Container(
+              decoration: ShapeDecoration(
+                color: AppTheme.white,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: 1, color: AppTheme.lightGray),
                 ),
               ),
-              Container(
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 1, color: AppTheme.lightGray),
-                  ),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 15,
-                  children: [_searchBar(), _sortBy()],
-                ),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                spacing: 15,
+                children: [_searchBar(), _sortBy()],
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
   }
 
   Widget _sortBy() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 5,
-      children: [
-        Text(
+    return WidthLimiter(
+      mobile: 200,
+      child: CustomInputField(
+        prefixIcon: Text(
           'Sort by:',
           style: AppTheme.text.copyWith(color: AppTheme.stormGray),
         ),
-        WidthLimiter(
-          mobile: 160,
-          child: CustomInputField(
-            hintText: 'Sort by...',
-            constraints: BoxConstraints(maxHeight: 40),
-            controller: TextEditingController(text: 'Most Popular'),
-            selectItems: ['Most Popular', 'Date Created', 'Date Modified'],
-          ),
-        ),
-      ],
+        constraints: BoxConstraints(maxHeight: 40),
+        // controller: TextEditingController(text: 'Most Popular'),
+        selectItems: ['Most Popular', 'Date Created', 'Date Modified'],
+      ),
     );
   }
 
   Widget _searchBar() {
     return Flexible(
       child: WidthLimiter(
-        mobile: 662,
+        mobile: 256,
         child: CustomInputField(
           hintText: 'Search templates...',
           constraints: BoxConstraints(maxHeight: 40),
@@ -83,102 +75,86 @@ class NoteTemplateHeader extends StatelessWidget {
     );
   }
 
-  Widget _actions(NoteTemplateVm vm) {
+  Widget _trailing(NoteTemplateVm vm) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
+        Text(
+          'NaviNotes',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         VisibleController(
-          mobile: false,
-          laptop: true,
-          child: Flexible(
-            child: Container(
-              decoration: ShapeDecoration(
-                color: AppTheme.paleBlue,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: AppTheme.lightGray),
-                  borderRadius: BorderRadius.circular(9999),
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 5,
-                children: [
-                  SVGImagePlaceHolder(imagePath: Images.logoRounded, size: 24),
-                  Flexible(
-                    child: Text(
-                      AppStrings.appName,
-                      style: AppTheme.text.copyWith(
-                        color: AppTheme.electricIndigo,
-                        fontSize: 16.0,
-                        fontWeight: getFontWeight(500),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+          mobile: true,
+          desktop: false,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: MenuButton(
+              onPressed: vm.openDrawer,
+              decoration: BoxDecoration(color: AppTheme.white),
             ),
           ),
         ),
-        AppButton(
-          onTap: () {},
-          shape: CircleBorder(),
-          color: AppTheme.lightGray,
-          padding: EdgeInsets.zero,
-          minHeight: 32,
-          child: Icon(Icons.more_vert, color: AppTheme.stormGray),
-        ),
-        MenuButton(onPressed: vm.openDrawer),
       ],
     );
   }
 
   Widget _leading() {
+    final subtitleTextStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 14,
+      fontFamily: 'Inter',
+      fontWeight: FontWeight.w400,
+      height: 1.43,
+    );
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        bool isMobile = layoutVm.deviceType == DeviceType.mobile;
         return Expanded(
           child: Row(
             spacing: 10,
             children: [
               AppButton.text(
                 onTap: NavigationHelper.pop,
-                color: AppTheme.strongBlue,
-                text: isMobile ? 'Back' : 'Back to Board View',
-                prefix: Icon(Icons.arrow_back, color: AppTheme.strongBlue),
-              ),
-              Expanded(
-                child: Column(
-                  spacing: 5,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Choose Note Template',
-                      style: AppTheme.text.copyWith(
-                        fontSize: 20.0,
-                        fontWeight: getFontWeight(600),
+                prefix: Icon(Icons.arrow_back, color: AppTheme.white),
+                wrapWithFlexible: true,
+                spacing: 15,
+                child: Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Choose Note Template',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                    Text.rich(
-                      TextSpan(
-                        children: [
+                      Opacity(
+                        opacity: 0.7,
+                        child: Text.rich(
+                          overflow: TextOverflow.ellipsis,
                           TextSpan(
-                            text: 'Board: ',
-                            style: AppTheme.text.copyWith(
-                              color: AppTheme.steelMist,
-                            ),
+                            children: [
+                              TextSpan(text: 'Board', style: subtitleTextStyle),
+                              TextSpan(
+                                text: ' > ',
+                                style: subtitleTextStyle.copyWith(fontSize: 20),
+                              ),
+                              TextSpan(
+                                text: 'Advanced Biology - Semester 2',
+                                style: subtitleTextStyle,
+                              ),
+                            ],
                           ),
-                          TextSpan(
-                            text: 'Advanced Biology - Semester 2',
-                            style: AppTheme.text.copyWith(
-                              color: AppTheme.strongBlue,
-                              fontWeight: getFontWeight(500),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

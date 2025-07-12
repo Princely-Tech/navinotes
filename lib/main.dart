@@ -16,8 +16,8 @@ void main() async {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),
-        initialRoute: Routes.dashboard,
-        // initialRoute: Routes.auth, //TODO uncomment
+        initialRoute: Routes.splash,
+        // initialRoute: Routes.splash, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,
       ),
@@ -37,6 +37,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container() ;
+    return Container();
   }
 }

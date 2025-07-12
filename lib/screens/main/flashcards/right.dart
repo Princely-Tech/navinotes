@@ -1,4 +1,4 @@
-import 'package:navinotes/packages.dart';
+import 'package:navinotes/packages.dart';import 'vm.dart';
 
 class FlashcardsRight extends StatelessWidget {
   const FlashcardsRight({super.key});
@@ -152,7 +152,6 @@ class FlashcardsRight extends StatelessWidget {
         ],
       ),
     );
-<<<<<<< HEAD
   }
 
   Widget _cardItemAction({required String icon}) {
@@ -161,8 +160,5 @@ class FlashcardsRight extends StatelessWidget {
       color: AppTheme.blueGray,
       size: 12,
     );
-=======
-    
->>>>>>> b57835d2b4f4de23f5a758842e0b442dd7fcc871
   }
 }

@@ -1,11 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/screens/main/note_template/aside.dart';
-import 'package:navinotes/screens/main/note_template/footer.dart';
-import 'package:navinotes/screens/main/note_template/header.dart';
-import 'package:navinotes/screens/main/note_template/main.dart';
-import 'package:navinotes/screens/main/note_template/vm.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'package:navinotes/packages.dart';
+import 'aside.dart';
+import 'main.dart';
+import 'vm.dart';
 
 class NoteTemplateScreen extends StatelessWidget {
   NoteTemplateScreen({super.key});
@@ -21,26 +17,18 @@ class NoteTemplateScreen extends StatelessWidget {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
             endDrawer: CustomDrawer(child: NoteTemplateAside()),
-            body: Column(
-              children: [
-                NoteTemplateHeader(),
-                Expanded(
-                  child: ResponsiveSection(
-                    mobile: NoteTemplateMain(),
-                    desktop: Row(
-                      children: [
-                        Expanded(child: NoteTemplateMain()),
-                        WidthLimiter(
-                          mobile: 280,
-                          largeDesktop: 320,
-                          child: NoteTemplateAside(),
-                        ),
-                      ],
-                    ),
+            body: ResponsiveSection(
+              mobile: NoteTemplateMain(),
+              desktop: Row(
+                children: [
+                  Expanded(child: NoteTemplateMain()),
+                  WidthLimiter(
+                    mobile: 280,
+                    largeDesktop: 320,
+                    child: NoteTemplateAside(),
                   ),
-                ),
-                NoteTemplateFooter(),
-              ],
+                ],
+              ),
             ),
           );
         },
