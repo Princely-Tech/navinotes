@@ -35,8 +35,9 @@ class NotesAppBarActions extends StatelessWidget {
 }
 
 class NewNotesButton extends StatelessWidget {
-  const NewNotesButton({super.key, required this.isAside});
+  const NewNotesButton({super.key, required this.isAside, required this.board});
   final bool isAside;
+  final Board board;
   @override
   Widget build(BuildContext context) {
     return Consumer<BoardPlainNotePageVm>(
@@ -45,7 +46,7 @@ class NewNotesButton extends StatelessWidget {
           color: AppTheme.primaryColor,
           wrapWithFlexible: true,
           mainAxisSize: MainAxisSize.min,
-          onTap: vm.gotToCreateNotePage,
+          onTap: () => vm.gotToCreateNotePage(board),
           text: isAside ? 'New Note' : 'New Note Page',
           minHeight: 36,
           prefix: Icon(Icons.add, color: AppTheme.white),

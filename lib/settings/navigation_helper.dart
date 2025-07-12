@@ -43,8 +43,31 @@ class NavigationHelper {
     }
   }
 
- static void gotToNoteTemplate() {
-    // push(Routes.noteTemplate);
+
+
+
+   static void gotToNoteTemplate() {
+    //push(Routes.noteTemplate, arguments: board);
+  }
+
+
+  static void gotToNewNoteTemplate(Board board) {
+    push(Routes.noteTemplate, arguments: board);
+  }
+
+
+  static void navigateToBoardNotes(Board board) {
+
+    final route = switch (board.boardType) {
+      BoardTypeCodes.plain => Routes.boardPlainNotePage,
+      BoardTypeCodes.minimalist => Routes.boardMinimalistNotePage,
+      BoardTypeCodes.darkAcademia => Routes.boardDarkAcademiaCreateNote,
+      BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaNotePage,
+      BoardTypeCodes.nature => Routes.boardNatureNotePage,
+      _ => Routes.boardPlainNotePage,
+    };
+  
+    push(route, arguments: board);
   }
 
 

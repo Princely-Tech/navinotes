@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/choose_board/plain/note_page/shared.dart';
 import 'package:navinotes/screens/main/choose_board/plain/note_page/vm.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,9 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<BoardPlainNotePageVm>(
       builder: (_, vm, _) {
+
+                final board = context.read<BoardPlainNotePageVm>().board;
+
         return Container(
           decoration: ShapeDecoration(
             color: AppTheme.white,
@@ -25,8 +29,8 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ResponsiveSection(
-                mobile: _leading(),
-                desktop: Flexible(child: _leading()),
+                mobile: _leading(board!),
+                desktop: Flexible(child: _leading(board)),
               ),
               ResponsiveSection(
                 mobile: Expanded(child: _searchField()),
@@ -59,7 +63,9 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
     );
   }
 
-  Widget _leading() {
+  Widget _leading(Board board) {
+
+    final title = board.name.length > 13 ? board.name.substring(0, 13) + '...' : board.name;
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 10,
@@ -108,7 +114,7 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: 'Physics 101',
+                          text: title,
                           style: AppTheme.text.copyWith(
                             color: AppTheme.darkSlateGray,
                             fontSize: 16.0,

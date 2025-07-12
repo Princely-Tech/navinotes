@@ -331,7 +331,11 @@ class _BoardMinimalistEditScreenState extends State<BoardMinimalistEditScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: AppButton.text(
-                onTap: () {},
+                 onTap: () {
+                  if (isNotNull(route)) {
+                    NavigationHelper.push(route!);
+                  }
+                },
                 text: btnText,
                 suffix: Icon(Icons.arrow_forward, color: AppTheme.strongBlue),
                 style: AppTheme.text.copyWith(
