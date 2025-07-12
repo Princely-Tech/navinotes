@@ -43,10 +43,17 @@ class NavigationHelper {
     }
   }
 
- static void gotToNoteTemplate() {
-    // push(Routes.noteTemplate);
+
+
+
+   static void gotToNoteTemplate() {
+    //push(Routes.noteTemplate, arguments: board);
   }
 
+
+  static void gotToNewNoteTemplate(Board board) {
+    push(Routes.noteTemplate, arguments: board);
+  }
 
   static void navigateToBoard(Board board, {Object? arguments}) {
 

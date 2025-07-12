@@ -387,7 +387,11 @@ class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: AppButton.text(
-                onTap: () {},
+                 onTap: () {
+                  if (isNotNull(route)) {
+                    NavigationHelper.push(route!);
+                  }
+                },
                 text: '$btnText →',
                 style: AppTheme.text.copyWith(
                   color: AppTheme.yellowishOrange.withAlpha(0xFF),

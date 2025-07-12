@@ -40,7 +40,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 15),
                               child: AppButton(
-                                onTap: NavigationHelper.gotToNoteTemplate,
+                                onTap: () => NavigationHelper.gotToNoteTemplate(),
                                 text: 'New Note Page',
                                 minHeight: 40,
                                 color: AppTheme.burntLeather.withAlpha(0xFF),

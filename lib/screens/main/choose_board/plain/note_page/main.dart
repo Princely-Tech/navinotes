@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/models/board.dart';
 import 'package:navinotes/screens/main/choose_board/plain/note_page/shared.dart';
 import 'package:navinotes/screens/main/choose_board/plain/note_page/vm.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +13,11 @@ class BoardPlainNotePageMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<BoardPlainNotePageVm>(
       builder: (context, vm, child) {
+        final board = context.read<BoardPlainNotePageVm>().board;
+
         return Column(
           children: [
-            _header(),
+            _header(board!),
             Expanded(
               child: ScrollableController(
                 mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
@@ -93,7 +96,8 @@ class BoardPlainNotePageMain extends StatelessWidget {
                       ),
                     ),
                     CreateCard(
-                      onTap: vm.gotToCreateNotePage,
+                      width: double.infinity,
+                      onTap: () => vm.gotToCreateNotePage(board),
                       text: 'Create New Note Page',
                     ),
                   ],
@@ -197,7 +201,9 @@ class BoardPlainNotePageMain extends StatelessWidget {
     );
   }
 
-  Widget _header() {
+  Widget _header(Board board) {
+     // take 13 characters, add ... if longer
+     final title = board.name.length > 13 ? board.name.substring(0, 13) + '...' : board.name;
     return Container(
       constraints: BoxConstraints(minHeight: 60),
       decoration: ShapeDecoration(
@@ -210,7 +216,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
       child: Row(
         spacing: 20,
         children: [
-          Text('8 Note Pages', style: AppTheme.text.copyWith(fontSize: 16.0)),
+          Text(title, style: AppTheme.text.copyWith(fontSize: 16.0)),
           VisibleController(
             mobile: false,
             tablet: true,
@@ -257,7 +263,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
                       ),
                     ),
                     _sortBy(),
-                    NewNotesButton(isAside: false),
+                    NewNotesButton(board: board, isAside: false),
                   ],
                 ),
               ),

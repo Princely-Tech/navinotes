@@ -507,7 +507,11 @@ class _BoardNatureEditScreenState extends State<BoardNatureEditScreen> {
             ),
             AppButton.text(
               mainAxisSize: MainAxisSize.min,
-              onTap: () {},
+               onTap: () {
+                if (isNotNull(route)) {
+                  NavigationHelper.push(route!);
+                }
+              },
               text: btnText,
               suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
               style: AppTheme.text.copyWith(

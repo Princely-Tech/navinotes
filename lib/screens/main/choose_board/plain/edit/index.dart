@@ -122,19 +122,23 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
                                 image: Images.file2,
                                 title: 'Upload Syllabus',
                                 color: true,
+                                onTap: () {},
                               ),
                               _gridChild(
                                 body: 'Begin taking notes right away',
                                 btnText: 'Create note',
                                 image: Images.edit,
                                 title: 'Create Note',
-                                route: Routes.boardPlainNotePage,
+                                onTap: () {},
                               ),
                               _gridChild(
                                 body: 'Add your course materials',
                                 btnText: 'Import now',
                                 image: Images.folder,
                                 title: 'Import Files',
+                                onTap: () {
+                                  NavigationHelper.gotToNewNoteTemplate(board);
+                                },
                               ),
                             ],
                           ),
@@ -286,44 +290,47 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
     required Widget button,
     String? img,
   }) {
-    return Card(
-      elevation: 0,
-      color: color,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              header,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        elevation: 0,
+        color: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                header,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              body,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
+              const SizedBox(height: 8),
+              Text(
+                body,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            button,
-          ],
+              const SizedBox(height: 16),
+              button,
+            ],
+          ),
         ),
       ),
     );
@@ -442,14 +449,10 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
     required String btnText,
     required String image,
     bool color = false,
-    String? route, //TODO make required
+    required void Function() onTap,
   }) {
     return InkWell(
-      onTap: () {
-        if (isNotNull(route)) {
-          NavigationHelper.push(route!);
-        }
-      },
+      onTap: onTap,
       child: CustomCard(
         addBorder: true,
         decoration: BoxDecoration(
@@ -495,7 +498,7 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: AppButton.text(
-                onTap: () {},
+                onTap: onTap,
                 text: btnText,
                 suffix: Icon(Icons.arrow_forward, color: AppTheme.vividBlue),
                 style: AppTheme.text.copyWith(

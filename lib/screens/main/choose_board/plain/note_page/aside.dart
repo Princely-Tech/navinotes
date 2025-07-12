@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/models/packages.dart';
 import 'package:navinotes/providers/layout.dart';
 import 'package:navinotes/screens/main/choose_board/plain/note_page/shared.dart';
 import 'package:navinotes/screens/main/choose_board/plain/note_page/vm.dart';
@@ -33,7 +34,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
                         children: [
                           VisibleController(
                             mobile: getMenuVisible(layoutVm.deviceType),
-                            child: Column(children: [_actionRow(), _divider()]),
+                            child: Column(children: [_actionRow(vm.board!), _divider()]),
                           ),
                           _boardDetails(),
                           _divider(),
@@ -54,11 +55,11 @@ class BoardPlainNotePageAside extends StatelessWidget {
     );
   }
 
-  Widget _actionRow() {
+  Widget _actionRow(Board board) {
     return Row(
       spacing: 10,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [NewNotesButton(isAside: true), NotesAppBarActions()],
+      children: [NewNotesButton(isAside: true, board: board), NotesAppBarActions()],
     );
   }
 

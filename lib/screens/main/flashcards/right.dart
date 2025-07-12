@@ -25,6 +25,6 @@ class FlashcardsRight extends StatelessWidget {
         ],
       ),
     );
-    ;
+    
   }
 }
