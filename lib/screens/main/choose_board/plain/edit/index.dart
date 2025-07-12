@@ -129,16 +129,16 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
                                 btnText: 'Create note',
                                 image: Images.edit,
                                 title: 'Create Note',
-                                onTap: () {},
+                               onTap: () {
+                               NavigationHelper.navigateToBoardNotes(board);
+                                },
                               ),
                               _gridChild(
                                 body: 'Add your course materials',
                                 btnText: 'Import now',
                                 image: Images.folder,
                                 title: 'Import Files',
-                                onTap: () {
-                                  NavigationHelper.gotToNewNoteTemplate(board);
-                                },
+                                onTap: () {},
                               ),
                             ],
                           ),

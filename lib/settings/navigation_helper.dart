@@ -55,6 +55,22 @@ class NavigationHelper {
     push(Routes.noteTemplate, arguments: board);
   }
 
+
+  static void navigateToBoardNotes(Board board) {
+
+    final route = switch (board.boardType) {
+      BoardTypeCodes.plain => Routes.boardPlainNotePage,
+      BoardTypeCodes.minimalist => Routes.boardMinimalistNotePage,
+      BoardTypeCodes.darkAcademia => Routes.boardDarkAcademiaCreateNote,
+      BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaNotePage,
+      BoardTypeCodes.nature => Routes.boardNatureNotePage,
+      _ => Routes.boardPlainNotePage,
+    };
+  
+    push(route, arguments: board);
+  }
+
+
   static void navigateToBoard(Board board, {Object? arguments}) {
 
      final boardType = board.boardType ?? BoardTypeCodes.plain;
