@@ -83,6 +83,12 @@ class Board {
 // create enum to hold the board types names
 enum BoardTypeCodes { plain, minimalist, darkAcademia, lightAcademia, nature }
 
+var boardTypePlainImage = Images.boardPlain;
+var boardTypeMinimalistImage = Images.boardMinimalist;
+var boardTypeDarkAcademiaImage = Images.boardAcademiaDark;
+var boardTypeLightAcademiaImage = Images.boardAcademiaLight;
+var boardTypeNatureImage = Images.boardNature;
+
 // A function that convert the enum to string
 String boardTypeToString(BoardTypeCodes type) {
   switch (type) {
@@ -117,13 +123,11 @@ class BoardType {
   });
 }
 
-
-
 List<BoardType> boardTypes = [
   BoardType(
     name: 'Plain',
     code: BoardTypeCodes.plain.name,
-    image: Images.boardPlain,
+    image: boardTypePlainImage,
     description: 'Clean, distraction-free interface',
     route: Routes.boardPlain,
     body:
@@ -132,7 +136,7 @@ List<BoardType> boardTypes = [
   BoardType(
     name: 'Minimalist',
     code: BoardTypeCodes.minimalist.name,
-    image: Images.boardMinimalist,
+    image: boardTypeMinimalistImage,
     description: 'Simplified, essential elements only',
     route: Routes.boardMinimalist,
     body: 'Some description',
@@ -140,7 +144,7 @@ List<BoardType> boardTypes = [
   BoardType(
     name: 'Dark Academia',
     code: BoardTypeCodes.darkAcademia.name,
-    image: Images.boardAcademiaDark,
+    image: boardTypeDarkAcademiaImage,
     description: 'Vintage scholarly, darker tones',
     route: Routes.boardDarkAcademia,
     body: 'Some description',
@@ -148,7 +152,7 @@ List<BoardType> boardTypes = [
   BoardType(
     name: 'Light Academia',
     code: BoardTypeCodes.lightAcademia.name,
-    image: Images.boardAcademiaLight,
+    image: boardTypeLightAcademiaImage,
     description: 'Bright scholarly, cream tones',
     route: Routes.boardLightAcademia,
     body: 'Some description',
@@ -156,7 +160,7 @@ List<BoardType> boardTypes = [
   BoardType(
     name: 'Nature',
     code: BoardTypeCodes.nature.name,
-    image: Images.boardNature,
+    image: boardTypeNatureImage,
     description: 'Organic patterns, natural colors',
     route: Routes.boardNature,
     body: 'Some description',

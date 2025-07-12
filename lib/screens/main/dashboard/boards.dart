@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/dashboard/vm.dart';
 import 'package:navinotes/screens/main/dashboard/widgets.dart';
 import 'package:provider/provider.dart';
@@ -20,16 +21,31 @@ class YourBoards extends StatelessWidget {
     );
   }
 
-  Widget _boardCard(
-    DashboardVm vm, {
-    required String title,
-    required String lastEdited,
-    required String image,
-    required int notes,
-    required int mindmaps,
-  }) {
+  Widget _boardCard(DashboardVm vm, {required Board board}) {
+    // Get the appropriate image based on board type
+    String boardImage;
+    switch (board.type) {
+      case 'plain':
+        boardImage = boardTypePlainImage;
+        break;
+      case 'minimalist':
+        boardImage = boardTypeMinimalistImage;
+        break;
+      case 'darkAcademia':
+        boardImage = boardTypeDarkAcademiaImage;
+        break;
+      case 'lightAcademia':
+        boardImage = boardTypeLightAcademiaImage;
+        break;
+      case 'nature':
+        boardImage = boardTypeNatureImage;
+        break;
+      default:
+        boardImage = boardTypePlainImage; // Default fallback
+    }
+    
     return InkWell(
-      onTap: vm.goToBoardNotes,
+      onTap: () => NavigationHelper.navigateToBoard(board),
       child: CustomCard(
         padding: EdgeInsets.zero,
         child: Column(
@@ -37,7 +53,7 @@ class YourBoards extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 6 / 2,
-              child: ImagePlaceHolder(imagePath: image, isCardHeader: true),
+              child: ImagePlaceHolder(imagePath: boardImage, isCardHeader: true),
             ),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -46,29 +62,32 @@ class YourBoards extends StatelessWidget {
                 spacing: 15,
                 children: [
                   Text(
-                    title,
+                    board.name,
                     style: AppTheme.text.copyWith(
-                      fontSize: 16.0,
-                      fontWeight: getFontWeight(500),
+                      fontSize: 18.0,
+                      fontWeight: getFontWeight(600),
                     ),
                   ),
                   Text(
-                    'Last edited: $lastEdited',
-                    style: AppTheme.text.copyWith(color: AppTheme.steelMist),
+                    'Last edited ${_formatDate(DateTime.fromMillisecondsSinceEpoch(board.updatedAt * 1000))}',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.steelMist,
+                      fontSize: 12.0,
+                    ),
                   ),
                   Row(
                     spacing: 10,
                     children: [
                       Flexible(
                         child: CustomTag(
-                          '$notes notes',
+                          '0 notes', // TODO: Get actual note count
                           color: AppTheme.paleBlue,
                           textColor: AppTheme.electricIndigo,
                         ),
                       ),
                       Flexible(
                         child: CustomTag(
-                          '$mindmaps mindmaps',
+                          '0 mindmaps', // TODO: Get actual mindmap count
                           color: AppTheme.lightMintGreen,
                           textColor: AppTheme.emeraldGreen,
                         ),
@@ -85,50 +104,24 @@ class YourBoards extends StatelessWidget {
   }
 
   Widget _boards(DashboardVm vm) {
+    final boards = vm.sessionVm.userBoards;
+    
     return CustomGrid(
       children: [
-        _boardCard(
-          vm,
-          title: 'Physics 101',
-          lastEdited: 'May 1, 2025',
-          image: Images.board1,
-          notes: 12,
-          mindmaps: 4,
-        ),
-        _boardCard(
-          vm,
-          title: 'Project Ideas',
-          lastEdited: 'April 29, 2025',
-          image: Images.board2,
-          notes: 8,
-          mindmaps: 3,
-        ),
-        _boardCard(
-          vm,
-          title: 'Literature Notes',
-          lastEdited: 'April 27, 2025',
-          image: Images.board3,
-          notes: 15,
-          mindmaps: 2,
-        ),
-        _boardCard(
-          vm,
-          title: 'Biology 202',
-          lastEdited: 'April 25, 2025',
-          image: Images.board4,
-          notes: 10,
-          mindmaps: 5,
-        ),
-        _boardCard(
-          vm,
-          title: 'Spanish Vocabulary',
-          lastEdited: 'April 22, 2025',
-          image: Images.board5,
-          notes: 18,
-          mindmaps: 1,
-        ),
+        ...boards.map((board) => _boardCard(vm, board: board)).toList(),
         DashboardCreateCard(),
       ],
     );
+  }
+  
+  String _formatDate(DateTime date) {
+    return '${_getMonthName(date.month)} ${date.day}, ${date.year}';
+  }
+  
+  String _getMonthName(int month) {
+    return [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ][month - 1];
   }
 }
