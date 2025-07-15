@@ -54,3 +54,5 @@ export 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 export 'package:navinotes/screens/main/market_place/widgets.dart';
 export 'package:fl_chart/fl_chart.dart';
 export 'dart:math';
+export 'package:flutter_localizations/flutter_localizations.dart';
+export 'package:flutter_quill/flutter_quill.dart';

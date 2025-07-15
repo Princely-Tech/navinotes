@@ -13,6 +13,12 @@ void main() async {
     CustomProviders(
       sessionManager: sessionManager,
       child: MaterialApp(
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          FlutterQuillLocalizations.delegate,
+        ],
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),

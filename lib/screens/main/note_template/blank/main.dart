@@ -6,17 +6,31 @@ class BlankNoteMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _header(),
-        Expanded(
-          child: Column(
-            children: [
-              //
-            ],
-          ),
-        ),
-      ],
+    return Consumer<BlankNoteVm>(
+      builder: (_, vm, _) {
+        return Column(
+          children: [
+            _header(),
+            QuillSimpleToolbar(
+              controller: vm.richEditorController,
+              config: const QuillSimpleToolbarConfig(),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 15,
+                ),
+                child: QuillEditor.basic(
+                  controller: vm.richEditorController,
+                  config: const QuillEditorConfig(
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -115,6 +129,10 @@ class BlankNoteMain extends StatelessWidget {
               Flexible(
                 child: AppButton.text(
                   onTap: NavigationHelper.pop,
+                  prefix: Icon(
+                    Icons.arrow_back,
+                    color: const Color(0xFF4B5563),
+                  ),
                   child: Flexible(
                     child: Text.rich(
                       overflow: TextOverflow.ellipsis,

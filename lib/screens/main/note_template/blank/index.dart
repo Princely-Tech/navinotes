@@ -12,7 +12,11 @@ class BlankNoteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => BlankNoteVm(scaffoldKey: _scaffoldKey),
+      create: (context) {
+        BlankNoteVm vm = BlankNoteVm(scaffoldKey: _scaffoldKey);
+        vm.initialize();
+        return vm;
+      },
       child: Consumer<BlankNoteVm>(
         builder: (context, vm, child) {
           return ScaffoldFrame(
