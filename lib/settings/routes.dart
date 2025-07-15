@@ -15,6 +15,7 @@ import 'package:navinotes/screens/main/market_place/my_purchases/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
 import 'package:navinotes/screens/main/market_place/product_detail/index.dart';
 import 'package:navinotes/screens/main/market_place/seller_upload/index.dart';
+import 'package:navinotes/screens/main/note_template/blank/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -57,6 +58,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.sellerUpload: (context) => SellerUploadScreen(),
   Routes.myPurchases: (context) => MyPurchasesScreen(),
   Routes.flashCards: (context) => FlashCardsScreen(),
+  Routes.blankNote: (context) => BlankNoteScreen(),
 };
 
 class Routes {
@@ -102,6 +104,9 @@ class Routes {
 
   static const sellerUpload = 'sellerUpload'; 
   static const flashCards = 'flashCards'; 
+  static const blankNote = 'blankNote'; 
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
 }

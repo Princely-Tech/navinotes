@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/screens/main/note_template/util.dart';
-import 'package:navinotes/settings/navigation_helper.dart';
-import 'package:navinotes/settings/routes.dart';
+import 'util.dart';
+import 'package:navinotes/packages.dart';
 
 class NoteTemplateVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
@@ -16,7 +14,7 @@ class NoteTemplateVm extends ChangeNotifier {
 
   void updateSelectedTemplate(BoardTemplate template) {
     selectedTemplate = template;
-    notifyListeners(); 
+    notifyListeners();
   }
 
   void updateDotSize(double value) {
@@ -28,17 +26,17 @@ class NoteTemplateVm extends ChangeNotifier {
     scaffoldKey.currentState?.openEndDrawer();
   }
 
-  void goToUploadPdf() {
-    NavigationHelper.push(Routes.uploadPdf);
-  }
+  // void goToUploadPdf() {
+  //   NavigationHelper.push(Routes.uploadPdf);
+  // }
 
-  void goToImportNotes() {
-    NavigationHelper.push(Routes.importNotes);
-  }
+  // void goToImportNotes() {
+  //   NavigationHelper.push(Routes.importNotes);
+  // }
 
   void createNote() {
-    // NavigationHelper.push(Routes.boardNotes); //todo
+    if (isNotNull(selectedTemplate.route)) {
+      NavigationHelper.push(selectedTemplate.route!);
+    }
   }
 }
-
-

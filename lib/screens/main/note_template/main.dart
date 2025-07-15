@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navinotes/screens/main/note_template/vm.dart';
 import 'util.dart';
 import 'package:navinotes/packages.dart';
 import 'header.dart';
@@ -56,7 +57,6 @@ class NoteTemplateMain extends StatelessWidget {
                     _template(noteTemplateThesis),
                   ],
                 ),
-                //
               ],
             ),
           ),
@@ -67,64 +67,71 @@ class NoteTemplateMain extends StatelessWidget {
   }
 
   Widget _template(BoardTemplate template) {
-    return CustomCard(
-      padding: EdgeInsets.zero,
-      addCardShadow: true,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              AspectRatio(
-                aspectRatio: 1.5,
-                child: ImagePlaceHolder(
-                  imagePath: template.image,
-                  isCardHeader: true,
-                ),
-              ),
-              if (template.isPopular)
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: CustomTag(
-                    'Popular',
-                    color: AppTheme.vividBlue,
-                    textColor: AppTheme.white,
-                  ),
-                ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
+    return Consumer<NoteTemplateVm>(
+      builder: (_, vm, _) {
+        return InkWell(
+          onTap: () => vm.updateSelectedTemplate(template),
+          child: CustomCard(
+            padding: EdgeInsets.zero,
+            addCardShadow: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 3,
               children: [
-                Text(
-                  template.title,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w500,
-                    height: 1.43,
-                  ),
+                Stack(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1.5,
+                      child: ImagePlaceHolder(
+                        imagePath: template.image,
+                        isCardHeader: true,
+                      ),
+                    ),
+                    if (template.isPopular)
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: CustomTag(
+                          'Popular',
+                          color: AppTheme.vividBlue,
+                          textColor: AppTheme.white,
+                        ),
+                      ),
+                  ],
                 ),
-                Text(
-                  template.body,
-                  style: TextStyle(
-                    color: const Color(0xFF6B7280),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    height: 1.33,
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 3,
+                    children: [
+                      Text(
+                        template.title,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          height: 1.43,
+                        ),
+                      ),
+                      Text(
+                        template.body,
+                        style: TextStyle(
+                          color: const Color(0xFF6B7280),
+                          fontSize: 12,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 1.33,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

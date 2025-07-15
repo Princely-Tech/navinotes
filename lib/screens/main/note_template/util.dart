@@ -14,12 +14,14 @@ class BoardTemplate {
   final String body;
   final String description;
   final String image;
+  final String? route;
   final bool isPopular;
   BoardTemplate({
     required this.title,
     required this.body,
     this.description = 'Concrete description will be here',
     required this.image,
+     this.route,
     this.isPopular = false,
   });
 }
@@ -28,6 +30,7 @@ BoardTemplate noteTemplateBlank = BoardTemplate(
   body: 'Clean slate for writing',
   image: Images.noteTemplateBlank,
   title: 'Blank Page',
+  route: Routes.blankNote
 );
 
 BoardTemplate noteTemplateCornell = BoardTemplate(

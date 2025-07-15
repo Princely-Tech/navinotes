@@ -317,16 +317,9 @@ class NoteTemplateAside extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 15,
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: AppTheme.steelBlue,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-          ),
-          child: SVGImagePlaceHolder(
-            imagePath: vm.selectedTemplate.image,
-            center: true,
-            height: 200,
-          ),
+        ImagePlaceHolder(
+          imagePath: vm.selectedTemplate.image,
+          isCardHeader: true,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -361,27 +354,27 @@ class NoteTemplateAside extends StatelessWidget {
     );
   }
 
-  Widget _btns(NoteTemplateVm vm) {
-    return Row(
-      spacing: 10,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        AppButton.secondary(
-          onTap: vm.goToUploadPdf,
-          text: 'Upload pdf',
-          mainAxisSize: MainAxisSize.min,
-          minHeight: 42,
-          color: AppTheme.coolGray,
-          textColor: AppTheme.darkSlateGray,
-          prefix: SVGImagePlaceHolder(imagePath: Images.upload, size: 16),
-        ),
-        AppButton.text(
-          wrapWithFlexible: true,
-          onTap: vm.goToImportNotes,
-          text: 'Import Notes',
-          color: AppTheme.strongBlue,
-        ),
-      ],
-    );
-  }
+ // Widget _btns(NoteTemplateVm vm) {
+  //   return Row(
+  //     spacing: 10,
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       AppButton.secondary(
+  //         onTap: vm.goToUploadPdf,
+  //         text: 'Upload pdf',
+  //         mainAxisSize: MainAxisSize.min,
+  //         minHeight: 42,
+  //         color: AppTheme.coolGray,
+  //         textColor: AppTheme.darkSlateGray,
+  //         prefix: SVGImagePlaceHolder(imagePath: Images.upload, size: 16),
+  //       ),
+  //       AppButton.text(
+  //         wrapWithFlexible: true,
+  //         onTap: vm.goToImportNotes,
+  //         text: 'Import Notes',
+  //         color: AppTheme.strongBlue,
+  //       ),
+  //     ],
+  //   );
+  // }
 }

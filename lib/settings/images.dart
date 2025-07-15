@@ -151,6 +151,11 @@ class Images {
   static const String menu4 = '$iconPath/menu4.svg';
   static const String code = '$iconPath/code.svg';
   static const String sdCard2 = '$iconPath/sd_card2.svg';
+  static const String tag = '$iconPath/tag.svg';
+  static const String clock = '$iconPath/clock.svg';
+  static const String aiIcon = '$iconPath/ai_icon.svg';
+  static const String copy = '$iconPath/copy.svg';
+  static const String youtube = '$iconPath/youtube.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
