@@ -20,33 +20,51 @@ class NoteTemplateAside extends StatelessWidget {
           ),
           child: Column(
             children: [
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(width: 2, color: AppTheme.lightGray),
+                  ),
+                ),
+                child: Text(
+                  'Template Preview',
+                  style: TextStyle(
+                    color: const Color(0xFF00555A),
+                    fontSize: 18,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                    height: 1.56,
+                  ),
+                ),
+              ),
               Expanded(
                 child: ScrollableController(
                   mobilePadding: const EdgeInsets.fromLTRB(15, 15, 15, 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 25,
-                    children: [
-                      _btns(vm),
-                      Text(
-                        'Template Preview',
-                        style: AppTheme.text.copyWith(
-                          fontSize: 18.0,
-                          fontWeight: getFontWeight(600),
+                  child: CustomCard(
+                    padding: EdgeInsets.zero,
+                    addBorder: true,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 15,
+                      children: [
+                        _templateReview(vm),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 15,
+                            children: [
+                              _bestFor(),
+                              _customization(vm),
+                              _brainsTip(),
+                              // _recentlyUsed(),
+                            ],
+                          ),
                         ),
-                      ),
-                      _templateReview(),
-                      Text(
-                        'A versatile bullet journal style template with dot grid pattern. Perfect for creative note-taking, sketching, and planning.',
-                        style: AppTheme.text.copyWith(
-                          color: AppTheme.stormGray,
-                        ),
-                      ),
-                      _bestFor(),
-                      _customization(vm),
-                      _brainsTip(),
-                      _recentlyUsed(),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -159,9 +177,11 @@ class NoteTemplateAside extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTheme.text.copyWith(
-            color: AppTheme.stormGray,
-            fontSize: 12.0,
+          style: TextStyle(
+            color: const Color(0xFF6B7280),
+            fontSize: 12,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w400,
           ),
         ),
         child,
@@ -171,69 +191,65 @@ class NoteTemplateAside extends StatelessWidget {
 
   Widget _customization(NoteTemplateVm vm) {
     return Column(
-      spacing: 15,
+      spacing: 10,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Customization',
-          style: AppTheme.text.copyWith(
-            color: AppTheme.darkSlateGray,
-            fontSize: 16.0,
-            fontWeight: getFontWeight(500),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 14,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
+            height: 1.43,
           ),
         ),
         _section(
           title: 'Dot Size',
-          child: Row(
-            spacing: 10,
+          child: CustomSlider(
+            slider: Slider(
+              value: vm.dotSize,
+              onChanged: vm.updateDotSize,
+              padding: EdgeInsets.only(left: 10),
+            ),
+          ),
+        ),
+        _section(
+          title: 'Color Palette',
+          child: ScrollableRow(
             children: [
-              Text(
-                'Small',
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.steelMist,
-                  fontSize: 12.0,
-                ),
-              ),
-              Expanded(
-                child: CustomSlider(
-                  slider: Slider(
-                    value: vm.dotSize,
-                    onChanged: vm.updateDotSize,
-                    padding: EdgeInsets.only(left: 10),
-                  ),
-                ),
-              ),
-              Text(
-                'Large',
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.steelMist,
-                  fontSize: 12.0,
-                ),
-              ),
+              ColorWidget(AppTheme.vividBlue),
+              ColorWidget(AppTheme.emerald),
+              ColorWidget(AppTheme.mediumOrchid),
+              ColorWidget(AppTheme.coralRed),
+              ColorWidget(AppTheme.steelMist),
             ],
           ),
         ),
         _section(
-          title: 'Dot Color',
+          title: 'Background',
           child: ScrollableRow(
             children: [
-              ColorWidget(AppTheme.blueGray),
-              ColorWidget(AppTheme.lightBlue),
-              ColorWidget(AppTheme.mintyGreen),
-              ColorWidget(AppTheme.violet),
-              ColorWidget(AppTheme.softCoral),
-            ],
-          ),
-        ),
-        _section(
-          title: 'Background Color',
-          child: ScrollableRow(
-            children: [
-              ColorWidget(AppTheme.white, addBorder: true),
-              ColorWidget(AppTheme.ivory, addBorder: true),
-              ColorWidget(AppTheme.iceBlue, addBorder: true),
-              ColorWidget(AppTheme.honeyDew, addBorder: true),
-              ColorWidget(AppTheme.pastelViolet, addBorder: true),
+              ColorWidget(
+                AppTheme.white,
+                addBorder: true,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              ColorWidget(
+                AppTheme.ivory,
+                addBorder: true,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              ColorWidget(
+                AppTheme.iceBlue,
+                addBorder: true,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              ColorWidget(
+                AppTheme.whiteSmoke,
+                addBorder: true,
+                borderRadius: BorderRadius.circular(4),
+              ),
             ],
           ),
         ),
@@ -259,10 +275,10 @@ class NoteTemplateAside extends StatelessWidget {
           spacing: 5,
           children:
               [
-                    'Creative brainstorming',
-                    'Bullet journaling',
-                    'Hand-drawn diagrams',
-                    'Mind mapping',
+                    'Lecture notes and classroom learning',
+                    'Active recall and study preparation',
+                    'Organizing complex information',
+                    'Creating effective study guides',
                   ]
                   .map(
                     (str) => Row(
@@ -272,8 +288,12 @@ class NoteTemplateAside extends StatelessWidget {
                         Expanded(
                           child: Text(
                             str,
-                            style: AppTheme.text.copyWith(
-                              color: AppTheme.stormGray,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 1.43,
                             ),
                           ),
                         ),
@@ -286,25 +306,49 @@ class NoteTemplateAside extends StatelessWidget {
     );
   }
 
-  Widget _templateReview() {
+  Widget _templateReview(NoteTemplateVm vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 15,
       children: [
-        CustomCard(
-          decoration: BoxDecoration(color: AppTheme.whiteSmoke),
+        Container(
+          decoration: BoxDecoration(
+            color: AppTheme.steelBlue,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+          ),
           child: SVGImagePlaceHolder(
-            imagePath: Images.noteTemplateDottedWhite,
+            imagePath: vm.selectedTemplate.image,
             center: true,
-            width: 160,
-            height: 208,
+            height: 200,
           ),
         ),
-        Text(
-          'Dotted Paper',
-          style: AppTheme.text.copyWith(
-            fontSize: 16.0,
-            fontWeight: getFontWeight(600),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 5,
+            children: [
+              Text(
+                vm.selectedTemplate.title,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                  height: 1.56,
+                ),
+              ),
+              Text(
+                vm.selectedTemplate.description,
+                style: TextStyle(
+                  color: const Color(0xFF4B5563),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                  height: 1.43,
+                ),
+              ),
+            ],
           ),
         ),
       ],

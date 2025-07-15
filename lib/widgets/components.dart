@@ -424,10 +424,12 @@ class ColorWidget extends StatelessWidget {
     super.key,
     this.size = 24,
     this.addBorder = false,
+    this.borderRadius,
   });
   final Color color;
   final double size;
   final bool addBorder;
+  final BorderRadius? borderRadius;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -435,7 +437,8 @@ class ColorWidget extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: color,
-        shape: BoxShape.circle,
+        shape: isNotNull(borderRadius) ? BoxShape.rectangle: BoxShape.circle,
+        borderRadius: borderRadius,
         border: Border.all(
           color:
               color == AppTheme.white || addBorder

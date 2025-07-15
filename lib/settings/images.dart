@@ -298,30 +298,22 @@ class Images {
   static const String noteOptics = '$boardsNotesPath/optics.png';
 
   //note template
-  static const String noteTemplateBlank = '$noteTemplatePath/blank.svg';
-  static const String noteTemplateSquared = '$noteTemplatePath/squared.svg';
-  static const String noteTemplateFlashCards =
-      '$noteTemplatePath/flash_cards.svg';
-  static const String noteTemplateCompareContrast =
-      '$noteTemplatePath/compare_contrast.svg';
-  static const String noteTemplateLectures = '$noteTemplatePath/lectures.svg';
-  static const String noteTemplateCornell = '$noteTemplatePath/cornell.svg';
-  static const String noteTemplateDotted = '$noteTemplatePath/dotted.svg';
-  static const String noteTemplateDottedWhite =
-      '$noteTemplatePath/dotted_white.svg';
-  static const String noteTemplateFlashCardsAI =
-      '$noteTemplatePath/flashcards_ai.svg';
-  static const String noteTemplateCauseEffect =
-      '$noteTemplatePath/cause_effect.svg';
-  static const String noteTemplateLined = '$noteTemplatePath/lined.svg';
-  static const String noteTemplateLegalPad = '$noteTemplatePath/legal_pad.svg';
-  static const String noteTemplateQuestionAnswer =
-      '$noteTemplatePath/question_answer.svg';
-  static const String noteTemplateConcept = '$noteTemplatePath/concept.svg';
-  static const String noteTemplateTimeline = '$noteTemplatePath/time_line.svg';
-  static const String noteTemplateProjectSteps =
-      '$noteTemplatePath/project_steps.svg';
-  static const String noteTemplateGoalSetting =
-      '$noteTemplatePath/goal_setting.svg';
-  static const String noteTemplateKanban = '$noteTemplatePath/kanban.svg';
+  static const String noteTemplateCompareContrast = '$noteTemplatePath/compare_contrast.png';
+  static const String noteTemplateKanban = '$noteTemplatePath/kanban.png';
+  static const String noteTemplateAi = '$noteTemplatePath/ai.png';
+  static const String noteTemplateBlank = '$noteTemplatePath/blank.png';
+  static const String noteTemplateCornell = '$noteTemplatePath/cornell.png';
+  static const String noteTemplateLapReport = '$noteTemplatePath/lap_report.png';
+  static const String noteTemplateSquared = '$noteTemplatePath/squared.png';
+  static const String noteTemplateLined = '$noteTemplatePath/lined.png';
+  static const String noteTemplateTimeline = '$noteTemplatePath/timeline.png';
+  static const String noteTemplateThesis = '$noteTemplatePath/thesis.png';
+  static const String noteTemplateFlashcards = '$noteTemplatePath/flashcards.png';
+  static const String noteTemplateCritical = '$noteTemplatePath/critical.png';
+  static const String noteTemplateComparative = '$noteTemplatePath/comparative.png';
+  static const String noteTemplateResearch = '$noteTemplatePath/research.png';
+  static const String noteTemplateDotted = '$noteTemplatePath/dotted.png';
+  static const String noteTemplateApa = '$noteTemplatePath/apa.png';
+  // static const String noteTemplate = '$noteTemplatePath/.png';
+  // static const String noteTemplate = '$noteTemplatePath/.png';
 }

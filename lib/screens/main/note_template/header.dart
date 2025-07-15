@@ -32,8 +32,17 @@ class NoteTemplateHeader extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                spacing: 15,
-                children: [_searchBar(), _sortBy()],
+                children: [
+                  _searchBar(),
+                  VisibleController(
+                    mobile: false,
+                    tablet: true,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: _sortBy(),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -44,14 +53,13 @@ class NoteTemplateHeader extends StatelessWidget {
 
   Widget _sortBy() {
     return WidthLimiter(
-      mobile: 200,
+      mobile: 250,
       child: CustomInputField(
         prefixIcon: Text(
           'Sort by:',
           style: AppTheme.text.copyWith(color: AppTheme.stormGray),
         ),
-        constraints: BoxConstraints(maxHeight: 40),
-        // controller: TextEditingController(text: 'Most Popular'),
+        controller: TextEditingController(text: 'Most Popular'),
         selectItems: ['Most Popular', 'Date Created', 'Date Modified'],
       ),
     );
@@ -78,13 +86,17 @@ class NoteTemplateHeader extends StatelessWidget {
   Widget _trailing(NoteTemplateVm vm) {
     return Row(
       children: [
-        Text(
-          'NaviNotes',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w700,
+        VisibleController(
+          mobile: false,
+          tablet: true,
+          child: Text(
+            'NaviNotes',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         VisibleController(

@@ -10,134 +10,133 @@ class NoteTemplateMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 10,
       children: [
         NoteTemplateHeader(),
-        Expanded(
-          child: ScrollableController(
-            mobilePadding: const EdgeInsets.all(10),
-            child: Column(
-              spacing: 35,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _section(
-                  title: 'Basic Templates',
-                  children: [
-                    _template(
-                      title: 'Blank Page',
-                      description:
-                          'Clean, empty canvas for unlimited possibilities',
-                      image: Images.noteTemplateBlank,
-                      isPopular: true,
-                    ),
-                    _template(
-                      title: 'Cornell Notes',
-                      description:
-                          'Structured format with cues, notes, and summary',
-                      image: Images.noteTemplateCornell,
-                    ),
-                    _template(
-                      title: 'Lined Paper',
-                      description: 'Traditional lined notebook style',
-                      image: Images.noteTemplateLined,
-                    ),
-                    _template(
-                      title: 'Squared Paper',
-                      description: 'Grid pattern for diagrams or math',
-                      image: Images.noteTemplateSquared,
-                    ),
-                    _template(
-                      title: 'Dotted Paper',
-                      description: 'Bullet journal style with dot grid',
-                      image: Images.noteTemplateDotted,
-                      isPopular: true,
-                    ),
-                    _template(
-                      title: 'Legal Pad',
-                      description: 'Yellow lined paper aesthetic',
-                      image: Images.noteTemplateLegalPad,
-                    ),
-                  ],
-                ),
-                _section(
-                  title: 'Study Templates',
-                  children: [
-                    _template(
-                      title: 'Flashcards',
-                      description: 'Manual creation template for study cards',
-                      image: Images.noteTemplateFlashCards,
-                    ),
-                    _template(
-                      title: 'AI Flashcards',
-                      description: 'AI-generated from existing content',
-                      image: Images.noteTemplateFlashCardsAI,
-                      isPopular: true,
-                    ),
-                    _template(
-                      title: 'Question & Answer',
-                      description: 'Structured Q&A format for review',
-                      image: Images.noteTemplateQuestionAnswer,
-                    ),
-                    _template(
-                      title: 'Compare & Contrast',
-                      description: 'Split view for comparing concepts',
-                      image: Images.noteTemplateCompareContrast,
-                    ),
-                    _template(
-                      title: 'Cause-Effect',
-                      description: 'Diagram for causal relationships',
-                      image: Images.noteTemplateCauseEffect,
-                    ),
-                    _template(
-                      title: 'Concept Definition',
-                      description: 'Structured concept exploration',
-                      image: Images.noteTemplateConcept,
-                    ),
-                    _template(
-                      title: 'Lecture Notes',
-                      description: 'Structured for comprehensive class notes',
-                      image: Images.noteTemplateLectures,
-                      isPopular: true,
-                    ),
-                  ],
-                ),
-                _section(
-                  title: 'Planning Templates',
-                  children: [
-                    _template(
-                      title: 'Timeline',
-                      description: 'Horizontal or vertical time organization',
-                      image: Images.noteTemplateTimeline,
-                    ),
-                    _template(
-                      title: 'Project Steps',
-                      description: 'Task-based project structure',
-                      image: Images.noteTemplateProjectSteps,
-                    ),
-                    _template(
-                      title: 'Kanban Board',
-                      description: 'Columns for workflow management',
-                      image: Images.noteTemplateKanban,
-                      isPopular: true,
-                    ),
-                    _template(
-                      title: 'Mind Map',
-                      description:
-                          'Pre-structured starting point for brainstorming',
-                      image: Images.noteTemplateBlank,
-                    ),
-                    _template(
-                      title: 'Goal Setting',
-                      description: 'Objectives and tasks organization',
-                      image: Images.noteTemplateGoalSetting,
-                    ),
-                  ],
-                ),
-                //
-              ],
-            ),
-          ),
-        ),
+        // Expanded(
+        //   child: ScrollableController(
+        //     mobilePadding: const EdgeInsets.all(10),
+        //     child: Column(
+        //       spacing: 35,
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         _section(
+        //           title: 'Basic Templates',
+        //           children: [
+        //             _template(
+        //               title: 'Blank Page',
+        //               description:
+        //                   'Clean, empty canvas for unlimited possibilities',
+        //               image: Images.noteTemplateBlank,
+        //               isPopular: true,
+        //             ),
+        //             _template(
+        //               title: 'Cornell Notes',
+        //               description:
+        //                   'Structured format with cues, notes, and summary',
+        //               image: Images.noteTemplateCornell,
+        //             ),
+        //             _template(
+        //               title: 'Lined Paper',
+        //               description: 'Traditional lined notebook style',
+        //               image: Images.noteTemplateLined,
+        //             ),
+        //             _template(
+        //               title: 'Squared Paper',
+        //               description: 'Grid pattern for diagrams or math',
+        //               image: Images.noteTemplateSquared,
+        //             ),
+        //             _template(
+        //               title: 'Dotted Paper',
+        //               description: 'Bullet journal style with dot grid',
+        //               image: Images.noteTemplateDotted,
+        //               isPopular: true,
+        //             ),
+        //             _template(
+        //               title: 'Legal Pad',
+        //               description: 'Yellow lined paper aesthetic',
+        //               image: Images.noteTemplateLegalPad,
+        //             ),
+        //           ],
+        //         ),
+        //         _section(
+        //           title: 'Study Templates',
+        //           children: [
+        //             _template(
+        //               title: 'Flashcards',
+        //               description: 'Manual creation template for study cards',
+        //               image: Images.noteTemplateFlashCards,
+        //             ),
+        //             _template(
+        //               title: 'AI Flashcards',
+        //               description: 'AI-generated from existing content',
+        //               image: Images.noteTemplateFlashCardsAI,
+        //               isPopular: true,
+        //             ),
+        //             _template(
+        //               title: 'Question & Answer',
+        //               description: 'Structured Q&A format for review',
+        //               image: Images.noteTemplateQuestionAnswer,
+        //             ),
+        //             _template(
+        //               title: 'Compare & Contrast',
+        //               description: 'Split view for comparing concepts',
+        //               image: Images.noteTemplateCompareContrast,
+        //             ),
+        //             _template(
+        //               title: 'Cause-Effect',
+        //               description: 'Diagram for causal relationships',
+        //               image: Images.noteTemplateCauseEffect,
+        //             ),
+        //             _template(
+        //               title: 'Concept Definition',
+        //               description: 'Structured concept exploration',
+        //               image: Images.noteTemplateConcept,
+        //             ),
+        //             _template(
+        //               title: 'Lecture Notes',
+        //               description: 'Structured for comprehensive class notes',
+        //               image: Images.noteTemplateLectures,
+        //               isPopular: true,
+        //             ),
+        //           ],
+        //         ),
+        //         _section(
+        //           title: 'Planning Templates',
+        //           children: [
+        //             _template(
+        //               title: 'Timeline',
+        //               description: 'Horizontal or vertical time organization',
+        //               image: Images.noteTemplateTimeline,
+        //             ),
+        //             _template(
+        //               title: 'Project Steps',
+        //               description: 'Task-based project structure',
+        //               image: Images.noteTemplateProjectSteps,
+        //             ),
+        //             _template(
+        //               title: 'Kanban Board',
+        //               description: 'Columns for workflow management',
+        //               image: Images.noteTemplateKanban,
+        //               isPopular: true,
+        //             ),
+        //             _template(
+        //               title: 'Mind Map',
+        //               description:
+        //                   'Pre-structured starting point for brainstorming',
+        //               image: Images.noteTemplateBlank,
+        //             ),
+        //             _template(
+        //               title: 'Goal Setting',
+        //               description: 'Objectives and tasks organization',
+        //               image: Images.noteTemplateGoalSetting,
+        //             ),
+        //           ],
+        //         ),
+        //         //
+        //       ],
+        //     ),
+        //   ),
+        // ),
         NoteTemplateFooter(),
       ],
     );

@@ -70,41 +70,20 @@ class _CustomInputFieldState extends State<CustomInputField> {
 
   Widget _body() {
     TextStyle style = widget.style ?? AppTheme.text.copyWith(fontSize: 16.0);
-
-    // bool isDate = widget.keyboardType == TextInputType.datetime;
     bool isPassword = widget.keyboardType == TextInputType.visiblePassword;
     double padding = 12;
-    // if (widget.keyboardType) {
-    //   // prefix = Icon(Icons.search, color: AppTheme.inputPlaceholderColor);
-    // }
-    // String? prefixImg;
     Widget? prefix;
     Widget? suffix;
-    // switch (widget.keyboardType) {
-    //   case TextInputType.emailAddress:
-    //     prefixImg = Images.email;
-    //     break;
-    //   case TextInputType.visiblePassword:
-    //     prefixImg = Images.padlock;
-    //     break;
-    // }
-    // EdgeInsets prefPadding = EdgeInsets.only(left: padding);
-    // EdgeInsets suffixPadding = EdgeInsets.only(left: 5, right: padding);
-
-    // if (isNotNull(prefixImg)) {
-    //   prefix = Padding(
-    //     padding: prefPadding,
-    //     child: Row(
-    //       mainAxisSize: MainAxisSize.min,
-    //       children: [SVGImagePlaceHolder(imagePath: prefixImg!, size: 16)],
-    //     ),
-    //   );
-    // }
     if (isNotNull(widget.prefixIcon)) {
       prefix = Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [widget.prefixIcon!],
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: padding),
+            child: widget.prefixIcon!,
+          ),
+        ],
       );
     }
 
@@ -112,7 +91,12 @@ class _CustomInputFieldState extends State<CustomInputField> {
       suffix = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: [widget.suffixIcon!],
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 5, right: padding),
+            child: widget.suffixIcon!,
+          ),
+        ],
       );
     }
 
