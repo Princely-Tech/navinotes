@@ -16,7 +16,7 @@ class NoteTemplateVm extends ChangeNotifier {
 
   void updateSelectedTemplate(BoardTemplate template) {
     selectedTemplate = template;
-    notifyListeners();
+    notifyListeners(); 
   }
 
   void updateDotSize(double value) {
@@ -41,10 +41,4 @@ class NoteTemplateVm extends ChangeNotifier {
   }
 }
 
-List<String> noteTemplatesSections = [
-  'All',
-  'Basic',
-  'Study',
-  'Planning',
-  'Specialized',
-];
+

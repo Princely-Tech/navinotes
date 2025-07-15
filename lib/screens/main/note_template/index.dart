@@ -18,13 +18,7 @@ class NoteTemplateScreen extends StatelessWidget {
             scaffoldKey: _scaffoldKey,
             endDrawer: CustomDrawer(child: NoteTemplateAside()),
             body: ResponsiveSection(
-              mobile: WidthLimiter(
-                mobile: 325,
-                // mobile: 280,
-                largeDesktop: 320,
-                child: NoteTemplateAside(),
-              ),
-              // mobile: NoteTemplateMain(),
+              mobile: NoteTemplateMain(),
               desktop: Row(
                 children: [
                   Expanded(child: NoteTemplateMain()),

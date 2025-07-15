@@ -137,32 +137,38 @@ class NoteTemplateAside extends StatelessWidget {
 
   Widget _brainsTip() {
     return CustomCard(
-      decoration: BoxDecoration(color: AppTheme.iceBlue),
-      child: Row(
+      decoration: BoxDecoration(
+        color: AppTheme.iceBlue,
+        border: Border.all(color: AppTheme.pastelBlue),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10,
         children: [
-          SVGImagePlaceHolder(imagePath: Images.logoRounded, size: 40),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 15,
-              children: [
-                Text(
-                  'Brain\'s Tip',
-                  style: AppTheme.text.copyWith(
-                    color: AppTheme.electricIndigo,
-                    fontWeight: getFontWeight(500),
-                  ),
+          Row(
+            spacing: 10,
+            children: [
+              SVGImagePlaceHolder(imagePath: Images.logo, size: 14),
+              Text(
+                'Brain\'s Tip',
+                style: TextStyle(
+                  color: const Color(0xFF1E40AF),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                  height: 1.43,
                 ),
-                Text(
-                  'Dotted paper works great with our pen tools! Try using different colors to organize related ideas visually.',
-                  style: AppTheme.text.copyWith(
-                    color: AppTheme.strongBlue,
-                    fontSize: 12.0,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+          Text(
+            'For biology notes, use the left column to write key terms and concepts, the main area for detailed explanations, and the bottom for summarizing the relationships between systems.',
+            style: TextStyle(
+              color: const Color(0xFF1D4ED8),
+              fontSize: 12,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],

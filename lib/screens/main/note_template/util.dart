@@ -1,5 +1,14 @@
 import 'package:navinotes/packages.dart';
 
+List<String> noteTemplatesSections = [
+  'All',
+  'Basic',
+  'Study',
+  'Planning',
+  'Specialized',
+  'Report',
+];
+
 class BoardTemplate {
   final String title;
   final String body;

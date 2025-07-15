@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/screens/main/note_template/vm.dart';
-import 'package:navinotes/settings/apptheme.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'vm.dart';
+import 'util.dart';
+import 'package:navinotes/packages.dart';
 
 class NoteTemplateFooter extends StatelessWidget {
   const NoteTemplateFooter({super.key});
@@ -35,17 +32,19 @@ class NoteTemplateFooter extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       spacing: 15,
       children: [
-        AppButton.text(
+        AppButton.secondary(
           onTap: () {},
           text: 'Save as Favorite',
           mainAxisSize: MainAxisSize.min,
           wrapWithFlexible: true,
-          color: AppTheme.strongBlue,
-          prefix: Icon(Icons.star_border, color: AppTheme.strongBlue),
+          textColor: AppTheme.darkSlateGray,
+          color: AppTheme.lightGray,
+          prefix: Icon(Icons.star_border, color: AppTheme.darkSlateGray),
         ),
         AppButton(
           minHeight: 36,
           mainAxisSize: MainAxisSize.min,
+          color: AppTheme.amber,
           onTap: vm.createNote,
           text: 'Create Note',
           prefix: Icon(Icons.add, color: AppTheme.white),
@@ -66,14 +65,16 @@ class NoteTemplateFooter extends StatelessWidget {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: isSelected ? AppTheme.lightAsh : AppTheme.transparent,
-                  borderRadius: BorderRadius.circular(9999),
+                  color: isSelected ? AppTheme.vividRose : AppTheme.transparent,
+                  borderRadius: BorderRadius.circular(6),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
                 child: Text(
                   section,
                   textAlign: TextAlign.center,
-                  style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
+                  style: AppTheme.text.copyWith(
+                    color: isSelected ? AppTheme.white : AppTheme.stormGray,
+                  ),
                 ),
               ),
             );

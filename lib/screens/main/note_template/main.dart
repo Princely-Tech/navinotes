@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'util.dart';
+import 'package:navinotes/packages.dart';
 import 'header.dart';
 import 'footer.dart';
 
@@ -12,192 +12,114 @@ class NoteTemplateMain extends StatelessWidget {
     return Column(
       children: [
         NoteTemplateHeader(),
-        // Expanded(
-        //   child: ScrollableController(
-        //     mobilePadding: const EdgeInsets.all(10),
-        //     child: Column(
-        //       spacing: 35,
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       children: [
-        //         _section(
-        //           title: 'Basic Templates',
-        //           children: [
-        //             _template(
-        //               title: 'Blank Page',
-        //               description:
-        //                   'Clean, empty canvas for unlimited possibilities',
-        //               image: Images.noteTemplateBlank,
-        //               isPopular: true,
-        //             ),
-        //             _template(
-        //               title: 'Cornell Notes',
-        //               description:
-        //                   'Structured format with cues, notes, and summary',
-        //               image: Images.noteTemplateCornell,
-        //             ),
-        //             _template(
-        //               title: 'Lined Paper',
-        //               description: 'Traditional lined notebook style',
-        //               image: Images.noteTemplateLined,
-        //             ),
-        //             _template(
-        //               title: 'Squared Paper',
-        //               description: 'Grid pattern for diagrams or math',
-        //               image: Images.noteTemplateSquared,
-        //             ),
-        //             _template(
-        //               title: 'Dotted Paper',
-        //               description: 'Bullet journal style with dot grid',
-        //               image: Images.noteTemplateDotted,
-        //               isPopular: true,
-        //             ),
-        //             _template(
-        //               title: 'Legal Pad',
-        //               description: 'Yellow lined paper aesthetic',
-        //               image: Images.noteTemplateLegalPad,
-        //             ),
-        //           ],
-        //         ),
-        //         _section(
-        //           title: 'Study Templates',
-        //           children: [
-        //             _template(
-        //               title: 'Flashcards',
-        //               description: 'Manual creation template for study cards',
-        //               image: Images.noteTemplateFlashCards,
-        //             ),
-        //             _template(
-        //               title: 'AI Flashcards',
-        //               description: 'AI-generated from existing content',
-        //               image: Images.noteTemplateFlashCardsAI,
-        //               isPopular: true,
-        //             ),
-        //             _template(
-        //               title: 'Question & Answer',
-        //               description: 'Structured Q&A format for review',
-        //               image: Images.noteTemplateQuestionAnswer,
-        //             ),
-        //             _template(
-        //               title: 'Compare & Contrast',
-        //               description: 'Split view for comparing concepts',
-        //               image: Images.noteTemplateCompareContrast,
-        //             ),
-        //             _template(
-        //               title: 'Cause-Effect',
-        //               description: 'Diagram for causal relationships',
-        //               image: Images.noteTemplateCauseEffect,
-        //             ),
-        //             _template(
-        //               title: 'Concept Definition',
-        //               description: 'Structured concept exploration',
-        //               image: Images.noteTemplateConcept,
-        //             ),
-        //             _template(
-        //               title: 'Lecture Notes',
-        //               description: 'Structured for comprehensive class notes',
-        //               image: Images.noteTemplateLectures,
-        //               isPopular: true,
-        //             ),
-        //           ],
-        //         ),
-        //         _section(
-        //           title: 'Planning Templates',
-        //           children: [
-        //             _template(
-        //               title: 'Timeline',
-        //               description: 'Horizontal or vertical time organization',
-        //               image: Images.noteTemplateTimeline,
-        //             ),
-        //             _template(
-        //               title: 'Project Steps',
-        //               description: 'Task-based project structure',
-        //               image: Images.noteTemplateProjectSteps,
-        //             ),
-        //             _template(
-        //               title: 'Kanban Board',
-        //               description: 'Columns for workflow management',
-        //               image: Images.noteTemplateKanban,
-        //               isPopular: true,
-        //             ),
-        //             _template(
-        //               title: 'Mind Map',
-        //               description:
-        //                   'Pre-structured starting point for brainstorming',
-        //               image: Images.noteTemplateBlank,
-        //             ),
-        //             _template(
-        //               title: 'Goal Setting',
-        //               description: 'Objectives and tasks organization',
-        //               image: Images.noteTemplateGoalSetting,
-        //             ),
-        //           ],
-        //         ),
-        //         //
-        //       ],
-        //     ),
-        //   ),
-        // ),
+        Expanded(
+          child: ScrollableController(
+            mobilePadding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 20,
+            ),
+            child: Column(
+              spacing: 35,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _section(
+                  title: 'Basic Templates',
+                  icon: Images.file,
+                  children: [
+                    _template(noteTemplateBlank),
+                    _template(noteTemplateCornell),
+                    _template(noteTemplateLined),
+                    _template(noteTemplateSquared),
+                    _template(noteTemplateDotted),
+                  ],
+                ),
+                _section(
+                  icon: Images.book2,
+                  title: 'Study Templates',
+                  children: [
+                    _template(noteTemplateFlashcards),
+                    _template(noteTemplateAi),
+                    _template(noteTemplateCompareContrast),
+                    _template(noteTemplateTimeline),
+                    _template(noteTemplateKanban),
+                  ],
+                ),
+                _section(
+                  icon: Images.pen2,
+                  title: 'Essay Templates',
+                  children: [
+                    _template(noteTemplateLapReport),
+                    _template(noteTemplateApa),
+                    _template(noteTemplateResearch),
+                    _template(noteTemplateComparative),
+                    _template(noteTemplateCritical),
+                    _template(noteTemplateThesis),
+                  ],
+                ),
+                //
+              ],
+            ),
+          ),
+        ),
         NoteTemplateFooter(),
       ],
     );
   }
 
-  Widget _template({
-    required String title,
-    required String description,
-    required String image,
-    bool isPopular = false,
-  }) {
-    EdgeInsetsGeometry padding = const EdgeInsets.all(10);
+  Widget _template(BoardTemplate template) {
     return CustomCard(
       padding: EdgeInsets.zero,
+      addCardShadow: true,
       child: Column(
-        // spacing: 10,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: padding,
-            child: SVGImagePlaceHolder(imagePath: image),
-          ),
-          Divider(color: AppTheme.lightGray, height: 1),
-          Padding(
-            padding: padding,
-            child: Row(
-              spacing: 5,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 10,
-                    children: [
-                      Text(
-                        title,
-                        style: AppTheme.text.copyWith(
-                          color: const Color(0xFF1F2937),
-                          fontSize: 16.0,
-                          fontFamily: 'Inter',
-                          fontWeight: getFontWeight(500),
-                          height: 1.0,
-                        ),
-                      ),
-                      Text(
-                        description,
-                        style: AppTheme.text.copyWith(
-                          color: const Color(0xFF6B7280),
-                          fontSize: 12.0,
-                          fontFamily: 'Inter',
-                          fontWeight: getFontWeight(400),
-                          height: 1.0,
-                        ),
-                      ),
-                    ],
+          Stack(
+            children: [
+              AspectRatio(
+                aspectRatio: 1.5,
+                child: ImagePlaceHolder(
+                  imagePath: template.image,
+                  isCardHeader: true,
+                ),
+              ),
+              if (template.isPopular)
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: CustomTag(
+                    'Popular',
+                    color: AppTheme.vividBlue,
+                    textColor: AppTheme.white,
                   ),
                 ),
-                if (isPopular)
-                  CustomTag(
-                    'Popular',
-                    color: AppTheme.paleBlue,
-                    textColor: AppTheme.electricIndigo,
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 3,
+              children: [
+                Text(
+                  template.title,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                    height: 1.43,
                   ),
+                ),
+                Text(
+                  template.body,
+                  style: TextStyle(
+                    color: const Color(0xFF6B7280),
+                    fontSize: 12,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                    height: 1.33,
+                  ),
+                ),
               ],
             ),
           ),
@@ -206,22 +128,42 @@ class NoteTemplateMain extends StatelessWidget {
     );
   }
 
-  Widget _section({required String title, required List<Widget> children}) {
+  Widget _section({
+    required String title,
+    required String icon,
+    required List<Widget> children,
+  }) {
     return Column(
       spacing: 15,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: AppTheme.text.copyWith(
-            color: const Color(0xFF1F2937),
-            fontSize: 18.0,
-            fontFamily: 'Inter',
-            fontWeight: getFontWeight(600),
-            height: 1.0,
-          ),
+        Row(
+          spacing: 10,
+          children: [
+            SVGImagePlaceHolder(
+              imagePath: icon,
+              size: 16,
+              color: AppTheme.vividRose,
+            ),
+            Text(
+              title,
+              style: TextStyle(
+                color: const Color(0xFF00555A),
+                fontSize: 16,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+                height: 1.50,
+              ),
+            ),
+          ],
         ),
-        CustomGrid(children: children),
+        CustomGrid(
+          mobile: 2,
+          tablet: 3,
+          laptop: 4,
+          largeDesktop: 6,
+          children: children,
+        ),
       ],
     );
   }
