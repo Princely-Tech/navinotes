@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'ai_section.dart';
 import 'left.dart';
 import 'right.dart';
 import 'main.dart';
@@ -24,19 +25,24 @@ class BlankNoteScreen extends StatelessWidget {
             scaffoldKey: _scaffoldKey,
             endDrawer: CustomDrawer(child: BlankNoteRight()),
             drawer: CustomDrawer(child: BlankNoteLeft()),
-            body: ResponsiveSection(
-              mobile: BlankNoteMain(),
-              desktop: Row(
-                children: [
-                  VisibleController(
-                    mobile: false,
-                    largeDesktop: true,
-                    child: WidthLimiter(mobile: 255, child: BlankNoteLeft()),
+            body: Stack(
+              children: [
+                ResponsiveSection(
+                  mobile: BlankNoteMain(),
+                  desktop: Row(
+                    children: [
+                      VisibleController(
+                        mobile: false,
+                        largeDesktop: true,
+                        child: WidthLimiter(mobile: 255, child: BlankNoteLeft()),
+                      ),
+                      Expanded(child: BlankNoteMain()),
+                      WidthLimiter(mobile: 255, child: BlankNoteRight()),
+                    ],
                   ),
-                  Expanded(child: BlankNoteMain()),
-                  WidthLimiter(mobile: 255, child: BlankNoteRight()),
-                ],
-              ),
+                ),
+                NoteAiSection(),
+              ],
             ),
           );
         },

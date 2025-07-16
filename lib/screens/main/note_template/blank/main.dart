@@ -23,8 +23,7 @@ class BlankNoteMain extends StatelessWidget {
                 ),
                 child: QuillEditor.basic(
                   controller: vm.richEditorController,
-                  config: const QuillEditorConfig(
-                  ),
+                  config: const QuillEditorConfig(),
                 ),
               ),
             ),
@@ -75,12 +74,15 @@ class BlankNoteMain extends StatelessWidget {
 
   Widget _shareAndAI() {
     return Row(
-      spacing: 8,
+      spacing: 15,
       children: [
-        SVGImagePlaceHolder(
-          imagePath: Images.aiIcon,
-          size: 35,
-          color: AppTheme.stormGray,
+        AppButton.text(
+          onTap: () {},
+          child: SVGImagePlaceHolder(
+            imagePath: Images.aiIcon,
+            size: 35,
+            color: AppTheme.stormGray,
+          ),
         ),
         AppButton(onTap: () {}, text: 'Share', mainAxisSize: MainAxisSize.min),
       ],

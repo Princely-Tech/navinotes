@@ -203,6 +203,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
         // color: AppTheme.inputPlaceholderColor,
         fontSize: 16.0,
       ),
+      isDense: true,
       border: defaultBorder,
       enabledBorder: defaultBorder,
       focusedBorder: defaultBorder.copyWith(
