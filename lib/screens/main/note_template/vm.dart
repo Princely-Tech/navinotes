@@ -1,9 +1,8 @@
-import 'util.dart';
 import 'package:navinotes/packages.dart';
 
 class NoteTemplateVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  BoardTemplate selectedTemplate = noteTemplateBlank;
+  BoardNoteTemplate selectedTemplate = noteTemplateBlank;
   NoteTemplateVm({required this.scaffoldKey});
   double dotSize = 0;
   String selectedSection = noteTemplatesSections[0];
@@ -12,7 +11,7 @@ class NoteTemplateVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedTemplate(BoardTemplate template) {
+  void updateSelectedTemplate(BoardNoteTemplate template) {
     selectedTemplate = template;
     notifyListeners();
   }
@@ -37,6 +36,8 @@ class NoteTemplateVm extends ChangeNotifier {
   void createNote() {
     if (isNotNull(selectedTemplate.route)) {
       NavigationHelper.push(selectedTemplate.route!);
+    } else {
+      NavigationHelper.navigateToNoteCreation(selectedTemplate);
     }
   }
 }

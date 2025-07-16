@@ -9,31 +9,30 @@ List<String> noteTemplatesSections = [
   'Report',
 ];
 
-class BoardTemplate {
+class BoardNoteTemplate {
   final String title;
   final String body;
   final String description;
   final String image;
   final String? route;
   final bool isPopular;
-  BoardTemplate({
+  BoardNoteTemplate({
     required this.title,
     required this.body,
     this.description = 'Concrete description will be here',
     required this.image,
-     this.route,
+    this.route,
     this.isPopular = false,
   });
 }
 
-BoardTemplate noteTemplateBlank = BoardTemplate(
+ BoardNoteTemplate noteTemplateBlank =  BoardNoteTemplate(
   body: 'Clean slate for writing',
   image: Images.noteTemplateBlank,
   title: 'Blank Page',
-  route: Routes.blankNote
 );
 
-BoardTemplate noteTemplateCornell = BoardTemplate(
+BoardNoteTemplate noteTemplateCornell = BoardNoteTemplate(
   body: 'Structured note-taking',
   image: Images.noteTemplateCornell,
   title: 'Cornell Notes',
@@ -42,107 +41,88 @@ BoardTemplate noteTemplateCornell = BoardTemplate(
       'Structured note-taking method with dedicated sections for main notes, cues/questions, and summary.',
 );
 
-BoardTemplate noteTemplateLined = BoardTemplate(
+BoardNoteTemplate noteTemplateLined = BoardNoteTemplate(
   body: 'Classic lined surface',
   image: Images.noteTemplateLined,
   title: 'Lined Paper',
 );
 
-BoardTemplate noteTemplateSquared = BoardTemplate(
+BoardNoteTemplate noteTemplateSquared = BoardNoteTemplate(
   body: 'Grid for diagrams',
   image: Images.noteTemplateSquared,
   title: 'Squared Paper',
 );
 
-BoardTemplate noteTemplateDotted = BoardTemplate(
+BoardNoteTemplate noteTemplateDotted = BoardNoteTemplate(
   body: 'Dot grid for flexible layout',
   image: Images.noteTemplateDotted,
   title: 'Dotted Paper',
 );
 
-BoardTemplate noteTemplateKanban = BoardTemplate(
+BoardNoteTemplate noteTemplateKanban = BoardNoteTemplate(
   body: 'Visual workflow manager',
   isPopular: true,
   image: Images.noteTemplateKanban,
   title: 'Kanban Board',
 );
 
-BoardTemplate noteTemplateTimeline = BoardTemplate(
+BoardNoteTemplate noteTemplateTimeline = BoardNoteTemplate(
   body: 'Chronological planner',
   image: Images.noteTemplateTimeline,
   title: 'Timeline',
 );
 
-BoardTemplate noteTemplateCompareContrast = BoardTemplate(
+BoardNoteTemplate noteTemplateCompareContrast = BoardNoteTemplate(
   body: 'Side-by-side comparison',
   image: Images.noteTemplateCompareContrast,
   title: 'Compare & Contrast',
 );
 
-BoardTemplate noteTemplateAi = BoardTemplate(
+BoardNoteTemplate noteTemplateAi = BoardNoteTemplate(
   body: 'AI-generated study cards',
   image: Images.noteTemplateAi,
   title: 'AI-Generated Flashcards',
 );
 
-BoardTemplate noteTemplateFlashcards = BoardTemplate(
+BoardNoteTemplate noteTemplateFlashcards = BoardNoteTemplate(
   body: 'Question and answer cards',
   image: Images.noteTemplateFlashcards,
   title: 'Flashcards',
   isPopular: true,
 );
 
-BoardTemplate noteTemplateLapReport = BoardTemplate(
+BoardNoteTemplate noteTemplateLapReport = BoardNoteTemplate(
   body: 'Scientific experiment doc',
   image: Images.noteTemplateLapReport,
   title: 'Lab Report Format',
 );
 
-BoardTemplate noteTemplateApa = BoardTemplate(
+BoardNoteTemplate noteTemplateApa = BoardNoteTemplate(
   body: 'Text analysis framework',
   image: Images.noteTemplateApa,
   title: 'APA Format Guide',
 );
 
-BoardTemplate noteTemplateResearch = BoardTemplate(
+BoardNoteTemplate noteTemplateResearch = BoardNoteTemplate(
   body: 'Humanities formatting',
   image: Images.noteTemplateResearch,
   title: 'MLA Research Format',
 );
 
-BoardTemplate noteTemplateComparative = BoardTemplate(
+BoardNoteTemplate noteTemplateComparative = BoardNoteTemplate(
   body: 'Multi-subject comparison',
   image: Images.noteTemplateComparative,
   title: 'Comparative Analysis',
 );
 
-BoardTemplate noteTemplateCritical = BoardTemplate(
+BoardNoteTemplate noteTemplateCritical = BoardNoteTemplate(
   body: 'Evaluative framework',
   image: Images.noteTemplateCritical,
   title: 'Critical Review',
 );
 
-BoardTemplate noteTemplateThesis = BoardTemplate(
+BoardNoteTemplate noteTemplateThesis = BoardNoteTemplate(
   body: 'Argument construction',
   image: Images.noteTemplateThesis,
   title: 'Thesis Development',
 );
-
-// List<BoardTemplate> noteTemplates = [
-//   noteTemplateBlank,
-//   noteTemplateCornell,
-//   noteTemplateLined,
-//   noteTemplateSquared,
-//   noteTemplateDotted,
-//   noteTemplateKanban,
-//   noteTemplateTimeline,
-//   noteTemplateCompareContrast,
-//   noteTemplateAi,
-//   noteTemplateFlashcards,
-//   noteTemplateLapReport,
-//   noteTemplateApa,
-//   noteTemplateResearch,
-//   noteTemplateComparative,
-//   noteTemplateCritical,
-//   noteTemplateThesis,
-// ];

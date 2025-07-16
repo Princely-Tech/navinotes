@@ -1,8 +1,22 @@
 import 'package:navinotes/packages.dart';
 
-class BlankNoteVm extends ChangeNotifier {
+class NoteCreationVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  BlankNoteVm({required this.scaffoldKey});
+  BoardNoteTemplate template;
+  NoteCreationVm({required this.scaffoldKey, BoardNoteTemplate? template})
+    : template = template ?? noteTemplateLined; //TODO  Use blank as default
+
+  bool showAiSection = false;
+
+  void openAiSection() {
+    showAiSection = true;
+    notifyListeners();
+  }
+
+  void closeAiSection() {
+    showAiSection = false;
+    notifyListeners();
+  }
 
   QuillController richEditorController = QuillController.basic();
 

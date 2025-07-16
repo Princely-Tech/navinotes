@@ -5,39 +5,48 @@ import 'right.dart';
 import 'main.dart';
 import 'vm.dart';
 
-class BlankNoteScreen extends StatelessWidget {
-  BlankNoteScreen({super.key});
-
+class NoteCreationScreen extends StatelessWidget {
+  NoteCreationScreen({super.key});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    // Extract board from route arguments
+    BoardNoteTemplate? template =
+        ModalRoute.of(context)?.settings.arguments as BoardNoteTemplate?;
+
     return ChangeNotifierProvider(
       create: (context) {
-        BlankNoteVm vm = BlankNoteVm(scaffoldKey: _scaffoldKey);
+        NoteCreationVm vm = NoteCreationVm(
+          scaffoldKey: _scaffoldKey,
+          template: template,
+        );
         vm.initialize();
         return vm;
       },
-      child: Consumer<BlankNoteVm>(
+      child: Consumer<NoteCreationVm>(
         builder: (context, vm, child) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,
             scaffoldKey: _scaffoldKey,
-            endDrawer: CustomDrawer(child: BlankNoteRight()),
-            drawer: CustomDrawer(child: BlankNoteLeft()),
+            endDrawer: CustomDrawer(child: NoteCreationRight()),
+            drawer: CustomDrawer(child: NoteCreationLeft()),
             body: Stack(
               children: [
                 ResponsiveSection(
-                  mobile: BlankNoteMain(),
+                  mobile: NoteCreationMain(),
                   desktop: Row(
                     children: [
                       VisibleController(
                         mobile: false,
                         largeDesktop: true,
-                        child: WidthLimiter(mobile: 255, child: BlankNoteLeft()),
+                        child: WidthLimiter(
+                          mobile: 255,
+                          child: NoteCreationLeft(),
+                        ),
                       ),
-                      Expanded(child: BlankNoteMain()),
-                      WidthLimiter(mobile: 255, child: BlankNoteRight()),
+                      Expanded(child: NoteCreationMain()),
+                      WidthLimiter(mobile: 255, child: NoteCreationRight()),
                     ],
                   ),
                 ),

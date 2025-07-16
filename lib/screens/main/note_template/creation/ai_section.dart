@@ -1,117 +1,139 @@
 import 'package:navinotes/packages.dart';
+import 'vm.dart';
 
 class NoteAiSection extends StatelessWidget {
   const NoteAiSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 0,
-      bottom: 0,
-      right: 0,
-      child: WidthLimiter(
-        mobile: 255,
-        tablet: 400,
-        child: CustomCard(
-          addBorder: true,
-          addCardShadow: true,
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              _header(),
-              Expanded(
-                child: ScrollableController(
-                  mobilePadding: EdgeInsets.only(bottom: 15),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 15,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(color: AppTheme.lightGray),
-                          ),
-                        ),
+    return Consumer<NoteCreationVm>(
+      builder: (context, vm, child) {
+        return VisibleController(
+          mobile: vm.showAiSection,
+          child: Positioned(
+            top: 0,
+            bottom: 0,
+            right: 0,
+            child: WidthLimiter(
+              mobile: 255,
+              tablet: 400,
+              child: CustomCard(
+                addBorder: true,
+                addCardShadow: true,
+                padding: EdgeInsets.zero,
+                child: Column(
+                  children: [
+                    _header(vm),
+                    Expanded(
+                      child: ScrollableController(
+                        mobilePadding: EdgeInsets.only(bottom: 15),
                         child: Column(
-                          spacing: 10,
                           children: [
-                            TextRowSelect(
-                              items: ['Text Input', 'Upload', 'From Notes'],
-                              selected: 'Text Input',
-                              fillWidth: true,
-                              borderColor: AppTheme.vividRose,
-                              inActiveBorderColor: AppTheme.lightGray,
-                              selectedTextStyle: TextStyle(
-                                color: const Color(0xFF00555A),
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w500,
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 15,
                               ),
-                              style: TextStyle(
-                                color: const Color(0xFF6B7280),
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w500,
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(color: AppTheme.lightGray),
+                                ),
                               ),
-                            ),
-                            CustomInputField(
-                              hintText: 'Enter text to process...',
-                              maxLines: 3,
-                              hintStyle: TextStyle(
-                                color: const Color(0xFFADAEBC),
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                                height: 1.43,
+                              child: Column(
+                                spacing: 10,
+                                children: [
+                                  TextRowSelect(
+                                    items: [
+                                      'Text Input',
+                                      'Upload',
+                                      'From Notes',
+                                    ],
+                                    selected: 'Text Input',
+                                    fillWidth: true,
+                                    borderColor: AppTheme.vividRose,
+                                    inActiveBorderColor: AppTheme.lightGray,
+                                    selectedTextStyle: TextStyle(
+                                      color: const Color(0xFF00555A),
+                                      fontSize: 14,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    style: TextStyle(
+                                      color: const Color(0xFF6B7280),
+                                      fontSize: 14,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  CustomInputField(
+                                    hintText: 'Enter text to process...',
+                                    maxLines: 3,
+                                    hintStyle: TextStyle(
+                                      color: const Color(0xFFADAEBC),
+                                      fontSize: 14,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.43,
+                                    ),
+                                  ),
+
+                                  Column(
+                                    spacing: 5,
+                                    children: [
+                                      _input(title: 'Summary Length'),
+                                      _input(title: 'Focus Area'),
+                                      AppButton(
+                                        onTap: () {},
+                                        text: 'Process Content',
+                                        minHeight: 40,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 5,
+                                          horizontal: 15,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
 
-                            Column(
-                              spacing: 5,
-                              children: [
-                                _input(title: 'Summary Length'),
-                                _input(title: 'Focus Area'),
-                                AppButton(
-                                  onTap: () {},
-                                  text: 'Process Content',
-                                  minHeight: 40,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 5,
-                                    horizontal: 15,
-                                  ),
-                                ),
-                              ],
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 15,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 10,
+                                children: [_summary(), _btns()],
+                              ),
                             ),
                           ],
                         ),
                       ),
-
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 15,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 10,
-                          children: [_summary(), _btns()],
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   Widget _btns() {
+    final style = TextStyle(
+      color: const Color(0xFF374151),
+      fontSize: 14,
+      fontFamily: 'Inter',
+      fontWeight: FontWeight.w400,
+    );
+    final padding = EdgeInsets.symmetric(vertical: 5, horizontal: 15);
+
     return Wrap(
+      spacing: 10,
+      runSpacing: 10,
       children: [
         AppButton(
           onTap: () {},
@@ -120,10 +142,11 @@ class NoteAiSection extends StatelessWidget {
           prefix: SVGImagePlaceHolder(
             imagePath: Images.sdCard2,
             color: AppTheme.darkSlateGray,
+            size: 16,
           ),
           minHeight: 40,
-          textColor: AppTheme.darkSlateGray,
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+          style: style,
+          padding: padding,
           mainAxisSize: MainAxisSize.min,
         ),
         AppButton(
@@ -133,10 +156,11 @@ class NoteAiSection extends StatelessWidget {
           prefix: SVGImagePlaceHolder(
             imagePath: Images.stack,
             color: AppTheme.darkSlateGray,
+            size: 16,
           ),
           minHeight: 40,
-          textColor: AppTheme.darkSlateGray,
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+          style: style,
+          padding: padding,
           mainAxisSize: MainAxisSize.min,
         ),
         AppButton(
@@ -145,8 +169,8 @@ class NoteAiSection extends StatelessWidget {
           color: AppTheme.lightAsh,
           prefix: Icon(Icons.add, color: AppTheme.darkSlateGray),
           minHeight: 40,
-          textColor: AppTheme.darkSlateGray,
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+          style: style,
+          padding: padding,
           mainAxisSize: MainAxisSize.min,
         ),
         AppButton(
@@ -156,10 +180,11 @@ class NoteAiSection extends StatelessWidget {
           prefix: SVGImagePlaceHolder(
             imagePath: Images.copy,
             color: AppTheme.darkSlateGray,
+            size: 16,
           ),
           minHeight: 40,
-          textColor: AppTheme.darkSlateGray,
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+          style: style,
+          padding: padding,
           mainAxisSize: MainAxisSize.min,
         ),
       ],
@@ -222,7 +247,7 @@ class NoteAiSection extends StatelessWidget {
     );
   }
 
-  Widget _header() {
+  Widget _header(NoteCreationVm vm) {
     return Column(
       children: [
         Container(
@@ -235,7 +260,10 @@ class NoteAiSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SVGImagePlaceHolder(imagePath: Images.aiIcon, size: 35),
-              IconButton(onPressed: () {}, icon: Icon(Icons.close)),
+              IconButton(
+                onPressed: vm.closeAiSection,
+                icon: Icon(Icons.close),
+              ),
             ],
           ),
         ),
@@ -254,7 +282,7 @@ class NoteAiSection extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: AppTheme.lightGray)),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 15),
       child: IntrinsicHeight(
         child: Row(
           spacing: 5,
@@ -272,7 +300,7 @@ class NoteAiSection extends StatelessWidget {
                                 : BorderSide.none,
                       ),
                     ),
-                    padding: EdgeInsets.only(bottom: 5),
+                    padding: EdgeInsets.symmetric(vertical: 10),
                     child: AppButton.text(
                       onTap: () {},
                       child: Flexible(

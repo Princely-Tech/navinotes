@@ -66,9 +66,10 @@ class NoteTemplateMain extends StatelessWidget {
     );
   }
 
-  Widget _template(BoardTemplate template) {
+  Widget _template(BoardNoteTemplate template) {
     return Consumer<NoteTemplateVm>(
       builder: (_, vm, _) {
+        final isSelected = vm.selectedTemplate == template;
         return InkWell(
           onTap: () => vm.updateSelectedTemplate(template),
           child: CustomCard(
@@ -86,6 +87,12 @@ class NoteTemplateMain extends StatelessWidget {
                         isCardHeader: true,
                       ),
                     ),
+                    if (isSelected)
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: Icon(Icons.check, color: AppTheme.vividBlue),
+                      ),
                     if (template.isPopular)
                       Positioned(
                         top: 10,

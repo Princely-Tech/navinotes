@@ -15,7 +15,7 @@ import 'package:navinotes/screens/main/market_place/my_purchases/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
 import 'package:navinotes/screens/main/market_place/product_detail/index.dart';
 import 'package:navinotes/screens/main/market_place/seller_upload/index.dart';
-import 'package:navinotes/screens/main/note_template/blank/index.dart';
+import 'package:navinotes/screens/main/note_template/creation/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -54,11 +54,13 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardPlainMindMap: (context) => BoardPlainMindMapScreen(),
   Routes.boardLightAcademia: (context) => BoardLightAcademiaScreen(),
   Routes.boardLightAcademiaEdit: (context) => BoardLightAcadEditScreen(),
-  Routes.boardLightAcademiaNotePage: (context) => BoardLightAcadNotePageScreen(),
+  Routes.boardLightAcademiaNotePage:
+      (context) => BoardLightAcadNotePageScreen(),
   Routes.sellerUpload: (context) => SellerUploadScreen(),
   Routes.myPurchases: (context) => MyPurchasesScreen(),
   Routes.flashCards: (context) => FlashCardsScreen(),
-  Routes.blankNote: (context) => BlankNoteScreen(),
+  Routes.noteCreation:
+      (context) => NoteCreationScreen(),
 };
 
 class Routes {
@@ -100,15 +102,16 @@ class Routes {
   static const boardLightAcademia = 'boardLightAcademia';
   static const boardLightAcademiaEdit = 'boardLightAcademiaEdit';
   static const boardLightAcademiaNotePage = 'boardLightAcademiaNotePage';
-  static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; //TODO create screen
+  static const boardLightAcademiaMindMap =
+      'boardLightAcademiaMindMap'; //TODO create screen
 
-  static const sellerUpload = 'sellerUpload'; 
-  static const flashCards = 'flashCards'; 
-  static const blankNote = 'blankNote'; 
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap'; 
+  static const sellerUpload = 'sellerUpload';
+  static const flashCards = 'flashCards';
+  static const noteCreation = 'noteCreation';
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
 }
 //Documentation
 //https://documenter.getpostman.com/view/45960961/2sB2x8GXet

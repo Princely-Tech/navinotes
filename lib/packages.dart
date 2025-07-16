@@ -17,6 +17,7 @@ export 'providers/packages.dart';
 
 //Models
 export 'models/packages.dart';
+export 'package:navinotes/screens/main/note_template/util.dart';
 
 //External packages
 export 'package:shared_preferences/shared_preferences.dart';

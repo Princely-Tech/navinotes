@@ -43,21 +43,19 @@ class NavigationHelper {
     }
   }
 
-
-
-
-   static void gotToNoteTemplate() {
+  static void gotToNoteTemplate() {
     //push(Routes.noteTemplate, arguments: board);
   }
-
 
   static void gotToNewNoteTemplate(Board board) {
     push(Routes.noteTemplate, arguments: board);
   }
 
+  static void navigateToNoteCreation(BoardNoteTemplate template) {
+    push(Routes.noteCreation, arguments: template);
+  }
 
   static void navigateToBoardNotes(Board board) {
-
     final route = switch (board.boardType) {
       BoardTypeCodes.plain => Routes.boardPlainNotePage,
       BoardTypeCodes.minimalist => Routes.boardMinimalistNotePage,
@@ -66,14 +64,12 @@ class NavigationHelper {
       BoardTypeCodes.nature => Routes.boardNatureNotePage,
       _ => Routes.boardPlainNotePage,
     };
-  
+
     push(route, arguments: board);
   }
 
-
   static void navigateToBoard(Board board, {Object? arguments}) {
-
-     final boardType = board.boardType ?? BoardTypeCodes.plain;
+    final boardType = board.boardType ?? BoardTypeCodes.plain;
 
     final route = switch (boardType) {
       BoardTypeCodes.plain => Routes.boardPlainEdit,
@@ -82,9 +78,8 @@ class NavigationHelper {
       BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaEdit,
       BoardTypeCodes.nature => Routes.boardNatureEdit,
     };
-  
 
-     // Create a new map with explicit types
+    // Create a new map with explicit types
     final Map<String, dynamic> mergedArguments = {
       'boardId': board.id,
       'board': board,
@@ -99,15 +94,11 @@ class NavigationHelper {
       // If it's a Map but not Map<String, dynamic>, cast the values
       mergedArguments.addAll(
         Map<String, dynamic>.fromEntries(
-          arguments.entries.map(
-            (e) => MapEntry(e.key.toString(), e.value),
-          ),
+          arguments.entries.map((e) => MapEntry(e.key.toString(), e.value)),
         ),
       );
     }
 
-
     NavigationHelper.push(route, arguments: mergedArguments);
-
   }
 }

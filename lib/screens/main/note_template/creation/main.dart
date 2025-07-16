@@ -1,13 +1,19 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/note_template/creation/lined_rule.dart';
 import 'vm.dart';
 
-class BlankNoteMain extends StatelessWidget {
-  const BlankNoteMain({super.key});
+class NoteCreationMain extends StatelessWidget {
+  const NoteCreationMain({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BlankNoteVm>(
+    return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
+        Color color = AppTheme.transparent;
+        switch (vm.template.image) {
+          case Images.noteTemplateCornell:
+            color = Color(0xFFD1CDC4);
+        }
         return Column(
           children: [
             _header(),
@@ -16,15 +22,23 @@ class BlankNoteMain extends StatelessWidget {
               config: const QuillSimpleToolbarConfig(),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 15,
-                ),
-                child: QuillEditor.basic(
-                  controller: vm.richEditorController,
-                  config: const QuillEditorConfig(),
-                ),
+              child: Stack(
+                children: [
+                  LinedNoteBackground(),
+                  Container(
+                    height: double.infinity,
+                    color: color,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 15,
+                    ),
+                    child: ResponsiveHorizontalPadding(
+                      child: QuillEditor.basic(
+                        controller: vm.richEditorController,
+                        config: const QuillEditorConfig(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -34,7 +48,7 @@ class BlankNoteMain extends StatelessWidget {
   }
 
   Widget _header() {
-    return Consumer<BlankNoteVm>(
+    return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
         return Consumer<LayoutProviderVm>(
           builder: (_, layoutVm, _) {
@@ -52,7 +66,7 @@ class BlankNoteMain extends StatelessWidget {
                   Row(
                     children: [
                       if (layoutVm.deviceType != DeviceType.mobile)
-                        _shareAndAI(),
+                        _shareAndAI(vm),
                       VisibleController(
                         mobile: true,
                         desktop: false,
@@ -72,12 +86,12 @@ class BlankNoteMain extends StatelessWidget {
     );
   }
 
-  Widget _shareAndAI() {
+  Widget _shareAndAI(NoteCreationVm vm) {
     return Row(
       spacing: 15,
       children: [
         AppButton.text(
-          onTap: () {},
+          onTap: vm.openAiSection,
           child: SVGImagePlaceHolder(
             imagePath: Images.aiIcon,
             size: 35,
@@ -114,7 +128,7 @@ class BlankNoteMain extends StatelessWidget {
   }
 
   Widget _title() {
-    return Consumer<BlankNoteVm>(
+    return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
         return Flexible(
           child: Row(

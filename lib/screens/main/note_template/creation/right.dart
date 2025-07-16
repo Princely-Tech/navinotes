@@ -1,7 +1,7 @@
 import 'package:navinotes/packages.dart';
 
-class BlankNoteRight extends StatelessWidget {
-  const BlankNoteRight({super.key});
+class NoteCreationRight extends StatelessWidget {
+  const NoteCreationRight({super.key});
 
   @override
   Widget build(BuildContext context) {
