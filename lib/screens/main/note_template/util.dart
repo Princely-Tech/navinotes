@@ -64,7 +64,7 @@ BoardNoteTemplate noteTemplateKanban = BoardNoteTemplate(
   isPopular: true,
   image: Images.noteTemplateKanban,
   title: 'Kanban Board',
-  route: '',
+  route: Routes.noteKanban,
 );
 
 BoardNoteTemplate noteTemplateTimeline = BoardNoteTemplate(
