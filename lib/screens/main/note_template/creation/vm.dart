@@ -4,7 +4,7 @@ class NoteCreationVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   BoardNoteTemplate template;
   NoteCreationVm({required this.scaffoldKey, BoardNoteTemplate? template})
-    : template = template ?? noteTemplateLined; //TODO  Use blank as default
+    : template = template ?? noteTemplateDotted; //TODO  Use blank as default
 
   bool showAiSection = false;
 

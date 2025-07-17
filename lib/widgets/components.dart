@@ -437,7 +437,7 @@ class ColorWidget extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: color,
-        shape: isNotNull(borderRadius) ? BoxShape.rectangle: BoxShape.circle,
+        shape: isNotNull(borderRadius) ? BoxShape.rectangle : BoxShape.circle,
         borderRadius: borderRadius,
         border: Border.all(
           color:
@@ -459,6 +459,7 @@ class CustomDrawer extends StatelessWidget {
     return Drawer(
       backgroundColor: bgColor ?? AppTheme.white,
       shape: RoundedRectangleBorder(),
+      // width: double.infinity,
       child: child,
     );
   }

@@ -22,7 +22,7 @@ void main() async {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),
-        initialRoute: Routes.noteTemplate,
+        initialRoute: Routes.noteCompareContrast,
         // initialRoute: Routes.splash, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,

@@ -172,6 +172,25 @@ class WidthLimiter extends StatelessWidget {
   }
 }
 
+class HeightLimiter extends StatelessWidget {
+  const HeightLimiter({
+    super.key,
+    required this.child,
+    required this.maxHeight,
+  });
+
+  final Widget child;
+  final double maxHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      child: child,
+    );
+  }
+}
+
 class ResponsiveSection extends StatelessWidget {
   const ResponsiveSection({
     super.key,
