@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/market_place/seller_upload/widget/widget.dart';
 import 'aside.dart';
 
 class FooterText {
@@ -22,7 +23,7 @@ class SellerUploadMain extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _header(),
+          progressHeader(2),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 30,
@@ -591,85 +592,6 @@ class SellerUploadMain extends StatelessWidget {
         ),
         child,
       ],
-    );
-  }
-
-  Widget _header() {
-    return Container(
-      color: AppTheme.whiteSmoke,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: ResponsiveHorizontalPadding(
-          child: Stack(
-            children: [
-              Positioned(
-                top: 15,
-                left: 0,
-                right: 0,
-                child: Container(color: AppTheme.vividRose, height: 4),
-              ),
-              Row(
-                spacing: 5,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _headerItem(
-                    title: 'Content Selection',
-                    count: 1,
-                    check: true,
-                  ),
-                  _headerItem(title: 'Details & Preview', count: 2),
-                  _headerItem(count: 3, title: 'Pricing & Terms'),
-                  _headerItem(count: 4, title: 'Review & Submit'),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _headerItem({
-    required String title,
-    bool check = false,
-    required int count,
-  }) {
-    return Flexible(
-      child: Column(
-        spacing: 5,
-        children: [
-          OutlinedChild(
-            size: 32,
-            decoration: BoxDecoration(
-              color: AppTheme.vividRose,
-              shape: BoxShape.circle,
-            ),
-            child:
-                check
-                    ? Icon(Icons.check, color: AppTheme.white)
-                    : Text(
-                      '2',
-                      style: AppTheme.text.copyWith(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontWeight: getFontWeight(500),
-                      ),
-                    ),
-          ),
-
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: AppTheme.text.copyWith(
-              color: AppTheme.vividRose,
-              fontWeight: getFontWeight(500),
-              height: 1.0,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

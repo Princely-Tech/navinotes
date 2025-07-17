@@ -14,7 +14,8 @@ import 'package:navinotes/screens/main/market_place/index.dart';
 import 'package:navinotes/screens/main/market_place/my_purchases/index.dart';
 import 'package:navinotes/screens/main/market_place/my_store/index.dart';
 import 'package:navinotes/screens/main/market_place/product_detail/index.dart';
-import 'package:navinotes/screens/main/market_place/seller_upload/index.dart';
+import 'package:navinotes/screens/main/market_place/seller_upload/board/index.dart';
+import 'package:navinotes/screens/main/market_place/seller_upload/details/index.dart';
 import 'package:navinotes/screens/main/note_template/creation/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
@@ -56,6 +57,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardLightAcademiaEdit: (context) => BoardLightAcadEditScreen(),
   Routes.boardLightAcademiaNotePage:
       (context) => BoardLightAcadNotePageScreen(),
+  Routes.sellerSelectContent: (context) => SellerSelectContentScreen(),
   Routes.sellerUpload: (context) => SellerUploadScreen(),
   Routes.myPurchases: (context) => MyPurchasesScreen(),
   Routes.flashCards: (context) => FlashCardsScreen(),
@@ -106,6 +108,7 @@ class Routes {
       'boardLightAcademiaMindMap'; //TODO create screen
 
   static const sellerUpload = 'sellerUpload';
+  static const sellerSelectContent = 'sellerSelectContent';
   static const flashCards = 'flashCards';
   static const noteCreation = 'noteCreation';
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';

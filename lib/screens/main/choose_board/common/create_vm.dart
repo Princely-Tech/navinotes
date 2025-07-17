@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:uuid/uuid.dart';
 
 class BoardCreateVm extends ChangeNotifier {
   final BoardTypeCodes boardType;
@@ -53,9 +54,11 @@ class BoardCreateVm extends ChangeNotifier {
       if (currentUser == null) {
         throw Exception('User not logged in');
       }
+      var uuid = Uuid();
 
       // Create a new board
       final newBoard = Board(
+        guid: "0${currentUser.id}0_${uuid.v4()}",
         userId: currentUser.id!,
         type: boardType.name,
         name: titleController.text.trim(),

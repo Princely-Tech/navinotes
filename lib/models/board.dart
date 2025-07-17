@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 
 class Board {
   int? id;
+  final String guid;
   final int userId;
   final String type;
   final String name;
@@ -18,6 +19,7 @@ class Board {
 
   Board({
     this.id,
+    required this.guid,
     required this.userId,
     required this.type,
     required this.name,
@@ -45,8 +47,32 @@ class Board {
     this.id = id;
   }
 
+
+  String getImage() {
+   return getBoardTypeImage();
+  }
+
+  String getBoardTypeImage() {
+    if (boardType == null) {
+      return boardTypePlainImage;
+    }
+    switch (boardType!) {
+      case BoardTypeCodes.plain:
+        return boardTypePlainImage;
+      case BoardTypeCodes.minimalist:
+        return boardTypeMinimalistImage;
+      case BoardTypeCodes.darkAcademia:
+        return boardTypeDarkAcademiaImage;
+      case BoardTypeCodes.lightAcademia:
+        return boardTypeLightAcademiaImage;
+      case BoardTypeCodes.nature:
+        return boardTypeNatureImage;
+    }
+  }
+
   Map<String, dynamic> toMap() => {
     'id': id,
+    'guid': guid,
     'user_id': userId,
     'type': type,
     'name': name,
@@ -64,6 +90,7 @@ class Board {
 
   factory Board.fromMap(Map<String, dynamic> map) => Board(
     id: map['id'],
+    guid: map['guid'],
     userId: map['user_id'],
     type: map['type'],
     name: map['name'],

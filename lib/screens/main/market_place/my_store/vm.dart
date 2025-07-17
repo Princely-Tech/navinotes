@@ -8,6 +8,6 @@ class MyStoreVm extends ChangeNotifier {
     scaffoldKey.currentState?.openEndDrawer();
   }
   void goTosellerUploadContent() {
-    NavigationHelper.push(Routes.sellerUpload);
+    NavigationHelper.push(Routes.sellerSelectContent);
   }
 }

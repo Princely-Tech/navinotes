@@ -12,8 +12,27 @@ class SellerUploadScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final board = ModalRoute.of(context)?.settings.arguments as Board?;
+    
+    if (board == null) {
+      return Scaffold(
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            child: const Text(
+              'Error: No board data provided',
+              style: TextStyle(color: Colors.red, fontSize: 18),
+            ),
+          ),
+        ),
+      );
+    }
+
     return ChangeNotifierProvider(
-      create: (context) => SellerUploadVm(scaffoldKey: _scaffoldKey),
+      create: (context) => SellerUploadVm(
+        scaffoldKey: _scaffoldKey,
+        board: board,
+      ),
       child: ScaffoldFrame(
         scaffoldKey: _scaffoldKey,
         endDrawer: CustomDrawer(child: SellerUploadAside()),

@@ -1,32 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/dashboard/vm.dart';
-import 'package:navinotes/screens/main/dashboard/widgets.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'package:navinotes/screens/main/market_place/seller_upload/board/vm.dart';
 
-class YourBoards extends StatelessWidget {
-  const YourBoards({super.key});
+class SellerSelectBoards extends StatelessWidget {
+  const SellerSelectBoards({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DashboardVm>(
+    return Consumer<SellerSelectContentVm>(
       builder: (context, vm, child) {
         return Column(
           spacing: 20,
-          children: [DashFilterSection(title: 'Your Boards'), _boards(vm)],
+          children: [
+            _boards(vm),
+          ],
         );
       },
     );
   }
 
-  Widget _boardCard(DashboardVm vm, {required Board board}) {
+  Widget _boardCard(SellerSelectContentVm vm, {required Board board}) {
     // Get the appropriate image based on board type
     String boardImage = board.getImage();
     
     return InkWell(
-      onTap: () => NavigationHelper.navigateToBoard(board),
+      onTap: () => NavigationHelper.push(Routes.sellerUpload, arguments: board),
       child: CustomCard(
         padding: EdgeInsets.zero,
         child: Column(
@@ -84,14 +81,11 @@ class YourBoards extends StatelessWidget {
     );
   }
 
-  Widget _boards(DashboardVm vm) {
+  Widget _boards(SellerSelectContentVm vm) {
     final boards = vm.sessionVm.userBoards;
     
     return CustomGrid(
-      children: [
-        ...boards.map((board) => _boardCard(vm, board: board)).toList(),
-        DashboardCreateCard(),
-      ],
+      children: [...boards.map((board) => _boardCard(vm, board: board))],
     );
   }
   

@@ -1,10 +1,12 @@
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
+static const int _databaseVersion = 2; // Increment this number
 
   DatabaseHelper._init();
 
@@ -17,13 +19,14 @@ class DatabaseHelper {
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(path, version: _databaseVersion, onCreate: _createDB, onUpgrade: _onUpgrade);
   }
 
   Future _createDB(Database db, int version) async {
     await db.execute('''
     CREATE TABLE boards (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      guid TEXT,
       user_id INTEGER,
       type TEXT,
       name TEXT,
@@ -66,6 +69,22 @@ class DatabaseHelper {
     )
     ''');
   }
+
+// Add this new method to handle database upgrades
+Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  if (oldVersion < 2) {
+    // Add the guid column to the boards table
+    await db.execute('ALTER TABLE boards ADD COLUMN guid TEXT');
+
+    // get all boards with null guid and update it
+    final boards = await db.query('boards', where: 'guid IS NULL');
+    for (var board in boards) {
+      final guid = "0${board['user_id']}0_${Uuid().v4()}";
+      await db.update('boards', {'guid': guid}, where: 'id = ?', whereArgs: [board['id']]);
+    }
+  }
+}
+
 
   // Example CRUD for Boards
   Future<int> insertBoard(Board board) async {

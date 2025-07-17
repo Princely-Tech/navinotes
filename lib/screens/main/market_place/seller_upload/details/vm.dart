@@ -1,12 +1,15 @@
 import 'package:navinotes/packages.dart';
 
 class SellerUploadVm extends ChangeNotifier {
-  GlobalKey<ScaffoldState> scaffoldKey;
-  SellerUploadVm({required this.scaffoldKey});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  final Board board;
+
+  SellerUploadVm({
+    required this.scaffoldKey,
+    required this.board,
+  });
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
   }
-
- 
 }
