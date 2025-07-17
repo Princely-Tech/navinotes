@@ -5,6 +5,8 @@ import 'main.dart';
 import 'header.dart';
 import 'ai_analysis.dart';
 
+//TODO work on this more to match design
+
 class NoteCompareContrastScreen extends StatelessWidget {
   NoteCompareContrastScreen({super.key});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

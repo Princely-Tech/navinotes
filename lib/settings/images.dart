@@ -164,6 +164,9 @@ class Images {
   static const String equal = '$iconPath/equal.svg';
   static const String keyboard = '$iconPath/keyboard.svg';
   static const String bug = '$iconPath/bug.svg';
+  static const String people = '$iconPath/people.svg';
+  static const String search = '$iconPath/search.svg';
+  // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';

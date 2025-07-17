@@ -26,7 +26,7 @@ class BoardNoteTemplate {
   });
 }
 
- BoardNoteTemplate noteTemplateBlank =  BoardNoteTemplate(
+BoardNoteTemplate noteTemplateBlank = BoardNoteTemplate(
   body: 'Clean slate for writing',
   image: Images.noteTemplateBlank,
   title: 'Blank Page',
@@ -64,26 +64,28 @@ BoardNoteTemplate noteTemplateKanban = BoardNoteTemplate(
   isPopular: true,
   image: Images.noteTemplateKanban,
   title: 'Kanban Board',
-    route:''
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateTimeline = BoardNoteTemplate(
   body: 'Chronological planner',
   image: Images.noteTemplateTimeline,
-  title: 'Timeline',   route:''
+  title: 'Timeline',
+  route: Routes.noteTimeline,
 );
 
 BoardNoteTemplate noteTemplateCompareContrast = BoardNoteTemplate(
   body: 'Side-by-side comparison',
   image: Images.noteTemplateCompareContrast,
   title: 'Compare & Contrast',
-   route: Routes.noteCompareContrast,
+  route: Routes.noteCompareContrast,
 );
 
 BoardNoteTemplate noteTemplateAi = BoardNoteTemplate(
   body: 'AI-generated study cards',
   image: Images.noteTemplateAi,
-  title: 'AI-Generated Flashcards',   route:''
+  title: 'AI-Generated Flashcards',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateFlashcards = BoardNoteTemplate(
@@ -97,7 +99,8 @@ BoardNoteTemplate noteTemplateFlashcards = BoardNoteTemplate(
 BoardNoteTemplate noteTemplateLapReport = BoardNoteTemplate(
   body: 'Scientific experiment doc',
   image: Images.noteTemplateLapReport,
-  title: 'Lab Report Format',   route:''
+  title: 'Lab Report Format',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateApa = BoardNoteTemplate(
@@ -109,23 +112,27 @@ BoardNoteTemplate noteTemplateApa = BoardNoteTemplate(
 BoardNoteTemplate noteTemplateResearch = BoardNoteTemplate(
   body: 'Humanities formatting',
   image: Images.noteTemplateResearch,
-  title: 'MLA Research Format',   route:''
+  title: 'MLA Research Format',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateComparative = BoardNoteTemplate(
   body: 'Multi-subject comparison',
   image: Images.noteTemplateComparative,
-  title: 'Comparative Analysis',   route:''
+  title: 'Comparative Analysis',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateCritical = BoardNoteTemplate(
   body: 'Evaluative framework',
   image: Images.noteTemplateCritical,
-  title: 'Critical Review',   route:''
+  title: 'Critical Review',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateThesis = BoardNoteTemplate(
   body: 'Argument construction',
   image: Images.noteTemplateThesis,
-  title: 'Thesis Development',   route:''
+  title: 'Thesis Development',
+  route: '',
 );

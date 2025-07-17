@@ -17,6 +17,7 @@ import 'package:navinotes/screens/main/market_place/product_detail/index.dart';
 import 'package:navinotes/screens/main/market_place/seller_upload/index.dart';
 import 'package:navinotes/screens/main/note_template/compare_contrast/index.dart';
 import 'package:navinotes/screens/main/note_template/creation/index.dart';
+import 'package:navinotes/screens/main/note_template/timeline/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -63,6 +64,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.noteCreation:
       (context) => NoteCreationScreen(),
   Routes.noteCompareContrast: (context) => NoteCompareContrastScreen(),
+  Routes.noteTimeline: (context) => NoteTimelineScreen(),
 };
 
 class Routes {
@@ -111,7 +113,7 @@ class Routes {
   static const flashCards = 'flashCards';
   static const noteCreation = 'noteCreation';
   static const noteCompareContrast = 'noteCompareContrast';
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+  static const noteTimeline = 'noteTimeline';
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
 }
