@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/market_place/seller_upload/details/vm.dart';
 import 'package:navinotes/screens/main/market_place/seller_upload/widget/widget.dart';
 import 'aside.dart';
 
@@ -14,7 +15,9 @@ final labelStyle = AppTheme.text.copyWith(
 );
 
 class SellerUploadMain extends StatelessWidget {
-  const SellerUploadMain({super.key});
+  const SellerUploadMain({super.key, required this.vm});
+
+  final SellerUploadVm vm;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,7 @@ class SellerUploadMain extends StatelessWidget {
                         child: CustomGrid(
                           largeDesktop: 2,
                           mobileSpacing: 40,
-                          children: [_productDetails(), _preview()],
+                          children: [_productDetails(vm), _preview()],
                         ),
                       ),
                     ),
@@ -242,7 +245,9 @@ class SellerUploadMain extends StatelessWidget {
                     spacing: 10,
                     children: [
                       Text(
-                        'Sample Product Title',
+                        (vm.titleController.text.isEmpty)
+                            ? 'Sample Product Title'
+                            : vm.titleController.text,
                         style: AppTheme.text.copyWith(
                           fontSize: 16.0,
                           fontWeight: getFontWeight(500),
@@ -268,7 +273,7 @@ class SellerUploadMain extends StatelessWidget {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: ' Your Name',
+                                  text: ' ${SessionManager().getName()??'Your Name'}',
                                   style: AppTheme.text.copyWith(
                                     color: AppTheme.vividRose,
                                     height: 1.0,
@@ -442,7 +447,7 @@ class SellerUploadMain extends StatelessWidget {
     );
   }
 
-  Widget _productDetails() {
+  Widget _productDetails(SellerUploadVm vm) {
     return _section(
       title: 'Product Details',
       child: Column(
@@ -451,6 +456,7 @@ class SellerUploadMain extends StatelessWidget {
         children: [
           _inputWithFooter(
             child: CustomInputField(
+              controller: vm.titleController,
               label: 'Product Title',
               hintText: 'Enter a clear, descriptive title',
               required: true,
@@ -459,21 +465,27 @@ class SellerUploadMain extends StatelessWidget {
             footer: '75 characters maximum',
           ),
           CustomInputField(
+            onChanged: (value) {
+              debugPrint('category changed: $value');
+              vm.loadSubCategories(value);
+            },
+            controller: vm.categoryController,
             label: 'Category',
             hintText: 'Select a category',
             required: true,
-            selectItems: [],
+            selectItems: vm.categories,
             labelStyle: labelStyle,
           ),
           CustomInputField(
             label: 'Sub-Category',
             hintText: 'Select a sub-category',
             required: true,
-            selectItems: [],
+            selectItems: vm.subCategories,
             labelStyle: labelStyle,
           ),
           _inputWithFooter(
             child: CustomInputField(
+              controller: vm.tagsController,
               labelRight: Expanded(child: _alertIWidget(title: 'Tags')),
               hintText: 'Add tags separated by commas',
               labelStyle: labelStyle,
@@ -512,6 +524,7 @@ class SellerUploadMain extends StatelessWidget {
           ),
           _inputWithFooter(
             child: CustomInputField(
+              controller: vm.descriptionController,
               label: 'Detailed Description',
               hintText:
                   'Describe your product in detail. What makes it valuable? How will it help users?',

@@ -33,18 +33,21 @@ class SellerUploadScreen extends StatelessWidget {
         scaffoldKey: _scaffoldKey,
         board: board,
       ),
-      child: ScaffoldFrame(
+      child: Consumer<SellerUploadVm>(
+        builder: (_, vm, _) {
+      
+      return ScaffoldFrame(
         scaffoldKey: _scaffoldKey,
         endDrawer: CustomDrawer(child: SellerUploadAside()),
         backgroundColor: AppTheme.white,
         body: Column(
           children: [
             SellerUploadAppBar(),
-            Expanded(child: SellerUploadMain()),
+            Expanded(child: SellerUploadMain(vm: vm)),
             SellerUploadFooter(),
           ],
         ),
-      ),
+      );})
     );
   }
 }
