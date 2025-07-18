@@ -1,5 +1,36 @@
 import 'package:navinotes/packages.dart';
 
+class OverlappingAvatars extends StatelessWidget {
+  final List<Widget> avatars;
+  final double overlap;
+  final double size;
+
+  const OverlappingAvatars({
+    super.key,
+    required this.avatars,
+    this.overlap = 12, // amount to overlap
+    this.size = 32, // avatar size
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size + (avatars.length - 1) * (size - overlap),
+      height: size,
+      child: Stack(
+        children: [
+          for (int i = 0; i < avatars.length; i++)
+            Positioned(
+              left: i * (size - overlap),
+              child: avatars[i],
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+
 class SVGImagePlaceHolder extends StatelessWidget {
   const SVGImagePlaceHolder({
     super.key,

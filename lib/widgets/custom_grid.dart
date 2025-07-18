@@ -12,7 +12,6 @@ class CustomGrid extends StatelessWidget {
     this.largeDesktop = 3,
     this.wrapWithIntrinsicHeight = true,
     this.mobileSpacing,
-   
   });
   final List<Widget> children;
   final int mobile;
@@ -23,7 +22,6 @@ class CustomGrid extends StatelessWidget {
   final double? spacing;
   final double? mobileSpacing;
   final bool wrapWithIntrinsicHeight;
-
 
   @override
   Widget build(BuildContext context) {

@@ -293,7 +293,7 @@ class NoteTimelineScreen extends StatelessWidget {
                             spacing: 15,
                             children: [
                               AppButton.text(
-                                onTap: () {},
+                                onTap: NavigationHelper.pop,
                                 text: 'Study Tools',
                                 color: const Color(0xFF4B5563),
                                 prefix: Icon(

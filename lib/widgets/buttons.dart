@@ -209,7 +209,8 @@ class AppButton extends StatelessWidget {
     }
     return Container(
       constraints: BoxConstraints(minHeight: minHeight),
-      padding: padding ?? EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+      padding: padding ?? EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      // padding: padding ?? EdgeInsets.symmetric(vertical: 12, horizontal: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

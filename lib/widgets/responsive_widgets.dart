@@ -55,7 +55,7 @@ class ScrollableController extends StatelessWidget {
               scrollDirection: scrollDirection,
               child: child,
             )
-            : Container(padding: padding, child: child);
+            : Padding(padding: padding, child: child);
       },
       child: child,
     );
