@@ -7,7 +7,7 @@ void main() async {
   final sessionManager = SessionManager();
   await sessionManager.init();
 
-  await dotenv.load(fileName: ".env");
+  // await dotenv.load(fileName: ".env");
 
   runApp(
     CustomProviders(

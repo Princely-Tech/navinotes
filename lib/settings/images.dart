@@ -156,6 +156,17 @@ class Images {
   static const String aiIcon = '$iconPath/ai_icon.svg';
   static const String copy = '$iconPath/copy.svg';
   static const String youtube = '$iconPath/youtube.svg';
+  static const String iIcon = '$iconPath/i_icon.svg';
+  static const String exportFile = '$iconPath/export_file.svg';
+  static const String eye = '$iconPath/eye.svg';
+  static const String aiBot = '$iconPath/ai_bot.svg';
+  static const String notEqual = '$iconPath/not_equal.svg';
+  static const String equal = '$iconPath/equal.svg';
+  static const String keyboard = '$iconPath/keyboard.svg';
+  static const String bug = '$iconPath/bug.svg';
+  static const String people = '$iconPath/people.svg';
+  static const String search = '$iconPath/search.svg';
+  // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';

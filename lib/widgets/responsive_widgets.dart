@@ -55,7 +55,7 @@ class ScrollableController extends StatelessWidget {
               scrollDirection: scrollDirection,
               child: child,
             )
-            : Container(padding: padding, child: child);
+            : Padding(padding: padding, child: child);
       },
       child: child,
     );
@@ -169,6 +169,25 @@ class WidthLimiter extends StatelessWidget {
       case DeviceType.largeDesktop:
         return largeDesktop ?? desktop ?? laptop ?? tablet ?? mobile;
     }
+  }
+}
+
+class HeightLimiter extends StatelessWidget {
+  const HeightLimiter({
+    super.key,
+    required this.child,
+    required this.maxHeight,
+  });
+
+  final Widget child;
+  final double maxHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      child: child,
+    );
   }
 }
 

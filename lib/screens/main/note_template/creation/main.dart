@@ -1,6 +1,8 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/note_template/creation/lined_rule.dart';
+import 'lined_rule.dart';
+import 'squared_rule.dart';
 import 'vm.dart';
+import 'dotted.dart';
 
 class NoteCreationMain extends StatelessWidget {
   const NoteCreationMain({super.key});
@@ -24,13 +26,14 @@ class NoteCreationMain extends StatelessWidget {
             Expanded(
               child: Stack(
                 children: [
+                  SquaredNoteBackground(),
                   LinedNoteBackground(),
+                  DottedNoteBackground(),
+
                   Container(
                     height: double.infinity,
                     color: color,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     child: ResponsiveHorizontalPadding(
                       child: QuillEditor.basic(
                         controller: vm.richEditorController,

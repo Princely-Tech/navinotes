@@ -26,7 +26,7 @@ class BoardNoteTemplate {
   });
 }
 
- BoardNoteTemplate noteTemplateBlank =  BoardNoteTemplate(
+BoardNoteTemplate noteTemplateBlank = BoardNoteTemplate(
   body: 'Clean slate for writing',
   image: Images.noteTemplateBlank,
   title: 'Blank Page',
@@ -64,30 +64,35 @@ BoardNoteTemplate noteTemplateKanban = BoardNoteTemplate(
   isPopular: true,
   image: Images.noteTemplateKanban,
   title: 'Kanban Board',
+  route: Routes.noteKanban,
 );
 
 BoardNoteTemplate noteTemplateTimeline = BoardNoteTemplate(
   body: 'Chronological planner',
   image: Images.noteTemplateTimeline,
   title: 'Timeline',
+  route: Routes.noteTimeline,
 );
 
 BoardNoteTemplate noteTemplateCompareContrast = BoardNoteTemplate(
   body: 'Side-by-side comparison',
   image: Images.noteTemplateCompareContrast,
   title: 'Compare & Contrast',
+  route: Routes.noteCompareContrast,
 );
 
 BoardNoteTemplate noteTemplateAi = BoardNoteTemplate(
   body: 'AI-generated study cards',
   image: Images.noteTemplateAi,
   title: 'AI-Generated Flashcards',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateFlashcards = BoardNoteTemplate(
   body: 'Question and answer cards',
   image: Images.noteTemplateFlashcards,
   title: 'Flashcards',
+  route: Routes.flashCards,
   isPopular: true,
 );
 
@@ -95,6 +100,7 @@ BoardNoteTemplate noteTemplateLapReport = BoardNoteTemplate(
   body: 'Scientific experiment doc',
   image: Images.noteTemplateLapReport,
   title: 'Lab Report Format',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateApa = BoardNoteTemplate(
@@ -107,22 +113,26 @@ BoardNoteTemplate noteTemplateResearch = BoardNoteTemplate(
   body: 'Humanities formatting',
   image: Images.noteTemplateResearch,
   title: 'MLA Research Format',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateComparative = BoardNoteTemplate(
   body: 'Multi-subject comparison',
   image: Images.noteTemplateComparative,
   title: 'Comparative Analysis',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateCritical = BoardNoteTemplate(
   body: 'Evaluative framework',
   image: Images.noteTemplateCritical,
   title: 'Critical Review',
+  route: '',
 );
 
 BoardNoteTemplate noteTemplateThesis = BoardNoteTemplate(
   body: 'Argument construction',
   image: Images.noteTemplateThesis,
   title: 'Thesis Development',
+  route: '',
 );

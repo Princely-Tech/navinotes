@@ -57,3 +57,4 @@ export 'package:fl_chart/fl_chart.dart';
 export 'dart:math';
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:flutter_quill/flutter_quill.dart';
+export 'package:data_table_2/data_table_2.dart';

@@ -61,7 +61,7 @@ class TextRowSelect extends StatelessWidget {
                         border: Border(
                           bottom:
                               isSelected
-                                  ? BorderSide(color: borderColor)
+                                  ? BorderSide(width: 2, color: borderColor)
                                   : BorderSide.none,
                         ),
                       ),
