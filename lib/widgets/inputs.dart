@@ -26,6 +26,7 @@ class CustomInputField extends StatefulWidget {
     this.constraints,
     this.side,
     this.onChanged,
+    this.onSubmitted,
     this.contentPadding,
     this.focusNode,
   }) : controller = controller ?? TextEditingController();
@@ -56,6 +57,7 @@ class CustomInputField extends StatefulWidget {
   final TextStyle? labelStyle;
   final BoxConstraints? constraints;
   final void Function(String)? onChanged;
+  final void Function(String)? onSubmitted;
   final EdgeInsetsGeometry? contentPadding;
   final FocusNode? focusNode;
   @override
@@ -149,6 +151,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
           ),
         TextFormField(
           onChanged: widget.onChanged,
+          onFieldSubmitted: widget.onSubmitted,
           readOnly: isSelect,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: widget.validator,
@@ -241,6 +244,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
                           title: Text(item),
                           onTap: () {
                             widget.controller.text = item;
+                            widget.onChanged?.call(item);
                             Navigator.pop(context);
                           },
                         ),

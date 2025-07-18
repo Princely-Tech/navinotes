@@ -8,9 +8,11 @@ class SellerUploadVm extends ChangeNotifier {
   // Form fields
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-  final tagsController = TextEditingController();
   final categoryController = TextEditingController();
+  final subCategoryController = TextEditingController();
   List<String> tags = [];
+  List<String> included = [];
+  String targetAudience = "";
 
   var categories = [
     'Science',
@@ -168,14 +170,47 @@ class SellerUploadVm extends ChangeNotifier {
   }
   
   void addTag(String tag) {
-    if (tag.isNotEmpty && !tags.contains(tag)) {
+    if (tag.isEmpty) {
+      tags.add('tag');
+    }else if (!tags.contains(tag)) {
       tags.add(tag);
-      notifyListeners();
     }
+    notifyListeners();
   }
   
   void removeTag(String tag) {
     tags.remove(tag);
+    notifyListeners();
+  }
+
+
+  void includedClicked(String value, bool checked){
+    debugPrint('includedClicked value: $value, checked: $checked');
+    if (checked) {
+      addIncluded(value);
+    } else {
+      removeIncluded(value);
+    }
+  }
+
+  void addIncluded(String value) {
+    debugPrint('addIncluded value: $value');
+    if (value.isEmpty) {
+      included.add(value);
+    }else if (!included.contains(value)) {
+      included.add(value);
+    }
+    notifyListeners();
+  }
+
+  void removeIncluded(String value) {
+    debugPrint('removeIncluded value: $value');
+    included.remove(value);
+    notifyListeners();
+  }
+
+  setTargetAudience(String value) {
+    targetAudience = value;
     notifyListeners();
   }
 }

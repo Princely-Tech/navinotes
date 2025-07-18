@@ -468,6 +468,7 @@ class SellerUploadMain extends StatelessWidget {
             onChanged: (value) {
               debugPrint('category changed: $value');
               vm.loadSubCategories(value);
+              vm.categoryController.text = value;
             },
             controller: vm.categoryController,
             label: 'Category',
@@ -475,8 +476,9 @@ class SellerUploadMain extends StatelessWidget {
             required: true,
             selectItems: vm.categories,
             labelStyle: labelStyle,
-          ),
+          ),          
           CustomInputField(
+            controller: vm.subCategoryController,
             label: 'Sub-Category',
             hintText: 'Select a sub-category',
             required: true,
@@ -485,12 +487,14 @@ class SellerUploadMain extends StatelessWidget {
           ),
           _inputWithFooter(
             child: CustomInputField(
-              controller: vm.tagsController,
+              onSubmitted: (value) {
+                vm.addTag(value);
+              },
               labelRight: Expanded(child: _alertIWidget(title: 'Tags')),
-              hintText: 'Add tags separated by commas',
+              hintText: 'Add tags. Enter to add.',
               labelStyle: labelStyle,
             ),
-            footerWidget: Row(
+            footerWidget: (vm.tags.isEmpty)? Row(
               spacing: 10,
               children: [
                 Text(
@@ -513,6 +517,9 @@ class SellerUploadMain extends StatelessWidget {
                                   str,
                                   color: AppTheme.lightAsh,
                                   textColor: AppTheme.darkSlateGray,
+                                  onTap: () {
+                                    vm.addTag(str);
+                                  },
                                 ),
                               )
                               .toList(),
@@ -520,7 +527,39 @@ class SellerUploadMain extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+            ) : Row(
+                      spacing: 10,
+                      children: [
+                        Text(
+                          'Tags:',
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.stormGray,
+                            fontSize: 12.0,
+                            height: 1.0,
+                          ),
+                        ),
+                        Expanded(
+                          child: ScrollableController(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              spacing: 12,
+                              children:
+                                  vm.tags.map(
+                                        (str) => CustomTag(
+                                          str,
+                                          color: AppTheme.lightAsh,
+                                          textColor: AppTheme.darkSlateGray,
+                                          onTap: () {
+                                            vm.removeTag(str);
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
           ),
           _inputWithFooter(
             child: CustomInputField(
@@ -545,14 +584,17 @@ class SellerUploadMain extends StatelessWidget {
                   'Study Guides',
                   'Other',
                 ],
+                onChanged: (value, checked) {
+                  vm.includedClicked(value, checked);
+                },
               ),
-              _checkSelectSection(
+              _radioSelectSection(
                 title: 'Target Audience',
                 items: ['Beginners', 'Intermediate', 'Advanced', 'All Levels'],
-                isCircle: true,
               ),
             ],
           ),
+
         ],
       ),
     );
@@ -562,6 +604,7 @@ class SellerUploadMain extends StatelessWidget {
     required String title,
     required List<String> items,
     bool isCircle = false,
+    Function(String, bool)? onChanged,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -572,11 +615,58 @@ class SellerUploadMain extends StatelessWidget {
           (str) => CustomCheckBoxItem(
             title: str,
             shape: isCircle ? CircleBorder() : null,
+            onChanged: (value) {
+              debugPrint('value: $value');
+              onChanged?.call(str, value);
+            },
           ),
         ),
       ],
     );
   }
+
+Widget _radioSelectSection({
+    required String title,
+    required List<String> items,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Header6(title: title, required: true, style: labelStyle),
+        ...items.map(
+          (str) => _radio(
+            title: str,
+            groupValue: vm.targetAudience,
+            onChanged: (value) {
+              vm.setTargetAudience(value!);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+Widget _radio({
+    required String title,
+    required String groupValue,
+    required Function(String?) onChanged,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Radio<String>(
+          value: title,
+          groupValue: groupValue,
+          onChanged: onChanged,
+          activeColor: AppTheme.royalBlue,
+        ),
+        GestureDetector(
+          onTap: () => onChanged(title),
+          child: Text(title, style: TextStyle(color: Colors.black)),
+        ),
+      ],
+    );
+  }
+
 
   Widget _alertIWidget({
     required String title,

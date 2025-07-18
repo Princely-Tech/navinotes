@@ -205,7 +205,8 @@ class CustomTag extends StatelessWidget {
     required this.textColor,
     this.borderRadius,
     this.prefix,
-  });
+    this.onTap,
+    });
 
   final String data;
   final Color color;
@@ -213,6 +214,7 @@ class CustomTag extends StatelessWidget {
   final BorderRadiusGeometry? borderRadius;
   final Widget? prefix;
 
+final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -236,9 +238,12 @@ class CustomTag extends StatelessWidget {
   }
 
   Widget _text() {
-    return Text(
-      data,
-      style: AppTheme.text.copyWith(color: textColor, fontSize: 12.0),
+    return InkWell(
+      onTap: onTap,
+      child: Text(
+        data,
+        style: AppTheme.text.copyWith(color: textColor, fontSize: 12.0),
+      ),
     );
   }
 }
@@ -703,21 +708,23 @@ class AuthHeader extends StatelessWidget {
 }
 
 class CustomCheckBoxItem extends StatefulWidget {
-  const CustomCheckBoxItem({super.key, this.title, this.child, this.shape});
+  const CustomCheckBoxItem({super.key, this.title, this.child, this.shape, this.onChanged});
   final String? title;
   final Widget? child;
   final OutlinedBorder? shape;
-  @override
+  final void Function(bool)? onChanged;
+    @override
   State<CustomCheckBoxItem> createState() => _CustomCheckBoxItemState();
 }
 
 class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
   bool? _value = false;
 
-  updateValue(bool? value) {
+  updateValue(bool value) {
     setState(() {
-      _value = value!;
+      _value = value;
     });
+    widget.onChanged?.call(value);
   }
 
   @override
@@ -729,7 +736,7 @@ class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
         children: [
           Checkbox(
             value: _value,
-            onChanged: updateValue,
+            onChanged: (value) => updateValue(value!),
             activeColor: AppTheme.royalBlue,
             side: BorderSide(color: AppTheme.black, width: 1),
             shape: widget.shape,
