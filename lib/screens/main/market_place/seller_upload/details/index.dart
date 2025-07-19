@@ -1,4 +1,6 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/market_place/seller_upload/details/preview.dart';
+import 'package:navinotes/screens/main/market_place/seller_upload/details/price.dart';
 import 'footer.dart';
 import 'main.dart';
 import 'appbar.dart';
@@ -43,7 +45,7 @@ class SellerUploadScreen extends StatelessWidget {
         body: Column(
           children: [
             SellerUploadAppBar(),
-            Expanded(child: SellerUploadMain(vm: vm)),
+            Expanded(child: SellerUploadPreview(vm: vm)),
             SellerUploadFooter(),
           ],
         ),

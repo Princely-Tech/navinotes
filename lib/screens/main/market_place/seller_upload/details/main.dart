@@ -178,51 +178,33 @@ class SellerUploadMain extends StatelessWidget {
 
   Widget _submitSection() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 30,
       children: [
-        if (vm.validationError != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: Text(
-              vm.validationError!,
-              style: AppTheme.text.copyWith(
-                color: AppTheme.coralRed,
-                fontSize: 14.0,
-              ),
+        const Divider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            AppButton(
+              onTap: NavigationHelper.pop,
+              text: 'Back to Content Selection',
+              textColor: AppTheme.darkSlateGray,
+              color: AppTheme.lightAsh,
+              mainAxisSize: MainAxisSize.min,
+              prefix: Icon(Icons.arrow_back, color: AppTheme.darkSlateGray),
             ),
-          ),
-        Container(
-          padding: EdgeInsets.only(top: 20),
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: AppTheme.lightGray)),
-          ),
-          child: Row(
-            spacing: 10,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              AppButton(
-                onTap: NavigationHelper.pop,
-                text: 'Back to Content Selection',
-                textColor: AppTheme.darkSlateGray,
-                color: AppTheme.lightAsh,
-                mainAxisSize: MainAxisSize.min,
-                wrapWithFlexible: true,
-                prefix: Icon(Icons.arrow_back, color: AppTheme.darkSlateGray),
-              ),
-              AppButton(
-                onTap: () {
-                  if (vm.validateForm()) {
-                    // TODO: Navigate to Pricing & Terms screen
-                    debugPrint('Form is valid, proceed to next step');
-                  }
-                },
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                text: 'Continue to Pricing & Terms',
-                suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
-              ),
-            ],
-          ),
+            AppButton(
+              onTap: () {
+                 if (vm.validateForm()) {
+                  // TODO: Navigate to Pricing & Terms screen
+                  debugPrint('Form is valid, proceed to next step');
+                }
+              },
+              wrapWithFlexible: true,
+              mainAxisSize: MainAxisSize.min,
+              text: 'Continue to Pricing & Terms',
+              suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
+            ),
+          ],
         ),
       ],
     );

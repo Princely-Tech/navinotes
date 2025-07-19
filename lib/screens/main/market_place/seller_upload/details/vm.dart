@@ -39,6 +39,16 @@ class SellerUploadVm extends ChangeNotifier {
   String? _validationError;
   String? get validationError => _validationError;
 
+  // Price screen controllers
+  final priceFormKey = GlobalKey<FormState>();
+  final priceController = TextEditingController();
+  final customLicenseController = TextEditingController();
+  String selectedCurrency = 'NGN';
+  String selectedLicense = 'Standard';
+  bool agreeToTerms = false;
+  bool agreeToRefundPolicy = false;
+  bool agreeToCopyrightPolicy = false;
+
   void loadSubCategories(String category) {
     debugPrint('loadSubCategories category: $category');
     if (category == '') {
@@ -318,5 +328,51 @@ class SellerUploadVm extends ChangeNotifier {
   setTargetAudience(String value) {
     targetAudience = value;
     notifyListeners();
+  }
+
+  // Price screen methods
+  void setCurrency(String currency) {
+    selectedCurrency = currency;
+    notifyListeners();
+  }
+
+  void setLicenseType(String license) {
+    selectedLicense = license;
+    notifyListeners();
+  }
+
+  void setAgreeToTerms(bool value) {
+    agreeToTerms = value;
+    notifyListeners();
+  }
+
+  void setAgreeToRefundPolicy(bool value) {
+    agreeToRefundPolicy = value;
+    notifyListeners();
+  }
+
+  void setAgreeToCopyrightPolicy(bool value) {
+    agreeToCopyrightPolicy = value;
+    notifyListeners();
+  }
+
+  bool validatePriceForm() {
+    if (priceFormKey.currentState?.validate() != true) {
+      return false;
+    }
+    
+    if (!agreeToTerms || !agreeToRefundPolicy || !agreeToCopyrightPolicy) {
+      _validationError = 'Please agree to all terms and conditions';
+      return false;
+    }
+    
+    return true;
+  }
+
+  @override
+  void dispose() {
+    priceController.dispose();
+    customLicenseController.dispose();
+    super.dispose();
   }
 }
