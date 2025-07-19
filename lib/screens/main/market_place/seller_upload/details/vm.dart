@@ -34,6 +34,11 @@ class SellerUploadVm extends ChangeNotifier {
 
   var subCategories = <String>[];
 
+  bool _isFormValid = false;
+  bool get isFormValid => _isFormValid;
+  String? _validationError;
+  String? get validationError => _validationError;
+
   void loadSubCategories(String category) {
     debugPrint('loadSubCategories category: $category');
     if (category == '') {
@@ -151,13 +156,68 @@ class SellerUploadVm extends ChangeNotifier {
   }
   
   bool validateForm() {
-    if (formKey.currentState?.validate() ?? false) {
-      formKey.currentState?.save();
-      return true;
+    if (titleController.text.isEmpty) {
+      _validationError = 'Product title is required';
+      _isFormValid = false;
+      notifyListeners();
+      return false;
     }
-    return false;
+
+    if (categoryController.text.isEmpty) {
+      _validationError = 'Category is required';
+      _isFormValid = false;
+      notifyListeners();
+      return false;
+    }
+
+    if (subCategoryController.text.isEmpty) {
+      _validationError = 'Sub-category is required';
+      _isFormValid = false;
+      notifyListeners();
+      return false;
+    }
+
+    if (coverImage == null) {
+      _validationError = 'Cover image is required';
+      _isFormValid = false;
+      notifyListeners();
+      return false;
+    }
+
+    if (previewImages.isEmpty) {
+      _validationError = 'At least one preview image is required';
+      _isFormValid = false;
+      notifyListeners();
+      return false;
+    }
+
+    if (descriptionController.text.isEmpty) {
+      _validationError = 'Description is required';
+      _isFormValid = false;
+      notifyListeners();
+      return false;
+    }
+
+    if (targetAudience.isEmpty) {
+      _validationError = 'Please select target audience';
+      _isFormValid = false;
+      notifyListeners();
+      return false;
+    }
+
+     if (included.isEmpty) {
+      _validationError = 'Please select what\'s included';
+      _isFormValid = false;
+      notifyListeners();
+      return false;
+    }
+
+    _validationError = null;
+    _isFormValid = true;
+    notifyListeners();
+    return true;
   }
-  
+
   // Validation methods
   String? validateRequired(String? value, String fieldName) {
     if (value == null || value.isEmpty) {

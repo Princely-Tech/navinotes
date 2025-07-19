@@ -177,33 +177,54 @@ class SellerUploadMain extends StatelessWidget {
   }
 
   Widget _submitSection() {
-    return Container(
-      padding: EdgeInsets.only(top: 20),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: AppTheme.lightGray)),
-      ),
-      child: Row(
-        spacing: 10,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          AppButton(
-            onTap: NavigationHelper.pop,
-            text: 'Back to Content Selection',
-            textColor: AppTheme.darkSlateGray,
-            color: AppTheme.lightAsh,
-            mainAxisSize: MainAxisSize.min,
-            wrapWithFlexible: true,
-            prefix: Icon(Icons.arrow_back, color: AppTheme.darkSlateGray),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (vm.validationError != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Text(
+              vm.validationError!,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.coralRed,
+                fontSize: 14.0,
+              ),
+            ),
           ),
-          AppButton(
-            onTap: () {},
-            wrapWithFlexible: true,
-            mainAxisSize: MainAxisSize.min,
-            text: 'Continue to Pricing & Terms',
-            suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
+        Container(
+          padding: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: AppTheme.lightGray)),
           ),
-        ],
-      ),
+          child: Row(
+            spacing: 10,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppButton(
+                onTap: NavigationHelper.pop,
+                text: 'Back to Content Selection',
+                textColor: AppTheme.darkSlateGray,
+                color: AppTheme.lightAsh,
+                mainAxisSize: MainAxisSize.min,
+                wrapWithFlexible: true,
+                prefix: Icon(Icons.arrow_back, color: AppTheme.darkSlateGray),
+              ),
+              AppButton(
+                onTap: () {
+                  if (vm.validateForm()) {
+                    // TODO: Navigate to Pricing & Terms screen
+                    debugPrint('Form is valid, proceed to next step');
+                  }
+                },
+                wrapWithFlexible: true,
+                mainAxisSize: MainAxisSize.min,
+                text: 'Continue to Pricing & Terms',
+                suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -413,6 +434,11 @@ class SellerUploadMain extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppTheme.lightAsh,
                     borderRadius: BorderRadius.circular(8),
+                    image: vm.coverImage != null
+                        ? DecorationImage(
+                            image: FileImage(vm.coverImage!),
+                            fit: BoxFit.cover)
+                        : null,
                   ),
                 ),
                 Expanded(
@@ -642,6 +668,7 @@ class SellerUploadMain extends StatelessWidget {
           ),
           _inputWithFooter(
             child: CustomInputField(
+              required: true,
               controller: vm.descriptionController,
               label: 'Detailed Description',
               hintText:
