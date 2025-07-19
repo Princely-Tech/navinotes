@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SellerUploadVm extends ChangeNotifier {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -13,6 +14,7 @@ class SellerUploadVm extends ChangeNotifier {
   List<String> tags = [];
   List<String> included = [];
   String targetAudience = "";
+  File? coverImage;
 
   var categories = [
     'Science',
@@ -183,6 +185,23 @@ class SellerUploadVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> pickCoverImage() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+      
+      if (image != null) {
+        coverImage = File(image.path);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+      // You might want to show an error message to the user here
+    }
+  }
 
   void includedClicked(String value, bool checked){
     debugPrint('includedClicked value: $value, checked: $checked');

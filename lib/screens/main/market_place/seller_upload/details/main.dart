@@ -218,6 +218,133 @@ class SellerUploadMain extends StatelessWidget {
     );
   }
 
+  Widget _coverImage() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 5,
+      children: [
+        Header6(title: 'Cover Image', required: true, style: labelStyle),
+        CustomCard(
+          padding: EdgeInsets.all(15),
+          dottedDecoration: DottedDecoration(),
+          child: Column(
+            spacing: 10,
+            children: [
+              GestureDetector(
+                onTap: () => vm.pickCoverImage(),
+                child: _imagePlusContainer(
+                  height: 150, 
+                  isExpandable: false,
+                  image: vm.coverImage,
+                ),
+              ),
+              AppButton(
+                onTap: () => vm.pickCoverImage(),
+                text: 'Upload Cover Image',
+                mainAxisSize: MainAxisSize.min,
+                prefix: SVGImagePlaceHolder(
+                  imagePath: Images.upload,
+                  size: 16,
+                  color: AppTheme.white,
+                ),
+                style: AppTheme.text.copyWith(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+              ),
+              Text(
+                'Recommended size: 1200 x 800px, PNG or JPG',
+                textAlign: TextAlign.center,
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.steelMist,
+                  fontSize: 12.0,
+                  height: 1.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _imagePlusContainer({
+    double? height, 
+    bool isExpandable = true,
+    File? image,
+  }) {
+    return ExpandableController(
+      mobile: isExpandable,
+      child: GestureDetector(
+        onTap: () {
+          if (image != null) {
+            vm.pickCoverImage();
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppTheme.lightAsh,
+            borderRadius: BorderRadius.circular(8),
+            image: image != null
+                ? DecorationImage(
+                    image: FileImage(image),
+                    fit: BoxFit.cover,
+                  )
+                : null,
+          ),
+          height: height,
+          width: double.infinity,
+          child: image == null
+              ? Center(
+                  child: Icon(Icons.add, color: AppTheme.blueGray, size: 30),
+                )
+              : null,
+        ),
+      ),
+    );
+  }
+
+  Widget _previewImages() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 5,
+      children: [
+        _alertIWidget(title: 'Preview Images'),
+        CustomCard(
+          padding: EdgeInsets.all(15),
+          dottedDecoration: DottedDecoration(),
+          child: Column(
+            spacing: 10,
+            children: [
+              Row(
+                spacing: 10,
+                children: [
+                  _imagePlusContainer(height: 134),
+                  _imagePlusContainer(height: 134),
+                  _imagePlusContainer(height: 134),
+                ],
+              ),
+              AppButton(
+                onTap: () {},
+                text: 'Upload Preview Image',
+                mainAxisSize: MainAxisSize.min,
+                prefix: SVGImagePlaceHolder(
+                  imagePath: Images.upload,
+                  size: 16,
+                  color: AppTheme.white,
+                ),
+                style: AppTheme.text.copyWith(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _previewSample() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,107 +446,6 @@ class SellerUploadMain extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _previewImages() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 5,
-      children: [
-        _alertIWidget(title: 'Preview Images'),
-        CustomCard(
-          padding: EdgeInsets.all(15),
-          dottedDecoration: DottedDecoration(),
-          child: Column(
-            spacing: 10,
-            children: [
-              Row(
-                spacing: 10,
-                children: [
-                  _imagePlusContainer(height: 134),
-                  _imagePlusContainer(height: 134),
-                  _imagePlusContainer(height: 134),
-                ],
-              ),
-              AppButton(
-                onTap: () {},
-                text: 'Upload Preview Image',
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(
-                  imagePath: Images.upload,
-                  size: 16,
-                  color: AppTheme.white,
-                ),
-                style: AppTheme.text.copyWith(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _coverImage() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 5,
-      children: [
-        Header6(title: 'Cover Image', required: true, style: labelStyle),
-        CustomCard(
-          padding: EdgeInsets.all(15),
-          dottedDecoration: DottedDecoration(),
-          child: Column(
-            spacing: 10,
-            children: [
-              _imagePlusContainer(height: 150, isExpandable: false),
-              AppButton(
-                onTap: () {},
-                text: 'Upload Cover Image',
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(
-                  imagePath: Images.upload,
-                  size: 16,
-                  color: AppTheme.white,
-                ),
-                style: AppTheme.text.copyWith(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
-              ),
-              Text(
-                'Recommended size: 1200 x 800px, PNG or JPG',
-                textAlign: TextAlign.center,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.steelMist,
-                  fontSize: 12.0,
-                  height: 1.0,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _imagePlusContainer({double? height, bool isExpandable = true}) {
-    return ExpandableController(
-      mobile: isExpandable,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.lightAsh,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        height: height,
-        width: double.infinity,
-        child: Center(
-          child: Icon(Icons.add, color: AppTheme.blueGray, size: 30),
-        ),
-      ),
     );
   }
 
