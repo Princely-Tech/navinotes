@@ -13,10 +13,12 @@ bool getMenuVisible(DeviceType deviceType) {
       deviceType == DeviceType.tablet ||
       deviceType == DeviceType.laptop;
 }
+
 T getRandomListElement<T>(List<T> items) {
   final random = Random();
   return items[random.nextInt(items.length)];
 }
+
 double calculateTextWidth(String text, TextStyle style) {
   final TextPainter textPainter = TextPainter(
     text: TextSpan(text: text, style: style),
@@ -25,4 +27,78 @@ double calculateTextWidth(String text, TextStyle style) {
   )..layout();
 
   return textPainter.width;
+}
+
+QuillSimpleToolbarConfig buildCustomToolbarConfig({
+  bool showBoldButton = false,
+  bool showItalicButton = false,
+  bool showLink = false,
+  bool showListBullets = false,
+  bool showFontFamily = false,
+  bool showFontSize = false,
+  bool showSmallButton = false,
+  bool showUnderLineButton = false,
+  bool showLineHeightButton = false,
+  bool showStrikeThrough = false,
+  bool showInlineCode = false,
+  bool showColorButton = false,
+  bool showBackgroundColorButton = false,
+  bool showClearFormat = false,
+  bool showAlignmentButtons = false,
+  bool showLeftAlignment = false,
+  bool showCenterAlignment = false,
+  bool showRightAlignment = false,
+  bool showJustifyAlignment = false,
+  bool showHeaderStyle = false,
+  bool showListNumbers = false,
+  bool showListCheck = false,
+  bool showCodeBlock = false,
+  bool showQuote = false,
+  bool showIndent = false,
+  bool showUndo = false,
+  bool showRedo = false,
+  bool showDirection = false,
+  bool showSearchButton = false,
+  bool showSubscript = false,
+  bool showSuperscript = false,
+  bool showClipboardCut = false,
+  bool showClipboardCopy = false,
+  bool showClipboardPaste = false,
+}) {
+  return QuillSimpleToolbarConfig(
+    showBoldButton: showBoldButton,
+    showItalicButton: showItalicButton,
+    showLink: showLink,
+    showListBullets: showListBullets,
+    showFontFamily: showFontFamily,
+    showFontSize: showFontSize,
+    showSmallButton: showSmallButton,
+    showUnderLineButton: showUnderLineButton,
+    showLineHeightButton: showLineHeightButton,
+    showStrikeThrough: showStrikeThrough,
+    showInlineCode: showInlineCode,
+    showColorButton: showColorButton,
+    showBackgroundColorButton: showBackgroundColorButton,
+    showClearFormat: showClearFormat,
+    showAlignmentButtons: showAlignmentButtons,
+    showLeftAlignment: showLeftAlignment,
+    showCenterAlignment: showCenterAlignment,
+    showRightAlignment: showRightAlignment,
+    showJustifyAlignment: showJustifyAlignment,
+    showHeaderStyle: showHeaderStyle,
+    showListNumbers: showListNumbers,
+    showListCheck: showListCheck,
+    showCodeBlock: showCodeBlock,
+    showQuote: showQuote,
+    showIndent: showIndent,
+    showUndo: showUndo,
+    showRedo: showRedo,
+    showDirection: showDirection,
+    showSearchButton: showSearchButton,
+    showSubscript: showSubscript,
+    showSuperscript: showSuperscript,
+    showClipboardCut: showClipboardCut,
+    showClipboardCopy: showClipboardCopy,
+    showClipboardPaste: showClipboardPaste,
+  );
 }

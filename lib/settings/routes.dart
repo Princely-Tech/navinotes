@@ -18,6 +18,7 @@ import 'package:navinotes/screens/main/market_place/seller_upload/index.dart';
 import 'package:navinotes/screens/main/note_template/compare_contrast/index.dart';
 import 'package:navinotes/screens/main/note_template/creation/index.dart';
 import 'package:navinotes/screens/main/note_template/kanban/index.dart';
+import 'package:navinotes/screens/main/note_template/lab_report/index.dart';
 import 'package:navinotes/screens/main/note_template/timeline/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
@@ -62,11 +63,11 @@ Map<String, WidgetBuilder> routes = {
   Routes.sellerUpload: (context) => SellerUploadScreen(),
   Routes.myPurchases: (context) => MyPurchasesScreen(),
   Routes.flashCards: (context) => FlashCardsScreen(),
-  Routes.noteCreation:
-      (context) => NoteCreationScreen(),
+  Routes.noteCreation: (context) => NoteCreationScreen(),
   Routes.noteCompareContrast: (context) => NoteCompareContrastScreen(),
   Routes.noteTimeline: (context) => NoteTimelineScreen(),
   Routes.noteKanban: (context) => NoteKanbanScreen(),
+  Routes.noteLabReport: (context) => NoteLabReportScreen(),
 };
 
 class Routes {
@@ -117,7 +118,7 @@ class Routes {
   static const noteCompareContrast = 'noteCompareContrast';
   static const noteTimeline = 'noteTimeline';
   static const noteKanban = 'noteKanban';
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+  static const noteLabReport = 'noteLabReport';
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';

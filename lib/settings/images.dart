@@ -166,7 +166,11 @@ class Images {
   static const String bug = '$iconPath/bug.svg';
   static const String people = '$iconPath/people.svg';
   static const String search = '$iconPath/search.svg';
-  // static const String bulb = '$iconPath/bulb.svg';
+  static const String comicalFlask = '$iconPath/comical_flask.svg';
+  static const String flaskTestTube = '$iconPath/flask_test_tube.svg';
+  static const String pencil2 = '$iconPath/pencil2.svg';
+  static const String grid2 = '$iconPath/grid2.svg';
+  static const String eye2 = '$iconPath/eye2.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
