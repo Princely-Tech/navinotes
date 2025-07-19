@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:uuid/uuid.dart';
 
 bool isNotNull(dynamic value) => value != null;
 
@@ -27,6 +28,10 @@ double calculateTextWidth(String text, TextStyle style) {
   )..layout();
 
   return textPainter.width;
+}
+
+generateGUID(int userId) {
+  return "0${userId}0_${Uuid().v4()}";
 }
 
 QuillSimpleToolbarConfig buildCustomToolbarConfig({

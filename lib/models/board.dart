@@ -1,3 +1,4 @@
+import 'package:navinotes/models/content.dart';
 import 'package:navinotes/packages.dart';
 
 class Board {
@@ -47,9 +48,8 @@ class Board {
     this.id = id;
   }
 
-
   String getImage() {
-   return getBoardTypeImage();
+    return getBoardTypeImage();
   }
 
   String getBoardTypeImage() {
@@ -105,6 +105,35 @@ class Board {
     updatedAt: map['updated_at'],
     syncedAt: map['synced_at'],
   );
+
+  // Cache for board contents
+  List<Content>? _cachedContents;
+  bool _hasFetchedContents = false;
+
+  /// Gets all contents associated with this board with caching.
+  /// Fetches from the database only if not already cached.
+  Future<List<Content>> getContents({bool forceRefresh = false}) async {
+    if (_hasFetchedContents && _cachedContents != null && !forceRefresh) {
+      return _cachedContents!;
+    }
+
+    final db = await DatabaseHelper.instance.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'contents',
+      where: 'board_id = ?',
+      whereArgs: [id],
+    );
+
+    _cachedContents = List.generate(maps.length, (i) => Content.fromMap(maps[i]));
+    _hasFetchedContents = true;
+    return _cachedContents!;
+  }
+
+  /// Clears the cached contents, forcing a fresh fetch on next getContents() call
+  void clearContentsCache() {
+    _cachedContents = null;
+    _hasFetchedContents = false;
+  }
 }
 
 // create enum to hold the board types names
@@ -206,90 +235,3 @@ List<BoardType> boardTypes = [
   // ), //TODO uncoment this
 ];
 
-class Content {
-  final int? id;
-  final String type; // note, mindmap, syllabus, etc.
-  final Map<String, dynamic> metaData; // JSON as Map
-  final int boardId;
-  final String? tags; // Comma-separated tags
-  final String? content; // Large text
-  final String? file; // File name or path
-  final int createdAt; // Unix timestamp
-  final int updatedAt; // Unix timestamp
-  final int? syncedAt; // Unix timestamp, nullable
-
-  Content({
-    this.id,
-    required this.type,
-    required this.metaData,
-    required this.boardId,
-    this.tags,
-    this.content,
-    this.file,
-    required this.createdAt,
-    required this.updatedAt,
-    this.syncedAt,
-  });
-
-  Map<String, dynamic> toMap() => {
-    'id': id,
-    'type': type,
-    'meta_data': jsonEncode(metaData),
-    'board_id': boardId,
-    'tags': tags,
-    'content': content,
-    'file': file,
-    'created_at': createdAt,
-    'updated_at': updatedAt,
-    'synced_at': syncedAt,
-  };
-
-  factory Content.fromMap(Map<String, dynamic> map) => Content(
-    id: map['id'],
-    type: map['type'],
-    metaData: jsonDecode(map['meta_data']),
-    boardId: map['board_id'],
-    tags: map['tags'],
-    content: map['content'],
-    file: map['file'],
-    createdAt: map['created_at'],
-    updatedAt: map['updated_at'],
-    syncedAt: map['synced_at'],
-  );
-}
-
-class Tag {
-  final int? id;
-  final int userId;
-  final String name;
-  final int createdAt; // Unix timestamp
-  final int updatedAt; // Unix timestamp
-  final int? syncedAt; // Nullable
-
-  Tag({
-    this.id,
-    required this.userId,
-    required this.name,
-    required this.createdAt,
-    required this.updatedAt,
-    this.syncedAt,
-  });
-
-  Map<String, dynamic> toMap() => {
-    'id': id,
-    'user_id': userId,
-    'name': name,
-    'created_at': createdAt,
-    'updated_at': updatedAt,
-    'synced_at': syncedAt,
-  };
-
-  factory Tag.fromMap(Map<String, dynamic> map) => Tag(
-    id: map['id'],
-    userId: map['user_id'],
-    name: map['name'],
-    createdAt: map['created_at'],
-    updatedAt: map['updated_at'],
-    syncedAt: map['synced_at'],
-  );
-}

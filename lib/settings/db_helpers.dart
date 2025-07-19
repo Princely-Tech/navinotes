@@ -1,3 +1,5 @@
+import 'package:navinotes/models/content.dart';
+import 'package:navinotes/models/tag.dart';
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
@@ -45,6 +47,7 @@ static const int _databaseVersion = 2; // Increment this number
 
     await db.execute('''
     CREATE TABLE contents (
+      guid TEXT,
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       type TEXT,
       meta_data TEXT,
@@ -83,6 +86,23 @@ Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
       await db.update('boards', {'guid': guid}, where: 'id = ?', whereArgs: [board['id']]);
     }
   }
+
+    if (oldVersion < 3) {
+      // Add the guid column to the boards table
+      await db.execute('ALTER TABLE contents ADD COLUMN guid TEXT');
+
+      // get all boards with null guid and update it
+      final boards = await db.query('contents', where: 'guid IS NULL');
+      for (var board in boards) {
+        final guid = "0${board['user_id']}0_${Uuid().v4()}";
+        await db.update(
+          'contents',
+          {'guid': guid},
+          where: 'id = ?',
+          whereArgs: [board['id']],
+        );
+      }
+    }
 }
 
 
