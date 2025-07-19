@@ -15,6 +15,8 @@ class SellerUploadVm extends ChangeNotifier {
   List<String> included = [];
   String targetAudience = "";
   File? coverImage;
+  List<File> previewImages = [];
+  static const int maxPreviewImages = 3;
 
   var categories = [
     'Science',
@@ -198,8 +200,33 @@ class SellerUploadVm extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Error picking image: $e');
-      // You might want to show an error message to the user here
+      debugPrint('Error picking cover image: $e');
+    }
+  }
+
+  Future<void> addPreviewImage() async {
+    try {
+      if (previewImages.length >= maxPreviewImages) return;
+      
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+      
+      if (image != null) {
+        previewImages.add(File(image.path));
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error picking preview image: $e');
+    }
+  }
+
+  void removePreviewImage(int index) {
+    if (index >= 0 && index < previewImages.length) {
+      previewImages.removeAt(index);
+      notifyListeners();
     }
   }
 

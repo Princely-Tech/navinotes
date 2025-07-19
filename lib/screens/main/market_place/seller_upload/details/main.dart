@@ -319,28 +319,77 @@ class SellerUploadMain extends StatelessWidget {
               Row(
                 spacing: 10,
                 children: [
-                  _imagePlusContainer(height: 134),
-                  _imagePlusContainer(height: 134),
-                  _imagePlusContainer(height: 134),
+                  for (int i = 0; i < 3; i++)
+                    _previewImageItem(
+                      index: i,
+                      image: i < vm.previewImages.length ? vm.previewImages[i] : null,
+                    ),
                 ],
               ),
-              AppButton(
-                onTap: () {},
-                text: 'Upload Preview Image',
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(
-                  imagePath: Images.upload,
-                  size: 16,
-                  color: AppTheme.white,
+              if (vm.previewImages.length < 3)
+                AppButton(
+                  onTap: vm.addPreviewImage,
+                  text: 'Upload Preview Image',
+                  mainAxisSize: MainAxisSize.min,
+                  prefix: SVGImagePlaceHolder(
+                    imagePath: Images.upload,
+                    size: 16,
+                    color: AppTheme.white,
+                  ),
+                  style: AppTheme.text.copyWith(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                  ),
                 ),
-                style: AppTheme.text.copyWith(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
-              ),
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _previewImageItem({required int index, File? image}) {
+    return Stack(
+      children: [
+        Container(
+          width: 134,
+          height: 134,
+          decoration: BoxDecoration(
+            color: image == null ? AppTheme.lightAsh : null,
+            borderRadius: BorderRadius.circular(8),
+            image: image != null
+                ? DecorationImage(
+                    image: FileImage(image),
+                    fit: BoxFit.cover,
+                  )
+                : null,
+          ),
+          child: image == null
+              ? Center(
+                  child: Icon(Icons.add, color: AppTheme.blueGray, size: 30),
+                )
+              : null,
+        ),
+        if (image != null)
+          Positioned(
+            top: 5,
+            right: 5,
+            child: GestureDetector(
+              onTap: () => vm.removePreviewImage(index),
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -557,10 +606,10 @@ class SellerUploadMain extends StatelessWidget {
                       spacing: 10,
                       children: [
                         Text(
-                          'Tags:',
+                          'Added:',
                           style: AppTheme.text.copyWith(
                             color: AppTheme.stormGray,
-                            fontSize: 12.0,
+                            fontSize: 14.0,
                             height: 1.0,
                           ),
                         ),
@@ -573,8 +622,12 @@ class SellerUploadMain extends StatelessWidget {
                                   vm.tags.map(
                                         (str) => CustomTag(
                                           str,
+                                          color: AppTheme.abyssTeal,
+                                          textColor: AppTheme.lightAsh,
+                                          prefix: Icon(Icons.close,
+                                          size: 12,
                                           color: AppTheme.lightAsh,
-                                          textColor: AppTheme.darkSlateGray,
+                                          ),
                                           onTap: () {
                                             vm.removeTag(str);
                                           },
