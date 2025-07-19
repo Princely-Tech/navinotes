@@ -7,7 +7,7 @@ void main() async {
   final sessionManager = SessionManager();
   await sessionManager.init();
 
-  // await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
 
   runApp(
     CustomProviders(
@@ -28,21 +28,5 @@ void main() async {
         navigatorKey: NavigationHelper.navigatorKey,
       ),
     ),
-    // MultiProvider(
-    //   providers: [
-    //     ChangeNotifierProvider(create: (_) => sessionManager),
-    //     // Add other providers here
-    //   ],
-    //   child: const MyApp(),
-    // ),
   );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
 }

@@ -100,7 +100,7 @@ BoardNoteTemplate noteTemplateLapReport = BoardNoteTemplate(
   body: 'Scientific experiment doc',
   image: Images.noteTemplateLapReport,
   title: 'Lab Report Format',
-  route: '',
+  route: Routes.noteLabReport,
 );
 
 BoardNoteTemplate noteTemplateApa = BoardNoteTemplate(

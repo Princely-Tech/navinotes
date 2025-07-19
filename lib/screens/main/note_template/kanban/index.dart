@@ -4,6 +4,8 @@ import 'vm.dart';
 class NoteKanbanScreen extends StatelessWidget {
   NoteKanbanScreen({super.key});
 
+  //TODO complete and match design
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -59,7 +61,7 @@ class NoteKanbanScreen extends StatelessWidget {
                       _buttonsSection(),
                       Expanded(
                         child: Container(
-                          color: Colors.black,
+                          color: const Color(0xFFF3F4F6),
                           child: ScrollableController(
                             largeDesktop: false,
                             mobilePadding: EdgeInsets.all(15),
@@ -186,9 +188,9 @@ class NoteKanbanScreen extends StatelessWidget {
               Expanded(
                 child: Container(
                   padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.only(top: 10),
+                  margin: EdgeInsets.only(top: 5),
                   decoration: BoxDecoration(
-                    color: AppTheme.lightAsh,
+                    color: AppTheme.lightGray.withAlpha(150),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Column(
@@ -210,6 +212,9 @@ class NoteKanbanScreen extends StatelessWidget {
                         onTap: () {},
                         child: CustomCard(
                           dottedDecoration: DottedDecoration(),
+                          decoration: BoxDecoration(
+                            color: AppTheme.transparent,
+                          ),
                           padding: EdgeInsets.symmetric(
                             vertical: 10,
                             horizontal: 15,
@@ -251,15 +256,41 @@ class NoteKanbanScreen extends StatelessWidget {
   }
 
   Widget _taskItem(KanbanTaskTag tag) {
-    final tagColor = Color(0xFFF3F4F6);
-    final tagTextColor = Color(0xFF4B5563);
+    Color tagColor = Color(0xFFF3F4F6);
+    Color tagTextColor = Color(0xFF4B5563);
+    Color borderColor = Color(0xFFD1D5DB);
+    TextDecoration? titleDecoration;
+    switch (tag) {
+      case KanbanTaskTag.completed:
+        titleDecoration = TextDecoration.lineThrough;
+        borderColor = const Color(0xFF22C55E);
+        tagColor = const Color(0xFF22C55E);
+        tagTextColor = AppTheme.white;
+      case KanbanTaskTag.needsReview:
+        borderColor = const Color(0xFFF97316);
+        tagColor = const Color(0xFFFFEDD5);
+        tagTextColor = const Color(0xFFEA580C);
+      // case KanbanTaskTag.completed:
+      //   borderColor = const Color(0xFF22C55E);
+      //   tagColor = const Color(0xFF22C55E);
+      //   tagTextColor = AppTheme.white;
+      // case KanbanTaskTag.completed:
+      //   borderColor = const Color(0xFF22C55E);
+      //   tagColor = const Color(0xFF22C55E);
+      //   tagTextColor = AppTheme.white;
+      // case KanbanTaskTag.completed:
+      //   borderColor = const Color(0xFF22C55E);
+      //   tagColor = const Color(0xFF22C55E);
+      //   tagTextColor = AppTheme.white;
+      default:
+    }
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(6),
-        border: Border(left: BorderSide(width: 4, color: Color(0xFFD1D5DB))),
+        border: Border(left: BorderSide(width: 4, color: borderColor)),
         boxShadow: [
           BoxShadow(
             color: Color(0x0C000000),
@@ -287,6 +318,7 @@ class NoteKanbanScreen extends StatelessWidget {
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     height: 1.5,
+                    decoration: titleDecoration,
                   ),
                 ),
                 CustomTag(

@@ -56,6 +56,17 @@ class TextRowSelect extends StatelessWidget {
                     if (isNotNull(btnStyle) && isSelected) {
                       buttonStyle = btnStyle!;
                     }
+                    String? prefixImage;
+                    switch (str) {
+                      case 'Pre-Lab':
+                        prefixImage = Images.flaskTestTube;
+                      case 'Methods':
+                        prefixImage = Images.menu2;
+                      case 'Data':
+                        prefixImage = Images.grid2;
+                      case 'Results':
+                        prefixImage = Images.chart3;
+                    }
                     return Container(
                       decoration: BoxDecoration(
                         border: Border(
@@ -70,17 +81,31 @@ class TextRowSelect extends StatelessWidget {
                         style: buttonStyle.copyWith(),
                         child: Container(
                           padding: padding ?? EdgeInsets.only(bottom: 5),
-                          child: Text(
-                            str,
-                            style:
-                                runTextStyle ??
-                                AppTheme.text.copyWith(
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              if (isNotNull(prefixImage))
+                                SVGImagePlaceHolder(
+                                  imagePath: prefixImage!,
+                                  size: 17,
                                   color:
                                       isSelected
-                                          ? selectedTextColor
-                                          : textColor,
-                                  fontSize: 16.0,
+                                          ? const Color(0xFF0284C7)
+                                          : const Color(0xFF6B7280),
                                 ),
+                              Text(
+                                str,
+                                style:
+                                    runTextStyle ??
+                                    AppTheme.text.copyWith(
+                                      color:
+                                          isSelected
+                                              ? selectedTextColor
+                                              : textColor,
+                                      fontSize: 16.0,
+                                    ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
