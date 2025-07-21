@@ -33,7 +33,7 @@ class NoteTemplateFooter extends StatelessWidget {
       spacing: 15,
       children: [
         AppButton.secondary(
-          onTap: () {},
+          onTap: () {}, //TODO attend to this
           text: 'Save as Favorite',
           mainAxisSize: MainAxisSize.min,
           wrapWithFlexible: true,
@@ -45,6 +45,7 @@ class NoteTemplateFooter extends StatelessWidget {
           minHeight: 36,
           mainAxisSize: MainAxisSize.min,
           color: AppTheme.amber,
+          loading: vm.isLoading,
           onTap: vm.createNote,
           text: 'Create Note',
           prefix: Icon(Icons.add, color: AppTheme.white),

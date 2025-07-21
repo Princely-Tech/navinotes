@@ -1,10 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/choose_board/plain/note_page/shared.dart';
-import 'package:navinotes/screens/main/choose_board/plain/note_page/vm.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'shared.dart';
+import 'vm.dart';
 
 class BoardPlainNotePageAppBar extends StatelessWidget {
   const BoardPlainNotePageAppBar({super.key});
@@ -13,9 +9,7 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<BoardPlainNotePageVm>(
       builder: (_, vm, _) {
-
-                final board = context.read<BoardPlainNotePageVm>().board;
-
+        final board = vm.board;
         return Container(
           decoration: ShapeDecoration(
             color: AppTheme.white,
@@ -51,21 +45,50 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
   }
 
   Widget _searchField() {
-    return CustomInputField(
-      prefixIcon: Icon(Icons.search, color: AppTheme.slateGray, size: 20),
-      hintText: 'Search in this board',
-      fillColor: AppTheme.lightAsh,
-      side: BorderSide.none,
-      hintStyle: AppTheme.text.copyWith(
-        color: AppTheme.slateGray,
-        height: 1.43,
-      ),
+    //TODO return to this
+    return Builder(
+      builder: (context) {
+        final vm = context.read<BoardPlainNotePageVm>();
+        return LoadingIndicator(
+          loading: vm.fetchingContent,
+          child: SearchDropdownField<Content>(
+            suggestionsCallback: (search) {
+              return vm.contents
+                  .where((item) => compareStrings(item.type, search))
+                  .toList();
+            },
+            itemBuilder: (context, item) {
+              return CustomListTile(
+                title: item.type.toString(),
+                color: AppTheme.steelMist,
+                activeColor: AppTheme.strongBlue,
+              );
+            },
+            input: CustomInputField(
+              prefixIcon: Icon(
+                Icons.search,
+                color: AppTheme.slateGray,
+                size: 20,
+              ),
+              hintText: 'Search in this board',
+              fillColor: AppTheme.lightAsh,
+              side: BorderSide.none,
+              hintStyle: AppTheme.text.copyWith(
+                color: AppTheme.slateGray,
+                height: 1.43,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _leading(Board board) {
-
-    final title = board.name.length > 13 ? board.name.substring(0, 13) + '...' : board.name;
+    final title =
+        board.name.length > 13
+            ? '${board.name.substring(0, 13)}...'
+            : board.name;
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 10,
@@ -83,17 +106,18 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 10,
               children: [
-                OutlinedChild(
-                  decoration: BoxDecoration(color: AppTheme.paleBlue),
-                  child: Text(
-                    'N',
-                    style: AppTheme.text.copyWith(
-                      color: AppTheme.strongBlue,
-                      fontSize: 16.0,
-                      fontWeight: getFontWeight(600),
-                    ),
-                  ),
-                ),
+                SVGImagePlaceHolder(imagePath: Images.logo, size: 32),
+                // OutlinedChild(
+                //   decoration: BoxDecoration(color: AppTheme.paleBlue),
+                //   child: Text(
+                //     'N',
+                //     style: AppTheme.text.copyWith(
+                //       color: AppTheme.strongBlue,
+                //       fontSize: 16.0,
+                //       fontWeight: getFontWeight(600),
+                //     ),
+                //   ),
+                // ),
                 Flexible(
                   child: Text.rich(
                     TextSpan(

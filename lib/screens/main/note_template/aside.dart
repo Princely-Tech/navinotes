@@ -328,7 +328,7 @@ class NoteTemplateAside extends StatelessWidget {
             spacing: 5,
             children: [
               Text(
-                vm.selectedTemplate.title,
+                vm.selectedTemplate.type.toString(),
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 18,
@@ -354,7 +354,7 @@ class NoteTemplateAside extends StatelessWidget {
     );
   }
 
- // Widget _btns(NoteTemplateVm vm) {
+  // Widget _btns(NoteTemplateVm vm) {
   //   return Row(
   //     spacing: 10,
   //     mainAxisAlignment: MainAxisAlignment.spaceBetween,

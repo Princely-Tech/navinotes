@@ -8,12 +8,12 @@ void main() async {
   await sessionManager.init();
 
   await dotenv.load(fileName: ".env");
-
+  
   runApp(
     CustomProviders(
       sessionManager: sessionManager,
       child: MaterialApp(
-        localizationsDelegates: const [
+        localizationsDelegates: const [ 
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

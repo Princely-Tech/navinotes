@@ -10,14 +10,14 @@ List<String> noteTemplatesSections = [
 ];
 
 class BoardNoteTemplate {
-  final String title;
+  final NoteTemplateType type;
   final String body;
   final String description;
   final String image;
   final String? route;
   final bool isPopular;
   BoardNoteTemplate({
-    required this.title,
+    required this.type,
     required this.body,
     this.description = 'Concrete description will be here',
     required this.image,
@@ -26,113 +26,158 @@ class BoardNoteTemplate {
   });
 }
 
+NoteTemplateType getNoteTemplateTypeFromString(String input) {
+  return NoteTemplateType.values.firstWhere(
+    (e) => e.toString() == input,
+    orElse: () => throw 'Invalid type: $input',
+  );
+}
+
+BoardNoteTemplate getNoteTemplateFromString(String input) {
+  NoteTemplateType type = getNoteTemplateTypeFromString(input);
+  switch (type) {
+    case NoteTemplateType.blank:
+      return noteTemplateBlank;
+    case NoteTemplateType.cornell:
+      return noteTemplateCornell;
+    case NoteTemplateType.lined:
+      return noteTemplateLined;
+    case NoteTemplateType.squared:
+      return noteTemplateSquared;
+    case NoteTemplateType.dotted:
+      return noteTemplateDotted;
+    case NoteTemplateType.kanban:
+      return noteTemplateKanban;
+    case NoteTemplateType.timeline:
+      return noteTemplateTimeline;
+    case NoteTemplateType.compareContrast:
+      return noteTemplateCompareContrast;
+    case NoteTemplateType.aiFlashcards:
+      return noteTemplateAi;
+    case NoteTemplateType.flashcards:
+      return noteTemplateFlashcards;
+    case NoteTemplateType.labReport:
+      return noteTemplateLapReport;
+    case NoteTemplateType.apaFormat:
+      return noteTemplateApa;
+    case NoteTemplateType.mlaResearch:
+      return noteTemplateResearch;
+    case NoteTemplateType.comparativeAnalysis:
+      return noteTemplateComparative;
+    case NoteTemplateType.criticalReview:
+      return noteTemplateCritical;
+    case NoteTemplateType.thesisDevelopment:
+      return noteTemplateThesis;
+  }
+}
+
 BoardNoteTemplate noteTemplateBlank = BoardNoteTemplate(
+  type: NoteTemplateType.blank,
   body: 'Clean slate for writing',
   image: Images.noteTemplateBlank,
-  title: 'Blank Page',
 );
 
 BoardNoteTemplate noteTemplateCornell = BoardNoteTemplate(
+  type: NoteTemplateType.cornell,
   body: 'Structured note-taking',
   image: Images.noteTemplateCornell,
-  title: 'Cornell Notes',
   isPopular: true,
   description:
       'Structured note-taking method with dedicated sections for main notes, cues/questions, and summary.',
 );
 
 BoardNoteTemplate noteTemplateLined = BoardNoteTemplate(
+  type: NoteTemplateType.lined,
   body: 'Classic lined surface',
   image: Images.noteTemplateLined,
-  title: 'Lined Paper',
 );
 
 BoardNoteTemplate noteTemplateSquared = BoardNoteTemplate(
+  type: NoteTemplateType.squared,
   body: 'Grid for diagrams',
   image: Images.noteTemplateSquared,
-  title: 'Squared Paper',
 );
 
 BoardNoteTemplate noteTemplateDotted = BoardNoteTemplate(
+  type: NoteTemplateType.dotted,
   body: 'Dot grid for flexible layout',
   image: Images.noteTemplateDotted,
-  title: 'Dotted Paper',
 );
 
 BoardNoteTemplate noteTemplateKanban = BoardNoteTemplate(
+  type: NoteTemplateType.kanban,
   body: 'Visual workflow manager',
   isPopular: true,
   image: Images.noteTemplateKanban,
-  title: 'Kanban Board',
   route: Routes.noteKanban,
 );
 
 BoardNoteTemplate noteTemplateTimeline = BoardNoteTemplate(
+  type: NoteTemplateType.timeline,
   body: 'Chronological planner',
   image: Images.noteTemplateTimeline,
-  title: 'Timeline',
   route: Routes.noteTimeline,
 );
 
 BoardNoteTemplate noteTemplateCompareContrast = BoardNoteTemplate(
+  type: NoteTemplateType.compareContrast,
   body: 'Side-by-side comparison',
   image: Images.noteTemplateCompareContrast,
-  title: 'Compare & Contrast',
   route: Routes.noteCompareContrast,
 );
 
 BoardNoteTemplate noteTemplateAi = BoardNoteTemplate(
+  type: NoteTemplateType.aiFlashcards,
   body: 'AI-generated study cards',
   image: Images.noteTemplateAi,
-  title: 'AI-Generated Flashcards',
   route: '',
 );
 
 BoardNoteTemplate noteTemplateFlashcards = BoardNoteTemplate(
+  type: NoteTemplateType.flashcards,
   body: 'Question and answer cards',
   image: Images.noteTemplateFlashcards,
-  title: 'Flashcards',
   route: Routes.flashCards,
   isPopular: true,
 );
 
 BoardNoteTemplate noteTemplateLapReport = BoardNoteTemplate(
+  type: NoteTemplateType.labReport,
   body: 'Scientific experiment doc',
   image: Images.noteTemplateLapReport,
-  title: 'Lab Report Format',
   route: Routes.noteLabReport,
 );
 
 BoardNoteTemplate noteTemplateApa = BoardNoteTemplate(
+  type: NoteTemplateType.apaFormat,
   body: 'Text analysis framework',
   image: Images.noteTemplateApa,
-  title: 'APA Format Guide',
 );
 
 BoardNoteTemplate noteTemplateResearch = BoardNoteTemplate(
+  type: NoteTemplateType.mlaResearch,
   body: 'Humanities formatting',
   image: Images.noteTemplateResearch,
-  title: 'MLA Research Format',
   route: '',
 );
 
 BoardNoteTemplate noteTemplateComparative = BoardNoteTemplate(
+  type: NoteTemplateType.comparativeAnalysis,
   body: 'Multi-subject comparison',
   image: Images.noteTemplateComparative,
-  title: 'Comparative Analysis',
   route: '',
 );
 
 BoardNoteTemplate noteTemplateCritical = BoardNoteTemplate(
+  type: NoteTemplateType.criticalReview,
   body: 'Evaluative framework',
   image: Images.noteTemplateCritical,
-  title: 'Critical Review',
   route: '',
 );
 
 BoardNoteTemplate noteTemplateThesis = BoardNoteTemplate(
+  type: NoteTemplateType.thesisDevelopment,
   body: 'Argument construction',
   image: Images.noteTemplateThesis,
-  title: 'Thesis Development',
   route: '',
 );

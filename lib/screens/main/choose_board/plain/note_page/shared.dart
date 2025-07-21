@@ -7,28 +7,18 @@ class NotesAppBarActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      spacing: 15,
+      spacing: 5,
       children: [
         SVGImagePlaceHolder(imagePath: Images.pref, size: 16),
-        SVGImagePlaceHolder(
-          imagePath: Images.settings,
-          size: 16,
-          color: AppTheme.stormGray,
-        ),
-        OutlinedChild(
-          decoration: BoxDecoration(
-            color: AppTheme.electricIndigo,
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            'J',
-            style: AppTheme.text.copyWith(
-              color: AppTheme.white,
-              fontSize: 16.0,
-              fontWeight: getFontWeight(600),
-            ),
+        IconButton(
+          onPressed: NavigationHelper.navigateToSettings,
+          icon: SVGImagePlaceHolder(
+            imagePath: Images.settings,
+            size: 16,
+            color: AppTheme.stormGray,
           ),
         ),
+        ProfilePic(size: 32),
       ],
     );
   }

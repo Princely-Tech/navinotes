@@ -54,6 +54,7 @@ class BoardCreateVm extends ChangeNotifier {
         throw Exception('User not logged in');
       }
 
+      final currentTimestamp = generateUnixTimestamp();
 
       // Create a new board
       final newBoard = Board(
@@ -79,8 +80,8 @@ class BoardCreateVm extends ChangeNotifier {
             termController.text.trim().isNotEmpty
                 ? termController.text.trim()
                 : null,
-        createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        createdAt: currentTimestamp,
+        updatedAt: currentTimestamp,
       );
 
       // Save to database

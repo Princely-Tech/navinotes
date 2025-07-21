@@ -26,8 +26,15 @@ class BoardPlainNotePageScreen extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create:
-          (context) =>
-              BoardPlainNotePageVm(scaffoldKey: _scaffoldKey, board: board),
+          (context) {
+            final vm = BoardPlainNotePageVm(
+              scaffoldKey: _scaffoldKey,
+              board: board,
+              context: context,
+            );
+            vm.initialize();
+            return vm;
+          },
       child: Consumer<BoardPlainNotePageVm>(
         builder: (_, vm, __) {
           // Show error if no board is provided

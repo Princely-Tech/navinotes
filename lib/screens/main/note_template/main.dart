@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:navinotes/screens/main/note_template/vm.dart';
-import 'util.dart';
 import 'package:navinotes/packages.dart';
 import 'header.dart';
 import 'footer.dart';
@@ -112,7 +110,7 @@ class NoteTemplateMain extends StatelessWidget {
                     spacing: 3,
                     children: [
                       Text(
-                        template.title,
+                        template.type.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,

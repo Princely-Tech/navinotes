@@ -1,6 +1,7 @@
 import 'package:navinotes/packages.dart';
 
 
+
 class Content {
   final int? id;
   final String guid;
@@ -13,10 +14,14 @@ class Content {
   final int createdAt; // Unix timestamp
   final int updatedAt; // Unix timestamp
   final int? syncedAt; // Unix timestamp, nullable
+  final String title;
+  final String? coverImage;
 
   Content({
     this.id,
     required this.guid,
+    required this.title,
+     this.coverImage,
     required this.type,
     required this.metaData,
     required this.boardId,
@@ -30,6 +35,9 @@ class Content {
 
   Map<String, dynamic> toMap() => {
     'id': id,
+    'guid': guid,
+    'title': title,
+    'cover_image': coverImage,
     'type': type,
     'meta_data': jsonEncode(metaData),
     'board_id': boardId,
@@ -44,6 +52,8 @@ class Content {
   factory Content.fromMap(Map<String, dynamic> map) => Content(
     id: map['id'],
     guid: map['guid'],
+    title: map['title'],
+    coverImage: map['cover_image'],
     type: map['type'],
     metaData: jsonDecode(map['meta_data']),
     boardId: map['board_id'],
@@ -55,4 +65,3 @@ class Content {
     syncedAt: map['synced_at'],
   );
 }
-

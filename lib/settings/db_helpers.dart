@@ -1,4 +1,3 @@
-import 'package:navinotes/models/content.dart';
 import 'package:navinotes/models/tag.dart';
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart';
@@ -8,7 +7,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-static const int _databaseVersion = 2; // Increment this number
+  static const int _databaseVersion = 3; // Increment this number
 
   DatabaseHelper._init();
 
@@ -21,7 +20,12 @@ static const int _databaseVersion = 2; // Increment this number
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
-    return await openDatabase(path, version: _databaseVersion, onCreate: _createDB, onUpgrade: _onUpgrade);
+    return await openDatabase(
+      path,
+      version: _databaseVersion,
+      onCreate: _createDB,
+      onUpgrade: _onUpgrade,
+    );
   }
 
   Future _createDB(Database db, int version) async {
@@ -52,6 +56,8 @@ static const int _databaseVersion = 2; // Increment this number
       type TEXT,
       meta_data TEXT,
       board_id INTEGER,
+      title TEXT,
+      cover_image TEXT,
       tags TEXT,
       content TEXT,
       file TEXT,
@@ -73,38 +79,30 @@ static const int _databaseVersion = 2; // Increment this number
     ''');
   }
 
-// Add this new method to handle database upgrades
-Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-  if (oldVersion < 2) {
-    // Add the guid column to the boards table
-    await db.execute('ALTER TABLE boards ADD COLUMN guid TEXT');
-
-    // get all boards with null guid and update it
-    final boards = await db.query('boards', where: 'guid IS NULL');
-    for (var board in boards) {
-      final guid = "0${board['user_id']}0_${Uuid().v4()}";
-      await db.update('boards', {'guid': guid}, where: 'id = ?', whereArgs: [board['id']]);
-    }
-  }
-
-    if (oldVersion < 3) {
+  // Add this new method to handle database upgrades
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
       // Add the guid column to the boards table
-      await db.execute('ALTER TABLE contents ADD COLUMN guid TEXT');
+      await db.execute('ALTER TABLE boards ADD COLUMN guid TEXT');
 
       // get all boards with null guid and update it
-      final boards = await db.query('contents', where: 'guid IS NULL');
+      final boards = await db.query('boards', where: 'guid IS NULL');
       for (var board in boards) {
         final guid = "0${board['user_id']}0_${Uuid().v4()}";
         await db.update(
-          'contents',
+          'boards',
           {'guid': guid},
           where: 'id = ?',
           whereArgs: [board['id']],
         );
       }
     }
-}
 
+    if (oldVersion < 3) {
+      await db.execute('ALTER TABLE contents ADD COLUMN title TEXT');
+      await db.execute('ALTER TABLE contents ADD COLUMN cover_image TEXT');
+    }
+  }
 
   // Example CRUD for Boards
   Future<int> insertBoard(Board board) async {
@@ -128,10 +126,13 @@ Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     return result.map((json) => Board.fromMap(json)).toList();
   }
 
-
   Future<Board> getBoard(int boardId) async {
     final db = await instance.database;
-    final result = await db.query('boards', where: 'id = ?', whereArgs: [boardId]);
+    final result = await db.query(
+      'boards',
+      where: 'id = ?',
+      whereArgs: [boardId],
+    );
     return result.map((json) => Board.fromMap(json)).first;
   }
 
@@ -143,6 +144,11 @@ Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
       whereArgs: [boardId],
     );
     return result.map((json) => Content.fromMap(json)).toList();
+  }
+
+  Future<int> deleteContent(int contentId) async {
+    final db = await instance.database;
+    return await db.delete('contents', where: 'id = ?', whereArgs: [contentId]);
   }
 
   Future<List<Tag>> getAllTags() async {

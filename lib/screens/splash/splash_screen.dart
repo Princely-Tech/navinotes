@@ -7,7 +7,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
@@ -35,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
 
     _controller.forward();
-    
+
     // Navigate after animation completes
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -47,15 +48,43 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Future<void> _navigateToNextScreen() async {
     // Ensure session is loaded before checking login status
     await context.read<SessionManager>().init();
-    final isLoggedIn = context.read<SessionManager>().isLoggedIn();
-    
-    // Small delay to ensure smooth transition
-    await Future.delayed(const Duration(milliseconds: 500));
-    
     if (mounted) {
-      Navigator.of(context).pushReplacementNamed(
-        isLoggedIn ? Routes.dashboard : Routes.auth,
-      );
+      final isLoggedIn = context.read<SessionManager>().isLoggedIn();
+
+      //TODO delete this
+      List<Board> boards = await DatabaseHelper.instance.getAllBoards();
+      Board board = boards.last;
+      // print(board.id);
+
+      // // DatabaseHelper.instance.deleteContent(3);
+      // // DatabaseHelper.instance.deleteContent(2);
+
+      // List<Content> contents = await DatabaseHelper.instance.getAllContents(
+      //   board.id!,
+      // );
+      // print(contents);
+      NavigationHelper.navigateToBoardNotes(board);
+      // NavigationHelper.pushReplacement(
+      //   Routes.noteTemplate,
+      //   arguments: board,
+      // );
+      // NavigationHelper.pushReplacement(
+      //   Routes.noteCreation,
+      //   arguments: NoteCreationProp(
+      //     template: noteTemplateBlank,
+      //     contentId: contents[0].id!,
+      //   ),
+      // );
+
+      // Small delay to ensure smooth transition
+      //TODO UNCOMMENT
+      // await Future.delayed(const Duration(milliseconds: 500));
+
+      // if (mounted) {
+      //   Navigator.of(
+      //     context,
+      //   ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
+      // }
     }
   }
 

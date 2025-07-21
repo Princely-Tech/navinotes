@@ -59,6 +59,10 @@ class ErrorDisplayService {
     );
   }
 
+  static void showErrorMessage(BuildContext context, String message) {
+    showMessage(isError: true, context, message);
+  }
+
   static void showDefaultError(BuildContext context) {
     final fToast = FToast();
     fToast.init(context);

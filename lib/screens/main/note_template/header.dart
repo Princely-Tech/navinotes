@@ -10,7 +10,7 @@ class NoteTemplateHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<NoteTemplateVm>(
-      builder: (context, vm, _) {
+      builder: (_, vm, _) {
         return Column(
           children: [
             Container(
@@ -19,7 +19,7 @@ class NoteTemplateHeader extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 spacing: 15,
-                children: [_leading(), _trailing(vm)],
+                children: [_leading(vm), _trailing(vm)],
               ),
             ),
             Container(
@@ -114,7 +114,7 @@ class NoteTemplateHeader extends StatelessWidget {
     );
   }
 
-  Widget _leading() {
+  Widget _leading(NoteTemplateVm vm) {
     final subtitleTextStyle = TextStyle(
       color: Colors.white,
       fontSize: 14,
@@ -158,7 +158,8 @@ class NoteTemplateHeader extends StatelessWidget {
                                 style: subtitleTextStyle.copyWith(fontSize: 20),
                               ),
                               TextSpan(
-                                text: 'Advanced Biology - Semester 2',
+                                text:
+                                    '${vm.board?.subject} - ${vm.board?.level}',
                                 style: subtitleTextStyle,
                               ),
                             ],

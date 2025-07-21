@@ -34,6 +34,10 @@ generateGUID(int userId) {
   return "0${userId}0_${Uuid().v4()}";
 }
 
+int generateUnixTimestamp() {
+  return DateTime.now().millisecondsSinceEpoch ~/ 1000;
+}
+
 QuillSimpleToolbarConfig buildCustomToolbarConfig({
   bool showBoldButton = false,
   bool showItalicButton = false,
@@ -106,4 +110,12 @@ QuillSimpleToolbarConfig buildCustomToolbarConfig({
     showClipboardCopy: showClipboardCopy,
     showClipboardPaste: showClipboardPaste,
   );
+}
+bool compareStrings(String str1, String str2) {
+  return str1.toLowerCase() == str2.toLowerCase();
+}
+
+String formatUnixTimestamp(int timestamp) {
+  final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  return DateFormat('MMM d, yyyy').format(date); 
 }

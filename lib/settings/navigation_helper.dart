@@ -47,12 +47,26 @@ class NavigationHelper {
     //push(Routes.noteTemplate, arguments: board);
   }
 
+  static void navigateToSettings() {
+    // push(Routes.noteTemplate, arguments: board);
+  }
+
   static void gotToNewNoteTemplate(Board board) {
     push(Routes.noteTemplate, arguments: board);
   }
 
-  static void navigateToNoteCreation(BoardNoteTemplate template) {
-    push(Routes.noteCreation, arguments: template);
+  static void navigateToNoteCreation(
+    BoardNoteTemplate template,
+    int contentId,
+  ) {
+    push(
+      Routes.noteCreation,
+      arguments: NoteCreationProp(template: template, contentId: contentId),
+    );
+  }
+
+  static void navigateToNoteTemplateRoute(String route, int contentId) {
+    push(route, arguments: contentId);
   }
 
   static void navigateToBoardNotes(Board board) {

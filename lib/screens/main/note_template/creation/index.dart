@@ -5,21 +5,22 @@ import 'right.dart';
 import 'main.dart';
 import 'vm.dart';
 
+
 class NoteCreationScreen extends StatelessWidget {
   NoteCreationScreen({super.key});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    // Extract board from route arguments
-    BoardNoteTemplate? template =
-        ModalRoute.of(context)?.settings.arguments as BoardNoteTemplate?;
+    
+    NoteCreationProp? creationProp =
+        ModalRoute.of(context)?.settings.arguments as NoteCreationProp?;
 
     return ChangeNotifierProvider(
       create: (context) {
         NoteCreationVm vm = NoteCreationVm(
           scaffoldKey: _scaffoldKey,
-          template: template,
+          creationProp: creationProp,
         );
         vm.initialize();
         return vm;

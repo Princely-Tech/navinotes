@@ -3,8 +3,9 @@ import 'package:navinotes/packages.dart';
 class NoteCreationVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   BoardNoteTemplate template;
-  NoteCreationVm({required this.scaffoldKey, BoardNoteTemplate? template})
-    : template = template ?? noteTemplateDotted; //TODO  Use blank as default
+  NoteCreationProp? creationProp;
+  NoteCreationVm({required this.scaffoldKey, required this.creationProp})
+    : template = creationProp?.template ?? noteTemplateBlank;
 
   bool showAiSection = false;
 
@@ -21,7 +22,7 @@ class NoteCreationVm extends ChangeNotifier {
   QuillController richEditorController = QuillController.basic();
 
   void initialize() {
-    richEditorController.readOnly = false;
+    // richEditorController.readOnly = false;
     notifyListeners();
   }
 

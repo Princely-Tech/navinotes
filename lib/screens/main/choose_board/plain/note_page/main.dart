@@ -1,10 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/models/board.dart';
-import 'package:navinotes/screens/main/choose_board/plain/note_page/shared.dart';
-import 'package:navinotes/screens/main/choose_board/plain/note_page/vm.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'shared.dart';
+import 'vm.dart';
+import 'package:navinotes/packages.dart';
 
 class BoardPlainNotePageMain extends StatelessWidget {
   const BoardPlainNotePageMain({super.key});
@@ -12,97 +8,101 @@ class BoardPlainNotePageMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<BoardPlainNotePageVm>(
-      builder: (context, vm, child) {
-        final board = context.read<BoardPlainNotePageVm>().board;
-
+      builder: (_, vm, _) {
+        final board = vm.board;
         return Column(
           children: [
-            _header(board!),
+            _header(vm),
             Expanded(
-              child: ScrollableController(
-                mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
-                child: CustomGrid(
-                  children: [
-                    _noteCard(
-                      lastEdited: 'Apr 28, 2025',
-                      title: 'Wave Properties',
-                      image: Images.noteWave,
-                      outLines: _outlineRow(
-                        outline1: _outline(),
-                        outline2: _outline(
-                          image: Images.img,
-                          color: AppTheme.paleJade,
+              child:
+                  vm.fetchingContent
+                      ? Center(child: CircularProgressIndicator())
+                      : ScrollableController(
+                        mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
+                        child: CustomGrid(
+                          children: [
+                            ...vm.contents.map(
+                              (content) => _noteCard(content: content),
+                            ),
+                            if (isNotNull(board))
+                              CreateCard(
+                                width: double.infinity,
+                                onTap: () => vm.gotToCreateNotePage(board!),
+                                text: 'Create New Note Page',
+                              ),
+                          ],
+
+                          // children: [
+
+                          //   _noteCard(
+                          //     lastEdited: 'Apr 25, 2025',
+                          //     title: 'Newton\'s Laws',
+                          //     image: Images.noteNewton,
+                          //     outLines: _outlineRow(
+                          //       outline1: _outline(),
+                          //       outline2: _outline(
+                          //         image: Images.video,
+                          //         color: AppTheme.pastelPurple,
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   _noteCard(
+                          //     lastEdited: 'Apr 22, 2025',
+                          //     title: 'Thermodynamics',
+                          //     image: Images.noteThermodynamics,
+                          //     outLines: _outlineRow(
+                          //       outline1: _outline(),
+                          //       outline2: _outline(
+                          //         image: Images.copy2,
+                          //         color: AppTheme.softGold,
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   _noteCard(
+                          //     lastEdited: 'Apr 20, 2025',
+                          //     title: 'Electromagnetism',
+                          //     image: Images.noteElectromagnetism,
+                          //     outLines: _outlineRow(
+                          //       outline1: _outline(),
+                          //       outline2: _outline(
+                          //         image: Images.chart,
+                          //         color: AppTheme.blushPink,
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   _noteCard(
+                          //     lastEdited: 'Apr 18, 2025',
+                          //     title: 'Quantum Mechanics',
+                          //     image: Images.noteMechanics,
+                          //     outLines: _outlineRow(
+                          //       outline1: _outline(),
+                          //       outline2: _outline(
+                          //         image: Images.calculator,
+                          //         color: AppTheme.periwinkle,
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   _noteCard(
+                          //     lastEdited: 'Apr 28, 2025',
+                          //     title: 'Optics & Light',
+                          //     image: Images.noteOptics,
+                          //     outLines: _outlineRow(
+                          //       outline1: _outline(),
+                          //       outline2: _outline(
+                          //         image: Images.img,
+                          //         color: AppTheme.paleJade,
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   if (isNotNull(board))
+                          //     CreateCard(
+                          //       width: double.infinity,
+                          //       onTap: () => vm.gotToCreateNotePage(board!),
+                          //       text: 'Create New Note Page',
+                          //     ),
+                          // ],
                         ),
                       ),
-                    ),
-                    _noteCard(
-                      lastEdited: 'Apr 25, 2025',
-                      title: 'Newton\'s Laws',
-                      image: Images.noteNewton,
-                      outLines: _outlineRow(
-                        outline1: _outline(),
-                        outline2: _outline(
-                          image: Images.video,
-                          color: AppTheme.pastelPurple,
-                        ),
-                      ),
-                    ),
-                    _noteCard(
-                      lastEdited: 'Apr 22, 2025',
-                      title: 'Thermodynamics',
-                      image: Images.noteThermodynamics,
-                      outLines: _outlineRow(
-                        outline1: _outline(),
-                        outline2: _outline(
-                          image: Images.copy2,
-                          color: AppTheme.softGold,
-                        ),
-                      ),
-                    ),
-                    _noteCard(
-                      lastEdited: 'Apr 20, 2025',
-                      title: 'Electromagnetism',
-                      image: Images.noteElectromagnetism,
-                      outLines: _outlineRow(
-                        outline1: _outline(),
-                        outline2: _outline(
-                          image: Images.chart,
-                          color: AppTheme.blushPink,
-                        ),
-                      ),
-                    ),
-                    _noteCard(
-                      lastEdited: 'Apr 18, 2025',
-                      title: 'Quantum Mechanics',
-                      image: Images.noteMechanics,
-                      outLines: _outlineRow(
-                        outline1: _outline(),
-                        outline2: _outline(
-                          image: Images.calculator,
-                          color: AppTheme.periwinkle,
-                        ),
-                      ),
-                    ),
-                    _noteCard(
-                      lastEdited: 'Apr 28, 2025',
-                      title: 'Optics & Light',
-                      image: Images.noteOptics,
-                      outLines: _outlineRow(
-                        outline1: _outline(),
-                        outline2: _outline(
-                          image: Images.img,
-                          color: AppTheme.paleJade,
-                        ),
-                      ),
-                    ),
-                    CreateCard(
-                      width: double.infinity,
-                      onTap: () => vm.gotToCreateNotePage(board),
-                      text: 'Create New Note Page',
-                    ),
-                  ],
-                ),
-              ),
             ),
           ],
         );
@@ -135,75 +135,88 @@ class BoardPlainNotePageMain extends StatelessWidget {
     );
   }
 
-  Widget _noteCard({
-    required String image,
-    required String title,
-    required String lastEdited,
-    required Widget outLines,
-  }) {
-    Radius radius = Radius.circular(12);
-    return CustomCard(
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: AppTheme.iceBlue,
-              borderRadius: BorderRadius.only(
-                topLeft: radius,
-                topRight: radius,
-              ),
-            ),
-            padding: EdgeInsets.all(20),
-            child: AspectRatio(
-              aspectRatio: 5 / 2,
-              child: ImagePlaceHolder(
-                imagePath: image,
-                isCardHeader: true,
-                borderRadius: BorderRadius.circular(0),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              spacing: 15,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppTheme.text.copyWith(
-                    color: AppTheme.charcoalBlue,
-                    fontSize: 16.0,
+  Widget _noteCard({required Content content}) {
+    BoardNoteTemplate template = getNoteTemplateFromString(
+      content.metaData[ContentMetadataKey.template],
+    );
+    // print(template.type);
+    return Builder(
+      builder: (context) {
+        Radius radius = Radius.circular(12);
+        return CustomCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: AppTheme.iceBlue,
+                  borderRadius: BorderRadius.only(
+                    topLeft: radius,
+                    topRight: radius,
                   ),
                 ),
-                Row(
+                padding: EdgeInsets.all(20),
+                child: AspectRatio(
+                  aspectRatio: 5 / 2,
+                  child: ImagePlaceHolder(
+                    imagePath: template.image,
+                    isCardHeader: true,
+                    borderRadius: BorderRadius.circular(0),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
                   spacing: 15,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        'Last edited: $lastEdited',
-                        style: AppTheme.text.copyWith(
-                          color: AppTheme.steelMist,
-                          fontSize: 12.0,
-                        ),
+                    Text(
+                      content.title,
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.charcoalBlue,
+                        fontSize: 16.0,
                       ),
                     ),
-                    outLines,
+                    Row(
+                      spacing: 15,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Last edited: ${formatUnixTimestamp(content.updatedAt)}',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.steelMist,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ),
+                        _outlineRow(
+                          outline1: _outline(),
+                          outline2: _outline(
+                            image: Images.img,
+                            color: AppTheme.paleJade,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _header(Board board) {
-     // take 13 characters, add ... if longer
-     final title = board.name.length > 13 ? board.name.substring(0, 13) + '...' : board.name;
+  Widget _header(BoardPlainNotePageVm vm) {
+    Board board = vm.board!;
+    // take 13 characters, add ... if longer
+    final title =
+        board.name.length > 13
+            ? '${board.name.substring(0, 13)}...'
+            : board.name;
     return Container(
       constraints: BoxConstraints(minHeight: 60),
       decoration: ShapeDecoration(

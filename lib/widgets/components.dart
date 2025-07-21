@@ -20,16 +20,12 @@ class OverlappingAvatars extends StatelessWidget {
       child: Stack(
         children: [
           for (int i = 0; i < avatars.length; i++)
-            Positioned(
-              left: i * (size - overlap),
-              child: avatars[i],
-            ),
+            Positioned(left: i * (size - overlap), child: avatars[i]),
         ],
       ),
     );
   }
 }
-
 
 class SVGImagePlaceHolder extends StatelessWidget {
   const SVGImagePlaceHolder({
@@ -206,7 +202,7 @@ class CustomTag extends StatelessWidget {
     this.borderRadius,
     this.prefix,
     this.onTap,
-    });
+  });
 
   final String data;
   final Color color;
@@ -214,7 +210,7 @@ class CustomTag extends StatelessWidget {
   final BorderRadiusGeometry? borderRadius;
   final Widget? prefix;
 
-final void Function()? onTap;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -708,12 +704,18 @@ class AuthHeader extends StatelessWidget {
 }
 
 class CustomCheckBoxItem extends StatefulWidget {
-  const CustomCheckBoxItem({super.key, this.title, this.child, this.shape, this.onChanged});
+  const CustomCheckBoxItem({
+    super.key,
+    this.title,
+    this.child,
+    this.shape,
+    this.onChanged,
+  });
   final String? title;
   final Widget? child;
   final OutlinedBorder? shape;
   final void Function(bool)? onChanged;
-    @override
+  @override
   State<CustomCheckBoxItem> createState() => _CustomCheckBoxItemState();
 }
 
@@ -868,6 +870,48 @@ class StarRowWithText extends StatelessWidget {
           style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
         ),
       ],
+    );
+  }
+}
+
+class CustomListTile extends StatelessWidget {
+  const CustomListTile({
+    super.key,
+    this.leading,
+    this.isActive = false,
+    this.trailing,
+    required this.title,
+    required this.color,
+    required this.activeColor,
+  });
+  final Widget? leading;
+  final bool isActive;
+  final Widget? trailing;
+  final String title;
+  final Color color;
+  final Color activeColor;
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        leading: leading,
+        selected: isActive,
+        selectedTileColor: AppTheme.iceBlue,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        trailing: trailing,
+        contentPadding: const EdgeInsets.only(left: 15, right: 10),
+        title: Text(
+          title,
+          style: AppTheme.text.copyWith(
+            color: color,
+            fontSize: 16.0,
+            fontWeight: isActive ? getFontWeight(500) : null,
+            height: 1.0,
+          ),
+        ),
+        onTap: () {},
+      ),
     );
   }
 }

@@ -10,10 +10,16 @@ class NoteTemplateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Board? board = ModalRoute.of(context)!.settings.arguments as Board?;
     return ChangeNotifierProvider(
-      create: (context) => NoteTemplateVm(scaffoldKey: _scaffoldKey),
+      create:
+          (context) => NoteTemplateVm(
+            scaffoldKey: _scaffoldKey,
+            context: context,
+            board: board,
+          ),
       child: Consumer<NoteTemplateVm>(
-        builder: (context, vm, child) {
+        builder: (_, vm, _) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
             endDrawer: CustomDrawer(child: NoteTemplateAside()),

@@ -58,3 +58,6 @@ export 'dart:math';
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:flutter_quill/flutter_quill.dart';
 export 'package:data_table_2/data_table_2.dart';
+export 'package:navinotes/models/content.dart';
+export 'package:flutter_typeahead/flutter_typeahead.dart';
+export 'package:intl/intl.dart' hide TextDirection;
