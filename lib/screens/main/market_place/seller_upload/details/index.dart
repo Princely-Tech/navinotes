@@ -15,7 +15,7 @@ class SellerUploadScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final board = ModalRoute.of(context)?.settings.arguments as Board?;
-    
+
     if (board == null) {
       return Scaffold(
         body: Center(
@@ -30,38 +30,47 @@ class SellerUploadScreen extends StatelessWidget {
       );
     }
 
-    return ChangeNotifierProvider(
-      create: (context) => SellerUploadVm(
-        scaffoldKey: _scaffoldKey,
-        board: board,
+    return 
+    
+    
+    ApiServiceComponent(
+      child: Consumer<ApiServiceProvider>(
+        builder: (_, apiServiceProvider, _) {
+          return ChangeNotifierProvider(
+            create:
+                (context) => SellerUploadVm(scaffoldKey: _scaffoldKey, board: board, apiServiceProvider: apiServiceProvider),
+            child: Consumer<SellerUploadVm>(
+              builder: (_, vm, _) {
+                return ScaffoldFrame(
+                  scaffoldKey: _scaffoldKey,
+                  endDrawer: CustomDrawer(child: SellerUploadAside()),
+                  backgroundColor: AppTheme.white,
+                  body: Column(
+                    children: [
+                      SellerUploadAppBar(),
+          
+                      Expanded(child: showScreen(vm)),
+                      SellerUploadFooter(),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        }
       ),
-      child: Consumer<SellerUploadVm>(
-        builder: (_, vm, _) {
-      
-      return ScaffoldFrame(
-        scaffoldKey: _scaffoldKey,
-        endDrawer: CustomDrawer(child: SellerUploadAside()),
-        backgroundColor: AppTheme.white,
-        body: Column(
-          children: [
-            SellerUploadAppBar(),
-
-
-            Expanded(child: showScreen(vm)),
-            SellerUploadFooter(),
-          ],
-        ),
-      );})
     );
+
+
+    
   }
 
-
-  showScreen(SellerUploadVm vm){
+  showScreen(SellerUploadVm vm) {
     if (vm.currentScreen == Screen.details) {
       return SellerUploadMain(vm: vm);
-    }else if (vm.currentScreen == Screen.price) {
+    } else if (vm.currentScreen == Screen.price) {
       return SellerUploadPrice(vm: vm);
-    }else if (vm.currentScreen == Screen.preview) {
+    } else if (vm.currentScreen == Screen.preview) {
       return SellerUploadPreview(vm: vm);
     }
   }

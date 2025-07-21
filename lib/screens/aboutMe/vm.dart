@@ -199,7 +199,7 @@ class AboutMeVm extends ChangeNotifier {
 
       if (isNotNull(image)) {
         try {
-          final imageBody = FormDataRequest.post(ApiEndpoints.profileImage, {
+          final imageBody = FormDataRequest.post(ApiEndpoints.profileImage, files: {
             'profile_picture': image!,
           });
           final imageResponse = await apiServiceProvider.apiService

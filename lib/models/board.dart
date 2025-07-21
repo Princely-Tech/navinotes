@@ -124,7 +124,10 @@ class Board {
       whereArgs: [id],
     );
 
-    _cachedContents = List.generate(maps.length, (i) => Content.fromMap(maps[i]));
+    _cachedContents = List.generate(
+      maps.length,
+      (i) => Content.fromMap(maps[i]),
+    );
     _hasFetchedContents = true;
     return _cachedContents!;
   }
@@ -133,6 +136,34 @@ class Board {
   void clearContentsCache() {
     _cachedContents = null;
     _hasFetchedContents = false;
+  }
+
+  syncToBackend(ApiServiceProvider apiServiceProvider) async {
+    final body = FormDataRequest.post(
+      ApiEndpoints.boardSync,
+      body: {
+        'guid': guid,
+        'user_id': userId,
+        'type': type,
+        'name': name,
+        'customization': jsonEncode(customization),
+        'is_public': isPublic ? 1 : 0,
+        'description': description,
+        'subject': subject,
+        'level': level,
+        'term': term,
+        'cover_image': coverImage,
+        'created_at': createdAt,
+        'updated_at': updatedAt,
+        'synced_at': syncedAt,
+      },
+    );
+
+    final response = await apiServiceProvider.apiService.sendFormDataRequest(
+      body,
+    );
+
+    return response;
   }
 }
 
@@ -234,4 +265,3 @@ List<BoardType> boardTypes = [
   //   route: '',
   // ), //TODO uncoment this
 ];
-

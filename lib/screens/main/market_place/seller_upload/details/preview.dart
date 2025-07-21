@@ -300,6 +300,7 @@ class SellerUploadPreview extends StatelessWidget {
             AppButton(
               onTap: () {
                 debugPrint('Publishing content...');
+                vm.publish();
               },
               text: 'Publish Now',
               mainAxisSize: MainAxisSize.min,
@@ -307,6 +308,7 @@ class SellerUploadPreview extends StatelessWidget {
             ),
           ],
         ),
+
       ],
     );
   }

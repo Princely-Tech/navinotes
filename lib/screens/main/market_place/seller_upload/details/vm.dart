@@ -9,6 +9,9 @@ class SellerUploadVm extends ChangeNotifier {
   final Board board;
   final formKey = GlobalKey<FormState>();
 
+  ApiServiceProvider apiServiceProvider;
+
+
   Screen currentScreen = Screen.details;
 
   // Form fields
@@ -64,8 +67,6 @@ class SellerUploadVm extends ChangeNotifier {
 
   var isPublishing = false;
   var publishingStatus = "";
-
-
 
   String? get originalPrice {
     if (discount > 0 && price > 0) {
@@ -185,7 +186,7 @@ class SellerUploadVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  SellerUploadVm({required this.scaffoldKey, required this.board});
+  SellerUploadVm({required this.scaffoldKey, required this.board, required this.apiServiceProvider});
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
@@ -402,8 +403,9 @@ class SellerUploadVm extends ChangeNotifier {
   publish() async {
     isPublishing = true;
     publishingStatus = "Uploading Content...";
+    debugPrint('publishingStatus: $publishingStatus');
     notifyListeners();
-    
+
     try {
       await uploadContent();
     } catch (e) {
@@ -417,7 +419,7 @@ class SellerUploadVm extends ChangeNotifier {
     publishingStatus = "Publishing Product Details...";
     notifyListeners();
     try {
-      await publishMarketPlace();
+      await uploadMarketPlace();
     } catch (e) {
       debugPrint('Error publishing marketplace: $e');
       isPublishing = false;
@@ -431,15 +433,15 @@ class SellerUploadVm extends ChangeNotifier {
     notifyListeners();
   }
 
-uploadContent() async {
-  // TODO later
-}
+  uploadContent() async {
+    // TODO later
+    debugPrint('uploadContent');
+    await board.syncToBackend(apiServiceProvider);
+  }
 
-publishMarketPlace() async {
-  // make a submit of the data.
-  
-}
-
+  uploadMarketPlace() async {
+    // make a submit of the data.
+  }
 
   @override
   void dispose() {
