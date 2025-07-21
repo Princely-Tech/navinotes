@@ -82,6 +82,14 @@ class SellerUploadPrice extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 20,
         children: [
+          Text(
+            'Enter the price buyers will pay. You can optionally set a discount percentage to show the original price.',
+            style: AppTheme.text.copyWith(
+              color: AppTheme.darkSlateGray.withOpacity(0.7),
+              fontSize: 14.0,
+            ),
+          ),
+
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -90,7 +98,10 @@ class SellerUploadPrice extends StatelessWidget {
                   controller: vm.priceController,
                   label: 'Price (\$)', 
                   hintText: 'Enter price',
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (value){
+                    vm.notifyChange();
+                  },
                   prefixIcon: Text(
                     '\$',
                     style: AppTheme.text.copyWith(
@@ -105,19 +116,79 @@ class SellerUploadPrice extends StatelessWidget {
                     if (double.tryParse(value) == null) {
                       return 'Please enter a valid number';
                     }
+                    if (double.parse(value) <= 0) {
+                      return 'Price must be greater than 0';
+                    }
                     return null;
                   },
                 ),
               ),
               const SizedBox(width: 20),
-             
+              SizedBox(
+                width: 120,
+                child: CustomInputField(
+                  controller: vm.discountController,
+                  label: 'Discount %',
+                  hintText: '0',
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) => vm.notifyListeners(),
+                  suffixIcon: Text(
+                    '%',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.darkSlateGray,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      final discount = int.tryParse(value) ?? 0;
+                      if (discount < 0 || discount > 100) {
+                        return '0-100';
+                      }
+                    }
+                    return null;
+                  },
+                ),
+              ),
             ],
           ),
-        
+          if (vm.price > 0)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (vm.discount > 0) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Original Price: \$${vm.originalPrice}',
+                    style: AppTheme.text.copyWith(
+                      decoration: TextDecoration.lineThrough,
+                      color: AppTheme.darkSlateGray.withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${vm.discount}% OFF',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.asbestos,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 4),
+                Text(
+                  'Buyers will pay: \$${vm.price.toStringAsFixed(2)}',
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.darkSlateGray,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
   }
+
   Widget _termsSection() {
     return _section(
       title: 'Terms & Conditions',
@@ -126,14 +197,17 @@ class SellerUploadPrice extends StatelessWidget {
         spacing: 15,
         children: [
           CustomCheckBoxItem(
+            value: vm.agreeToTerms,
             title: 'I agree to the NaviNotes Marketplace Terms of Service',
             onChanged: (value) => vm.setAgreeToTerms(value),
           ),
           CustomCheckBoxItem  (
+            value: vm.agreeToRefundPolicy,
             onChanged: (value) => vm.setAgreeToRefundPolicy(value),
             title: 'I agree to the NaviNotes Refund Policy',
           ),
           CustomCheckBoxItem(
+            value: vm.agreeToCopyrightPolicy,
             onChanged: (value) => vm.setAgreeToCopyrightPolicy(value ?? false),
             title: 'I confirm that I have the right to sell this content',
           ),
@@ -147,13 +221,21 @@ class SellerUploadPrice extends StatelessWidget {
       spacing: 30,
       children: [
         const Divider(),
+        if (vm.validationError != null)
+          Text(
+            vm.validationError!,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.amber,
+              fontSize: 12.0,
+              height: 1.0,
+            ),
+          ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             AppButton(
               onTap: () {
-                // TODO: Navigate back to previous screen
-                //Navigator.pop(context);
+                vm.setScreen(Screen.details);
               },
               text: 'Back to Details',
               textColor: AppTheme.darkSlateGray,
@@ -164,13 +246,13 @@ class SellerUploadPrice extends StatelessWidget {
             AppButton(
               onTap: () {
                 if (vm.validatePriceForm()) {
-                  // TODO: Submit the form and navigate to success screen
                   debugPrint('Price form is valid, submitting...');
+                  vm.setScreen(Screen.preview);
                 }
               },
-              text: 'Publish Now',
+              text: 'Continue to Preview',
               mainAxisSize: MainAxisSize.min,
-              suffix: Icon(Icons.cloud_upload, color: AppTheme.white),
+              suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
             ),
           ],
         ),

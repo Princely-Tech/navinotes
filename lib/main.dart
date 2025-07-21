@@ -23,7 +23,7 @@ void main() async {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),
         // initialRoute: Routes.noteTemplate,
-        initialRoute: Routes.splash, //TODO uncomment
+        initialRoute: Routes.marketplace, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,
       ),

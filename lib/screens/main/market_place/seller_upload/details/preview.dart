@@ -229,7 +229,7 @@ class SellerUploadPreview extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '\$${(double.tryParse(vm.priceController.text) ?? 0) * 0.1} USD',
+                          '\$${((double.tryParse(vm.priceController.text) ?? 0) * 0.1).toStringAsFixed(2)} USD',
                           style: AppTheme.text.copyWith(
                             color: AppTheme.darkSlateGray,
                             fontSize: 14.0,
@@ -252,7 +252,7 @@ class SellerUploadPreview extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '\$${(double.tryParse(vm.priceController.text) ?? 0) * 0.9} USD',
+                          '\$${((double.tryParse(vm.priceController.text) ?? 0) * 0.9).toStringAsFixed(2)} USD',
                           style: AppTheme.text.copyWith(
                             color: AppTheme.vividRose,
                             fontWeight: FontWeight.w600,
@@ -289,7 +289,7 @@ class SellerUploadPreview extends StatelessWidget {
           children: [
             AppButton(
               onTap: () {
-               // Navigator.pop(context);
+               vm.setScreen(Screen.price);
               },
               text: 'Back to Pricing',
               textColor: AppTheme.darkSlateGray,
@@ -299,7 +299,6 @@ class SellerUploadPreview extends StatelessWidget {
             ),
             AppButton(
               onTap: () {
-                // TODO: Handle publish action
                 debugPrint('Publishing content...');
               },
               text: 'Publish Now',

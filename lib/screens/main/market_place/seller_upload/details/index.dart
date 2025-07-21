@@ -45,11 +45,24 @@ class SellerUploadScreen extends StatelessWidget {
         body: Column(
           children: [
             SellerUploadAppBar(),
-            Expanded(child: SellerUploadPreview(vm: vm)),
+
+
+            Expanded(child: showScreen(vm)),
             SellerUploadFooter(),
           ],
         ),
       );})
     );
+  }
+
+
+  showScreen(SellerUploadVm vm){
+    if (vm.currentScreen == Screen.details) {
+      return SellerUploadMain(vm: vm);
+    }else if (vm.currentScreen == Screen.price) {
+      return SellerUploadPrice(vm: vm);
+    }else if (vm.currentScreen == Screen.preview) {
+      return SellerUploadPreview(vm: vm);
+    }
   }
 }

@@ -146,7 +146,7 @@ class MinimalistNotePageMain extends StatelessWidget {
                       'Last edited: $lastEdited',
                       style: AppTheme.text.copyWith(
                         color: AppTheme.asbestos,
-                        fontSize: 12,
+                        fontSize: 12.0,
                       ),
                     ),
                   ],
