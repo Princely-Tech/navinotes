@@ -14,4 +14,7 @@ class ApiEndpoints {
 
   // boards
   static const String boardSync = '/board/sync';
+
+  // content
+  static const String contentSync = '/content/sync';
 }

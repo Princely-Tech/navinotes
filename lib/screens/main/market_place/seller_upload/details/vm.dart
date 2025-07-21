@@ -434,9 +434,16 @@ class SellerUploadVm extends ChangeNotifier {
   }
 
   uploadContent() async {
-    // TODO later
     debugPrint('uploadContent');
     await board.syncToBackend(apiServiceProvider);
+
+    // sync content
+    board.getContents(forceRefresh: true).then((contents) {
+      for (var content in contents) {
+        content.syncToBackend(apiServiceProvider);
+      }
+    });
+
   }
 
   uploadMarketPlace() async {

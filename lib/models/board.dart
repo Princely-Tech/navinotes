@@ -18,6 +18,9 @@ class Board {
   final int updatedAt;
   final int? syncedAt;
 
+  final bool
+  coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
+
   Board({
     this.id,
     required this.guid,
@@ -34,6 +37,7 @@ class Board {
     required this.createdAt,
     required this.updatedAt,
     this.syncedAt,
+    this.coverImageNeedSync = false,
   });
 
   BoardTypeCodes? get boardType {
@@ -86,6 +90,7 @@ class Board {
     'created_at': createdAt,
     'updated_at': updatedAt,
     'synced_at': syncedAt,
+    'cover_image_need_sync': coverImageNeedSync,
   };
 
   factory Board.fromMap(Map<String, dynamic> map) => Board(
@@ -104,6 +109,7 @@ class Board {
     createdAt: map['created_at'],
     updatedAt: map['updated_at'],
     syncedAt: map['synced_at'],
+    coverImageNeedSync: map['cover_image_need_sync'],
   );
 
   // Cache for board contents
@@ -138,7 +144,25 @@ class Board {
     _hasFetchedContents = false;
   }
 
+  // TODO: Thompson correct this. When you save the image/file to storage, extract it back here
+  File? getCoverImageFile() {
+    if (coverImage == null) {
+      return null;
+    }
+    return File(coverImage!);
+  }
+
   syncToBackend(ApiServiceProvider apiServiceProvider) async {
+    Map<String, File> files = {};
+
+    if (coverImageNeedSync) {
+      File? coverImageFile = getCoverImageFile();
+
+      if (coverImageFile != null) {
+        files = {'cover_image_file': coverImageFile};
+      }
+    }
+
     final body = FormDataRequest.post(
       ApiEndpoints.boardSync,
       body: {
@@ -146,7 +170,7 @@ class Board {
         'user_id': userId,
         'type': type,
         'name': name,
-        'customization': jsonEncode(customization),
+        'customization': customization,
         'is_public': isPublic ? 1 : 0,
         'description': description,
         'subject': subject,
@@ -156,7 +180,9 @@ class Board {
         'created_at': createdAt,
         'updated_at': updatedAt,
         'synced_at': syncedAt,
+        'cover_image_need_sync': coverImageNeedSync,
       },
+      files: files,
     );
 
     final response = await apiServiceProvider.apiService.sendFormDataRequest(
