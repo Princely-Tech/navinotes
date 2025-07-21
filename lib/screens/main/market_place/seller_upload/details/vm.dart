@@ -11,7 +11,6 @@ class SellerUploadVm extends ChangeNotifier {
 
   ApiServiceProvider apiServiceProvider;
 
-
   Screen currentScreen = Screen.details;
 
   // Form fields
@@ -56,8 +55,6 @@ class SellerUploadVm extends ChangeNotifier {
   final priceController = TextEditingController();
   final discountController = TextEditingController(text: '0');
   final customLicenseController = TextEditingController();
-  String selectedCurrency = 'NGN';
-  String selectedLicense = 'Standard';
   bool agreeToTerms = false;
   bool agreeToRefundPolicy = false;
   bool agreeToCopyrightPolicy = false;
@@ -186,7 +183,11 @@ class SellerUploadVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  SellerUploadVm({required this.scaffoldKey, required this.board, required this.apiServiceProvider});
+  SellerUploadVm({
+    required this.scaffoldKey,
+    required this.board,
+    required this.apiServiceProvider,
+  });
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
@@ -360,17 +361,6 @@ class SellerUploadVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Price screen methods
-  void setCurrency(String currency) {
-    selectedCurrency = currency;
-    notifyListeners();
-  }
-
-  void setLicenseType(String license) {
-    selectedLicense = license;
-    notifyListeners();
-  }
-
   void setAgreeToTerms(bool value) {
     agreeToTerms = value;
     notifyListeners();
@@ -434,8 +424,10 @@ class SellerUploadVm extends ChangeNotifier {
   }
 
   uploadContent() async {
-    debugPrint('uploadContent');
+    debugPrint('board sync started');
     await board.syncToBackend(apiServiceProvider);
+
+    debugPrint('board sync completed');
 
     // sync content
     board.getContents(forceRefresh: true).then((contents) {
@@ -443,11 +435,50 @@ class SellerUploadVm extends ChangeNotifier {
         content.syncToBackend(apiServiceProvider);
       }
     });
+  }
 
+  getPriceCent() {
+    int price = int.tryParse(priceController.text) ?? 0;
+    return price * 100;
   }
 
   uploadMarketPlace() async {
+    var previewFiles = [];
+    for (var previewImage in previewImages) {
+
+      final type = lookupMimeType(previewImage.path);
+      final contentType = type != null ? MediaType.parse(type) : null;
+
+      previewFiles.add(
+        MultipartFile.fromFileSync(previewImage.path, contentType: contentType),
+      );
+    }
+
     // make a submit of the data.
+    final body = FormDataRequest.post(
+      ApiEndpoints.marketPlaceSubmit,
+      body: {
+        'board_guid': board.guid,
+        'title': titleController.text,
+        'description': descriptionController.text,
+        'category': categoryController.text,
+        'sub_category': subCategoryController.text,
+        'tags[]': tags,
+        'target_audience': targetAudience,
+        'whats_included[]': included,
+        'price': getPriceCent(),
+        'discount_percent': discountController.text,
+        'preview_images_files[]': previewFiles,
+        
+      },
+      files: {'cover_image_file': coverImage!},
+    );
+
+    final response = await apiServiceProvider.apiService.sendFormDataRequest(
+      body,
+    );
+
+    return response;
   }
 
   @override

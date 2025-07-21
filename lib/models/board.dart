@@ -18,8 +18,7 @@ class Board {
   final int updatedAt;
   final int? syncedAt;
 
-  final bool
-  coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
+  final bool coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
 
   Board({
     this.id,
@@ -109,7 +108,7 @@ class Board {
     createdAt: map['created_at'],
     updatedAt: map['updated_at'],
     syncedAt: map['synced_at'],
-    coverImageNeedSync: map['cover_image_need_sync'],
+    coverImageNeedSync: map['cover_image_need_sync']??false,
   );
 
   // Cache for board contents
@@ -146,7 +145,7 @@ class Board {
 
   // TODO: Thompson correct this. When you save the image/file to storage, extract it back here
   File? getCoverImageFile() {
-    if (coverImage == null) {
+    if (coverImage == null || coverImage == "") {
       return null;
     }
     return File(coverImage!);
@@ -155,13 +154,13 @@ class Board {
   syncToBackend(ApiServiceProvider apiServiceProvider) async {
     Map<String, File> files = {};
 
-    if (coverImageNeedSync) {
-      File? coverImageFile = getCoverImageFile();
+    // if (coverImageNeedSync == true) {
+    //   File? coverImageFile = getCoverImageFile();
 
-      if (coverImageFile != null) {
-        files = {'cover_image_file': coverImageFile};
-      }
-    }
+    //   if (coverImageFile != null) {
+    //     files = {'cover_image_file': coverImageFile};
+    //   }
+    // }
 
     final body = FormDataRequest.post(
       ApiEndpoints.boardSync,
@@ -177,10 +176,7 @@ class Board {
         'level': level,
         'term': term,
         'cover_image': coverImage,
-        'created_at': createdAt,
-        'updated_at': updatedAt,
         'synced_at': syncedAt,
-        'cover_image_need_sync': coverImageNeedSync,
       },
       files: files,
     );

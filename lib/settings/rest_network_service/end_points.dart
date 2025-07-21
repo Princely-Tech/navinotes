@@ -17,4 +17,7 @@ class ApiEndpoints {
 
   // content
   static const String contentSync = '/content/sync';
+
+  // market place
+  static const String marketPlaceSubmit = '/marketplace';
 }

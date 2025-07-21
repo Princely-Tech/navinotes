@@ -15,10 +15,8 @@ class Content {
   final String title;
   final String? coverImage;
 
-  final bool
-  coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
-  final bool
-  fileNeedSync; // set this to true any time file is changed. The syncToBackend method will handle the rest.
+  final bool coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
+  final bool fileNeedSync; // set this to true any time file is changed. The syncToBackend method will handle the rest.
 
   Content({
     this.id,
@@ -70,20 +68,20 @@ class Content {
     createdAt: map['created_at'],
     updatedAt: map['updated_at'],
     syncedAt: map['synced_at'],
-    coverImageNeedSync: map['cover_image_need_sync'],
-    fileNeedSync: map['file_need_sync'],
+    coverImageNeedSync: map['cover_image_need_sync']??false,
+    fileNeedSync: map['file_need_sync']??false,
   );
 
   // TODO: Thompson correct this. When you save the image/file to storage, extract it back here
   File? getCoverImageFile() {
-    if (coverImage == null) {
+    if (coverImage == null || coverImage == "") {
       return null;
     }
     return File(coverImage!);
   }
 
   File? getFile() {
-    if (file == null) {
+    if (file == null || file == "") {
       return null;
     }
     return File(file!);
@@ -108,7 +106,6 @@ class Content {
       }
     }
 
-
     final body = FormDataRequest.post(
       ApiEndpoints.contentSync,
       body: {
@@ -121,8 +118,6 @@ class Content {
         'tags': tags,
         'content': content,
         'file': file,
-        'created_at': createdAt,
-        'updated_at': updatedAt,
         'synced_at': syncedAt,
       },
       files: files,
