@@ -297,15 +297,31 @@ class SellerUploadPreview extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               prefix: Icon(Icons.arrow_back, color: AppTheme.darkSlateGray),
             ),
-            AppButton(
-              onTap: () {
-                debugPrint('Publishing content...');
-                vm.publish();
-              },
-              text: 'Publish Now',
-              mainAxisSize: MainAxisSize.min,
-              suffix: Icon(Icons.cloud_upload, color: AppTheme.white),
-            ),
+            vm.isPublishing
+                ? Center(
+                    child: Column(
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 8),
+                        Text(
+                         vm.publishingStatus,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.darkSlateGray,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : AppButton(
+                  onTap: () {
+                    debugPrint('Publishing content...');
+                    vm.publish();
+                  },
+                  text: 'Publish Now',
+                  mainAxisSize: MainAxisSize.min,
+                  suffix: Icon(Icons.cloud_upload, color: AppTheme.white),
+                ),
           ],
         ),
 

@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 // define enum for screens
 enum Screen { details, price, preview }
@@ -391,6 +392,11 @@ class SellerUploadVm extends ChangeNotifier {
   }
 
   publish() async {
+    if(isPublishing){
+      debugPrint('Already publishing');
+      return;
+    }
+
     isPublishing = true;
     publishingStatus = "Uploading Content...";
     debugPrint('publishingStatus: $publishingStatus');
@@ -418,9 +424,18 @@ class SellerUploadVm extends ChangeNotifier {
       return;
     }
 
-    publishingStatus = "Product uploaded successfully";
+    publishingStatus = "Product uploaded successfully. Redirecting...";
+    notifyListeners();
+
+    //delay
+    await Future.delayed(const Duration(seconds: 2));
     isPublishing = false;
     notifyListeners();
+    // navigate to marketplace    
+    NavigationHelper.pushReplacement(Routes.myStore);
+    
+
+
   }
 
   uploadContent() async {

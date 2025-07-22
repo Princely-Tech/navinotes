@@ -141,6 +141,9 @@ class DatabaseHelper {
     NoteSortType sortType = NoteSortType.updatedAt,
   }) async {
     String sortOrder = 'DESC';
+    if (sortType == NoteSortType.createdAt) {
+      sortOrder = 'ASC';
+    }
     final sortBy = sortType.toString();
     final db = await instance.database;
     final result = await db.query('boards', orderBy: '$sortBy $sortOrder');
