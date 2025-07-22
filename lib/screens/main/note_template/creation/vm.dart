@@ -15,7 +15,7 @@ class NoteCreationVm extends ChangeNotifier {
   TextEditingController titleController = TextEditingController();
 
   void initialize() {
-    richEditorController.readOnly = true; //TODO make false
+    richEditorController.readOnly = false; //TODO make false
     getContent();
     notifyListeners();
 

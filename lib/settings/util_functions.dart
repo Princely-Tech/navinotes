@@ -102,7 +102,10 @@ bool checkStringMatch(String str1, String str2) {
   return str1.toLowerCase().contains(str2.toLowerCase());
 }
 
-bool getBoolFromInt(int value) {
+bool getBoolFromInt(value) {
+  if (value == null) {
+    return false;
+  }
   return value == 1;
 }
 

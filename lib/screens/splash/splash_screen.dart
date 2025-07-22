@@ -52,11 +52,11 @@ class _SplashScreenState extends State<SplashScreen>
       final isLoggedIn = context.read<SessionManager>().isLoggedIn();
 
       //TODO delete this
-      List<Board> boards = await DatabaseHelper.instance.getAllBoards();
-      Board board = boards.last;
-       List<Content> contents = await DatabaseHelper.instance.getAllContents(
-        board.id!,
-      );
+      // List<Board> boards = await DatabaseHelper.instance.getAllBoards();
+      // Board board = boards.last;
+      //  List<Content> contents = await DatabaseHelper.instance.getAllContents(
+      //   board.id!,
+      // );
 
       // // // DatabaseHelper.instance.deleteContent(3);
       // // // DatabaseHelper.instance.deleteContent(2);
