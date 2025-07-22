@@ -15,8 +15,10 @@ class Content {
   final String title;
   final String? coverImage;
 
-  final bool coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
-  final bool fileNeedSync; // set this to true any time file is changed. The syncToBackend method will handle the rest.
+  final bool
+  coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
+  final bool
+  fileNeedSync; // set this to true any time file is changed. The syncToBackend method will handle the rest.
 
   Content({
     this.id,
@@ -50,8 +52,8 @@ class Content {
     'created_at': createdAt,
     'updated_at': updatedAt,
     'synced_at': syncedAt,
-    'cover_image_need_sync': coverImageNeedSync,
-    'file_need_sync': fileNeedSync,
+    'cover_image_need_sync': getIntFromBool(coverImageNeedSync),
+    'file_need_sync': getIntFromBool(fileNeedSync),
   };
 
   factory Content.fromMap(Map<String, dynamic> map) => Content(
@@ -68,9 +70,38 @@ class Content {
     createdAt: map['created_at'],
     updatedAt: map['updated_at'],
     syncedAt: map['synced_at'],
-    coverImageNeedSync: map['cover_image_need_sync']??false,
-    fileNeedSync: map['file_need_sync']??false,
+    coverImageNeedSync: getBoolFromInt(map['cover_image_need_sync']),
+    fileNeedSync: getBoolFromInt(map['file_need_sync']),
   );
+
+  Content getUpdatedContent({
+    String? title,
+    String? coverImage,
+    String? content,
+    String? file,
+    int? updatedAt,
+    int? syncedAt,
+    bool? coverImageNeedSync,
+    bool? fileNeedSync,
+  }) {
+    return Content(
+      id: id,
+      guid: guid,
+      title: title ?? this.title,
+      coverImage: coverImage ?? this.coverImage,
+      type: type,
+      metaData: metaData,
+      boardId: boardId,
+      tags: tags,
+      content: content ?? this.content,
+      file: file ?? this.file,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      coverImageNeedSync: coverImageNeedSync ?? this.coverImageNeedSync,
+      fileNeedSync: fileNeedSync ?? this.fileNeedSync,
+    );
+  }
 
   // TODO: Thompson correct this. When you save the image/file to storage, extract it back here
   File? getCoverImageFile() {

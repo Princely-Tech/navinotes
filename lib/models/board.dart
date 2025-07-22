@@ -18,7 +18,8 @@ class Board {
   final int updatedAt;
   final int? syncedAt;
 
-  final bool coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
+  final bool
+  coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
 
   Board({
     this.id,
@@ -108,7 +109,7 @@ class Board {
     createdAt: map['created_at'],
     updatedAt: map['updated_at'],
     syncedAt: map['synced_at'],
-    coverImageNeedSync: map['cover_image_need_sync']??false,
+    coverImageNeedSync: getBoolFromInt(map['cover_image_need_sync']),
   );
 
   // Cache for board contents

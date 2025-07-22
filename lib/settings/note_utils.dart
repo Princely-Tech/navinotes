@@ -75,3 +75,23 @@ Future<void> createContentInDb({
     setLoading(false);
   }
 }
+String noteSortTypeToString(NoteSortType sortType) {
+  switch (sortType) {
+    case NoteSortType.updatedAt:
+      return 'Last modified';
+    case NoteSortType.createdAt:
+      return 'Date created';
+  }
+}
+
+NoteSortType stringToNoteSortType(String sortType) {
+  switch (sortType) {
+    case 'Last modified':
+      return NoteSortType.updatedAt;
+    case 'Date created':
+      return NoteSortType.createdAt;
+    default:
+      throw 'Invalid sort type: $sortType';
+  }
+}
+

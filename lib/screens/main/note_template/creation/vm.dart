@@ -11,6 +11,36 @@ class NoteCreationVm extends ChangeNotifier {
     required this.creationProp,
     required this.context,
   }) : template = creationProp?.template ?? noteTemplateBlank;
+  final FocusNode titleFocusNode = FocusNode();
+  TextEditingController titleController = TextEditingController();
+
+  void initialize() {
+    richEditorController.readOnly = true; //TODO make false
+    getContent();
+    notifyListeners();
+
+    titleFocusNode.addListener(() {
+      if (!titleFocusNode.hasFocus) {
+        updateContentInDb();
+      }
+    });
+  }
+
+  void updateContentInDb() {
+    try {
+      if (isNotNull(content)) {
+        final newContent = content!.getUpdatedContent(
+          title: titleController.text,
+        );
+        dbHelper.updateContent(newContent);
+      }
+    } catch (err) {
+      ErrorDisplayService.showErrorMessage(
+        context,
+        'Could not update content!',
+      );
+    }
+  }
 
   Content? content;
   bool fetchingContent = true;
@@ -30,12 +60,6 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   QuillController richEditorController = QuillController.basic();
-
-  void initialize() {
-    richEditorController.readOnly = true; //TODO make false
-    getContent();
-    notifyListeners();
-  }
 
   @override
   void dispose() {
@@ -60,20 +84,20 @@ class NoteCreationVm extends ChangeNotifier {
     return contents;
   }
 
-  void updateLoading(bool loading) {
+  void updateFetchingContent(bool loading) {
     fetchingContent = loading;
     notifyListeners();
   }
 
   void getContent() async {
     try {
-      updateLoading(true);
+      updateFetchingContent(true);
       Content? response = await dbHelper.getContentById(
         creationProp!.contentId,
       );
       if (isNotNull(response)) {
         content = response;
-        print(content?.boardId);
+        titleController.text = content!.title;
         notifyListeners();
       }
     } catch (e) {
@@ -84,7 +108,7 @@ class NoteCreationVm extends ChangeNotifier {
         );
       }
     } finally {
-      updateLoading(false);
+      updateFetchingContent(false);
     }
   }
 
@@ -92,6 +116,8 @@ class NoteCreationVm extends ChangeNotifier {
     isCreatingNote = loading;
     notifyListeners();
   }
+
+  void getAllBoards() {}
 
   Future<void> createNote() async {
     if (isNull(content)) {
@@ -104,6 +130,11 @@ class NoteCreationVm extends ChangeNotifier {
       boardId: content!.boardId,
       setLoading: _setCreateNoteLoading,
     );
+    getContent();
+  }
+
+  Future<void> goToRoute(String route) async {
+    await NavigationHelper.push(route);
     getContent();
   }
 }

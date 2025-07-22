@@ -122,7 +122,7 @@ class Routes {
   static const noteTimeline = 'noteTimeline';
   static const noteKanban = 'noteKanban';
   static const noteLabReport = 'noteLabReport';
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+  static const pomodoroTimer = 'pomodoroTimer'; //TODO create screen
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
   // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';

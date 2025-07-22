@@ -54,27 +54,27 @@ class _SplashScreenState extends State<SplashScreen>
       //TODO delete this
       List<Board> boards = await DatabaseHelper.instance.getAllBoards();
       Board board = boards.last;
-      // print(board.id);
-
-      // // DatabaseHelper.instance.deleteContent(3);
-      // // DatabaseHelper.instance.deleteContent(2);
-
-      List<Content> contents = await DatabaseHelper.instance.getAllContents(
+       List<Content> contents = await DatabaseHelper.instance.getAllContents(
         board.id!,
       );
+
+      // // // DatabaseHelper.instance.deleteContent(3);
+      // // // DatabaseHelper.instance.deleteContent(2);
+
+     
       // print(contents);
       // NavigationHelper.navigateToBoardNotes(board);
       // NavigationHelper.pushReplacement(
       //   Routes.noteTemplate,
       //   arguments: board,
       // );
-      NavigationHelper.pushReplacement(
-        Routes.noteCreation,
-        arguments: NoteCreationProp(
-          template: noteTemplateBlank,
-          contentId: contents[0].id!,
-        ),
-      );
+      // NavigationHelper.pushReplacement(
+      //   Routes.noteCreation,
+      //   arguments: NoteCreationProp(
+      //     template: noteTemplateBlank,
+      //     contentId: contents[0].id!,
+      //   ),
+      // );
 
       // Small delay to ensure smooth transition
       //TODO UNCOMMENT

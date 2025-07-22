@@ -22,6 +22,7 @@ class CustomProviders extends StatelessWidget {
               ),
         ),
         ChangeNotifierProvider(create: (_) => sessionManager),
+        ChangeNotifierProvider(create: (_) => PomodoroTimer()),
       ],
       child: Builder(
         builder: (context) {

@@ -24,27 +24,6 @@ generateGUID(int userId) {
   return "0${userId}0_${Uuid().v4()}";
 }
 
-
-String noteSortTypeToString(NoteSortType sortType) {
-  switch (sortType) {
-    case NoteSortType.updatedAt:
-      return 'Last modified';
-    case NoteSortType.createdAt:
-      return 'Date created';
-  }
-}
-
-NoteSortType stringToNoteSortType(String sortType) {
-  switch (sortType) {
-    case 'Last modified':
-      return NoteSortType.updatedAt;
-    case 'Date created':
-      return NoteSortType.createdAt;
-    default:
-      throw 'Invalid sort type: $sortType';
-  }
-}
-
 QuillSimpleToolbarConfig buildCustomToolbarConfig({
   bool showBoldButton = false,
   bool showItalicButton = false,
@@ -123,3 +102,10 @@ bool checkStringMatch(String str1, String str2) {
   return str1.toLowerCase().contains(str2.toLowerCase());
 }
 
+bool getBoolFromInt(int value) {
+  return value == 1;
+}
+
+int getIntFromBool(bool value) {
+  return value ? 1 : 0;
+}
