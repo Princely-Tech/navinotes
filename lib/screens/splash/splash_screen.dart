@@ -68,23 +68,23 @@ class _SplashScreenState extends State<SplashScreen>
       //   Routes.noteTemplate,
       //   arguments: board,
       // );
-      NavigationHelper.pushReplacement(
-        Routes.noteCreation,
-        arguments: NoteCreationProp(
-          template: noteTemplateBlank,
-          contentId: contents[0].id!,
-        ),
-      );
+      // NavigationHelper.pushReplacement(
+      //   Routes.noteCreation,
+      //   arguments: NoteCreationProp(
+      //     template: noteTemplateBlank,
+      //     contentId: contents[0].id!,
+      //   ),
+      // );
 
       // Small delay to ensure smooth transition
       //TODO UNCOMMENT
-      // await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      // if (mounted) {
-      //   Navigator.of(
-      //     context,
-      //   ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
-      // }
+      if (mounted) {
+        Navigator.of(
+          context,
+        ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
+      }
     }
   }
 
