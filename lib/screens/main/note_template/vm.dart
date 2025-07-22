@@ -82,7 +82,7 @@ class NoteTemplateVm extends ChangeNotifier {
         content: '', // Empty by default
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
-        title: 'New Note',
+        title: 'New Note - ${selectedTemplate.type.toString()}',
         coverImage: null,
       );
       // // // Insert into database
@@ -102,14 +102,10 @@ class NoteTemplateVm extends ChangeNotifier {
       debugPrint('Created content $contentId');
 
       // Navigate based on the template
-      if (isNotNull(selectedTemplate.route)) {
-        NavigationHelper.navigateToNoteTemplateRoute(
-          selectedTemplate.route!,
-          contentId,
-        );
-      } else {
-        NavigationHelper.navigateToNoteCreation(selectedTemplate, contentId);
-      }
+      NavigationHelper.navigateToNoteWithTemplate(
+        template: selectedTemplate,
+        contentId: contentId,
+      );
     } catch (e) {
       debugPrint('Error creating note: $e');
       if (context.mounted) {

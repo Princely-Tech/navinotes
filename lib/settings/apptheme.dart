@@ -72,7 +72,7 @@ class AppTheme {
   static const Color softCoral = Color(0xFFF87171);
   static const Color violet = Color(0xFFA78BFA);
   static const Color lightBlue = Color(0xFF60A5FA);
-  static const Color whiteSmoke = Color(0xFFF9FAFB);
+  static const Color whiteSmoke = Color(0xFFF9FAFB); //MAY be the default page bg aside white
   static const Color burntSienna = Color(0xFFB45309);
   static const Color royalViolet = Color(0xFF6D28D9);
   static const Color blushPink = Color(0xFFFECACA);

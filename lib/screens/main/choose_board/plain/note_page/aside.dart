@@ -1,11 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:navinotes/models/packages.dart';
-import 'package:navinotes/providers/layout.dart';
-import 'package:navinotes/screens/main/choose_board/plain/note_page/shared.dart';
-import 'package:navinotes/screens/main/choose_board/plain/note_page/vm.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'shared.dart';
+import 'vm.dart';
+import 'package:navinotes/packages.dart';
 
 class BoardPlainNotePageAside extends StatelessWidget {
   const BoardPlainNotePageAside({super.key});
@@ -13,15 +8,15 @@ class BoardPlainNotePageAside extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
-      builder: (context, layoutVm, child) {
+      builder: (_, layoutVm, _) {
         return Consumer<BoardPlainNotePageVm>(
-          builder: (context, vm, child) {
+          builder: (_, vm, _) {
             return Container(
               width: double.infinity,
               decoration: BoxDecoration(
                 color: AppTheme.white,
                 border: Border(
-                  right: BorderSide(width: 2, color: AppTheme.lightGray),
+                  left: BorderSide(width: 2, color: AppTheme.lightGray),
                 ),
               ),
               child: Column(
@@ -34,7 +29,9 @@ class BoardPlainNotePageAside extends StatelessWidget {
                         children: [
                           VisibleController(
                             mobile: getMenuVisible(layoutVm.deviceType),
-                            child: Column(children: [_actionRow(vm.board!), _divider()]),
+                            child: Column(
+                              children: [_actionRow(vm.board!), _divider()],
+                            ),
                           ),
                           _boardDetails(),
                           _divider(),
@@ -59,7 +56,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
     return Row(
       spacing: 10,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [NewNotesButton(isAside: true, board: board), NotesAppBarActions()],
+      children: [NewNotesButton(isAside: true), NotesAppBarActions()],
     );
   }
 
@@ -119,19 +116,49 @@ class BoardPlainNotePageAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 30,
-      children: [
-        Text('Recently Viewed', style: AppTheme.text),
-        _recentItem(title: 'Wave Properties', lastEdited: '2 hours ago'),
-        _recentItem(title: 'Newton\'s Laws', lastEdited: 'Yesterday'),
-        _recentItem(title: 'Thermodynamics', lastEdited: '3 days ago'),
-      ],
+    return Consumer<BoardPlainNotePageVm>(
+      builder: (_, vm, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 15,
+          children: [
+            Text('Recently Viewed', style: AppTheme.text),
+            FutureBuilder(
+              future: vm.getRecentContents(3),
+              builder: (_, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text(
+                    'Failed to load recent notes',
+                    style: AppTheme.text.copyWith(color: AppTheme.coralRed),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Text('No recent notes found', style: AppTheme.text);
+                }
+                final recentNotes = snapshot.data!;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 15,
+                  children: [
+                    for (final note in recentNotes)
+                      _recentItem(
+                        title: note.title,
+                        lastEdited: formatRelativeTime(note.updatedAt),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
+        );
+        // return FutureBuilder<List<Content>>(builder: (context, snapshot) {});
+      },
     );
   }
 
   Widget _tags() {
+    //TODO return to this
     return Column(
       spacing: 15,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,19 +239,38 @@ class BoardPlainNotePageAside extends StatelessWidget {
   }
 
   Widget _boardDetails() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 15,
-      children: [
-        Text('Board Details', style: AppTheme.text.copyWith(fontSize: 18.0)),
-        _detailItem(
-          title: 'Created',
-          value: 'April 10, 2025',
-          icon: Images.calender,
-        ),
-        _detailItem(title: 'Pages', value: '8 note pages', icon: Images.file),
-        _detailItem(title: 'Owner', value: 'John Doe', icon: Images.person),
-      ],
+    return Consumer<SessionManager>(
+      builder: (_, sessionVm, _) {
+        return Consumer<BoardPlainNotePageVm>(
+          builder: (_, vm, _) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 15,
+              children: [
+                Text(
+                  'Board Details',
+                  style: AppTheme.text.copyWith(fontSize: 18.0),
+                ),
+                _detailItem(
+                  title: 'Created',
+                  value: formatUnixTimestamp(vm.board!.createdAt),
+                  icon: Images.calender,
+                ),
+                _detailItem(
+                  title: 'Pages',
+                  value: '${vm.contents.length} note pages',
+                  icon: Images.file,
+                ),
+                _detailItem(
+                  title: 'Owner',
+                  value: sessionVm.getName() ?? '',
+                  icon: Images.person,
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -55,6 +55,18 @@ class NavigationHelper {
     push(Routes.noteTemplate, arguments: board);
   }
 
+  //Note creation
+  static navigateToNoteWithTemplate({
+    required BoardNoteTemplate template,
+    required int contentId,
+  }) async {
+    if (isNotNull(template.route)) {
+      return navigateToNoteTemplateRoute(template.route!, contentId);
+    } else {
+      return navigateToNoteCreation(template, contentId);
+    }
+  }
+
   static void navigateToNoteCreation(
     BoardNoteTemplate template,
     int contentId,

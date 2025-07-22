@@ -136,12 +136,22 @@ class DatabaseHelper {
     return result.map((json) => Board.fromMap(json)).first;
   }
 
-  Future<List<Content>> getAllContents(int boardId) async {
+  Future<List<Content>> getAllContents(
+    int boardId, {
+    NoteSortType sortType = NoteSortType.updatedAt,
+  }) async {
+    String sortOrder = 'DESC';
+    if (sortType == NoteSortType.createdAt) {
+      sortOrder = 'ASC';
+    }
     final db = await instance.database;
+    final sortBy = sortType.toString();
+    debugPrint('Getting contents of $boardId sorted by $sortBy $sortOrder');
     final result = await db.query(
       'contents',
       where: 'board_id = ?',
       whereArgs: [boardId],
+      orderBy: '$sortBy $sortOrder',
     );
     return result.map((json) => Content.fromMap(json)).toList();
   }

@@ -20,22 +20,29 @@ T getRandomListElement<T>(List<T> items) {
   return items[random.nextInt(items.length)];
 }
 
-double calculateTextWidth(String text, TextStyle style) {
-  final TextPainter textPainter = TextPainter(
-    text: TextSpan(text: text, style: style),
-    maxLines: 1,
-    textDirection: TextDirection.ltr,
-  )..layout();
-
-  return textPainter.width;
-}
-
 generateGUID(int userId) {
   return "0${userId}0_${Uuid().v4()}";
 }
 
-int generateUnixTimestamp() {
-  return DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+String noteSortTypeToString(NoteSortType sortType) {
+  switch (sortType) {
+    case NoteSortType.updatedAt:
+      return 'Last modified';
+    case NoteSortType.createdAt:
+      return 'Date created';
+  }
+}
+
+NoteSortType stringToNoteSortType(String sortType) {
+  switch (sortType) {
+    case 'Last modified':
+      return NoteSortType.updatedAt;
+    case 'Date created':
+      return NoteSortType.createdAt;
+    default:
+      throw 'Invalid sort type: $sortType';
+  }
 }
 
 QuillSimpleToolbarConfig buildCustomToolbarConfig({
@@ -111,11 +118,8 @@ QuillSimpleToolbarConfig buildCustomToolbarConfig({
     showClipboardPaste: showClipboardPaste,
   );
 }
-bool compareStrings(String str1, String str2) {
-  return str1.toLowerCase() == str2.toLowerCase();
+
+bool checkStringMatch(String str1, String str2) {
+  return str1.toLowerCase().contains(str2.toLowerCase());
 }
 
-String formatUnixTimestamp(int timestamp) {
-  final date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-  return DateFormat('MMM d, yyyy').format(date); 
-}

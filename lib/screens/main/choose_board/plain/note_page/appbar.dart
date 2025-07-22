@@ -45,21 +45,20 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
   }
 
   Widget _searchField() {
-    //TODO return to this
-    return Builder(
-      builder: (context) {
-        final vm = context.read<BoardPlainNotePageVm>();
+    return Consumer<BoardPlainNotePageVm>(
+      builder: (_, vm, _) {
         return LoadingIndicator(
           loading: vm.fetchingContent,
           child: SearchDropdownField<Content>(
             suggestionsCallback: (search) {
               return vm.contents
-                  .where((item) => compareStrings(item.type, search))
+                  .where((item) => checkStringMatch(item.title, search))
                   .toList();
             },
-            itemBuilder: (context, item) {
+            itemBuilder: (_, item) {
               return CustomListTile(
-                title: item.type.toString(),
+                onTap: () => vm.goToNotePage(item),
+                title: item.title,
                 color: AppTheme.steelMist,
                 activeColor: AppTheme.strongBlue,
               );
@@ -125,7 +124,7 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
                         TextSpan(
                           text: AppStrings.appName,
                           style: AppTheme.text.copyWith(
-                            color: AppTheme.persianBlue,
+                            color: AppTheme.vividRose,
                             fontSize: 18.0,
                             fontWeight: getFontWeight(500),
                           ),

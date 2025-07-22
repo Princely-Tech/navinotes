@@ -1,4 +1,4 @@
-import 'package:navinotes/packages.dart';import 'vm.dart';
+import 'package:navinotes/packages.dart';
 
 class FlashcardsRight extends StatelessWidget {
   const FlashcardsRight({super.key});

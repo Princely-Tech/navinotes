@@ -5,6 +5,10 @@ class BoardPlainNotePageVm extends ChangeNotifier {
   final Board? board;
   List<Content> contents = [];
   final DatabaseHelper dbHelper = DatabaseHelper.instance;
+  TextEditingController sortByController = TextEditingController(
+    text: noteSortTypeToString(AppConstants.defaultNoteSortType),
+  );
+
   bool fetchingContent = true;
   BuildContext context;
   BoardPlainNotePageVm({
@@ -13,15 +17,30 @@ class BoardPlainNotePageVm extends ChangeNotifier {
     required this.context,
   });
 
+  @override
+  void dispose() {
+    sortByController.dispose();
+    sortByController.removeListener(_onSortByChanged);
+    super.dispose();
+  }
+
+  void _onSortByChanged() {
+    getContents();
+  }
+
   void initialize() async {
     getContents();
+    sortByController.addListener(_onSortByChanged);
   }
 
   void getContents() async {
     try {
       fetchingContent = true;
       notifyListeners();
-      contents = await dbHelper.getAllContents(board!.id!);
+      contents = await dbHelper.getAllContents(
+        board!.id!,
+        sortType: stringToNoteSortType(sortByController.text),
+      );
       notifyListeners();
     } catch (e) {
       if (context.mounted) {
@@ -36,11 +55,35 @@ class BoardPlainNotePageVm extends ChangeNotifier {
     }
   }
 
+  Future<List<Content>> getRecentContents(int count) async {
+    final all = await dbHelper.getAllContents(
+      board!.id!,
+      sortType: NoteSortType.updatedAt,
+    );
+    return all.take(count).toList();
+  }
+
   void openDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
   }
 
-  gotToCreateNotePage(Board board) {
-    NavigationHelper.push(Routes.noteTemplate, arguments: board);
+  void gotToCreateNotePage() async {
+    await NavigationHelper.push(Routes.noteTemplate, arguments: board);
+    getContents();
+  }
+
+  void goToNotePage(Content content) async {
+    if (isNull(content.id)) {
+      ErrorDisplayService.showErrorMessage(context, 'Content ID not found!');
+      return;
+    }
+    BoardNoteTemplate template = getNoteTemplateFromString(
+      content.metaData[ContentMetadataKey.template],
+    );
+    await NavigationHelper.navigateToNoteWithTemplate(
+      template: template,
+      contentId: content.id!,
+    );
+    getContents();
   }
 }

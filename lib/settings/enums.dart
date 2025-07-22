@@ -95,38 +95,55 @@ enum NoteTemplateType {
   @override
   String toString() {
     switch (this) {
-      case NoteTemplateType.blank:
+      case blank:
         return 'Blank Page';
-      case NoteTemplateType.cornell:
+      case cornell:
         return 'Cornell Notes';
-      case NoteTemplateType.lined:
+      case lined:
         return 'Lined Paper';
-      case NoteTemplateType.squared:
+      case squared:
         return 'Squared Paper';
-      case NoteTemplateType.dotted:
+      case dotted:
         return 'Dotted Paper';
-      case NoteTemplateType.kanban:
+      case kanban:
         return 'Kanban Board';
-      case NoteTemplateType.timeline:
+      case timeline:
         return 'Timeline';
-      case NoteTemplateType.compareContrast:
+      case compareContrast:
         return 'Compare & Contrast';
-      case NoteTemplateType.aiFlashcards:
+      case aiFlashcards:
         return 'AI-Generated Flashcards';
-      case NoteTemplateType.flashcards:
+      case flashcards:
         return 'Flashcards';
-      case NoteTemplateType.labReport:
+      case labReport:
         return 'Lab Report Format';
-      case NoteTemplateType.apaFormat:
+      case apaFormat:
         return 'APA Format Guide';
-      case NoteTemplateType.mlaResearch:
+      case mlaResearch:
         return 'MLA Research Format';
-      case NoteTemplateType.comparativeAnalysis:
+      case comparativeAnalysis:
         return 'Comparative Analysis';
-      case NoteTemplateType.criticalReview:
+      case criticalReview:
         return 'Critical Review';
-      case NoteTemplateType.thesisDevelopment:
+      case thesisDevelopment:
         return 'Thesis Development';
+    }
+  }
+}
+
+enum NoteSortType {
+  updatedAt,
+  createdAt;
+
+  bool get isModifiedAt => this == updatedAt;
+
+  @override
+  String toString() {
+    switch (this) {
+      case updatedAt:
+        return 'updated_at';
+      case createdAt:
+        return 'created_at';
     }
   }
 }

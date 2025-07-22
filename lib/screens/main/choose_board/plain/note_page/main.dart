@@ -9,7 +9,6 @@ class BoardPlainNotePageMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<BoardPlainNotePageVm>(
       builder: (_, vm, _) {
-        final board = vm.board;
         return Column(
           children: [
             _header(vm),
@@ -24,12 +23,11 @@ class BoardPlainNotePageMain extends StatelessWidget {
                             ...vm.contents.map(
                               (content) => _noteCard(content: content),
                             ),
-                            if (isNotNull(board))
-                              CreateCard(
-                                width: double.infinity,
-                                onTap: () => vm.gotToCreateNotePage(board!),
-                                text: 'Create New Note Page',
-                              ),
+                            CreateCard(
+                              width: double.infinity,
+                              onTap: () => vm.gotToCreateNotePage(),
+                              text: 'Create New Note Page',
+                            ),
                           ],
 
                           // children: [
@@ -139,71 +137,75 @@ class BoardPlainNotePageMain extends StatelessWidget {
     BoardNoteTemplate template = getNoteTemplateFromString(
       content.metaData[ContentMetadataKey.template],
     );
-    // print(template.type);
-    return Builder(
-      builder: (context) {
+    return Consumer<BoardPlainNotePageVm>(
+      builder: (_, vm, _) {
         Radius radius = Radius.circular(12);
-        return CustomCard(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.iceBlue,
-                  borderRadius: BorderRadius.only(
-                    topLeft: radius,
-                    topRight: radius,
-                  ),
-                ),
-                padding: EdgeInsets.all(20),
-                child: AspectRatio(
-                  aspectRatio: 5 / 2,
-                  child: ImagePlaceHolder(
-                    imagePath: template.image,
-                    isCardHeader: true,
-                    borderRadius: BorderRadius.circular(0),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  spacing: 15,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      content.title,
-                      style: AppTheme.text.copyWith(
-                        color: AppTheme.charcoalBlue,
-                        fontSize: 16.0,
-                      ),
+        return InkWell(
+          onTap: () => vm.goToNotePage(content),
+          child: CustomCard(
+            addBorder: true,
+            addCardShadow: true,
+            padding: EdgeInsets.zero,
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.iceBlue,
+                    borderRadius: BorderRadius.only(
+                      topLeft: radius,
+                      topRight: radius,
                     ),
-                    Row(
-                      spacing: 15,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Last edited: ${formatUnixTimestamp(content.updatedAt)}',
-                            style: AppTheme.text.copyWith(
-                              color: AppTheme.steelMist,
-                              fontSize: 12.0,
+                  ),
+                  padding: EdgeInsets.all(20),
+                  child: AspectRatio(
+                    aspectRatio: 5 / 2,
+                    child: ImagePlaceHolder(
+                      imagePath: template.image,
+                      isCardHeader: true,
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    spacing: 15,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        content.title,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.charcoalBlue,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      Row(
+                        spacing: 15,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Last edited: ${formatUnixTimestamp(content.updatedAt)}',
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.steelMist,
+                                fontSize: 12.0,
+                              ),
                             ),
                           ),
-                        ),
-                        _outlineRow(
-                          outline1: _outline(),
-                          outline2: _outline(
-                            image: Images.img,
-                            color: AppTheme.paleJade,
+                          _outlineRow(
+                            outline1: _outline(),
+                            outline2: _outline(
+                              image: Images.img,
+                              color: AppTheme.paleJade,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -211,12 +213,10 @@ class BoardPlainNotePageMain extends StatelessWidget {
   }
 
   Widget _header(BoardPlainNotePageVm vm) {
-    Board board = vm.board!;
-    // take 13 characters, add ... if longer
-    final title =
-        board.name.length > 13
-            ? '${board.name.substring(0, 13)}...'
-            : board.name;
+    String title = '${vm.contents.length} Note Page';
+    if (vm.contents.length > 1) {
+      title = '${title}s';
+    }
     return Container(
       constraints: BoxConstraints(minHeight: 60),
       decoration: ShapeDecoration(
@@ -276,7 +276,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
                       ),
                     ),
                     _sortBy(),
-                    NewNotesButton(board: board, isAside: false),
+                    NewNotesButton(isAside: false),
                   ],
                 ),
               ),
@@ -288,27 +288,46 @@ class BoardPlainNotePageMain extends StatelessWidget {
   }
 
   Widget _sortBy() {
-    return WidthLimiter(
-      mobile: 210,
-      child: CustomInputField(
-        fillColor: AppTheme.lightAsh,
-        side: BorderSide.none,
-        hintText: 'Last Modified',
-        controller: TextEditingController(text: 'Last modified'),
-        selectItems: ['Last modified', 'Date Created'],
-        style: AppTheme.text.copyWith(color: AppTheme.strongBlue),
-        constraints: BoxConstraints(maxHeight: 40),
-        prefixIcon: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Sort by:',
-              textAlign: TextAlign.center,
-              style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
-            ),
-          ],
-        ),
-      ),
+    return Consumer<BoardPlainNotePageVm>(
+      builder: (_, vm, _) {
+        return ValueListenableBuilder(
+          valueListenable: vm.sortByController,
+          builder: (_, value, _) {
+            final sortByTxt = 'Sort by:';
+            final sortByStyle = AppTheme.text.copyWith(
+              color: AppTheme.darkSlateGray,
+            );
+            final style = AppTheme.text.copyWith(color: AppTheme.strongBlue);
+            final textWidth = calculateTextWidth(value.text, style) + 45;
+            final sortByTextWidth =
+                calculateTextWidth(sortByTxt, sortByStyle) + 30;
+
+            return WidthLimiter(
+              mobile: sortByTextWidth + textWidth,
+              child: CustomInputField(
+                fillColor: AppTheme.lightAsh,
+                side: BorderSide.none,
+                controller: vm.sortByController,
+                selectItems:
+                    NoteSortType.values
+                        .map((type) => noteSortTypeToString(type))
+                        .toList(),
+                style: style,
+                prefixIcon: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      sortByTxt,
+                      textAlign: TextAlign.center,
+                      style: sortByStyle,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

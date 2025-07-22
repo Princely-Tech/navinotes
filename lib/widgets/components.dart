@@ -883,6 +883,7 @@ class CustomListTile extends StatelessWidget {
     required this.title,
     required this.color,
     required this.activeColor,
+    required this.onTap,
   });
   final Widget? leading;
   final bool isActive;
@@ -890,6 +891,7 @@ class CustomListTile extends StatelessWidget {
   final String title;
   final Color color;
   final Color activeColor;
+  final VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -910,7 +912,7 @@ class CustomListTile extends StatelessWidget {
             height: 1.0,
           ),
         ),
-        onTap: () {},
+        onTap: onTap,
       ),
     );
   }
