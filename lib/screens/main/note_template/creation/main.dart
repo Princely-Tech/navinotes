@@ -53,35 +53,44 @@ class NoteCreationMain extends StatelessWidget {
   Widget _header() {
     return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
-        return Consumer<LayoutProviderVm>(
-          builder: (_, layoutVm, _) {
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: AppTheme.lightGray)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                spacing: 10,
-                children: [
-                  _title(),
-                  _timer(),
-                  Row(
+        return Consumer<PomodoroTimer>(
+          builder: (_, pomodorVm, _) {
+            return Consumer<LayoutProviderVm>(
+              builder: (_, layoutVm, _) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: AppTheme.lightGray),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    spacing: 10,
                     children: [
-                      if (layoutVm.deviceType != DeviceType.mobile)
-                        _shareAndAI(vm),
-                      VisibleController(
-                        mobile: true,
-                        desktop: false,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: MenuButton(onPressed: vm.openEndDrawer),
-                        ),
+                      _title(),
+                      if (pomodorVm.isRunning) _timer(pomodorVm),
+                      Row(
+                        children: [
+                          if (layoutVm.deviceType != DeviceType.mobile)
+                            _shareAndAI(vm),
+                          VisibleController(
+                            mobile: true,
+                            desktop: false,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: MenuButton(onPressed: vm.openEndDrawer),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                );
+              },
             );
           },
         );
@@ -106,7 +115,7 @@ class NoteCreationMain extends StatelessWidget {
     );
   }
 
-  Widget _timer() {
+  Widget _timer(PomodoroTimer pomodorVm) {
     return Row(
       spacing: 5,
       children: [
@@ -116,7 +125,7 @@ class NoteCreationMain extends StatelessWidget {
           color: AppTheme.stormGray,
         ),
         Text(
-          '25:00',
+          formatPomodoroTime(pomodorVm.elapsedSeconds),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: const Color(0xFF4B5563),
@@ -146,51 +155,94 @@ class NoteCreationMain extends StatelessWidget {
                 ),
               ),
               Flexible(
-                child: AppButton.text(
-                  onTap: NavigationHelper.pop,
-                  prefix: Icon(
-                    Icons.arrow_back,
-                    color: const Color(0xFF4B5563),
-                  ),
-                  child: Flexible(
-                    child: Text.rich(
-                      overflow: TextOverflow.ellipsis,
-                      TextSpan(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      onPressed: NavigationHelper.pop,
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: const Color(0xFF4B5563),
+                      ),
+                    ),
+                    Flexible(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          TextSpan(
-                            text: 'Cell Structure & Function',
-                            style: TextStyle(
-                              color: const Color(0xFF4B5563),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500,
-                              height: 1.43,
+                          Flexible(
+                            child: ValueListenableBuilder(
+                              valueListenable: vm.titleController,
+                              builder: (_, controller, __) {
+                                final style = TextStyle(
+                                  color: const Color(0xFF4B5563),
+                                  fontSize: 14,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.43,
+                                );
+                                final textWidth =
+                                    calculateTextWidth(controller.text, style) +
+                                    30;
+                                return WidthLimiter(
+                                  mobile: textWidth,
+                                  child: CustomInputField(
+                                    focusNode: vm.titleFocusNode,
+                                    controller: vm.titleController,
+                                    contentPadding: EdgeInsets.zero,
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    style: style,
+                                  ),
+                                );
+                              },
                             ),
                           ),
-                          TextSpan(
-                            text: ' • ',
-                            style: TextStyle(
-                              color: const Color(0xFF9CA3AF),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 1.43,
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'Biology 101',
-                            style: TextStyle(
-                              color: const Color(0xFF4B5563),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 1.43,
+                          VisibleController(
+                            mobile: isNotNull(vm.content),
+                            child: FutureBuilder(
+                              future: DatabaseHelper.instance.getBoard(
+                                vm.content!.boardId,
+                              ),
+                              builder: (context, snapshot) {
+                                final board = snapshot.data;
+                                if (isNotNull(board)) {
+                                  return Text.rich(
+                                    overflow: TextOverflow.ellipsis,
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: '• ',
+                                          style: TextStyle(
+                                            color: const Color(0xFF9CA3AF),
+                                            fontSize: 14,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.43,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: board!.name,
+                                          style: TextStyle(
+                                            color: const Color(0xFF4B5563),
+                                            fontSize: 14,
+                                            fontFamily: 'Inter',
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.43,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ],

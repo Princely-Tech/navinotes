@@ -13,7 +13,7 @@ void main() async {
     CustomProviders(
       sessionManager: sessionManager,
       child: MaterialApp(
-        localizationsDelegates: const [ 
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

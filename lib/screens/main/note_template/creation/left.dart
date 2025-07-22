@@ -22,7 +22,6 @@ class NoteCreationLeft extends StatelessWidget {
                 children: [
                   _logo(),
                   Column(children: [_searchField(), _createNoteButton()]),
-
                   _noteBooks(),
                   _studyTool(),
                   _tags(),
@@ -36,6 +35,7 @@ class NoteCreationLeft extends StatelessWidget {
   }
 
   Widget _tags() {
+     //TODO ask about this
     return _section(
       title: 'Tags',
       children: [
@@ -62,11 +62,14 @@ class NoteCreationLeft extends StatelessWidget {
         _listTile(
           icon: _tileIcon(icon: Images.clock, color: AppTheme.orange),
           title: 'Pomodoro Timer',
+          route: Routes.pomodoroTimer,
         ),
         _listTile(
           icon: _tileIcon(icon: Images.stack, color: AppTheme.teal),
           title: 'Flashcards',
+          route: Routes.flashCards,
         ),
+        //TODO ask about this
         _listTile(
           icon: _tileIcon(icon: Images.chart3, color: Color(0xFF2D3748)),
           title: 'Study Analytics',
@@ -76,31 +79,65 @@ class NoteCreationLeft extends StatelessWidget {
   }
 
   Widget _noteBooks() {
-    return _section(
-      title: 'NOTEBOOKS',
-      children: [
-        _listTile(
-          icon: _tileIcon(icon: Images.book, color: AppTheme.vividRose),
-          title: 'Biology 101',
-          count: 12,
-          isActive: true,
-        ),
-        _listTile(
-          icon: _tileIcon(icon: Images.book, color: AppTheme.vividBlue),
-          title: 'Psychology',
-          count: 8,
-        ),
-        _listTile(
-          icon: _tileIcon(icon: Images.book, color: AppTheme.emerald),
-          title: 'Chemistry',
-          count: 5,
-        ),
-        _listTile(
-          icon: _tileIcon(icon: Images.book, color: AppTheme.mediumOrchid),
-          title: 'Literature',
-          count: 3,
-        ),
-      ],
+    String title = 'NOTEBOOKS';
+    return Consumer<NoteCreationVm>(
+      builder: (_, vm, _) {
+        return FutureBuilder<List<Board>>(
+          future: DatabaseHelper.instance.getAllBoards(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _section(
+                title: title,
+                children: [Center(child: CircularProgressIndicator())],
+              );
+            }
+            List<Board> boards = snapshot.data ?? [];
+            List<Color> iconColors = [
+              AppTheme.vividRose,
+              AppTheme.vividBlue,
+              AppTheme.emerald,
+              AppTheme.mediumOrchid,
+            ];
+            return _section(
+              title: title,
+              children:
+                  boards.map((board) {
+                    return FutureBuilder(
+                      future: DatabaseHelper.instance.getAllContents(board.id!),
+                      builder: (_, snapshot) {
+                        bool loading = false;
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          loading = true;
+                        }
+                        if (snapshot.hasError) {
+                          loading = false;
+                        }
+
+                        List<Content>? contents = snapshot.data;
+                        int? count;
+                        if (isNotNull(contents)) {
+                          count = contents!.length;
+                        }
+                        return LoadingIndicator(
+                          loading: loading,
+                          child: _listTile(
+                            icon: _tileIcon(
+                              icon: Images.book,
+                              color: getRandomListElement(iconColors),
+                            ),
+                            title: board.name,
+                            count: count,
+                            isActive: vm.content?.boardId == board.id,
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -113,37 +150,46 @@ class NoteCreationLeft extends StatelessWidget {
     bool isActive = false,
     required Widget icon,
     int? count,
+    String? route,
   }) {
-    return Material(
-      color: Colors.transparent,
-      child: ListTile(
-        leading: icon,
-        selected: isActive,
-        selectedTileColor: AppTheme.lightAsh,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        trailing:
-            isNotNull(count)
-                ? Text(
-                  count.toString(),
-                  style: TextStyle(
-                    color: const Color(0xFF6B7280),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                )
-                : null,
-        title: Text(
-          title,
-          style: TextStyle(
-            color: const Color(0xFF374151),
-            fontSize: 16,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w400,
+    return Consumer<NoteCreationVm>(
+      builder: (_, vm, _) {
+        return Material(
+          color: Colors.transparent,
+          child: ListTile(
+            leading: icon,
+            selected: isActive,
+            selectedTileColor: AppTheme.lightAsh,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            trailing:
+                isNotNull(count)
+                    ? Text(
+                      count.toString(),
+                      style: TextStyle(
+                        color: const Color(0xFF6B7280),
+                        fontSize: 12,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                    : null,
+            title: Text(
+              title,
+              style: TextStyle(
+                color: const Color(0xFF374151),
+                fontSize: 16,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            onTap: () {
+              if (isNotNull(route)) {
+                vm.goToRoute(route!);
+              }
+            },
           ),
-        ),
-        onTap: () {},
-      ),
+        );
+      }
     );
   }
 

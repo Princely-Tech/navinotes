@@ -185,13 +185,24 @@ class DatabaseHelper {
     if (result.isNotEmpty) {
       return Content.fromMap(result.first);
     } else {
-      return null; 
+      return null;
     }
   }
 
   Future<int> deleteContent(int contentId) async {
     final db = await instance.database;
     return await db.delete('contents', where: 'id = ?', whereArgs: [contentId]);
+  }
+
+  Future<int> updateContent(Content content) async {
+    final db = await instance.database;
+    debugPrint('Updating content ${content.id}');
+    return await db.update(
+      'contents',
+      content.toMap(),
+      where: 'id = ?',
+      whereArgs: [content.id],
+    );
   }
 
   Future<List<Tag>> getAllTags() async {
