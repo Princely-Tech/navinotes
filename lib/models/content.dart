@@ -3,7 +3,7 @@ import 'package:navinotes/packages.dart';
 class Content {
   final int? id;
   final String guid;
-  final String type; // note, mindmap, syllabus, etc.
+  final AppContentType type; // note, mindmap, syllabus, etc.
   final Map<String, dynamic> metaData; // JSON as Map
   final int boardId;
   final String? tags; // Comma-separated tags
@@ -43,7 +43,7 @@ class Content {
     'guid': guid,
     'title': title,
     'cover_image': coverImage,
-    'type': type,
+    'type': type.toString(),
     'meta_data': jsonEncode(metaData),
     'board_id': boardId,
     'tags': tags,
@@ -61,7 +61,7 @@ class Content {
     guid: map['guid'],
     title: map['title'],
     coverImage: map['cover_image'],
-    type: map['type'],
+    type: stringToAppContentType(map['type']),
     metaData: jsonDecode(map['meta_data']),
     boardId: map['board_id'],
     tags: map['tags'],

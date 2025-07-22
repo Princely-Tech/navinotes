@@ -78,13 +78,13 @@ class _SplashScreenState extends State<SplashScreen>
 
       // Small delay to ensure smooth transition
       //TODO UNCOMMENT
-      // await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      // if (mounted) {
-      //   Navigator.of(
-      //     context,
-      //   ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
-      // }
+      if (mounted) {
+        Navigator.of(
+          context,
+        ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
+      }
     }
   }
 

@@ -38,7 +38,7 @@ Future<void> createContentInDb({
       // Create a new Content object with default values
       final content = Content(
         guid: generateGUID(currentUser!.id!),
-        type: AppContentType.note.toString(),
+        type: AppContentType.note,
         metaData: {ContentMetadataKey.template: template.type.toString()},
         boardId: boardId,
         content: '', // Empty by default
@@ -75,6 +75,7 @@ Future<void> createContentInDb({
     setLoading(false);
   }
 }
+
 String noteSortTypeToString(NoteSortType sortType) {
   switch (sortType) {
     case NoteSortType.updatedAt:
@@ -95,3 +96,10 @@ NoteSortType stringToNoteSortType(String sortType) {
   }
 }
 
+AppContentType stringToAppContentType(String sortType) {
+  print(sortType);
+  return AppContentType.values.firstWhere(
+    (type) => type.toString() == sortType,
+    orElse: () => throw 'Invalid sort type: $sortType',
+  );
+}

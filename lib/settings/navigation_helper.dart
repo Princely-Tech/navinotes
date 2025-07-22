@@ -98,7 +98,7 @@ class NavigationHelper {
     pushAndRemoveUntil(Routes.auth);
   }
 
-  static void navigateToBoard(Board board, {Object? arguments}) {
+  static Future navigateToBoard(Board board, {Object? arguments}) {
     final boardType = board.boardType ?? BoardTypeCodes.plain;
 
     final route = switch (boardType) {
@@ -129,6 +129,6 @@ class NavigationHelper {
       );
     }
 
-    NavigationHelper.push(route, arguments: mergedArguments);
+    return NavigationHelper.push(route, arguments: mergedArguments);
   }
 }

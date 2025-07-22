@@ -14,10 +14,9 @@ class DashboardVm extends ChangeNotifier {
       await sessionVm.getAllBoard();
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showMessage(
+        ErrorDisplayService.showErrorMessage(
           context,
           'Error occurred while fetching boards',
-          isError: true,
         );
       }
       debugPrint(err.toString());
@@ -28,11 +27,13 @@ class DashboardVm extends ChangeNotifier {
     scaffoldKey.currentState?.openDrawer();
   }
 
-  goToCreateBoard() {
-    NavigationHelper.push(Routes.chooseBoard);
+  goToCreateBoard() async {
+    await NavigationHelper.push(Routes.chooseBoard);
+    sessionVm.getAllBoard();
   }
 
-  goToBoardNotes() {
-    // NavigationHelper.push(Routes.boardNotes); //TODO
+  goToBoardNotes(Board board) async {
+    await NavigationHelper.navigateToBoard(board);
+    sessionVm.getAllBoard();
   }
 }

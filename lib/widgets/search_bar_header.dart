@@ -17,8 +17,7 @@ class SearchBarHeader extends StatelessWidget {
             color: borderBottom ? AppTheme.white : AppTheme.transparent,
             border: Border(
               bottom: BorderSide(
-                color:
-                    borderBottom ? AppTheme.lightGray : Colors.transparent,
+                color: borderBottom ? AppTheme.lightGray : Colors.transparent,
               ),
             ),
           ),
@@ -49,28 +48,7 @@ class SearchBarHeader extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: WidthLimiter(
-                            mobile: 512,
-                            child: CustomInputField(
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: AppTheme.slateGray,
-                                size: 20,
-                              ),
-                              hintText:
-                                  'Search your notes, boards, and more...',
-                              hintStyle: AppTheme.text.copyWith(
-                                color: AppTheme.slateGray,
-                                fontSize: 16.0,
-                                height: 1.50,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      _searchBar(),
                     ],
                   ),
                 ),
@@ -91,6 +69,26 @@ class SearchBarHeader extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _searchBar() {
+    return Expanded(
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: WidthLimiter(
+          mobile: 512,
+          child: CustomInputField(
+            prefixIcon: Icon(Icons.search, color: AppTheme.slateGray, size: 20),
+            hintText: 'Search your notes, boards, and more...',
+            hintStyle: AppTheme.text.copyWith(
+              color: AppTheme.slateGray,
+              fontSize: 16.0,
+              height: 1.50,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
