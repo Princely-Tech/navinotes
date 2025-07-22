@@ -173,6 +173,22 @@ class DatabaseHelper {
     return result.map((json) => Content.fromMap(json)).toList();
   }
 
+  Future<Content?> getContentById(int contentId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'contents',
+      where: 'id = ?',
+      whereArgs: [contentId],
+    );
+    debugPrint('Getting content $contentId');
+
+    if (result.isNotEmpty) {
+      return Content.fromMap(result.first);
+    } else {
+      return null; 
+    }
+  }
+
   Future<int> deleteContent(int contentId) async {
     final db = await instance.database;
     return await db.delete('contents', where: 'id = ?', whereArgs: [contentId]);

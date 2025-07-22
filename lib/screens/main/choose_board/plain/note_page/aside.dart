@@ -152,7 +152,6 @@ class BoardPlainNotePageAside extends StatelessWidget {
             ),
           ],
         );
-        // return FutureBuilder<List<Content>>(builder: (context, snapshot) {});
       },
     );
   }

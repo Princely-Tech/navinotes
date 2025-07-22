@@ -21,12 +21,13 @@ class NoteCreationScreen extends StatelessWidget {
         NoteCreationVm vm = NoteCreationVm(
           scaffoldKey: _scaffoldKey,
           creationProp: creationProp,
+          context: context
         );
         vm.initialize();
         return vm;
       },
-      child: Consumer<NoteCreationVm>(
-        builder: (context, vm, child) {
+      child: Consumer<NoteCreationVm>( 
+        builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,
             scaffoldKey: _scaffoldKey,

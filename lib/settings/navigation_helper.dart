@@ -94,6 +94,10 @@ class NavigationHelper {
     push(route, arguments: board);
   }
 
+  static void logOut() {
+    pushAndRemoveUntil(Routes.auth);
+  }
+
   static void navigateToBoard(Board board, {Object? arguments}) {
     final boardType = board.boardType ?? BoardTypeCodes.plain;
 

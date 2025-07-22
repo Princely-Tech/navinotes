@@ -10,6 +10,7 @@ class BoardPlainNotePageVm extends ChangeNotifier {
   );
 
   bool fetchingContent = true;
+  
   BuildContext context;
   BoardPlainNotePageVm({
     required this.scaffoldKey,
@@ -73,17 +74,7 @@ class BoardPlainNotePageVm extends ChangeNotifier {
   }
 
   void goToNotePage(Content content) async {
-    if (isNull(content.id)) {
-      ErrorDisplayService.showErrorMessage(context, 'Content ID not found!');
-      return;
-    }
-    BoardNoteTemplate template = getNoteTemplateFromString(
-      content.metaData[ContentMetadataKey.template],
-    );
-    await NavigationHelper.navigateToNoteWithTemplate(
-      template: template,
-      contentId: content.id!,
-    );
+    await goToNotePageWithContent(content: content, context: context);
     getContents();
   }
 }

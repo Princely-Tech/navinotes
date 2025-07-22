@@ -18,3 +18,4 @@ export 'constants.dart';
 export 'db_helpers.dart';
 export 'key_type_definitions.dart';
 export 'time_helpers.dart';
+export 'note_utils.dart';

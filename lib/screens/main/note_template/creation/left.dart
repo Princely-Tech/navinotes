@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'vm.dart';
 
 class NoteCreationLeft extends StatelessWidget {
   const NoteCreationLeft({super.key});
@@ -20,8 +21,8 @@ class NoteCreationLeft extends StatelessWidget {
                 spacing: 25,
                 children: [
                   _logo(),
-                  _searchField(),
-                  createNote(),
+                  Column(children: [_searchField(), _createNoteButton()]),
+
                   _noteBooks(),
                   _studyTool(),
                   _tags(),
@@ -167,19 +168,29 @@ class NoteCreationLeft extends StatelessWidget {
     );
   }
 
-  Widget createNote() {
-    return AppButton(
-      onTap: () {},
-      text: 'New Cornell Note',
-      prefix: Icon(Icons.add, color: AppTheme.white),
+  Widget _createNoteButton() {
+    return Consumer<NoteCreationVm>(
+      builder: (_, vm, _) {
+        return VisibleController(
+          mobile: isNotNull(vm.content),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 25),
+            child: AppButton(
+              loading: vm.isCreatingNote,
+              onTap: vm.createNote,
+              text: 'New Note',
+              prefix: Icon(Icons.add, color: AppTheme.white),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _searchField() {
+  CustomInputField _searchFieldInput() {
     return CustomInputField(
       suffixIcon: Icon(Icons.search, color: Color(0xFFADAEBC), size: 20),
       hintText: 'Search notes',
-
       hintStyle: TextStyle(
         color: const Color(0xFFADAEBC),
         fontSize: 14,
@@ -187,6 +198,50 @@ class NoteCreationLeft extends StatelessWidget {
         fontWeight: FontWeight.w400,
         height: 1.43,
       ),
+    );
+  }
+
+  Widget _searchField() {
+    return Consumer<NoteCreationVm>(
+      builder: (context, vm, _) {
+        return FutureBuilder<List<Content>>(
+          future: vm.getAllContent(),
+          builder: (_, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return LoadingIndicator(
+                loading: true,
+                child: _searchFieldInput(),
+              );
+            } else if (snapshot.hasError) {
+              return Text(
+                'Failed to load notes',
+                style: AppTheme.text.copyWith(color: AppTheme.coralRed),
+              );
+            }
+            List<Content> notes = snapshot.data ?? [];
+            return SearchDropdownField<Content>(
+              suggestionsCallback: (search) {
+                return notes
+                    .where((item) => checkStringMatch(item.title, search))
+                    .toList();
+              },
+              itemBuilder: (_, item) {
+                return CustomListTile(
+                  onTap:
+                      () => goToNotePageWithContent(
+                        content: item,
+                        context: context,
+                      ),
+                  title: item.title,
+                  color: AppTheme.steelMist,
+                  activeColor: AppTheme.strongBlue,
+                );
+              },
+              input: _searchFieldInput(),
+            );
+          },
+        );
+      },
     );
   }
 
