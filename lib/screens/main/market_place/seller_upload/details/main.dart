@@ -181,6 +181,17 @@ class SellerUploadMain extends StatelessWidget {
       spacing: 30,
       children: [
         const Divider(),
+
+        // if _validationError is not null, show it
+        if (vm.validationError != null)
+          Text(
+            vm.validationError!,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.amber,
+              fontSize: 12.0,
+              height: 1.0,
+            ),
+          ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -672,6 +683,7 @@ class SellerUploadMain extends StatelessWidget {
                   'Study Guides',
                   'Other',
                 ],
+                selected: vm.included,
                 onChanged: (value, checked) {
                   vm.includedClicked(value, checked);
                 },
@@ -691,9 +703,12 @@ class SellerUploadMain extends StatelessWidget {
   Widget _checkSelectSection({
     required String title,
     required List<String> items,
+    List<String>? selected,
     bool isCircle = false,
     Function(String, bool)? onChanged,
   }) {
+
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 5,
@@ -703,6 +718,7 @@ class SellerUploadMain extends StatelessWidget {
           (str) => CustomCheckBoxItem(
             title: str,
             shape: isCircle ? CircleBorder() : null,
+            value: selected?.contains(str) ?? false,
             onChanged: (value) {
               debugPrint('value: $value');
               onChanged?.call(str, value);

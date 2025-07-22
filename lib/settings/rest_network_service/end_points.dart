@@ -11,4 +11,13 @@ class ApiEndpoints {
   static const String passwordOtp = '/auth/password/recovery-otp';
   static const String passwordVerifyOtp = '/auth/password/verify-otp';
   static const String passwordChange = '/auth/password/reset';
+
+  // boards
+  static const String boardSync = '/board/sync';
+
+  // content
+  static const String contentSync = '/content/sync';
+
+  // market place
+  static const String marketPlaceSubmit = '/marketplace';
 }

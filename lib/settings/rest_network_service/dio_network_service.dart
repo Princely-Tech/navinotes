@@ -30,7 +30,6 @@ class DioNetworkService extends RestNetworkService {
   @override
   Future<Json> sendFormDataRequest<T>(FormDataRequest request) async {
     // assert(initialized, 'This Network Service has not been initialized');
-
     final files = request.files.map((key, file) {
       final type = lookupMimeType(file.path);
       final contentType = type != null ? MediaType.parse(type) : null;
@@ -39,6 +38,8 @@ class DioNetworkService extends RestNetworkService {
         MultipartFile.fromFileSync(file.path, contentType: contentType),
       );
     });
+
+    
     final otherData = request.body;
 
     final data = FormData.fromMap({...files, ...otherData});

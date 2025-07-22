@@ -709,18 +709,27 @@ class CustomCheckBoxItem extends StatefulWidget {
     this.title,
     this.child,
     this.shape,
+    this.value,
     this.onChanged,
   });
   final String? title;
   final Widget? child;
   final OutlinedBorder? shape;
   final void Function(bool)? onChanged;
+  final bool? value;
   @override
   State<CustomCheckBoxItem> createState() => _CustomCheckBoxItemState();
 }
 
 class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
-  bool? _value = false;
+  bool _value = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.value??false;
+  }
+
 
   updateValue(bool value) {
     setState(() {
@@ -732,7 +741,7 @@ class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => updateValue(!_value!),
+      onTap: () => updateValue(!_value),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

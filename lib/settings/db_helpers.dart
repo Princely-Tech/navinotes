@@ -38,6 +38,7 @@ class DatabaseHelper {
       name TEXT,
       customization TEXT,
       is_public INTEGER DEFAULT 0,
+      cover_image_need_sync INTEGER DEFAULT 0,
       description TEXT,
       subject TEXT,
       level TEXT,
@@ -62,6 +63,10 @@ class DatabaseHelper {
       content TEXT,
       file TEXT,
       created_at INTEGER,
+
+      cover_image_need_sync INTEGER DEFAULT 0,
+      file_need_sync INTEGER DEFAULT 0,
+
       updated_at INTEGER,
       synced_at INTEGER
     )
@@ -101,6 +106,18 @@ class DatabaseHelper {
     if (oldVersion < 3) {
       await db.execute('ALTER TABLE contents ADD COLUMN title TEXT');
       await db.execute('ALTER TABLE contents ADD COLUMN cover_image TEXT');
+    }
+
+    if (oldVersion < 4) {
+      await db.execute(
+        'ALTER TABLE boards ADD COLUMN cover_image_need_sync INTEGER DEFAULT 0',
+      );
+      await db.execute(
+        'ALTER TABLE contents ADD COLUMN cover_image_need_sync INTEGER DEFAULT 0',
+      );
+      await db.execute(
+        'ALTER TABLE contents ADD COLUMN file_need_sync INTEGER DEFAULT 0',
+      );
     }
   }
 

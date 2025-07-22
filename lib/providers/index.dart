@@ -35,6 +35,7 @@ class CustomProviders extends StatelessWidget {
   }
 }
 
+
 class ApiServiceComponent extends StatelessWidget {
   const ApiServiceComponent({super.key, required this.child});
   final Widget child;

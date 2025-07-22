@@ -1,11 +1,18 @@
 import 'package:navinotes/packages.dart';
 import 'package:image_picker/image_picker.dart';
 
+// define enum for screens
+enum Screen { details, price, preview }
+
 class SellerUploadVm extends ChangeNotifier {
   final GlobalKey<ScaffoldState> scaffoldKey;
   final Board board;
   final formKey = GlobalKey<FormState>();
-  
+
+  ApiServiceProvider apiServiceProvider;
+
+  Screen currentScreen = Screen.details;
+
   // Form fields
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -17,6 +24,10 @@ class SellerUploadVm extends ChangeNotifier {
   File? coverImage;
   List<File> previewImages = [];
   static const int maxPreviewImages = 3;
+
+  notifyChange() {
+    notifyListeners();
+  }
 
   var categories = [
     'Science',
@@ -42,12 +53,29 @@ class SellerUploadVm extends ChangeNotifier {
   // Price screen controllers
   final priceFormKey = GlobalKey<FormState>();
   final priceController = TextEditingController();
+  final discountController = TextEditingController(text: '0');
   final customLicenseController = TextEditingController();
-  String selectedCurrency = 'NGN';
-  String selectedLicense = 'Standard';
   bool agreeToTerms = false;
   bool agreeToRefundPolicy = false;
   bool agreeToCopyrightPolicy = false;
+
+  double get price => double.tryParse(priceController.text) ?? 0;
+  int get discount => int.tryParse(discountController.text) ?? 0;
+
+  var isPublishing = false;
+  var publishingStatus = "";
+
+  String? get originalPrice {
+    if (discount > 0 && price > 0) {
+      return (price * 100 / (100 - discount)).toStringAsFixed(2);
+    }
+    return null;
+  }
+
+  setScreen(Screen screen) {
+    currentScreen = screen;
+    notifyListeners();
+  }
 
   void loadSubCategories(String category) {
     debugPrint('loadSubCategories category: $category');
@@ -155,17 +183,19 @@ class SellerUploadVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  
   SellerUploadVm({
     required this.scaffoldKey,
     required this.board,
+    required this.apiServiceProvider,
   });
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
   }
-  
+
   bool validateForm() {
+    _validationError = null;
+
     if (titleController.text.isEmpty) {
       _validationError = 'Product title is required';
       _isFormValid = false;
@@ -215,7 +245,7 @@ class SellerUploadVm extends ChangeNotifier {
       return false;
     }
 
-     if (included.isEmpty) {
+    if (included.isEmpty) {
       _validationError = 'Please select what\'s included';
       _isFormValid = false;
       notifyListeners();
@@ -224,6 +254,7 @@ class SellerUploadVm extends ChangeNotifier {
 
     _validationError = null;
     _isFormValid = true;
+    setScreen(Screen.price);
     notifyListeners();
     return true;
   }
@@ -235,23 +266,23 @@ class SellerUploadVm extends ChangeNotifier {
     }
     return null;
   }
-  
+
   String? validateTags(String? value) {
     if (tags.isEmpty) {
       return 'Please add at least one tag';
     }
     return null;
   }
-  
+
   void addTag(String tag) {
     if (tag.isEmpty) {
       tags.add('tag');
-    }else if (!tags.contains(tag)) {
+    } else if (!tags.contains(tag)) {
       tags.add(tag);
     }
     notifyListeners();
   }
-  
+
   void removeTag(String tag) {
     tags.remove(tag);
     notifyListeners();
@@ -264,7 +295,7 @@ class SellerUploadVm extends ChangeNotifier {
         source: ImageSource.gallery,
         imageQuality: 85,
       );
-      
+
       if (image != null) {
         coverImage = File(image.path);
         notifyListeners();
@@ -277,13 +308,13 @@ class SellerUploadVm extends ChangeNotifier {
   Future<void> addPreviewImage() async {
     try {
       if (previewImages.length >= maxPreviewImages) return;
-      
+
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 85,
       );
-      
+
       if (image != null) {
         previewImages.add(File(image.path));
         notifyListeners();
@@ -300,7 +331,7 @@ class SellerUploadVm extends ChangeNotifier {
     }
   }
 
-  void includedClicked(String value, bool checked){
+  void includedClicked(String value, bool checked) {
     debugPrint('includedClicked value: $value, checked: $checked');
     if (checked) {
       addIncluded(value);
@@ -313,7 +344,7 @@ class SellerUploadVm extends ChangeNotifier {
     debugPrint('addIncluded value: $value');
     if (value.isEmpty) {
       included.add(value);
-    }else if (!included.contains(value)) {
+    } else if (!included.contains(value)) {
       included.add(value);
     }
     notifyListeners();
@@ -327,17 +358,6 @@ class SellerUploadVm extends ChangeNotifier {
 
   setTargetAudience(String value) {
     targetAudience = value;
-    notifyListeners();
-  }
-
-  // Price screen methods
-  void setCurrency(String currency) {
-    selectedCurrency = currency;
-    notifyListeners();
-  }
-
-  void setLicenseType(String license) {
-    selectedLicense = license;
     notifyListeners();
   }
 
@@ -357,21 +377,114 @@ class SellerUploadVm extends ChangeNotifier {
   }
 
   bool validatePriceForm() {
+    _validationError = null;
     if (priceFormKey.currentState?.validate() != true) {
       return false;
     }
-    
+
     if (!agreeToTerms || !agreeToRefundPolicy || !agreeToCopyrightPolicy) {
       _validationError = 'Please agree to all terms and conditions';
       return false;
     }
-    
+
     return true;
+  }
+
+  publish() async {
+    isPublishing = true;
+    publishingStatus = "Uploading Content...";
+    debugPrint('publishingStatus: $publishingStatus');
+    notifyListeners();
+
+    try {
+      await uploadContent();
+    } catch (e) {
+      debugPrint('Error uploading content: $e');
+      isPublishing = false;
+      publishingStatus = "Failed to upload content";
+      notifyListeners();
+      return;
+    }
+
+    publishingStatus = "Publishing Product Details...";
+    notifyListeners();
+    try {
+      await uploadMarketPlace();
+    } catch (e) {
+      debugPrint('Error publishing marketplace: $e');
+      isPublishing = false;
+      publishingStatus = "Failed to publish marketplace";
+      notifyListeners();
+      return;
+    }
+
+    publishingStatus = "Product uploaded successfully";
+    isPublishing = false;
+    notifyListeners();
+  }
+
+  uploadContent() async {
+    debugPrint('board sync started');
+    await board.syncToBackend(apiServiceProvider);
+
+    debugPrint('board sync completed');
+
+    // sync content
+    board.getContents(forceRefresh: true).then((contents) {
+      for (var content in contents) {
+        content.syncToBackend(apiServiceProvider);
+      }
+    });
+  }
+
+  getPriceCent() {
+    int price = int.tryParse(priceController.text) ?? 0;
+    return price * 100;
+  }
+
+  uploadMarketPlace() async {
+    var previewFiles = [];
+    for (var previewImage in previewImages) {
+
+      final type = lookupMimeType(previewImage.path);
+      final contentType = type != null ? MediaType.parse(type) : null;
+
+      previewFiles.add(
+        MultipartFile.fromFileSync(previewImage.path, contentType: contentType),
+      );
+    }
+
+    // make a submit of the data.
+    final body = FormDataRequest.post(
+      ApiEndpoints.marketPlaceSubmit,
+      body: {
+        'board_guid': board.guid,
+        'title': titleController.text,
+        'description': descriptionController.text,
+        'category': categoryController.text,
+        'sub_category': subCategoryController.text,
+        'tags[]': tags,
+        'target_audience': targetAudience,
+        'whats_included[]': included,
+        'price': getPriceCent(),
+        'discount_percent': discountController.text,
+        'preview_images_files[]': previewFiles,
+        
+      },
+      files: {'cover_image_file': coverImage!},
+    );
+
+    final response = await apiServiceProvider.apiService.sendFormDataRequest(
+      body,
+    );
+
+    return response;
   }
 
   @override
   void dispose() {
     priceController.dispose();
+    discountController.dispose();
     customLicenseController.dispose();
     super.dispose();
   }
