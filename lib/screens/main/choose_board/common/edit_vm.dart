@@ -7,7 +7,7 @@ class BoardEditVm extends ChangeNotifier {
   bool _showSuccess = false;
   String? _successMessage;
 
-  EditBoardTab selectedTab = EditBoardTab.uploads; //TODO Change to overview
+  EditBoardTab selectedTab = EditBoardTab.overview;
 
   bool fetchingFiles = false;
   List<Content> uploadedFiles = [];
@@ -16,10 +16,7 @@ class BoardEditVm extends ChangeNotifier {
     fetchingFiles = true;
     notifyListeners();
     try {
-      final dbHelper = DatabaseHelper.instance;
-      final contents = await dbHelper.getAllContents(boardId);
-      uploadedFiles =
-          contents.where((c) => c.type == AppContentType.file).toList();
+      uploadedFiles = await DatabaseHelper.instance.getAllFiles(boardId);
       notifyListeners();
     } catch (e) {
       debugPrint('Error loading files: $e');

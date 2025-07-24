@@ -7,7 +7,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 3; // Increment this number
+  static const int _databaseVersion = 4; // Increment this number
 
   DatabaseHelper._init();
 
@@ -51,6 +51,22 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
+    CREATE TABLE course_timeline (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      board_id INTEGER,
+      week TEXT,
+      title TEXT,
+      description TEXT,
+      assignment TEXT,
+      due_date TEXT,
+      created_at INTEGER,
+      updated_at INTEGER,
+      synced_at INTEGER,
+      FOREIGN KEY (board_id) REFERENCES boards (id) ON DELETE CASCADE
+    )
+    ''');
+
+    await db.execute('''
     CREATE TABLE contents (
       guid TEXT,
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,6 +98,57 @@ class DatabaseHelper {
       synced_at INTEGER
     )
     ''');
+  }
+
+  // Course Timeline CRUD operations
+  Future<int> insertCourseTimeline(CourseTimeline timeline) async {
+    final db = await instance.database;
+    return await db.insert('course_timeline', timeline.toMap());
+  }
+
+  Future<CourseTimeline> getCourseTimeline(int id) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'course_timeline',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return CourseTimeline.fromMap(result.first);
+  }
+
+  Future<List<CourseTimeline>> getCourseTimelinesByBoard(int boardId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'course_timeline',
+      where: 'board_id = ?',
+      whereArgs: [boardId],
+      orderBy: 'created_at ASC',
+    );
+    return result.map((json) => CourseTimeline.fromMap(json)).toList();
+  }
+
+  Future<int> updateCourseTimeline(CourseTimeline timeline) async {
+    final db = await instance.database;
+    return await db.update(
+      'course_timeline',
+      timeline.toMap(),
+      where: 'id = ?',
+      whereArgs: [timeline.id],
+    );
+  }
+
+  Future<int> deleteCourseTimeline(int id) async {
+    final db = await instance.database;
+    return await db.delete('course_timeline', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteCourseTimelinesByBoard(int boardId) async {
+    final db = await instance.database;
+    return await db.delete(
+      'course_timeline',
+      where: 'board_id = ?',
+      whereArgs: [boardId],
+    );
   }
 
   // Add this new method to handle database upgrades
@@ -118,6 +185,21 @@ class DatabaseHelper {
       await db.execute(
         'ALTER TABLE contents ADD COLUMN file_need_sync INTEGER DEFAULT 0',
       );
+      await db.execute('''
+      CREATE TABLE IF NOT EXISTS course_timeline (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        board_id INTEGER,
+        week TEXT,
+        title TEXT,
+        description TEXT,
+        assignment TEXT,
+        due_date TEXT,
+        created_at INTEGER,
+        updated_at INTEGER,
+        synced_at INTEGER,
+        FOREIGN KEY (board_id) REFERENCES boards (id) ON DELETE CASCADE
+      )
+      ''');
     }
   }
 
@@ -178,6 +260,11 @@ class DatabaseHelper {
       orderBy: '$sortBy $sortOrder',
     );
     return result.map((json) => Content.fromMap(json)).toList();
+  }
+
+  Future<List<Content>> getAllFiles(int boardId) async {
+    final contents = await getAllContents(boardId);
+    return contents.where((c) => c.type == AppContentType.file).toList();
   }
 
   Future<List<Content>> getAllNotes(
