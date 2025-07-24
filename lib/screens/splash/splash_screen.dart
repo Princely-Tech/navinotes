@@ -40,52 +40,60 @@ class _SplashScreenState extends State<SplashScreen>
     // Navigate after animation completes
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        _navigateToNextScreen();
+        _nextHandler();
       }
     });
   }
 
   Future<void> _navigateToNextScreen() async {
+    final isLoggedIn = context.read<SessionManager>().isLoggedIn();
+    // Small delay to ensure smooth transition
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (mounted) {
+      Navigator.of(
+        context,
+      ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
+    }
+  }
+
+  Future<void> _nextHandler() async {
     // Ensure session is loaded before checking login status
     await context.read<SessionManager>().init();
     if (mounted) {
-      final isLoggedIn = context.read<SessionManager>().isLoggedIn();
-
-      //TODO delete this
-      // List<Board> boards = await DatabaseHelper.instance.getAllBoards();
-      // Board board = boards.last;
-      //  List<Content> contents = await DatabaseHelper.instance.getAllContents(
-      //   board.id!,
-      // );
-
-      // // // DatabaseHelper.instance.deleteContent(3);
-      // // // DatabaseHelper.instance.deleteContent(2);
-
-     
-      // print(contents);
-      // NavigationHelper.navigateToBoardNotes(board);
-      // NavigationHelper.pushReplacement(
-      //   Routes.noteTemplate,
-      //   arguments: board,
-      // );
-      // NavigationHelper.pushReplacement(
-      //   Routes.noteCreation,
-      //   arguments: NoteCreationProp(
-      //     template: noteTemplateBlank,
-      //     contentId: contents[0].id!,
-      //   ),
-      // );
-
-      // Small delay to ensure smooth transition
       //TODO UNCOMMENT
-      await Future.delayed(const Duration(milliseconds: 500));
+      // _navigateToNextScreen();
 
-      if (mounted) {
-        Navigator.of(
-          context,
-        ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
-      }
+      //TODO DELETE
+      _navigateToDashboard();
     }
+  }
+
+  Future<void> _navigateToDashboard() async {
+    //TODO delete this
+    List<Board> boards = await DatabaseHelper.instance.getAllBoards();
+    Board board = boards.last;
+    List<Content> contents = await DatabaseHelper.instance.getAllContents(
+      board.id!,
+    );
+
+    // // // DatabaseHelper.instance.deleteContent(3);
+    // // // DatabaseHelper.instance.deleteContent(2);
+
+    // print(contents);
+    NavigationHelper.navigateToBoard(board);
+    // NavigationHelper.navigateToBoardNotes(board);
+    // NavigationHelper.pushReplacement(
+    //   Routes.noteTemplate,
+    //   arguments: board,
+    // );
+    // NavigationHelper.pushReplacement(
+    //   Routes.noteCreation,
+    //   arguments: NoteCreationProp(
+    //     template: noteTemplateBlank,
+    //     contentId: contents[0].id!,
+    //   ),
+    // );
   }
 
   @override

@@ -52,9 +52,11 @@ class SessionManager extends ChangeNotifier {
       debugPrint("Session not initialized yet");
       return false;
     }
-    
+
     final loggedIn = token != null && user != null;
-    debugPrint("isLoggedIn check - Token: ${token != null}, User: ${user != null}");
+    debugPrint(
+      "isLoggedIn check - Token: ${token != null}, User: ${user != null}",
+    );
     return loggedIn;
   }
 
@@ -124,4 +126,18 @@ class SessionManager extends ChangeNotifier {
   String? getEmail() => user?.email ?? email;
   String? getOtp() => user?.otp ?? otp;
   String? getName() => user?.name;
+}
+
+User? getCurrentUserFromSession(BuildContext context) {
+  final sessionManager =
+      NavigationHelper.navigatorKey.currentContext!.read<SessionManager>();
+  final currentUser = sessionManager.user;
+  if (isNull(currentUser)) {
+    if (context.mounted) {
+      MessageDisplayService.showErrorMessage(context, 'User not logged in');
+    }
+    NavigationHelper.logOut();
+    return null;
+  }
+  return sessionManager.user;
 }

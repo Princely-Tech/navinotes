@@ -1,6 +1,6 @@
 import 'package:navinotes/packages.dart';
 
-class ErrorDisplayService {
+class MessageDisplayService {
   static void showError(BuildContext context, DioException err) {
     final fToast = FToast();
     fToast.init(context);

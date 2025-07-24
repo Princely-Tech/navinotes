@@ -14,7 +14,7 @@ class DashboardVm extends ChangeNotifier {
       await sessionVm.getAllBoard();
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showErrorMessage(
+        MessageDisplayService.showErrorMessage(
           context,
           'Error occurred while fetching boards',
         );
@@ -32,7 +32,7 @@ class DashboardVm extends ChangeNotifier {
     sessionVm.getAllBoard();
   }
 
-  goToBoardNotes(Board board) async {
+  goToBoard(Board board) async {
     await NavigationHelper.navigateToBoard(board);
     sessionVm.getAllBoard();
   }

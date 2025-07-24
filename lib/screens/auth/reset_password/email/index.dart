@@ -63,7 +63,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                                       if (formKey.currentState!.validate()) {
                                         vm.submit();
                                       } else {
-                                        ErrorDisplayService.showFormInValidError(
+                                        MessageDisplayService.showFormInValidError(
                                           context,
                                         );
                                       }

@@ -10,7 +10,7 @@ class BoardPlainNotePageVm extends ChangeNotifier {
   );
 
   bool fetchingContent = true;
-  
+
   BuildContext context;
   BoardPlainNotePageVm({
     required this.scaffoldKey,
@@ -45,7 +45,7 @@ class BoardPlainNotePageVm extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       if (context.mounted) {
-        ErrorDisplayService.showErrorMessage(
+        MessageDisplayService.showErrorMessage(
           context,
           'Could not fetch content!',
         );

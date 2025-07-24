@@ -62,7 +62,7 @@ class AboutMeForm extends StatelessWidget {
                     if (formKey.currentState!.validate()) {
                       vm.saveHandler();
                     } else {
-                      ErrorDisplayService.showFormInValidError(context);
+                      MessageDisplayService.showFormInValidError(context);
                     }
                   },
                   text: 'Save & Continue',

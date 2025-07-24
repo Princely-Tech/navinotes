@@ -20,6 +20,13 @@ T getRandomListElement<T>(List<T> items) {
   return items[random.nextInt(items.length)];
 }
 
+T stringToEnum<T extends Enum>(String value, List<T> values) {
+  return values.firstWhere(
+    (type) => type.toString() == value,
+    orElse: () => throw 'Invalid type: $value',
+  );
+}
+
 generateGUID(int userId) {
   return "0${userId}0_${Uuid().v4()}";
 }

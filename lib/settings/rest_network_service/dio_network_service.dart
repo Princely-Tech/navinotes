@@ -39,7 +39,6 @@ class DioNetworkService extends RestNetworkService {
       );
     });
 
-    
     final otherData = request.body;
 
     final data = FormData.fromMap({...files, ...otherData});
@@ -128,9 +127,9 @@ class DataErrorInterceptor extends Interceptor {
       } else {
         json = jsonDecode(err.response!.data);
       }
-      
+
       //Shows error to user
-      ErrorDisplayService.showError(context, err);
+      MessageDisplayService.showError(context, err);
 
       final message = json['error'] ?? json['message'];
       AppException exception;

@@ -12,9 +12,9 @@ class VerifyVM extends ChangeNotifier with AppRepository {
   }
 
   void submitForm(String? otp) async {
-    if(isNull(otp)){
-        if (context.mounted) {
-        ErrorDisplayService.showFormInValidError(context);
+    if (isNull(otp)) {
+      if (context.mounted) {
+        MessageDisplayService.showFormInValidError(context);
       }
       return;
     }
@@ -31,13 +31,14 @@ class VerifyVM extends ChangeNotifier with AppRepository {
       );
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showDefaultError(context);
+        MessageDisplayService.showDefaultError(context);
       }
       debugPrint(err.toString());
     }
     updateIsLoading(false);
   }
-   Future<void> resendOtp() async {
+
+  Future<void> resendOtp() async {
     Map<String, dynamic> body = {};
     final request = JsonRequest.post(ApiEndpoints.getVerifyOtp, body);
     await apiServiceProvider.apiService.sendJsonRequest(request);

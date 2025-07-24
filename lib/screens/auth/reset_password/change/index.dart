@@ -58,7 +58,7 @@ class ChangePasswordScreen extends StatelessWidget {
                                       if (formKey.currentState!.validate()) {
                                         vm.submitForm();
                                       } else {
-                                        ErrorDisplayService.showFormInValidError(
+                                        MessageDisplayService.showFormInValidError(
                                           context,
                                         );
                                       }

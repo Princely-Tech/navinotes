@@ -1,10 +1,10 @@
 import 'package:navinotes/packages.dart';
 
-class TextRowSelect extends StatelessWidget {
+class TextRowSelect extends StatefulWidget {
   const TextRowSelect({
     super.key,
     required this.items,
-    required this.selected,
+    this.selected,
     this.borderColor = AppTheme.caramelMist,
     this.selectedTextColor = AppTheme.white,
     this.textColor = AppTheme.white,
@@ -14,9 +14,10 @@ class TextRowSelect extends StatelessWidget {
     this.inActiveBorderColor = AppTheme.transparent,
     this.fillWidth = true,
     this.btnStyle,
+    this.onSelected,
   });
   final List<String> items;
-  final String selected;
+  final String? selected;
   final Color? selectedTextColor;
   final Color? textColor;
   final Color borderColor;
@@ -26,6 +27,34 @@ class TextRowSelect extends StatelessWidget {
   final Color inActiveBorderColor;
   final bool fillWidth;
   final ButtonStyle? btnStyle;
+  final Function(String)? onSelected;
+
+  @override
+  State<TextRowSelect> createState() => _TextRowSelectState();
+}
+
+class _TextRowSelectState extends State<TextRowSelect> {
+  String selected = '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (isNotNull(widget.selected)) {
+      selected = widget.selected!;
+    } else {
+      if (widget.items.isNotEmpty) {
+        selected = widget.items.first;
+      }
+    }
+  }
+
+  void updateSelected(String value) {
+    setState(() {
+      selected = value;
+    });
+    widget.onSelected?.call(value);
+  }
+
   @override
   Widget build(_) {
     return LayoutBuilder(
@@ -37,24 +66,27 @@ class TextRowSelect extends StatelessWidget {
         return ScrollableController(
           scrollDirection: Axis.horizontal,
           child: Container(
-            constraints: fillWidth ? BoxConstraints(minWidth: minWidth) : null,
+            constraints:
+                widget.fillWidth ? BoxConstraints(minWidth: minWidth) : null,
             decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: inActiveBorderColor)),
+              border: Border(
+                bottom: BorderSide(color: widget.inActiveBorderColor),
+              ),
             ),
             child: Row(
               spacing: 5,
               children:
-                  items.map((str) {
+                  widget.items.map((str) {
                     bool isSelected = str == selected;
                     TextStyle? runTextStyle =
-                        isSelected ? selectedTextStyle : style;
+                        isSelected ? widget.selectedTextStyle : widget.style;
                     ButtonStyle buttonStyle = TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     );
-                    if (isNotNull(btnStyle) && isSelected) {
-                      buttonStyle = btnStyle!;
+                    if (isNotNull(widget.btnStyle) && isSelected) {
+                      buttonStyle = widget.btnStyle!;
                     }
                     String? prefixImage;
                     switch (str) {
@@ -72,15 +104,18 @@ class TextRowSelect extends StatelessWidget {
                         border: Border(
                           bottom:
                               isSelected
-                                  ? BorderSide(width: 2, color: borderColor)
+                                  ? BorderSide(
+                                    width: 2,
+                                    color: widget.borderColor,
+                                  )
                                   : BorderSide.none,
                         ),
                       ),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () => updateSelected(str),
                         style: buttonStyle.copyWith(),
                         child: Container(
-                          padding: padding ?? EdgeInsets.only(bottom: 5),
+                          padding: widget.padding ?? EdgeInsets.only(bottom: 5),
                           child: Row(
                             spacing: 8,
                             children: [
@@ -100,8 +135,8 @@ class TextRowSelect extends StatelessWidget {
                                     AppTheme.text.copyWith(
                                       color:
                                           isSelected
-                                              ? selectedTextColor
-                                              : textColor,
+                                              ? widget.selectedTextColor
+                                              : widget.textColor,
                                       fontSize: 16.0,
                                     ),
                               ),

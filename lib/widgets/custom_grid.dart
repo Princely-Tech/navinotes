@@ -26,7 +26,7 @@ class CustomGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
-      builder: (context, vm, child) {
+      builder: (_, vm, _) {
         int split = getSplit(vm.deviceType);
         List<List<Widget>> splitChildren = splitArray(children, split);
         return Column(
@@ -34,16 +34,17 @@ class CustomGrid extends StatelessWidget {
           children:
               splitChildren.map((children) {
                 //Ensure each row is of equal length
-                if (children.length < split) {
-                  for (int i = children.length; i < split; i++) {
-                    children.add(SizedBox.shrink());
+                List<Widget> rowChildren = List.from(children);
+                if (rowChildren.length < split) {
+                  for (int i = rowChildren.length; i < split; i++) {
+                    rowChildren.add(SizedBox.shrink());
                   }
                 }
                 return wrapWithIntrinsicHeight
                     ? IntrinsicHeight(
-                      child: _body(children: children),
+                      child: _body(children: rowChildren),
                     ) //TODO consider removing intinsic height
-                    : _body(children: children);
+                    : _body(children: rowChildren);
               }).toList(),
         );
       },

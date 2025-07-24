@@ -35,7 +35,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardPlainNotePage: (context) => BoardPlainNotePageScreen(),
   Routes.noteTemplate: (context) => NoteTemplateScreen(),
   Routes.uploadPdf: (context) => UploadPdfScreen(),
-  Routes.pdf: (context) => PdfViewScreen(),
+  Routes.viewPdf: (context) => PdfViewScreen(),
   Routes.recentNotes: (context) => RecentNotesScreen(),
   Routes.boardDarkAcademia: (context) => DarkAcademiaScreen(),
   Routes.boardDarkAcademiaEdit: (context) => DarkAcademiaEditScreen(),
@@ -86,7 +86,7 @@ class Routes {
   static const noteTemplate = 'note_template';
   static const uploadPdf = 'upload_pdf';
   static const importNotes = 'import_notes'; //TODO build this screen
-  static const pdf = 'pdf';
+  static const viewPdf = 'viewPdf';
   static const recentNotes = 'recent_notes';
   static const boardDarkAcademia = 'board_dark_academia';
   static const boardDarkAcademiaEdit = 'board_dark_academia_edit';

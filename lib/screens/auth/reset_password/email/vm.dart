@@ -28,7 +28,7 @@ class ChangePasswordVm extends ChangeNotifier {
       NavigationHelper.push(Routes.resetPasswordVerify);
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showDefaultError(context);
+        MessageDisplayService.showDefaultError(context);
       }
       debugPrint(err.toString());
     }

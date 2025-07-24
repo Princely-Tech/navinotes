@@ -22,7 +22,7 @@ class YourBoards extends StatelessWidget {
     String boardImage = board.getImage();
 
     return InkWell(
-      onTap: () => vm.goToBoardNotes(board),
+      onTap: () => vm.goToBoard(board),
       child: CustomCard(
         padding: EdgeInsets.zero,
         child: Column(

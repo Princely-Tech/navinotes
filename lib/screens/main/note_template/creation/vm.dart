@@ -35,7 +35,7 @@ class NoteCreationVm extends ChangeNotifier {
         dbHelper.updateContent(newContent);
       }
     } catch (err) {
-      ErrorDisplayService.showErrorMessage(
+      MessageDisplayService.showErrorMessage(
         context,
         'Could not update content!',
       );
@@ -102,7 +102,7 @@ class NoteCreationVm extends ChangeNotifier {
       }
     } catch (e) {
       if (context.mounted) {
-        ErrorDisplayService.showErrorMessage(
+        MessageDisplayService.showErrorMessage(
           context,
           'Could not fetch content!',
         );
@@ -121,7 +121,7 @@ class NoteCreationVm extends ChangeNotifier {
 
   Future<void> createNote() async {
     if (isNull(content)) {
-      ErrorDisplayService.showErrorMessage(context, 'Content is null');
+      MessageDisplayService.showErrorMessage(context, 'Content is null');
       return;
     }
     await createContentInDb(

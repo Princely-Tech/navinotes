@@ -131,4 +131,9 @@ class NavigationHelper {
 
     return NavigationHelper.push(route, arguments: mergedArguments);
   }
+
+  static void navigateToPdfView(int contentId) {
+    push(Routes.viewPdf, arguments: contentId);
+  }
+  
 }

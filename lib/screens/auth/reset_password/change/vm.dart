@@ -32,7 +32,7 @@ class ChangePasswordVm extends ChangeNotifier {
         request,
       );
       if (context.mounted) {
-        ErrorDisplayService.showMessage(
+        MessageDisplayService.showMessage(
           context,
           response['message'] ??
               'Password changed successfully. Login with your new password',
@@ -41,7 +41,7 @@ class ChangePasswordVm extends ChangeNotifier {
       NavigationHelper.pushAndRemoveUntil(Routes.auth);
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showDefaultError(context);
+        MessageDisplayService.showDefaultError(context);
       }
       debugPrint(err.toString());
     }

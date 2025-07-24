@@ -14,7 +14,7 @@ class VerifyVM extends ChangeNotifier with AppRepository {
   void submitForm(String? otp) async {
     if (isNull(otp)) {
       if (context.mounted) {
-        ErrorDisplayService.showFormInValidError(context);
+        MessageDisplayService.showFormInValidError(context);
       }
       return;
     }
@@ -32,7 +32,7 @@ class VerifyVM extends ChangeNotifier with AppRepository {
       NavigationHelper.push(Routes.changePassword);
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showDefaultError(context);
+        MessageDisplayService.showDefaultError(context);
       }
       debugPrint(err.toString());
     }

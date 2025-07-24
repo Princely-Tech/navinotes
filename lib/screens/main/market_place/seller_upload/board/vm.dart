@@ -14,7 +14,7 @@ class SellerSelectContentVm extends ChangeNotifier {
       await sessionVm.getAllBoard();
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showMessage(
+        MessageDisplayService.showMessage(
           context,
           'Error occurred while fetching boards',
           isError: true,

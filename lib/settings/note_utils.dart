@@ -5,7 +5,7 @@ Future<T?> goToNotePageWithContent<T>({
   required BuildContext context,
 }) async {
   if (isNull(content.id)) {
-    ErrorDisplayService.showErrorMessage(context, 'Content ID not found!');
+    MessageDisplayService.showErrorMessage(context, 'Content ID not found!');
     return null;
   }
   BoardNoteTemplate template = getNoteTemplateFromString(
@@ -25,15 +25,8 @@ Future<void> createContentInDb({
 }) async {
   setLoading(true);
   try {
-    final sessionManager =
-        NavigationHelper.navigatorKey.currentContext!.read<SessionManager>();
-    final currentUser = sessionManager.user;
-    if (isNull(currentUser)) {
-      if (context.mounted) {
-        ErrorDisplayService.showErrorMessage(context, 'User not logged in');
-      }
-      NavigationHelper.logOut();
-    } else {
+    final currentUser = getCurrentUserFromSession(context);
+    if (isNotNull(currentUser)) {
       final currentTimestamp = generateUnixTimestamp();
       // Create a new Content object with default values
       final content = Content(
@@ -52,7 +45,7 @@ Future<void> createContentInDb({
 
       if (contentId == 0) {
         if (context.mounted) {
-          ErrorDisplayService.showErrorMessage(
+          MessageDisplayService.showErrorMessage(
             context,
             'Content creation failed',
           );
@@ -69,7 +62,7 @@ Future<void> createContentInDb({
   } catch (e) {
     debugPrint('Error creating note: $e');
     if (context.mounted) {
-      ErrorDisplayService.showDefaultError(context);
+      MessageDisplayService.showDefaultError(context);
     }
   } finally {
     setLoading(false);
@@ -97,9 +90,7 @@ NoteSortType stringToNoteSortType(String sortType) {
 }
 
 AppContentType stringToAppContentType(String sortType) {
-  print(sortType);
-  return AppContentType.values.firstWhere(
-    (type) => type.toString() == sortType,
-    orElse: () => throw 'Invalid sort type: $sortType',
-  );
+  return stringToEnum<AppContentType>(sortType, AppContentType.values);
 }
+
+

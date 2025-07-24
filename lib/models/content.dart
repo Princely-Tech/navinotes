@@ -158,6 +158,8 @@ class Content {
       body,
     );
 
+    //TODO make mark cover image need sync false
+
     return response;
   }
 }

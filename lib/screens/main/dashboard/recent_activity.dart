@@ -90,7 +90,7 @@ class RecentActivity extends StatelessWidget {
   }) {
     return InkWell(
       onTap: () {
-        NavigationHelper.push(Routes.pdf);
+        // NavigationHelper.push(Routes.pdf);
       },
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),

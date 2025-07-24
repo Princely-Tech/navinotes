@@ -20,7 +20,7 @@ class DashboardScreen extends StatelessWidget {
               bool hasData = sessionVm.userBoards.isNotEmpty;
               String activeRoute = Routes.dashboard;
               return ScaffoldFrame(
-                backgroundColor: hasData ? AppTheme.lightGray : AppTheme.white,
+                backgroundColor: hasData ? AppTheme.whiteSmoke : AppTheme.white,
                 scaffoldKey: _scaffoldKey,
                 drawer: CustomDrawer(
                   child: NavigationSideBar(activeRoute: activeRoute),

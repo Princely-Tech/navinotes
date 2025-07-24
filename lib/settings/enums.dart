@@ -59,7 +59,8 @@ enum KanbanTaskTag {
 enum AppContentType {
   note,
   mindmap,
-  syllabus;
+  syllabus,
+  file;
 
   @override
   toString() {
@@ -70,6 +71,26 @@ enum AppContentType {
         return 'Mindmap';
       case syllabus:
         return 'Syllabus';
+      case file:
+        return 'File';
+    }
+  }
+}
+
+enum EditBoardTab {
+  overview,
+  uploads,
+  assignments;
+
+  @override
+  String toString() {
+    switch (this) {
+      case overview:
+        return 'Overview';
+      case uploads:
+        return 'Uploads';
+      case assignments:
+        return 'Assignments';
     }
   }
 }

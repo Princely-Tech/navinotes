@@ -58,7 +58,7 @@ class AuthVM extends ChangeNotifier {
       _completeSignIn(response);
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showDefaultError(context);
+        MessageDisplayService.showDefaultError(context);
       }
       debugPrint(err.toString());
     }
@@ -113,7 +113,7 @@ class AuthVM extends ChangeNotifier {
       }
     } catch (e) {
       if (context.mounted) {
-        ErrorDisplayService.showDefaultError(context);
+        MessageDisplayService.showDefaultError(context);
       }
       debugPrint(e.toString());
     }
@@ -135,7 +135,7 @@ class AuthVM extends ChangeNotifier {
       _completeSignIn(response);
     } catch (err) {
       if (context.mounted) {
-        ErrorDisplayService.showDefaultError(context);
+        MessageDisplayService.showDefaultError(context);
       }
       debugPrint(err.toString());
     }

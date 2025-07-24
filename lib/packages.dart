@@ -10,6 +10,7 @@ export 'screens/packages.dart';
 
 //View Models
 export 'screens/main/pdf_view/overlay/vm.dart';
+export 'screens/main/choose_board/common/edit_vm.dart';
 
 //Providers
 export 'providers/index.dart';
@@ -61,3 +62,7 @@ export 'package:data_table_2/data_table_2.dart';
 export 'package:navinotes/models/content.dart';
 export 'package:flutter_typeahead/flutter_typeahead.dart';
 export 'package:intl/intl.dart' hide TextDirection;
+export 'package:file_picker/file_picker.dart';
+export 'package:popover/popover.dart';
+export 'package:open_file/open_file.dart';
+
