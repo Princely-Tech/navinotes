@@ -1,11 +1,14 @@
 import 'package:navinotes/packages.dart';
 
 class BoardEditVm extends ChangeNotifier {
+  BoardEditVm({this.scaffoldKey});
   Board? _board;
   bool _isLoading = true;
   String? _error;
   bool _showSuccess = false;
   String? _successMessage;
+
+  GlobalKey<ScaffoldState>? scaffoldKey;
 
   EditBoardTab selectedTab = EditBoardTab.overview;
 
@@ -33,6 +36,10 @@ class BoardEditVm extends ChangeNotifier {
       fetchingFiles = false;
       notifyListeners();
     }
+  }
+
+  void openDrawer() {
+    scaffoldKey?.currentState?.openDrawer();
   }
 
   Board? get board => _board;

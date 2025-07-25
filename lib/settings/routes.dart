@@ -1,26 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/choose_board/light_academia/edit/index.dart';
-import 'package:navinotes/screens/main/choose_board/light_academia/index.dart';
-import 'package:navinotes/screens/main/choose_board/light_academia/note_page/index.dart';
-import 'package:navinotes/screens/main/choose_board/minimalist/edit/index.dart';
-import 'package:navinotes/screens/main/choose_board/minimalist/index.dart';
-import 'package:navinotes/screens/main/choose_board/minimalist/mind_map/index.dart';
-import 'package:navinotes/screens/main/choose_board/minimalist/note_page/index.dart';
-import 'package:navinotes/screens/main/choose_board/plain/edit/index.dart';
-import 'package:navinotes/screens/main/choose_board/plain/index.dart';
-import 'package:navinotes/screens/main/choose_board/plain/mind_map/index.dart';
-import 'package:navinotes/screens/main/flashcards/index.dart';
-import 'package:navinotes/screens/main/market_place/index.dart';
-import 'package:navinotes/screens/main/market_place/my_purchases/index.dart';
-import 'package:navinotes/screens/main/market_place/my_store/index.dart';
-import 'package:navinotes/screens/main/market_place/product_detail/index.dart';
-import 'package:navinotes/screens/main/market_place/seller_upload/board/index.dart';
-import 'package:navinotes/screens/main/market_place/seller_upload/details/index.dart';
-import 'package:navinotes/screens/main/note_template/compare_contrast/index.dart';
-import 'package:navinotes/screens/main/note_template/creation/index.dart';
-import 'package:navinotes/screens/main/note_template/kanban/index.dart';
-import 'package:navinotes/screens/main/note_template/lab_report/index.dart';
-import 'package:navinotes/screens/main/note_template/timeline/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -70,6 +48,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.noteTimeline: (context) => NoteTimelineScreen(),
   Routes.noteKanban: (context) => NoteKanbanScreen(),
   Routes.noteLabReport: (context) => NoteLabReportScreen(),
+  Routes.boardPlainPopup: (context) => BoardPlainPopupScreen(),
 };
 
 class Routes {

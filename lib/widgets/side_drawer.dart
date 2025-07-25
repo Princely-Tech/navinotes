@@ -3,10 +3,10 @@ import 'package:navinotes/packages.dart';
 class NavigationSideBar extends StatelessWidget {
   const NavigationSideBar({
     super.key,
-    required this.activeRoute,
+    this.activeRoute,
     this.shrinkWrap = false,
   });
-  final String activeRoute;
+  final String? activeRoute;
   final bool shrinkWrap;
   @override
   Widget build(BuildContext context) {
