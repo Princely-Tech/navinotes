@@ -158,7 +158,12 @@ class Content {
       body,
     );
 
-    //TODO make mark cover image need sync false
+    //Makes coverImageNeedSync and fileNeedSync false after sync
+    final newContent = getUpdatedContent(
+      coverImageNeedSync: false,
+      fileNeedSync: false,
+    );
+    DatabaseHelper.instance.updateContent(newContent);
 
     return response;
   }

@@ -1,5 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/choose_board/common/edit_vm.dart';
 
 class BoardPlainEditOverview extends StatelessWidget {
   const BoardPlainEditOverview(this.vm, {super.key});
@@ -7,102 +6,115 @@ class BoardPlainEditOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final board = vm.board!;
-    return Column(
-      spacing: 30,
-      children: [
-        _welcome(board),
-        _sectionCard(
-          header: 'Course Timeline',
-          color: AppTheme.lightAsh,
-          title: 'Your learning journey will bloom here',
-          body:
-              'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
-          button: AppButton.secondary(
-            mainAxisSize: MainAxisSize.min,
-            onTap: () {},
-            color: AppTheme.strongBlue,
-            text: 'Upload syllabus to generate timeline',
-            style: const TextStyle(
-              color: Color(0xFF3B82F6),
-              fontSize: 16.0,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        CustomGrid(
-          children: [
-            _gridChild(
-              body: 'Start here to unlock AI features',
-              btnText: 'Upload now',
-              image: Images.file2,
-              title: 'Upload Syllabus',
-              color: true,
-              onTap: () {},
-            ),
-            _gridChild(
-              body: 'Begin taking notes right away',
-              btnText: 'Create note',
-              image: Images.edit,
-              title: 'Create Note',
-              onTap: () {
-                NavigationHelper.navigateToBoardNotes(board);
-              },
-            ),
-            LoadingIndicator(
-              loading: vm.savingFiles,
-              child: _gridChild(
-                body: 'Add your course materials',
-                btnText: 'Import now',
-                image: Images.folder,
-                title: 'Import Files',
-                onTap: () => vm.importFiles(context),
+    return ApiServiceComponent(
+      child: Consumer<ApiServiceProvider>(
+          builder: (_, apiServiceProvider, _) {
+          return Column(
+            spacing: 30,
+            children: [
+              _welcome(board),
+              _sectionCard(
+                header: 'Course Timeline',
+                color: AppTheme.lightAsh,
+                title: 'Your learning journey will bloom here',
+                body:
+                    'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
+                button: AppButton.secondary(
+                  loading: vm.uploadingSyllabus,
+                  mainAxisSize: MainAxisSize.min,
+                  onTap: () {},
+                  color: AppTheme.strongBlue,
+                  text: 'Upload syllabus to generate timeline',
+                  style: const TextStyle(
+                    color: Color(0xFF3B82F6),
+                    fontSize: 16.0,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
-        _sectionCard(
-          header: 'Upcoming Assignments',
-          color: AppTheme.lightAsh,
-          img: Images.menu2,
-          title: 'Assignment tracking will appear after syllabus upload',
-          body:
-              'We\'ll automatically identify and track all your assignments, quizzes, and exams',
-          button: AppButton.secondary(
-            mainAxisSize: MainAxisSize.min,
-            onTap: () {},
-            color: AppTheme.strongBlue,
-            text: 'Upload syllabus to see assignments',
-            style: AppTheme.text.copyWith(
-              color: const Color(0xFF3B82F6),
-              fontSize: 16.0,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        _sectionCard(
-          color: AppTheme.whiteSmoke,
-          header: 'Course Materials',
-          img: Images.ques2,
-          title: 'Upload and organize your study materials',
-          body: 'Drag and drop files here\nor',
-          button: AppButton(
-            mainAxisSize: MainAxisSize.min,
-            color: AppTheme.white,
-            borderColor: AppTheme.lightGray,
-            onTap: () {},
-            text: 'Browse files',
-            style: const TextStyle(
-              color: Color(0xFF1F2937),
-              fontSize: 16.0,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        _courseInformation(),
-      ],
+              CustomGrid(
+                children: [
+                  _gridChild(
+                    body: 'Start here to unlock AI features',
+                    btnText: 'Upload now',
+                    image: Images.file2,
+                    title: 'Upload Syllabus',
+                    color: true,
+                    onTap: () {},
+                  ),
+                  _gridChild(
+                    body: 'Begin taking notes right away',
+                    btnText: 'Create note',
+                    image: Images.edit,
+                    title: 'Create Note',
+                    onTap: () {
+                      NavigationHelper.navigateToBoardNotes(board);
+                    },
+                  ),
+                  LoadingIndicator(
+                    loading: vm.savingFiles,
+                    child: _gridChild(
+                      body: 'Add your course materials',
+                      btnText: 'Import now',
+                      image: Images.folder,
+                      title: 'Import Files',
+                      onTap: () => vm.importFiles(context),
+                    ),
+                  ),
+                ],
+              ),
+              _sectionCard(
+                header: 'Upcoming Assignments',
+                color: AppTheme.lightAsh,
+                img: Images.menu2,
+                title: 'Assignment tracking will appear after syllabus upload',
+                body:
+                    'We\'ll automatically identify and track all your assignments, quizzes, and exams',
+                button: AppButton.secondary(
+                  mainAxisSize: MainAxisSize.min,
+                  loading: vm.uploadingSyllabus,
+                  onTap:
+                      () => vm.uploadSyllabus(
+                        context: context,
+                        apiServiceProvider: apiServiceProvider,
+                      ),
+                  color: AppTheme.strongBlue,
+                  text: 'Upload syllabus to see assignments',
+                  style: AppTheme.text.copyWith(
+                    color: const Color(0xFF3B82F6),
+                    fontSize: 16.0,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              _sectionCard(
+                color: AppTheme.whiteSmoke,
+                header: 'Course Materials',
+                img: Images.ques2,
+                title: 'Upload and organize your study materials',
+                body: 'Drag and drop files here\nor',
+                button: AppButton(
+                  mainAxisSize: MainAxisSize.min,
+                  color: AppTheme.white,
+                  borderColor: AppTheme.lightGray,
+                  onTap: () => vm.importFiles(context),
+                  loading: vm.savingFiles,
+                  text: 'Browse files',
+                  style: const TextStyle(
+                    color: Color(0xFF1F2937),
+                    fontSize: 16.0,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              _courseInformation(),
+            ],
+          );
+        }
+      ),
     );
   }
 

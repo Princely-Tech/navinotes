@@ -1,7 +1,4 @@
-import 'package:navinotes/screens/main/choose_board/plain/edit/overview.dart';
-import 'package:navinotes/screens/main/choose_board/plain/edit/uploads.dart';
-
-import '../../common/edit_vm.dart';
+import 'overview.dart';
 import 'package:navinotes/packages.dart';
 
 class BoardPlainEditScreen extends StatefulWidget {
@@ -109,7 +106,7 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
       case EditBoardTab.overview:
         return BoardPlainEditOverview(vm);
       case EditBoardTab.uploads:
-        return BoardPlainUploads(vm);
+        return BoardEditUploads(vm);
       case EditBoardTab.assignments:
         return const SizedBox.shrink();
     }

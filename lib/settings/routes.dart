@@ -123,11 +123,14 @@ class Routes {
   static const noteKanban = 'noteKanban';
   static const noteLabReport = 'noteLabReport';
   static const pomodoroTimer = 'pomodoroTimer'; //TODO create screen
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
-  // static const boardLightAcademiaMindMap = 'boardLightAcademiaMindMap';
+  static const boardPlainPopup = 'boardPlainPopup';
+  static const boardMinimalistPopup = 'boardMinimalistPopup';
+  static const boardDarkAcademiaPopup = 'boardDarkAcademiaPopup';
+  static const boardLightAcademiaPopup = 'boardLightAcademiaPopup';
+  static const boardNaturePopup = 'boardNaturePopup';
+  // static const boardNaturePopup = 'boardNaturePopup';
+  // static const boardNaturePopup = 'boardNaturePopup';
+  // static const boardNaturePopup = 'boardNaturePopup';
 }
 //Documentation
 //https://documenter.getpostman.com/view/45960961/2sB2x8GXet

@@ -17,6 +17,8 @@ class Board {
   final int createdAt;
   final int updatedAt;
   final int? syncedAt;
+  final List<CourseTimeline>? courseTimeLines;
+  final CourseInfo? courseInfo;
 
   final bool
   coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
@@ -30,6 +32,8 @@ class Board {
     required this.customization,
     this.isPublic = false,
     this.description,
+    this.courseTimeLines,
+    this.courseInfo,
     this.subject,
     this.level,
     this.term,
@@ -39,6 +43,50 @@ class Board {
     this.syncedAt,
     this.coverImageNeedSync = false,
   });
+
+  Board copyWith({
+    int? id,
+    String? guid,
+    int? userId,
+    String? type,
+    String? name,
+    Map<String, dynamic>? customization,
+    bool? isPublic,
+    String? description,
+    String? subject,
+    String? level,
+    String? term,
+    String? coverImage,
+    int? createdAt,
+    int? updatedAt,
+    int? syncedAt,
+    List<CourseTimeline>? courseTimeLines,
+    CourseInfo? courseInfo,
+
+    bool? coverImageNeedSync,
+  }) {
+    return Board(
+      id: id ?? this.id,
+      guid: guid ?? this.guid,
+      userId: userId ?? this.userId,
+      type: type ?? this.type,
+      name: name ?? this.name,
+      customization:
+          customization ?? Map<String, dynamic>.from(this.customization),
+      isPublic: isPublic ?? this.isPublic,
+      description: description ?? this.description,
+      subject: subject ?? this.subject,
+      level: level ?? this.level,
+      term: term ?? this.term,
+      coverImage: coverImage ?? this.coverImage,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      courseTimeLines: courseTimeLines ?? this.courseTimeLines,
+      courseInfo: courseInfo ?? this.courseInfo,
+      coverImageNeedSync: coverImageNeedSync ?? this.coverImageNeedSync,
+    );
+  }
 
   BoardTypeCodes? get boardType {
     try {
@@ -80,6 +128,8 @@ class Board {
     'user_id': userId,
     'type': type,
     'name': name,
+    'course_info': courseInfo?.toMap(),
+    'course_timelines': courseTimeLines?.map((e) => e.toMap()).toList(),
     'customization': jsonEncode(customization),
     'is_public': isPublic ? 1 : 0,
     'description': description,
@@ -90,27 +140,73 @@ class Board {
     'created_at': createdAt,
     'updated_at': updatedAt,
     'synced_at': syncedAt,
-    'cover_image_need_sync': coverImageNeedSync,
+    'cover_image_need_sync': coverImageNeedSync ? 1 : 0,
   };
 
-  factory Board.fromMap(Map<String, dynamic> map) => Board(
-    id: map['id'],
-    guid: map['guid'],
-    userId: map['user_id'],
-    type: map['type'],
-    name: map['name'],
-    customization: jsonDecode(map['customization']),
-    isPublic: map['is_public'] == 1,
-    description: map['description'],
-    subject: map['subject'],
-    level: map['level'],
-    term: map['term'],
-    coverImage: map['cover_image'],
-    createdAt: map['created_at'],
-    updatedAt: map['updated_at'],
-    syncedAt: map['synced_at'],
-    coverImageNeedSync: getBoolFromInt(map['cover_image_need_sync']),
-  );
+  factory Board.fromMap(Map<String, dynamic> map) {
+    // Parse course_info if it exists
+    CourseInfo? courseInfo;
+    if (map['course_info'] != null) {
+      if (map['course_info'] is String) {
+        // If stored as JSON string
+        courseInfo = CourseInfo.fromMap(
+          Map<String, dynamic>.from(jsonDecode(map['course_info'])),
+        );
+      } else if (map['course_info'] is Map) {
+        // If already a map
+        courseInfo = CourseInfo.fromMap(
+          Map<String, dynamic>.from(map['course_info']),
+        );
+      }
+    }
+
+    // Parse course_timelines if they exist
+    List<CourseTimeline>? courseTimeLines;
+    if (map['course_timelines'] != null) {
+      if (map['course_timelines'] is String) {
+        // If stored as JSON string
+        final List<dynamic> timelineList = jsonDecode(map['course_timelines']);
+        courseTimeLines =
+            timelineList
+                .map(
+                  (e) => CourseTimeline.fromMap(Map<String, dynamic>.from(e)),
+                )
+                .toList();
+      } else if (map['course_timelines'] is List) {
+        // If already a list
+        courseTimeLines =
+            (map['course_timelines'] as List)
+                .map(
+                  (e) => CourseTimeline.fromMap(Map<String, dynamic>.from(e)),
+                )
+                .toList();
+      }
+    }
+
+    return Board(
+      id: map['id'],
+      guid: map['guid'],
+      userId: map['user_id'],
+      type: map['type'],
+      name: map['name'],
+      customization:
+          map['customization'] is String
+              ? jsonDecode(map['customization'])
+              : Map<String, dynamic>.from(map['customization'] ?? {}),
+      isPublic: map['is_public'] == 1,
+      description: map['description'],
+      subject: map['subject'],
+      level: map['level'],
+      term: map['term'],
+      coverImage: map['cover_image'],
+      createdAt: map['created_at'],
+      updatedAt: map['updated_at'],
+      syncedAt: map['synced_at'],
+      coverImageNeedSync: map['cover_image_need_sync'] == 1,
+      courseInfo: courseInfo,
+      courseTimeLines: courseTimeLines,
+    );
+  }
 
   // Cache for board contents
   List<Content>? _cachedContents;

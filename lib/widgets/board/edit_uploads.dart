@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart' as path;
 
-class BoardPlainUploads extends StatelessWidget {
-  const BoardPlainUploads(this.vm, {super.key});
+class BoardEditUploads extends StatelessWidget {
+  const BoardEditUploads(this.vm, {super.key});
   final BoardEditVm vm;
 
   String _formatFileSize(int bytes) {

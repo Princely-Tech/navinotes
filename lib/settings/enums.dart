@@ -59,7 +59,7 @@ enum KanbanTaskTag {
 enum AppContentType {
   note,
   mindmap,
-  syllabus,
+  // syllabus,
   file;
 
   @override
@@ -69,8 +69,8 @@ enum AppContentType {
         return 'Note';
       case mindmap:
         return 'Mindmap';
-      case syllabus:
-        return 'Syllabus';
+      // case syllabus:
+      //   return 'Syllabus';
       case file:
         return 'File';
     }

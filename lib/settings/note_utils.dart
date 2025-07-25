@@ -79,14 +79,7 @@ String noteSortTypeToString(NoteSortType sortType) {
 }
 
 NoteSortType stringToNoteSortType(String sortType) {
-  switch (sortType) {
-    case 'Last modified':
-      return NoteSortType.updatedAt;
-    case 'Date created':
-      return NoteSortType.createdAt;
-    default:
-      throw 'Invalid sort type: $sortType';
-  }
+  return stringToEnum<NoteSortType>(sortType, NoteSortType.values);
 }
 
 AppContentType stringToAppContentType(String sortType) {

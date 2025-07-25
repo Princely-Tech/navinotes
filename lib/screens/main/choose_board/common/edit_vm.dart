@@ -11,6 +11,12 @@ class BoardEditVm extends ChangeNotifier {
 
   bool fetchingFiles = false;
   List<Content> uploadedFiles = [];
+  bool uploadingSyllabus = false;
+
+  void updateUploadSyllabus(bool value) {
+    uploadingSyllabus = value;
+    notifyListeners();
+  }
 
   Future<void> loadFiles(int boardId, {BuildContext? context}) async {
     fetchingFiles = true;
@@ -194,6 +200,70 @@ class BoardEditVm extends ChangeNotifier {
     } finally {
       savingFiles = false;
       notifyListeners();
+    }
+  }
+
+  void uploadSyllabus({
+    required BuildContext context,
+    required ApiServiceProvider apiServiceProvider,
+  }) async {
+    try {
+      updateUploadSyllabus(true);
+      final currentUser = getCurrentUserFromSession(context);
+      if (isNotNull(currentUser)) {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf', 'docx', 'txt'],
+        );
+
+        if (isNotNull(result) && result!.files.isNotEmpty) {
+          final dbHelper = DatabaseHelper.instance;
+          final file = File(result.files.first.path!);
+
+          final imageBody = FormDataRequest.post(
+            ApiEndpoints.boardSyllabus,
+            files: {'syllabus_file': file},
+          );
+
+          final response = await apiServiceProvider.apiService
+              .sendFormDataRequest(imageBody);
+
+          final List<dynamic> syllabusData =
+              response['response']['weekly_timeline'];
+          final List<CourseTimeline> timeLines =
+              syllabusData.map((item) => CourseTimeline.fromMap(item)).toList();
+
+          // Update the board with the new syllabus
+          if (isNotNull(board)) {
+            final updatedBoard = board!.copyWith(
+              courseTimeLines: timeLines,
+              courseInfo: CourseInfo.fromMap(response['response']['course_info']),
+            );
+            await dbHelper.updateBoard(updatedBoard);
+
+            NavigationHelper.navigateToBoardPopup(board!, replace: true);
+
+            if (context.mounted) {
+              MessageDisplayService.showMessage(
+                context,
+                'Syllabus uploaded successfully',
+              );
+            }
+          } else {
+            throw Exception('Failed to process syllabus');
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error Uploading syllabus $e');
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Error uploading syllabus: ${e.toString()}',
+        );
+      }
+    } finally {
+      updateUploadSyllabus(false);
     }
   }
 

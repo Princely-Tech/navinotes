@@ -132,8 +132,25 @@ class NavigationHelper {
     return NavigationHelper.push(route, arguments: mergedArguments);
   }
 
+  static Future navigateToBoardPopup(Board board, {bool replace = false}) {
+    final boardType = board.boardType ?? BoardTypeCodes.plain;
+
+    final route = switch (boardType) {
+      BoardTypeCodes.plain => Routes.boardPlainPopup,
+      BoardTypeCodes.minimalist => Routes.boardMinimalistPopup,
+      BoardTypeCodes.darkAcademia => Routes.boardDarkAcademiaPopup,
+      BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaPopup,
+      BoardTypeCodes.nature => Routes.boardNaturePopup,
+    };
+
+    if (replace) {
+      return NavigationHelper.pushReplacement(route, arguments: board);
+    }
+
+    return NavigationHelper.push(route, arguments: board);
+  }
+
   static void navigateToPdfView(int contentId) {
     push(Routes.viewPdf, arguments: contentId);
   }
-  
 }
