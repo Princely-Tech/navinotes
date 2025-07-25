@@ -30,21 +30,83 @@ class SellerUploadVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  var categories = [
-    'Science',
-    'Arts & Humanities',
-    'Social Sciences',
-    'Engineering',
-    'Business & Economics',
-    'Medical & Health Sciences',
-    'Technology & Computing',
-    'Law',
-    'Education',
-    'Languages',
-    'Other',
-  ];
+final Map<String, List<String>> categoryMap = {
+    'Science': [
+      'Physics',
+      'Chemistry',
+      'Biology',
+      'Mathematics',
+      'Environmental Science',
+    ],
+    'Arts & Humanities': [
+      'History',
+      'Philosophy',
+      'Literature',
+      'Theology',
+      'Visual Arts',
+    ],
+    'Social Sciences': [
+      'Sociology',
+      'Psychology',
+      'Political Science',
+      'Anthropology',
+      'Geography',
+    ],
+    'Engineering': [
+      'Mechanical Engineering',
+      'Civil Engineering',
+      'Electrical Engineering',
+      'Computer Engineering',
+      'Chemical Engineering',
+    ],
+    'Business & Economics': [
+      'Accounting',
+      'Finance',
+      'Marketing',
+      'Economics',
+      'Entrepreneurship',
+    ],
+    'Medical & Health Sciences': [
+      'Nursing',
+      'Medicine',
+      'Pharmacy',
+      'Public Health',
+      'Anatomy',
+    ],
+    'Technology & Computing': [
+      'Computer Science',
+      'Information Technology',
+      'Software Engineering',
+      'Data Science',
+      'Cybersecurity',
+    ],
+    'Law': [
+      'Criminal Law',
+      'Civil Law',
+      'International Law',
+      'Constitutional Law',
+      'Corporate Law',
+    ],
+    'Education': [
+      'Curriculum Studies',
+      'Educational Psychology',
+      'Early Childhood Education',
+      'Guidance and Counselling',
+      'Educational Administration',
+    ],
+    'Languages': [
+      'English Language',
+      'French',
+      'Spanish',
+      'German',
+      'Linguistics',
+    ],
+    'Other': [],
+  };
 
-  var subCategories = <String>[];
+  List<String> subCategories = [];
+
+
 
   bool _isFormValid = false;
   bool get isFormValid => _isFormValid;
@@ -73,114 +135,18 @@ class SellerUploadVm extends ChangeNotifier {
     return null;
   }
 
-  setScreen(Screen screen) {
-    currentScreen = screen;
-    notifyListeners();
-  }
+List<String> getCategories() {
+return categoryMap.keys.toList();
+}
 
   void loadSubCategories(String category) {
     debugPrint('loadSubCategories category: $category');
-    if (category == '') {
-      subCategories = [];
-      notifyListeners();
-      return;
-    }
-
-    switch (category) {
-      case 'Science':
-        subCategories = [
-          'Physics',
-          'Chemistry',
-          'Biology',
-          'Mathematics',
-          'Environmental Science',
-        ];
-        break;
-      case 'Arts & Humanities':
-        subCategories = [
-          'History',
-          'Philosophy',
-          'Literature',
-          'Theology',
-          'Visual Arts',
-        ];
-        break;
-      case 'Social Sciences':
-        subCategories = [
-          'Sociology',
-          'Psychology',
-          'Political Science',
-          'Anthropology',
-          'Geography',
-        ];
-        break;
-      case 'Engineering':
-        subCategories = [
-          'Mechanical Engineering',
-          'Civil Engineering',
-          'Electrical Engineering',
-          'Computer Engineering',
-          'Chemical Engineering',
-        ];
-        break;
-      case 'Business & Economics':
-        subCategories = [
-          'Accounting',
-          'Finance',
-          'Marketing',
-          'Economics',
-          'Entrepreneurship',
-        ];
-        break;
-      case 'Medical & Health Sciences':
-        subCategories = [
-          'Nursing',
-          'Medicine',
-          'Pharmacy',
-          'Public Health',
-          'Anatomy',
-        ];
-        break;
-      case 'Technology & Computing':
-        subCategories = [
-          'Computer Science',
-          'Information Technology',
-          'Software Engineering',
-          'Data Science',
-          'Cybersecurity',
-        ];
-        break;
-      case 'Law':
-        subCategories = [
-          'Criminal Law',
-          'Civil Law',
-          'International Law',
-          'Constitutional Law',
-          'Corporate Law',
-        ];
-        break;
-      case 'Education':
-        subCategories = [
-          'Curriculum Studies',
-          'Educational Psychology',
-          'Early Childhood Education',
-          'Guidance and Counselling',
-          'Educational Administration',
-        ];
-        break;
-      case 'Languages':
-        subCategories = [
-          'English Language',
-          'French',
-          'Spanish',
-          'German',
-          'Linguistics',
-        ];
-        break;
-      default:
-        subCategories = ['Other'];
-    }
-
+    subCategories = categoryMap[category] ?? ['Other'];
+    notifyListeners();
+  }
+  
+  setScreen(Screen screen) {
+    currentScreen = screen;
     notifyListeners();
   }
 

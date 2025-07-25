@@ -228,8 +228,17 @@ class BoardEditVm extends ChangeNotifier {
           final response = await apiServiceProvider.apiService
               .sendFormDataRequest(imageBody);
 
+          if (response['response'] == null) {
+            throw Exception('Failed to process syllabus. Try again');
+          }
+          print("Response == :");
+          print("response $response");
+          print("response ${response['response']}");
+          print("weekly_outline ${response['response']['weekly_outline']}");
+          print("course_info ${response['response']['course_info']}");
+
           final List<dynamic> syllabusData =
-              response['response']['weekly_timeline'];
+              response['response']['weekly_outline'];
           final List<CourseTimeline> timeLines =
               syllabusData.map((item) => CourseTimeline.fromMap(item)).toList();
 
@@ -237,7 +246,9 @@ class BoardEditVm extends ChangeNotifier {
           if (isNotNull(board)) {
             final updatedBoard = board!.copyWith(
               courseTimeLines: timeLines,
-              courseInfo: CourseInfo.fromMap(response['response']['course_info']),
+              courseInfo: CourseInfo.fromMap(
+                response['response']['course_info'],
+              ),
             );
             await dbHelper.updateBoard(updatedBoard);
 
@@ -259,7 +270,7 @@ class BoardEditVm extends ChangeNotifier {
       if (context.mounted) {
         MessageDisplayService.showErrorMessage(
           context,
-          'Error uploading syllabus: ${e.toString()}',
+          'Error uploading syllabus. Try again',
         );
       }
     } finally {

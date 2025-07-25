@@ -24,28 +24,28 @@ class MyStoreMain extends StatelessWidget {
                   children: [
                     _card(
                       title: 'Total Earnings',
-                      footer: '\$18,932 all- time',
-                      value: '\$2,457',
-                      percentage: '12',
+                      footer: '\$0 all- time',
+                      value: '\$0',
+                      percentage: '0',
                       imagePath: Images.dollar,
                     ),
                     _card(
                       title: 'Total Sales',
-                      footer: '1,243 all-time',
-                      value: '187',
-                      percentage: '8',
+                      footer: '03 all-time',
+                      value: '0',
+                      percentage: '0',
                       imagePath: Images.shoppingCart,
                     ),
                     _card(
                       title: 'Average Rating',
-                      footer: '89 reviews this month',
-                      value: '4.8',
+                      footer: '0 reviews this month',
+                      value: '0',
                       imagePath: Images.star2,
                     ),
                     _card(
                       title: 'Active Listings',
-                      footer: '3 drafts in progress',
-                      value: '12',
+                      footer: '0 drafts in progress',
+                      value: '0',
                       imagePath: Images.clipboard,
                     ),
                   ],
@@ -158,23 +158,23 @@ class MyStoreMain extends StatelessWidget {
                 children: [
                   _performanceItem(
                     title: 'Revenue',
-                    value: '\$2,457',
-                    increasePercent: '18',
+                    value: '\$0',
+                    increasePercent: '0',
                   ),
                   _performanceItem(
                     title: 'Transactions',
-                    value: '187',
-                    increasePercent: '12',
+                    value: '0',
+                    increasePercent: '0',
                   ),
                   _performanceItem(
                     title: 'Avg. Order Value',
-                    value: '\$13.14',
-                    increasePercent: '5',
+                    value: '\$0',
+                    increasePercent: '0',
                   ),
                   _performanceItem(
                     title: 'Conversion Rate',
-                    value: '12.5%',
-                    decreasePercent: '0.5',
+                    value: '0%',
+                    decreasePercent: '0',
                   ),
                 ],
               ),
@@ -274,11 +274,11 @@ class MyStoreMain extends StatelessWidget {
                     fontWeight: getFontWeight(700),
                   ),
                 ),
-                if (value == '4.8')
+                if (value == '0')
                   StarRows(fullStars: 4, halfStars: 1)
                 else
                   Text(
-                    value == '12' ? 'product' : 'this month',
+                    value == '0' ? 'product' : 'this month',
                     style: AppTheme.text.copyWith(color: AppTheme.steelMist),
                   ),
               ],

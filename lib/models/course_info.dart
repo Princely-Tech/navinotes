@@ -20,7 +20,7 @@ class CourseInfo {
   // Convert a CourseInfo into a Map
   Map<String, dynamic> toMap() {
     return {
-      'title': title,
+      'title': title ,
       'code': code,
       'instructor': instructor,
       'semester': semester,

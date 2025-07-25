@@ -128,8 +128,8 @@ class Board {
     'user_id': userId,
     'type': type,
     'name': name,
-    'course_info': courseInfo?.toMap(),
-    'course_timelines': courseTimeLines?.map((e) => e.toMap()).toList(),
+    'course_info': courseInfo == null ? null : jsonEncode(courseInfo?.toMap()),
+    'course_timelines': courseTimeLines == null ? null : jsonEncode(courseTimeLines?.map((e) => e.toMap()).toList()),
     'customization': jsonEncode(customization),
     'is_public': isPublic ? 1 : 0,
     'description': description,
@@ -141,6 +141,7 @@ class Board {
     'updated_at': updatedAt,
     'synced_at': syncedAt,
     'cover_image_need_sync': coverImageNeedSync ? 1 : 0,
+  
   };
 
   factory Board.fromMap(Map<String, dynamic> map) {
@@ -155,12 +156,12 @@ class Board {
       } else if (map['course_info'] is Map) {
         // If already a map
         courseInfo = CourseInfo.fromMap(
-          Map<String, dynamic>.from(map['course_info']),
+          Map<String, dynamic>.from(jsonDecode(map['course_info'])),
         );
       }
     }
 
-    // Parse course_timelines if they exist
+    // Parse course_timelines if they exist.
     List<CourseTimeline>? courseTimeLines;
     if (map['course_timelines'] != null) {
       if (map['course_timelines'] is String) {

@@ -568,7 +568,7 @@ class SellerUploadMain extends StatelessWidget {
             label: 'Category',
             hintText: 'Select a category',
             required: true,
-            selectItems: vm.categories,
+            selectItems: vm.getCategories(),
             labelStyle: labelStyle,
           ),          
           CustomInputField(

@@ -1,15 +1,3 @@
-import 'package:navinotes/packages.dart';
-
- "course_info": {
-      "title": "Introduction to Computer Science",
-      "code": "CSC101",
-      "instructor": "Dr. Jane Doe",
-      "semester": "Fall 2025",
-      "schedule": "Tuesdays 2:00–4:00 PM, Room 305",
-      "location": "Room 204, Science Building"
-    },
-    
-
 class CourseTimeline {
   final String week;
   final String title;
@@ -20,9 +8,9 @@ class CourseTimeline {
   CourseTimeline({
     required this.week,
     required this.title,
-    required this.description,
-    required this.assignment,
-    required this.due,
+    this.description,
+    this.assignment,
+    this.due,
   });
 
   // Convert a CourseTimeline into a Map
@@ -39,11 +27,11 @@ class CourseTimeline {
   // Create a CourseTimeline from a Map
   factory CourseTimeline.fromMap(Map<String, dynamic> map) {
     return CourseTimeline(
-      week: map['week'],
-      title: map['title'],
-      description: map['description'],
-      assignment: map['assignment'],
-      due: map['due'],
+      week: map['week']??'',
+      title: map['title']??'',
+      description: map['description']??'',
+      assignment: map['assignment']??'',
+      due: map['due']??'',
     );
   }
 

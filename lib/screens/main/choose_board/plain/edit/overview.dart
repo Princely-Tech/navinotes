@@ -22,7 +22,12 @@ class BoardPlainEditOverview extends StatelessWidget {
                 button: AppButton.secondary(
                   loading: vm.uploadingSyllabus,
                   mainAxisSize: MainAxisSize.min,
-                  onTap: () {},
+                  onTap: () {
+                    vm.uploadSyllabus(
+                      context: context,
+                      apiServiceProvider: apiServiceProvider,
+                    );
+                  },
                   color: AppTheme.strongBlue,
                   text: 'Upload syllabus to generate timeline',
                   style: const TextStyle(
@@ -35,13 +40,21 @@ class BoardPlainEditOverview extends StatelessWidget {
               ),
               CustomGrid(
                 children: [
-                  _gridChild(
-                    body: 'Start here to unlock AI features',
-                    btnText: 'Upload now',
-                    image: Images.file2,
-                    title: 'Upload Syllabus',
-                    color: true,
-                    onTap: () {},
+                  LoadingIndicator(
+                    loading: vm.uploadingSyllabus,
+                    child: _gridChild(
+                      body: 'Start here to unlock AI features',
+                      btnText: 'Upload now',
+                      image: Images.file2,
+                      title: 'Upload Syllabus',
+                      color: true,
+                      onTap: () {
+                        vm.uploadSyllabus(
+                          context: context,
+                          apiServiceProvider: apiServiceProvider,
+                        );
+                      },
+                    ),
                   ),
                   _gridChild(
                     body: 'Begin taking notes right away',
