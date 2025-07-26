@@ -254,7 +254,9 @@ class Images {
   //board plain
   static const String boardPlainPreview = '$boardsPlainPath/preview.png';
   static const String boardPlainScience = '$boardsPlainPath/science.png';
-  // static const String boardPlain = '$boardsPlainPath/.png';
+  static const String boardPlainImportFiles = '$boardsPlainPath/import_files.png';
+  static const String boardPlainImportPdf = '$boardsPlainPath/import_pdf.png';
+  static const String boardPlainCreateNote = '$boardsPlainPath/create_note.png';
   // static const String boardPlain = '$boardsPlainPath/.png';
   // static const String boardPlain = '$boardsPlainPath/.png';
 

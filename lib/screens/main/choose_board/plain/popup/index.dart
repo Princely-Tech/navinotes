@@ -12,27 +12,13 @@ class BoardPlainPopupScreen extends StatelessWidget {
         builder: (_, vm, _) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
+            backgroundColor: AppTheme.ghostWhite,
             drawer: CustomDrawer(child: NavigationSideBar()),
             body: Column(
               children: [
                 _header(),
                 Expanded(
-                  child: ScrollableController(
-                    mobilePadding: const EdgeInsets.symmetric(vertical: 20),
-                    child: ResponsiveHorizontalPadding(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: WidthLimiter(
-                              mobile: largeDesktopSize,
-                              child: _returnTabItem(vm),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: ScrollableController(child: _returnTabItem(vm)),
                 ),
               ],
             ),
@@ -104,61 +90,61 @@ class BoardPlainPopupScreen extends StatelessWidget {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.all(10),
                     child: Row(
+                      spacing: 20,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: MenuButton(onPressed: vm.openDrawer),
-                        ),
+                        MenuButton(onPressed: vm.openDrawer),
                         Expanded(
-                          child: ResponsiveHorizontalPadding(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: WidthLimiter(
-                                    mobile: largeDesktopSize,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      spacing: 15,
-                                      children: [
-                                        Text(
-                                          'BIOLOGY 101 - Fall Semester',
-                                          style: TextStyle(
-                                            color: const Color(0xFF1F2937),
-                                            fontSize: 20,
-                                            fontFamily: 'Inter',
-                                            fontWeight: FontWeight.w600,
-                                            height: 1.4,
-                                          ),
-                                        ),
-                                        if (!showBottomSelectRows)
-                                          Expanded(child: _selectRows()),
-
-                                        Row(
-                                          spacing: 10,
-                                          children: [
-                                            IconButton(
-                                              onPressed:
-                                                  NavigationHelper
-                                                      .navigateToSettings,
-                                              icon: SVGImagePlaceHolder(
-                                                imagePath: Images.settings,
-                                                size: 16,
-                                                color: AppTheme.stormGray,
-                                              ),
-                                            ),
-                                            ProfilePic(),
-                                          ],
-                                        ),
-                                      ],
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            spacing: 15,
+                            children: [
+                              IconButton(
+                                onPressed: NavigationHelper.pop,
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  color: const Color(0xFF6B7280),
+                                ),
+                              ),
+                              ExpandableController(
+                                mobile: true,
+                                desktop: false,
+                                child: Text(
+                                  'BIOLOGY 101 - Fall Semester',
+                                  style: TextStyle(
+                                    color: const Color(0xFF1F2937),
+                                    fontSize: getDeviceResponsiveValue(
+                                      deviceType: layoutVm.deviceType,
+                                      mobile: 16,
+                                      tablet: 18,
+                                      laptop: 20,
                                     ),
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.4,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                              if (!showBottomSelectRows)
+                                Expanded(child: _selectRows()),
+
+                              Row(
+                                spacing: 10,
+                                children: [
+                                  IconButton(
+                                    onPressed:
+                                        NavigationHelper.navigateToSettings,
+                                    icon: SVGImagePlaceHolder(
+                                      imagePath: Images.settings,
+                                      size: 16,
+                                      color: AppTheme.stormGray,
+                                    ),
+                                  ),
+                                  ProfilePic(),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -166,7 +152,7 @@ class BoardPlainPopupScreen extends StatelessWidget {
                   ),
                 ),
                 if (showBottomSelectRows)
-                  _selectRows(inActiveBorderColor: AppTheme.whiteSmoke),
+                  _selectRows(inActiveBorderColor: AppTheme.lightGray),
               ],
             );
           },

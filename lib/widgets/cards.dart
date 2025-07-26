@@ -13,7 +13,7 @@ class CustomCard extends StatelessWidget {
     this.addCardShadow = false,
     this.addBorder = false,
     this.dottedDecoration,
-    // this.edgeClipRadius,
+    this.alignment,
   });
   final Widget? child;
   final EdgeInsets? padding;
@@ -25,7 +25,7 @@ class CustomCard extends StatelessWidget {
   final bool addCardShadow;
   final bool addBorder;
   final DottedDecoration? dottedDecoration;
-  // final double? edgeClipRadius;
+  final AlignmentGeometry? alignment;
   @override
   Widget build(BuildContext context) {
     BorderRadiusGeometry radius =
@@ -43,6 +43,7 @@ class CustomCard extends StatelessWidget {
               )
               : null,
       child: Container(
+        alignment: alignment,
         width: width,
         height: height,
         margin: margin,
