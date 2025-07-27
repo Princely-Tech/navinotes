@@ -1,6 +1,45 @@
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart' as path;
 
+IconData getFileIcon(String? filePath) {
+    if (filePath == null) return Icons.insert_drive_file;
+    final ext = path.extension(filePath).toLowerCase();
+    switch (ext) {
+      case '.pdf':
+        return Icons.picture_as_pdf;
+      case '.doc':
+      case '.docx':
+        return Icons.description;
+      case '.xls':
+      case '.xlsx':
+      case '.csv':
+        return Icons.table_chart;
+      case '.ppt':
+      case '.pptx':
+        return Icons.slideshow;
+      case '.txt':
+        return Icons.article;
+      case '.zip':
+      case '.rar':
+      case '.7z':
+        return Icons.archive;
+      case '.jpg':
+      case '.jpeg':
+      case '.png':
+      case '.gif':
+        return Icons.image;
+      case '.mp3':
+      case '.wav':
+        return Icons.audio_file;
+      case '.mp4':
+      case '.mov':
+      case '.avi':
+        return Icons.video_file;
+      default:
+        return Icons.insert_drive_file;
+    }
+  }
+
 /// Handles opening a file with appropriate application based on file type
 Future<void> handleOpenFile(Content file, BuildContext context) async {
   if (!context.mounted) return;

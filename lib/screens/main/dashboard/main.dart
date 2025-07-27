@@ -14,7 +14,7 @@ class DashboardMain extends StatelessWidget {
         bool hasData = vm.sessionVm.userBoards.isNotEmpty;
         return Column(
           children: [
-             //TODO handle this
+            //TODO handle this
             SearchBarHeader(openDrawer: vm.openDrawer, borderBottom: !hasData),
             Expanded(
               child: ScrollableController(
@@ -24,7 +24,8 @@ class DashboardMain extends StatelessWidget {
                   vertical: 10,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 100),
+                  padding: const EdgeInsets.only(bottom: 30),
+                  // padding: const EdgeInsets.only(bottom: 100),
                   child:
                       hasData
                           ? Column(
@@ -32,7 +33,7 @@ class DashboardMain extends StatelessWidget {
                             children: [
                               YourBoards(),
                               //TODO handle this
-                              RecentActivity(),
+                              // RecentActivity(),
                             ],
                           )
                           : EmptyDashboardMain(),

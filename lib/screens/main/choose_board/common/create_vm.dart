@@ -98,6 +98,7 @@ class BoardCreateVm extends ChangeNotifier {
       if (NavigationHelper.navigatorKey.currentContext != null) {
         NavigationHelper.navigateToBoard(
           newBoard,
+          replace: true, //Removes the form route and proceed
           arguments: {
             'showSuccess': true,
             'message': 'Board created successfully!',

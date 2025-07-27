@@ -242,9 +242,20 @@ class MenuButton extends StatelessWidget {
   final BoxDecoration? decoration;
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return AppIconButton(
       onPressed: onPressed,
       icon: Icon(Icons.menu, color: decoration?.color ?? AppTheme.stormGray),
     );
+  }
+}
+
+class AppIconButton extends StatelessWidget {
+  const AppIconButton({super.key, required this.onPressed, required this.icon});
+  final void Function()? onPressed;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(onPressed: onPressed, icon: icon);
   }
 }

@@ -53,12 +53,10 @@ class BoardPlainScreen extends StatelessWidget {
                                     children: [
                                       Consumer<BoardCreateVm>(
                                         builder: (context, vm, _) {
-                                          return AppButton(
+                                           return AppButton(
+                                            loading: vm.isLoading,
                                             mainAxisSize: MainAxisSize.min,
-                                            text:
-                                                vm.isLoading
-                                                    ? 'Creating...'
-                                                    : 'Create My Academic Board',
+                                            text: 'Create My Academic Board',
                                             onTap: vm.createBoard,
                                             color: AppTheme.vividBlue,
                                             padding: EdgeInsets.symmetric(

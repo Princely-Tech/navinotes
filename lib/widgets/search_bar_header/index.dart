@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/widgets/search_bar_header/searchbar_one.dart';
 
 class SearchBarHeader extends StatelessWidget {
   const SearchBarHeader({
@@ -48,20 +49,18 @@ class SearchBarHeader extends StatelessWidget {
                           ),
                         ),
                       ),
-                      _searchBar(),
+                      SearchBarOne(),
                     ],
                   ),
                 ),
                 Row(
-                  spacing: 20,
                   children: [
-                    SVGImagePlaceHolder(imagePath: Images.bell, size: 16),
-                    SVGImagePlaceHolder(
-                      imagePath: Images.settings,
-                      size: 16,
-                      color: AppTheme.steelMist,
+                    NotificationButton(),
+                    SettingsButton(),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: ProfilePic(),
                     ),
-                    ProfilePic(),
                   ],
                 ),
               ],
@@ -69,26 +68,6 @@ class SearchBarHeader extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _searchBar() {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: WidthLimiter(
-          mobile: 512,
-          child: CustomInputField(
-            prefixIcon: Icon(Icons.search, color: AppTheme.slateGray, size: 20),
-            hintText: 'Search your notes, boards, and more...',
-            hintStyle: AppTheme.text.copyWith(
-              color: AppTheme.slateGray,
-              fontSize: 16.0,
-              height: 1.50,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

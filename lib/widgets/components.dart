@@ -509,14 +509,17 @@ class ProfilePic extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SessionManager>(
       builder: (_, sessionManager, _) {
-        return Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: borderColor, width: 2),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: SVGImagePlaceHolder(imagePath: Images.avatar, size: size),
+        return InkWell(
+          onTap: NavigationHelper.navigateToProfile,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: borderColor, width: 2),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(999),
+              child: SVGImagePlaceHolder(imagePath: Images.avatar, size: size),
+            ),
           ),
         );
       },
@@ -727,9 +730,8 @@ class _CustomCheckBoxItemState extends State<CustomCheckBoxItem> {
   @override
   void initState() {
     super.initState();
-    _value = widget.value??false;
+    _value = widget.value ?? false;
   }
-
 
   updateValue(bool value) {
     setState(() {
@@ -922,6 +924,33 @@ class CustomListTile extends StatelessWidget {
           ),
         ),
         onTap: onTap,
+      ),
+    );
+  }
+}
+
+class NotificationButton extends StatelessWidget {
+  const NotificationButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppIconButton(
+      onPressed: NavigationHelper.navigateToNotification,
+      icon: SVGImagePlaceHolder(imagePath: Images.bell, size: 16),
+    );
+  }
+}
+
+class SettingsButton extends StatelessWidget {
+  const SettingsButton({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return AppIconButton(
+      onPressed: NavigationHelper.navigateToSettings,
+      icon: SVGImagePlaceHolder(
+        imagePath: Images.settings,
+        size: 16,
+        color: AppTheme.steelMist,
       ),
     );
   }

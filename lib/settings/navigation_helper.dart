@@ -98,7 +98,11 @@ class NavigationHelper {
     pushAndRemoveUntil(Routes.auth);
   }
 
-  static Future navigateToBoard(Board board, {Object? arguments}) {
+  static Future navigateToBoard(
+    Board board, {
+    Object? arguments,
+    bool replace = false,
+  }) {
     final boardType = board.boardType ?? BoardTypeCodes.plain;
 
     final route = switch (boardType) {
@@ -128,7 +132,12 @@ class NavigationHelper {
         ),
       );
     }
-
+    if (replace) {
+      return NavigationHelper.pushReplacement(
+        route,
+        arguments: mergedArguments,
+      );
+    }
     return NavigationHelper.push(route, arguments: mergedArguments);
   }
 
@@ -152,5 +161,10 @@ class NavigationHelper {
 
   static void navigateToPdfView(int contentId) {
     push(Routes.viewPdf, arguments: contentId);
+  }
+
+  static void navigateToNotification() {}
+  static void navigateToProfile() {
+    // push(Routes.profile);
   }
 }
