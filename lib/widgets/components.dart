@@ -129,8 +129,6 @@ class ImagePlaceHolder extends StatelessWidget {
         imageURL = '${EnvironmentConfig.fileUrl}/$imagePath';
       } 
 
-      debugPrint(imageURL);
-
       return Image.network(
         height: size,
         width: isCardHeader ? double.infinity : size,

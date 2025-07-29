@@ -2,6 +2,22 @@ import 'package:navinotes/models/markeplace_item.dart';
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
+
+
+// Add this class at the top level of the file
+class _Debouncer {
+  final int milliseconds;
+  Timer? _timer;
+
+  _Debouncer({this.milliseconds = 500});
+
+  void run(VoidCallback action) {
+    _timer?.cancel();
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
+  }
+}
+
+
 class MarketplaceMain extends StatelessWidget {
   MarketplaceMain({super.key});
 
@@ -10,6 +26,11 @@ class MarketplaceMain extends StatelessWidget {
   );
   final double _featuredItemWidth =
       254; // Width of each featured item including spacing
+
+final _debouncer = _Debouncer();
+   TextEditingController _searchController = TextEditingController();
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,38 +46,89 @@ class MarketplaceMain extends StatelessWidget {
                 ),
             child: Consumer<MarketPlaceVm>(
               builder: (context, vm, _) {
-                // Load data when the widget is first built
-                if (vm.items.isEmpty && !vm.isLoading) {
+
+                if (_searchController.text != vm.searchQuery) {
+                  _searchController.text = vm.searchQuery;
+                }
+                
+                // Only load data if we're not already loading and there's no error
+                if (!vm.isLoading &&
+                    vm.items.isEmpty &&
+                    !vm.hasError &&
+                    !vm.isLoadingFeatured) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     vm.loadMarketplaceItems();
                     vm.loadFeaturedItems();
                   });
                 }
 
-                return ResponsivePadding(
-                  mobile: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  tablet: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                  child: Column(
-                    children: [
-                      _header(),
-                      Expanded(
-                        child: ScrollableController(
-                          mobilePadding: EdgeInsets.symmetric(vertical: 20),
-                          onEndReached:
-                              vm.hasMorePages ? vm.loadNextPage : null,
-                          child: Column(
-                            spacing: 30,
-                            children: [
-                              _featured(vm: vm),
-                              _allContent(vm: vm),
-                              if (vm.totalPages > 1) _pagination(vm: vm),
-                            ],
-                          ),
-                        ),
+                // Show error message if there's an error
+                if (vm.hasError && vm.errorMessage != null) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(vm.errorMessage!),
+                        backgroundColor: AppTheme.coralRed,
                       ),
-                    ],
-                  ),
-                );
+                    );
+                  });
+                }
+
+                return (vm.hasError && vm.items.isEmpty)
+                    ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            vm.errorMessage ?? 'An error occurred',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.coralRed,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                         
+
+                          AppButton(
+                            onTap: () {
+                              vm.loadMarketplaceItems();
+                              vm.loadFeaturedItems();
+                            },
+                            text: 'Retry',
+                            loading: vm.isLoading,
+                            wrapWithFlexible: true,
+                            mainAxisSize: MainAxisSize.min,
+                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                            color: AppTheme.jungleGreen,
+                          ),
+
+                        ],
+                      ),
+                    )
+                    : ResponsivePadding(
+                      mobile: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      tablet: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                      child: Column(
+                        children: [
+                          _header( vm),
+                          Expanded(
+                            child: ScrollableController(
+                              mobilePadding: EdgeInsets.symmetric(vertical: 20),
+                              onEndReached:
+                                  vm.hasMorePages ? vm.loadNextPage : null,
+                              child: Column(
+                                spacing: 30,
+                                children: [
+                                  _featured(vm: vm),
+                                  _allContent(vm: vm),
+                                  if (vm.totalPages > 1) _pagination(vm: vm),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
               },
             ),
           );
@@ -621,12 +693,12 @@ class MarketplaceMain extends StatelessWidget {
     );
   }
 
-  Widget _header() {
+  Widget _header(MarketPlaceVm vm) {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(child: _searchField()),
+          Expanded(child: _searchField(vm)),
           VisibleController(
             mobile: false,
             tablet: true,
@@ -697,7 +769,7 @@ class MarketplaceMain extends StatelessWidget {
     );
   }
 
-  Widget _searchField() {
+  Widget _searchField(MarketPlaceVm vm) {
     return CustomInputField(
       prefixIcon: Icon(Icons.search, color: AppTheme.slateGray, size: 20),
       hintText: 'Search for mind maps, flashcards, study guides...',
@@ -706,8 +778,59 @@ class MarketplaceMain extends StatelessWidget {
         color: AppTheme.slateGray,
         height: 1.43,
       ),
+      controller: _searchController,
+      onChanged: (value) {
+        // Only trigger search if the query has actually changed
+        if (value != vm.searchQuery) {
+          _debouncer.run(() {
+            vm.loadMarketplaceItems(page: 1, query: value);
+          });
+        }
+      },
+      suffixIcon:
+          _searchController.text.isNotEmpty
+              ? IconButton(
+                icon: Icon(Icons.close, color: AppTheme.slateGray, size: 20),
+                onPressed: () {
+                  _searchController.clear();
+                  vm.clearSearch();
+                },
+              )
+              : null,
     );
   }
+
+//   Widget _searchField() {
+//   return Consumer<MarketPlaceVm>(
+//     builder: (context, vm, _) {
+//       return CustomInputField(
+//         prefixIcon: Icon(Icons.search, color: AppTheme.slateGray, size: 20),
+//         hintText: 'Search for mind maps, flashcards, study guides...',
+//         fillColor: AppTheme.white,
+//         hintStyle: AppTheme.text.copyWith(
+//           color: AppTheme.slateGray,
+//           height: 1.43,
+//         ),
+//         controller: TextEditingController(text: vm.searchQuery),
+//         onChanged: (value) {
+//           // Debounce the search to avoid too many requests
+//           _debouncer.run(() {
+//             if (value != vm.searchQuery) {
+//               vm.loadMarketplaceItems(page: 1, query: value);
+//             }
+//           });
+//         },
+//         suffixIcon: vm.searchQuery.isNotEmpty
+//             ? IconButton(
+//                 icon: Icon(Icons.close, color: AppTheme.slateGray, size: 20),
+//                 onPressed: vm.clearSearch,
+//               )
+//             : null,
+//       );
+//     },
+//   );
+// }
+
 
   Widget _pagination({required MarketPlaceVm vm}) {
     return Padding(

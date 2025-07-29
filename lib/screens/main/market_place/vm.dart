@@ -28,6 +28,15 @@ class MarketPlaceVm extends ChangeNotifier {
   bool _isLoadingFeatured = false;
   bool get isLoadingFeatured => _isLoadingFeatured;
 
+String _searchQuery = '';
+  String get searchQuery => _searchQuery;
+
+
+    bool _hasError = false;
+  bool get hasError => _hasError;
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
  PageDisplayFormat _displayFormat = PageDisplayFormat.grid;
   PageDisplayFormat get displayFormat => _displayFormat;
 
@@ -73,16 +82,26 @@ void toggleDisplayFormat() {
     }
   }
 
-  Future<void> loadMarketplaceItems({int page = 1}) async {
+  Future<void> loadMarketplaceItems({int page = 1, String? query}) async {
     if (_isLoading) return;
 
     try {
       _isLoading = true;
+      _hasError = false;
+      _errorMessage = null;
+      notifyListeners();
+
       if (page == 1) _items.clear();
+
+      if (query != null) _searchQuery = query;
 
       final request = JsonRequest.get(
         '/marketplace',
-        queryParams: {'page': page.toString(), 'per_page': _perPage.toString()},
+        queryParams: {
+          'page': page.toString(), 'per_page': _perPage.toString(),
+          if (_searchQuery.isNotEmpty) 'search': _searchQuery,
+
+        },
       );
       final response = await apiServiceProvider.apiService.sendJsonRequest(
         request,
@@ -100,12 +119,26 @@ void toggleDisplayFormat() {
 
       _items.addAll(newItems);
     } catch (e) {
+
       debugPrint('Error loading marketplace items: $e');
-      // Handle error (e.g., show error message)
+      // check if error is instance of NetworkException
+      if (e is NetworkException) {
+        _hasError = true;
+        _errorMessage = 'Failed to load items. Please check your connection.';
+      } else {
+        _hasError = true;
+        _errorMessage = 'Failed to load items. Please try again later.';
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  void clearSearch() {
+    _searchQuery = '';
+    notifyListeners();
+    loadMarketplaceItems(page: 1);
   }
 
   Future<void> loadNextPage() async {
