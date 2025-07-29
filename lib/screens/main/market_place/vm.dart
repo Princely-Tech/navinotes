@@ -1,9 +1,12 @@
 import 'package:navinotes/models/markeplace_item.dart';
 import 'package:navinotes/packages.dart';
 
+
 class MarketPlaceVm extends ChangeNotifier {
   final GlobalKey<ScaffoldState> scaffoldKey;
   ApiServiceProvider apiServiceProvider;
+  FToast fToast = FToast();
+  BuildContext context;
 
   bool _isLoading = false;
   List<MarketItem> _items = [];
@@ -25,7 +28,25 @@ class MarketPlaceVm extends ChangeNotifier {
   bool _isLoadingFeatured = false;
   bool get isLoadingFeatured => _isLoadingFeatured;
 
-  MarketPlaceVm({required this.scaffoldKey, required this.apiServiceProvider});
+ PageDisplayFormat _displayFormat = PageDisplayFormat.grid;
+  PageDisplayFormat get displayFormat => _displayFormat;
+
+  MarketPlaceVm({
+    required this.scaffoldKey,
+    required this.apiServiceProvider,
+    required this.context,
+  });
+
+  void initialize() {
+    fToast.init(context);
+  }
+
+void toggleDisplayFormat() {
+    _displayFormat = _displayFormat == PageDisplayFormat.grid 
+        ? PageDisplayFormat.list 
+        : PageDisplayFormat.grid;
+    notifyListeners();
+  }
 
   Future<void> loadFeaturedItems() async {
     if (_isLoadingFeatured) return;
@@ -97,7 +118,16 @@ class MarketPlaceVm extends ChangeNotifier {
     scaffoldKey.currentState?.openDrawer();
   }
 
-  void goToProductDetail() {
-    NavigationHelper.push(Routes.productDetail);
+  void goToProductDetail(MarketItem item) {
+    NavigationHelper.push(Routes.productDetail, arguments: item);
+  }
+
+  void addToCart(MarketItem item) {
+    // NavigationHelper.push(Routes.productDetail);
+    fToast.showToast(
+      child: MessageDisplayContainer('Item added to cart', isError: false),
+      gravity: AppConstants.toastGravity,
+      toastDuration: AppConstants.toastDuration,
+    );
   }
 }

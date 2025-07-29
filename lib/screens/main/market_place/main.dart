@@ -8,9 +8,8 @@ class MarketplaceMain extends StatelessWidget {
   final PageController _featuredController = PageController(
     viewportFraction: 0.9,
   );
-    final double _featuredItemWidth =
+  final double _featuredItemWidth =
       254; // Width of each featured item including spacing
-
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +21,7 @@ class MarketplaceMain extends StatelessWidget {
                 (_) => MarketPlaceVm(
                   scaffoldKey: GlobalKey<ScaffoldState>(),
                   apiServiceProvider: apiServiceProvider,
+                  context: context,
                 ),
             child: Consumer<MarketPlaceVm>(
               builder: (context, vm, _) {
@@ -75,8 +75,8 @@ class MarketplaceMain extends StatelessWidget {
       titleRight: Row(
         spacing: 10,
         children: [
-          _layoutBtn(PageDisplayFormat.grid),
-          _layoutBtn(PageDisplayFormat.list),
+          _layoutBtn(PageDisplayFormat.grid, vm: vm),
+          _layoutBtn(PageDisplayFormat.list, vm: vm),
         ],
       ),
       child:
@@ -87,10 +87,155 @@ class MarketplaceMain extends StatelessWidget {
                   style: AppTheme.text.copyWith(color: AppTheme.stormGray),
                 ),
               )
-              : CustomGrid(
+              : vm.displayFormat == PageDisplayFormat.grid
+              ? CustomGrid(
                 spacing: 20,
                 children: vm.items.map((item) => _contentItem(item)).toList(),
-              ),
+              )
+              : _buildListView(vm),
+    );
+  }
+
+  Widget _buildListView(MarketPlaceVm vm) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: vm.items.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 20),
+      itemBuilder: (context, index) => _listItem(vm.items[index]),
+    );
+  }
+
+  Widget _listItem(MarketItem item) {
+    return Consumer<MarketPlaceVm>(
+      builder: (_, vm, __) {
+        return InkWell(
+          onTap: () => vm.goToProductDetail(item),
+          child: CustomCard(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image on the left
+                ImagePlaceHolder(
+                  imagePath: item.coverImagePath,
+                  isCardHeader: false,
+                  borderRadius: BorderRadius.zero,
+                  size: 150,
+                  fit: BoxFit.cover,
+                  type: ImagePlaceHolderTypes.network,
+                ),
+                const SizedBox(width: 15),
+                // Content on the right
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.title,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.charcoalBlue,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'by ${item.author}',
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.stormGray,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          StarRows(
+                            fullStars: item.rating.round(),
+                            emptyStars: 5 - item.rating.round(),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            '(${item.ratingCount})',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.stormGray,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        children:
+                            item.tags
+                                .take(3)
+                                .map(
+                                  (tag) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.lightGray.withOpacity(
+                                        0.2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: AppTheme.steelMist.withOpacity(
+                                          0.3,
+                                        ),
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      tag,
+                                      style: AppTheme.text.copyWith(
+                                        color: AppTheme.steelMist,
+                                        fontSize: 10.0,
+                                        height: 1.2,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            item.discountPercent != null
+                                ? '\$${item.getAmount().toStringAsFixed(2)}'
+                                : '\$${item.getAmount().toStringAsFixed(2)}',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.strongBlue,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          AppButton(
+                            onTap: () => vm.addToCart(item),
+                            text: 'Add To Cart',
+                            mainAxisSize: MainAxisSize.min,
+                            color: AppTheme.strongBlue,
+                            minHeight: 28,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -98,7 +243,7 @@ class MarketplaceMain extends StatelessWidget {
     return Consumer<MarketPlaceVm>(
       builder: (_, vm, _) {
         return InkWell(
-          onTap: vm.goToProductDetail,
+          onTap: () => vm.goToProductDetail(item),
           child: CustomCard(
             padding: EdgeInsets.zero,
             addBorder: true,
@@ -203,7 +348,9 @@ class MarketplaceMain extends StatelessWidget {
                                       .toList(),
                             ),
                           AppButton(
-                            onTap: () {},
+                            onTap: () {
+                              vm.addToCart(item);
+                            },
                             text: 'Add To Cart',
                             mainAxisSize: MainAxisSize.min,
                             color: AppTheme.strongBlue,
@@ -254,22 +401,45 @@ class MarketplaceMain extends StatelessWidget {
     );
   }
 
-  Widget _layoutBtn(PageDisplayFormat format) {
+  Widget _layoutBtn(PageDisplayFormat format, {required MarketPlaceVm vm}) {
+    bool isActive = vm.displayFormat == format;
     bool isGrid = format == PageDisplayFormat.grid;
+
     return OutlinedChild(
+      onTap: () => vm.toggleDisplayFormat(),
       size: 30,
       decoration: BoxDecoration(
-        border: Border.all(width: 2, color: AppTheme.lightGray),
+        border: Border.all(
+          width: 2,
+          color: isActive ? AppTheme.strongBlue : AppTheme.lightGray,
+        ),
       ),
-      child: SVGImagePlaceHolder(
-        imagePath: isGrid ? Images.grid : Images.menu,
-        color: isGrid ? AppTheme.darkSlateGray : AppTheme.blueGray,
-        size: isGrid ? 14 : 16,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: SVGImagePlaceHolder(
+          imagePath: isGrid ? Images.grid : Images.menu,
+          color: isActive ? AppTheme.strongBlue : AppTheme.blueGray,
+          size: isGrid ? 14 : 16,
+        ),
       ),
     );
   }
+  // Widget _layoutBtn(PageDisplayFormat format) {
+  //   bool isGrid = format == PageDisplayFormat.grid;
+  //   return OutlinedChild(
+  //     size: 30,
+  //     decoration: BoxDecoration(
+  //       border: Border.all(width: 2, color: AppTheme.lightGray),
+  //     ),
+  //     child: SVGImagePlaceHolder(
+  //       imagePath: isGrid ? Images.grid : Images.menu,
+  //       color: isGrid ? AppTheme.darkSlateGray : AppTheme.blueGray,
+  //       size: isGrid ? 14 : 16,
+  //     ),
+  //   );
+  // }
 
- Widget _featured({required MarketPlaceVm vm}) {
+  Widget _featured({required MarketPlaceVm vm}) {
     if (vm.isLoadingFeatured && vm.featuredItems.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -331,12 +501,13 @@ class MarketplaceMain extends StatelessWidget {
       ),
     );
   }
+
   Widget _featureItem(MarketItem item) {
     String image = item.coverImagePath;
     return Consumer<MarketPlaceVm>(
       builder: (_, vm, _) {
         return InkWell(
-          onTap: vm.goToProductDetail,
+          onTap: () => vm.goToProductDetail(item),
           child: CustomCard(
             padding: EdgeInsets.zero,
             addBorder: true,
@@ -347,7 +518,11 @@ class MarketplaceMain extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   height: 144,
-                  child: ImagePlaceHolder(imagePath: image, isCardHeader: true, type: ImagePlaceHolderTypes.network),
+                  child: ImagePlaceHolder(
+                    imagePath: image,
+                    isCardHeader: true,
+                    type: ImagePlaceHolderTypes.network,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15),
@@ -382,7 +557,10 @@ class MarketplaceMain extends StatelessWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                StarRows(fullStars: item.rating.round(), emptyStars: 5 - item.rating.round()),
+                                StarRows(
+                                  fullStars: item.rating.round(),
+                                  emptyStars: 5 - item.rating.round(),
+                                ),
                                 Text(
                                   '(${item.ratingCount})',
                                   style: AppTheme.text.copyWith(

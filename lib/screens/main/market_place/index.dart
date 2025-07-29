@@ -18,7 +18,11 @@ class MarketPlaceScreen extends StatelessWidget {
         builder: (_, apiServiceProvider, _) {
 
     return ChangeNotifierProvider(
-      create: (context) => MarketPlaceVm(scaffoldKey: _scaffoldKey, apiServiceProvider: apiServiceProvider),
+      create: (context) {
+        MarketPlaceVm vm = MarketPlaceVm(scaffoldKey: _scaffoldKey, apiServiceProvider: apiServiceProvider, context: context);
+        vm.initialize();
+        return vm;
+      },
       child: ScaffoldFrame(
         scaffoldKey: _scaffoldKey,
         drawer: CustomDrawer(child: MarketPlaceAside()),
