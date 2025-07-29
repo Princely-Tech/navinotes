@@ -117,7 +117,7 @@ class NoteTemplateHeader extends StatelessWidget {
   Widget _leading(NoteTemplateVm vm) {
     final subtitleTextStyle = TextStyle(
       color: Colors.white,
-      fontSize: 14,
+      fontSize: 14.0,
       fontFamily: 'Inter',
       fontWeight: FontWeight.w400,
       height: 1.43,

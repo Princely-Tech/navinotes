@@ -167,7 +167,7 @@ class NoteCreationLeft extends StatelessWidget {
                       count.toString(),
                       style: TextStyle(
                         color: const Color(0xFF6B7280),
-                        fontSize: 12,
+                        fontSize: 12.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                       ),
@@ -177,7 +177,7 @@ class NoteCreationLeft extends StatelessWidget {
               title,
               style: TextStyle(
                 color: const Color(0xFF374151),
-                fontSize: 16,
+                fontSize: 16.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
               ),
@@ -202,7 +202,7 @@ class NoteCreationLeft extends StatelessWidget {
           title,
           style: TextStyle(
             color: const Color(0xFF6B7280),
-            fontSize: 12,
+            fontSize: 12.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w600,
             height: 1.33,
@@ -239,7 +239,7 @@ class NoteCreationLeft extends StatelessWidget {
       hintText: 'Search notes',
       hintStyle: TextStyle(
         color: const Color(0xFFADAEBC),
-        fontSize: 14,
+        fontSize: 14.0,
         fontFamily: 'Inter',
         fontWeight: FontWeight.w400,
         height: 1.43,

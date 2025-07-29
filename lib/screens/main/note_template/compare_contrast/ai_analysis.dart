@@ -167,7 +167,7 @@ class NoteCompareContrastAiAnalysis extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 16,
+                    fontSize: 16.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w500,
                     height: 1.50,
@@ -206,7 +206,7 @@ class NoteCompareContrastAiAnalysis extends StatelessWidget {
                         (par) => TextSpan(
                           text: par.text,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.0,
                             height: 1.43,
                             color: Colors.black,
                             fontFamily: 'Inter',

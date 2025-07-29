@@ -18,7 +18,7 @@ class NoteCompareContrastSetup extends StatelessWidget {
               'Content Source',
               style: TextStyle(
                 color: const Color(0xFF374151),
-                fontSize: 16,
+                fontSize: 16.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
                 height: 1.50,
@@ -28,7 +28,7 @@ class NoteCompareContrastSetup extends StatelessWidget {
               'From My Notes',
               style: TextStyle(
                 color: const Color(0xFF4B5563),
-                fontSize: 14,
+                fontSize: 14.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
                 height: 1.43,
@@ -63,7 +63,7 @@ class NoteCompareContrastSetup extends StatelessWidget {
               contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               hintStyle: TextStyle(
                 color: const Color(0xFFADAEBC),
-                fontSize: 14,
+                fontSize: 14.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
                 height: 1.43,
@@ -84,7 +84,7 @@ class NoteCompareContrastSetup extends StatelessWidget {
           'AI Suggestions',
           style: TextStyle(
             color: const Color(0xFF4B5563),
-            fontSize: 14,
+            fontSize: 14.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w500,
             height: 1.43,
@@ -103,7 +103,7 @@ class NoteCompareContrastSetup extends StatelessWidget {
                 'Commonly compared concepts in Biology',
                 style: TextStyle(
                   color: const Color(0xFF6B7280),
-                  fontSize: 12,
+                  fontSize: 12.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
                 ),
@@ -139,7 +139,7 @@ Widget _conceptRow(String text) {
           text,
           style: TextStyle(
             color: Colors.black,
-            fontSize: 14,
+            fontSize: 14.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w400,
             height: 1.43,
@@ -153,7 +153,7 @@ Widget _conceptRow(String text) {
             'Use',
             style: TextStyle(
               color: const Color(0xFF0284C7),
-              fontSize: 12,
+              fontSize: 12.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
             ),

@@ -85,7 +85,7 @@ class MyPurchasesAppBar extends StatelessWidget {
                         'My Purchases',
                         style: TextStyle(
                           color: const Color(0xFF00555A),
-                          fontSize: 14,
+                          fontSize: 14.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w500,
                           height: 1,

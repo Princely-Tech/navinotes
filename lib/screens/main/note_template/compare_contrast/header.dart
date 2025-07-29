@@ -110,7 +110,7 @@ class NoteCompareContrastHeader extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             color: const Color(0xFF6B7280),
-            fontSize: 14,
+            fontSize: 14.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w400,
             height: 1.43,
@@ -127,7 +127,7 @@ class NoteCompareContrastHeader extends StatelessWidget {
       prefix: Icon(Icons.arrow_back, color: AppTheme.darkSlateGray),
       style: TextStyle(
         color: const Color(0xFF374151),
-        fontSize: 16,
+        fontSize: 16.0,
         fontFamily: 'Inter',
         fontWeight: FontWeight.w500,
       ),

@@ -28,7 +28,7 @@ class FlashcardsRight extends StatelessWidget {
                             'Cards in Deck',
                             style: TextStyle(
                               color: const Color(0xFF374151),
-                              fontSize: 16,
+                              fontSize: 16.0,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w600,
                               height: 1,
@@ -39,7 +39,7 @@ class FlashcardsRight extends StatelessWidget {
                           '12 cards',
                           style: TextStyle(
                             color: const Color(0xFF6B7280),
-                            fontSize: 12,
+                            fontSize: 12.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w400,
                           ),
@@ -111,7 +111,7 @@ class FlashcardsRight extends StatelessWidget {
                   style: TextStyle(
                     overflow: TextOverflow.ellipsis,
                     color: isActive ? AppTheme.vividRose : AppTheme.steelMist,
-                    fontSize: 12,
+                    fontSize: 12.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w500,
                     height: 1,
@@ -133,7 +133,7 @@ class FlashcardsRight extends StatelessWidget {
             maxLines: 2,
             style: TextStyle(
               color: const Color(0xFF1F2937),
-              fontSize: 14,
+              fontSize: 14.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
             ),
@@ -144,7 +144,7 @@ class FlashcardsRight extends StatelessWidget {
             maxLines: 2,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 12,
+              fontSize: 12.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
             ),

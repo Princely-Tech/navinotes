@@ -70,7 +70,7 @@ class FlashCardsMain extends StatelessWidget {
       ),
       style: TextStyle(
         color: const Color(0xFF374151),
-        fontSize: 14,
+        fontSize: 14.0,
         fontFamily: 'Inter',
         fontWeight: FontWeight.w400,
       ),
@@ -93,7 +93,7 @@ class FlashCardsMain extends StatelessWidget {
                 hintText: 'Enter answer or definition...',
                 hintStyle: TextStyle(
                   color: const Color(0xFFADAEBC),
-                  fontSize: 14,
+                  fontSize: 14.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
                   height: 1.43,
@@ -149,7 +149,7 @@ class FlashCardsMain extends StatelessWidget {
                 ),
                 style: TextStyle(
                   color: AppTheme.lightBlue,
-                  fontSize: 12,
+                  fontSize: 12.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
                   height: 1,
@@ -197,7 +197,7 @@ class FlashCardsMain extends StatelessWidget {
                       style: TextStyle(
                         color:
                             isActive ? AppTheme.white : AppTheme.darkSlateGray,
-                        fontSize: 14,
+                        fontSize: 14.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                       ),
@@ -253,7 +253,7 @@ class FlashCardsMain extends StatelessWidget {
             builder: (_, value, _) {
               final style = TextStyle(
                 color: const Color(0xFF1F2937),
-                fontSize: 14,
+                fontSize: 14.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
               );
@@ -287,7 +287,7 @@ class FlashCardsMain extends StatelessWidget {
       '|',
       style: TextStyle(
         color: const Color(0xFFD1D5DB),
-        fontSize: 16,
+        fontSize: 16.0,
         fontFamily: 'Inter',
         fontWeight: FontWeight.w400,
       ),

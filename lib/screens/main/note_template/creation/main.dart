@@ -129,7 +129,7 @@ class NoteCreationMain extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             color: const Color(0xFF4B5563),
-            fontSize: 14,
+            fontSize: 14.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w400,
             height: 1.43,
@@ -175,7 +175,7 @@ class NoteCreationMain extends StatelessWidget {
                               builder: (_, controller, __) {
                                 final style = TextStyle(
                                   color: const Color(0xFF4B5563),
-                                  fontSize: 14,
+                                  fontSize: 14.0,
                                   fontFamily: 'Inter',
                                   fontWeight: FontWeight.w500,
                                   height: 1.43,
@@ -215,7 +215,7 @@ class NoteCreationMain extends StatelessWidget {
                                           text: '• ',
                                           style: TextStyle(
                                             color: const Color(0xFF9CA3AF),
-                                            fontSize: 14,
+                                            fontSize: 14.0,
                                             fontFamily: 'Inter',
                                             fontWeight: FontWeight.w400,
                                             height: 1.43,
@@ -225,7 +225,7 @@ class NoteCreationMain extends StatelessWidget {
                                           text: board!.name,
                                           style: TextStyle(
                                             color: const Color(0xFF4B5563),
-                                            fontSize: 14,
+                                            fontSize: 14.0,
                                             fontFamily: 'Inter',
                                             fontWeight: FontWeight.w400,
                                             height: 1.43,

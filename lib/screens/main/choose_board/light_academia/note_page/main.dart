@@ -165,7 +165,7 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                           'Last edited: $lastEdited',
                           style: TextStyle(
                             color: const Color(0xB2654321),
-                            fontSize: 14,
+                            fontSize: 14.0,
                             fontFamily: 'Crimson Text',
                             fontWeight: FontWeight.w400,
                             height: 1.43,

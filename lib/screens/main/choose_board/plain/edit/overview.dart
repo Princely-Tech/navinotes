@@ -143,7 +143,7 @@ class BoardPlainEditOverview extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(
               board.description!,
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              style: const TextStyle(fontSize: 16.0, color: Colors.grey),
             ),
           ),
       ],
@@ -172,7 +172,7 @@ class BoardPlainEditOverview extends StatelessWidget {
               Text(
                 header,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.blue,
                 ),
@@ -188,7 +188,7 @@ class BoardPlainEditOverview extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 body,
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
+                style: const TextStyle(fontSize: 16.0, color: Colors.grey),
               ),
               const SizedBox(height: 16),
               button,

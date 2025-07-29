@@ -154,7 +154,7 @@ class NoteTemplateAside extends StatelessWidget {
                 'Brain\'s Tip',
                 style: TextStyle(
                   color: const Color(0xFF1E40AF),
-                  fontSize: 14,
+                  fontSize: 14.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
                   height: 1.43,
@@ -166,7 +166,7 @@ class NoteTemplateAside extends StatelessWidget {
             'For biology notes, use the left column to write key terms and concepts, the main area for detailed explanations, and the bottom for summarizing the relationships between systems.',
             style: TextStyle(
               color: const Color(0xFF1D4ED8),
-              fontSize: 12,
+              fontSize: 12.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
             ),
@@ -185,7 +185,7 @@ class NoteTemplateAside extends StatelessWidget {
           title,
           style: TextStyle(
             color: const Color(0xFF6B7280),
-            fontSize: 12,
+            fontSize: 12.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w400,
           ),
@@ -204,7 +204,7 @@ class NoteTemplateAside extends StatelessWidget {
           'Customization',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 14,
+            fontSize: 14.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w500,
             height: 1.43,
@@ -296,7 +296,7 @@ class NoteTemplateAside extends StatelessWidget {
                             str,
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 14,
+                              fontSize: 14.0,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w400,
                               height: 1.43,
@@ -341,7 +341,7 @@ class NoteTemplateAside extends StatelessWidget {
                 vm.selectedTemplate.description,
                 style: TextStyle(
                   color: const Color(0xFF4B5563),
-                  fontSize: 14,
+                  fontSize: 14.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
                   height: 1.43,

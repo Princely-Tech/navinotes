@@ -26,7 +26,7 @@ class SellerUploadAside extends StatelessWidget {
                     'Upload Guidelines',
                     style: TextStyle(
                       color: const Color(0xFF1F2937),
-                      fontSize: 16,
+                      fontSize: 16.0,
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w500,
                     ),
@@ -109,7 +109,7 @@ class SellerUploadAside extends StatelessWidget {
                     'Current Score',
                     style: TextStyle(
                       color: const Color(0xFF4B5563),
-                      fontSize: 14,
+                      fontSize: 14.0,
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w400,
                       height: 1,
@@ -120,7 +120,7 @@ class SellerUploadAside extends StatelessWidget {
                   'Medium',
                   style: TextStyle(
                     color: const Color(0xFF00555A),
-                    fontSize: 14,
+                    fontSize: 14.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w500,
                     height: 1,
@@ -139,7 +139,7 @@ class SellerUploadAside extends StatelessWidget {
               'Complete all required fields and add more details to improve visibility',
               style: TextStyle(
                 color: const Color(0xFF6B7280),
-                fontSize: 12,
+                fontSize: 12.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
               ),
@@ -159,7 +159,7 @@ class SellerUploadAside extends StatelessWidget {
           title,
           style: TextStyle(
             color: const Color(0xFF374151),
-            fontSize: 14,
+            fontSize: 14.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w500,
             height: 1,
@@ -202,7 +202,7 @@ class SellerUploadAside extends StatelessWidget {
                           str,
                           style: TextStyle(
                             color: const Color(0xFF4B5563),
-                            fontSize: 14,
+                            fontSize: 14.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w400,
                             height: 1,

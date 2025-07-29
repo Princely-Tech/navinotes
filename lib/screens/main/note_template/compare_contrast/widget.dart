@@ -76,7 +76,7 @@ class ActiveIndicatorWidget extends StatelessWidget {
             text,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 14,
+              fontSize: 14.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
             ),

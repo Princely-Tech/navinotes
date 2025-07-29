@@ -61,7 +61,7 @@ class BoardEditUploads extends StatelessWidget {
                           name,
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
-                            fontSize: 16,
+                            fontSize: 16.0,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -71,7 +71,7 @@ class BoardEditUploads extends StatelessWidget {
                           size,
                           style: TextStyle(
                             color: Colors.grey[600],
-                            fontSize: 14,
+                            fontSize: 14.0,
                           ),
                         ),
                       ],

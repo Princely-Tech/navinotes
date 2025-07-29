@@ -15,6 +15,7 @@ class ScrollableController extends StatelessWidget {
     this.laptop,
     this.desktop,
     this.largeDesktop,
+    this.onEndReached,
   });
 
   final Widget child;
@@ -29,6 +30,8 @@ class ScrollableController extends StatelessWidget {
   final bool? laptop;
   final bool? desktop;
   final bool? largeDesktop;
+  final VoidCallback? onEndReached;
+  final double endReachedThreshold = 100.0; // pixels from bottom to trigger onEndReached
 
   @override
   Widget build(BuildContext context) {
@@ -42,20 +45,35 @@ class ScrollableController extends StatelessWidget {
           desktop: desktopPadding,
           largeDesktop: largeDesktopPadding,
         );
-        return getDeviceResponsiveValue(
-              deviceType: layoutVm.deviceType,
-              mobile: mobile,
-              tablet: tablet,
-              laptop: laptop,
-              desktop: desktop,
-              largeDesktop: largeDesktop,
-            )
-            ? SingleChildScrollView(
-              padding: padding,
-              scrollDirection: scrollDirection,
-              child: child,
-            )
-            : Padding(padding: padding, child: child);
+        
+        final shouldScroll = getDeviceResponsiveValue(
+          deviceType: layoutVm.deviceType,
+          mobile: mobile,
+          tablet: tablet,
+          laptop: laptop,
+          desktop: desktop,
+          largeDesktop: largeDesktop,
+        );
+        
+        if (!shouldScroll) {
+          return Padding(padding: padding, child: child);
+        }
+        
+        return NotificationListener<ScrollEndNotification>(
+          onNotification: (scrollEnd) {
+            final metrics = scrollEnd.metrics;
+            if (onEndReached != null && 
+                metrics.pixels >= metrics.maxScrollExtent - endReachedThreshold) {
+              onEndReached!();
+            }
+            return false;
+          },
+          child: SingleChildScrollView(
+            padding: padding,
+            scrollDirection: scrollDirection,
+            child: child,
+          ),
+        );
       },
       child: child,
     );
