@@ -168,7 +168,10 @@ Future<void> loadMarketplaceItems({int page = 1, String? query}) async {
       if (_maxPrice != null) 'price_max': (_maxPrice!*100).toStringAsFixed(2),
       if (_minDiscount != null) 'discount_percent_min': _minDiscount!.toString(),
       if (_maxDiscount != null) 'discount_percent_max': _maxDiscount!.toString(),
+      if (_sortBy != null) 'sort': _sortBy!,
+      if (_sortOrder != null) 'order': _sortOrder!,
     };
+
 
     // Add tags as separate parameters
     for (var i = 0; i < _selectedTags.length; i++) {
@@ -251,6 +254,21 @@ Future<void> loadMarketplaceItems({int page = 1, String? query}) async {
   int? get minDiscount => _minDiscount;
   int? get maxDiscount => _maxDiscount;
   bool get showFilters => _showFilters;
+
+
+  String? _sortBy;
+  String? _sortOrder;
+
+  String? get sortBy => _sortBy;
+  String? get sortOrder => _sortOrder;
+
+  void setSorting(String sortBy, String sortOrder) {
+    _sortBy = sortBy;
+    _sortOrder = sortOrder;
+    notifyListeners();
+    loadMarketplaceItems(page: 1); // Reload with new sorting
+  }
+
 
   // Count active filters
   int get activeFilterCount =>

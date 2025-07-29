@@ -785,26 +785,48 @@ class MarketPlaceScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     textColor: AppTheme.darkSlateGray,
                   ),
-                  AppButton(
-                    spacing: 10,
-                    prefix: SVGImagePlaceHolder(
-                      imagePath: Images.filter,
-                      size: 16,
-                      color: AppTheme.darkSlateGray,
+                  // AppButton(
+                  //   spacing: 10,
+                  //   prefix: SVGImagePlaceHolder(
+                  //     imagePath: Images.filter,
+                  //     size: 16,
+                  //     color: AppTheme.darkSlateGray,
+                  //   ),
+                  //   suffix: Icon(
+                  //     Icons.keyboard_arrow_down,
+                  //     size: 26,
+                  //     color: AppTheme.darkSlateGray,
+                  //   ),
+                  //   minHeight: 35,
+                  //   onTap: () {},
+                  //   text: 'Most Popular',
+                  //   color: AppTheme.white,
+                  //   borderColor: AppTheme.lightGray,
+                  //   mainAxisSize: MainAxisSize.min,
+                  //   textColor: AppTheme.darkSlateGray,
+                  // ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppTheme.lightGray),
+                      borderRadius: BorderRadius.circular(4),
                     ),
-                    suffix: Icon(
-                      Icons.keyboard_arrow_down,
-                      size: 26,
-                      color: AppTheme.darkSlateGray,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Sort: ',
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.darkSlateGray,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        _buildSortDropdown(vm),
+                      ],
                     ),
-                    minHeight: 35,
-                    onTap: () {},
-                    text: 'Most Popular',
-                    color: AppTheme.white,
-                    borderColor: AppTheme.lightGray,
-                    mainAxisSize: MainAxisSize.min,
-                    textColor: AppTheme.darkSlateGray,
-                  ),
+                  )
+
                 ],
               ),
             ),
@@ -965,4 +987,63 @@ class MarketPlaceScreen extends StatelessWidget {
       ),
     );
   }
+
+
+
+Widget _buildSortDropdown(MarketPlaceVm vm) {
+    // Helper function to create a unique key for each sort option
+    String _getSortValue(String sortBy, String sortOrder) =>
+        '$sortBy|$sortOrder';
+
+    // Parse the current sort values
+    String currentValue = _getSortValue(
+      vm.sortBy ?? 'view_count',
+      vm.sortOrder ?? 'desc',
+    );
+
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        value: currentValue,
+        items: [
+          _buildDropdownItem('Most Popular', 'view_count', 'desc'),
+          _buildDropdownItem('Highest Price', 'price', 'desc'),
+          _buildDropdownItem('Lowest Price', 'price', 'asc'),
+          _buildDropdownItem('Latest', 'created_at', 'desc'),
+          _buildDropdownItem('Oldest', 'created_at', 'asc'),
+        ],
+        onChanged: (String? value) {
+          if (value != null) {
+            final parts = value.split('|');
+            if (parts.length == 2) {
+              vm.setSorting(parts[0], parts[1]);
+            }
+          }
+        },
+        style: AppTheme.text.copyWith(
+          color: AppTheme.darkSlateGray,
+          fontSize: 14.0,
+        ),
+        icon: const Icon(Icons.keyboard_arrow_down, size: 20),
+        isDense: true,
+      ),
+    );
+  }
+
+  DropdownMenuItem<String> _buildDropdownItem(
+    String label,
+    String sortBy,
+    String sortOrder,
+  ) {
+    return DropdownMenuItem<String>(
+      value: '$sortBy|$sortOrder', // Using pipe as separator
+      child: Text(
+        label,
+        style: AppTheme.text.copyWith(
+          color: AppTheme.darkSlateGray,
+          fontSize: 14.0,
+        ),
+      ),
+    );
+  }
+
 }
