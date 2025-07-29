@@ -99,10 +99,10 @@ class BoardCreateVm extends ChangeNotifier {
         NavigationHelper.navigateToBoard(
           newBoard,
           replace: true, //Removes the form route and proceed
-          arguments: {
-            'showSuccess': true,
-            'message': 'Board created successfully!',
-          },
+          // arguments: { //TODO show message using MessageDisplayService
+          //   'showSuccess': true,
+          //   'message': 'Board created successfully!',
+          // },
         );
       }
     } catch (e) {

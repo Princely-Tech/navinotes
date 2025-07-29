@@ -140,6 +140,7 @@ class DatabaseHelper {
 
   Future<int> insertContent(Content content) async {
     final db = await instance.database;
+    // content.syncToBackend(apiServiceProvider); //TODO Work on synching created files to backend
     return await db.insert('contents', content.toMap());
   }
 

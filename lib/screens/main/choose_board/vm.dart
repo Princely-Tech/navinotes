@@ -7,7 +7,7 @@ class ChooseBoardVm extends ChangeNotifier {
   ChooseBoardVm({required this.scaffoldKey});
 
   double backgroundPatternOpacity = 0;
-  bool saveAsFavoriteStyle = false;
+  bool saveAsFavoriteStyle = false; //TODO this value isnt used
   BoardType selectedBoard = boardTypes.first;
   final TextEditingController searchController = TextEditingController();
   List<BoardType> filteredBoards = List.from(boardTypes);
@@ -47,9 +47,9 @@ class ChooseBoardVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  void openEndDrawer() {
-    scaffoldKey.currentState?.openEndDrawer();
-  }
+  // void openEndDrawer() {
+  //   scaffoldKey.currentState?.openEndDrawer();
+  // }
 
   void openDrawer() {
     scaffoldKey.currentState?.openDrawer();

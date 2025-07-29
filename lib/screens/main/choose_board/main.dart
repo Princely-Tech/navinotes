@@ -198,15 +198,16 @@ class ChooseBoardMain extends StatelessWidget {
               color: AppTheme.slateGray,
               height: 1.50,
             ),
-            suffixIcon: vm.searchController.text.isNotEmpty
-                ? IconButton(
-                    icon: Icon(Icons.clear, size: 20),
-                    onPressed: () {
-                      vm.searchController.clear();
-                      vm.updateSearchQuery('');
-                    },
-                  )
-                : Icon(Icons.search, size: 20),
+            suffixIcon:
+                vm.searchController.text.isNotEmpty
+                    ? IconButton(
+                      icon: Icon(Icons.clear, size: 20),
+                      onPressed: () {
+                        vm.searchController.clear();
+                        vm.updateSearchQuery('');
+                      },
+                    )
+                    : Icon(Icons.search, size: 20),
           );
         },
       ),

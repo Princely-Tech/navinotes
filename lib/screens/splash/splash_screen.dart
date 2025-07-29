@@ -62,10 +62,10 @@ class _SplashScreenState extends State<SplashScreen>
     await context.read<SessionManager>().init();
     if (mounted) {
       //TODO UNCOMMENT
-      _navigateToNextScreen();
+      // _navigateToNextScreen();
 
       //TODO DELETE
-      // _navigateToDashboard();
+      _navigateToDashboard();
     }
   }
 
@@ -73,20 +73,23 @@ class _SplashScreenState extends State<SplashScreen>
     //TODO delete this
     List<Board> boards = await DatabaseHelper.instance.getAllBoards();
     Board board = boards.last;
-    List<Content> contents = await DatabaseHelper.instance.getAllContents(
-      board.id!,
-    );
-     List<Content> allFiles = await DatabaseHelper.instance.getAllFiles(
-      board.id!,
-    );
+    // List<Content> contents = await DatabaseHelper.instance.getAllContents(
+    //   board.id!,
+    // );
+    //  List<Content> allFiles = await DatabaseHelper.instance.getAllFiles(
+    //   board.id!,
+    // );
 
-    // // // DatabaseHelper.instance.deleteContent(3);
+    // DatabaseHelper.instance.updateBoard(board.copyWith(
+    //   courseInfo: exampleCourseInfo,
+    //   courseTimeLines: exampleTimeline,
+    // ));
     // // // DatabaseHelper.instance.deleteContent(2);
 
-    // print(contents);
+    // print(board.courseTimeLines);
     // NavigationHelper.navigateToPdfView(allFiles.last.id!);
-    // NavigationHelper.navigateToBoard(board);
-    NavigationHelper.navigateToBoardNotes(board);
+    NavigationHelper.navigateToBoard(board);
+    // NavigationHelper.navigateToBoardPopup(board);
     // NavigationHelper.pushReplacement(
     //   Routes.noteTemplate,
     //   arguments: board,

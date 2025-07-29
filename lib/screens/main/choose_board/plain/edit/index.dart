@@ -28,11 +28,7 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
       final showSuccess = args['showSuccess'] as bool? ?? false;
       final message = args['message'] as String?;
 
-      _viewModel.initialize(
-        boardId,
-        showSuccess: showSuccess,
-        message: message,
-      );
+      _viewModel.initialize(boardId);
     }
   }
 
@@ -42,29 +38,11 @@ class _BoardPlainEditScreenState extends State<BoardPlainEditScreen> {
       value: _viewModel,
       child: Consumer<BoardEditVm>(
         builder: (_, vm, __) {
-          if (vm.isLoading) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-
-          if (vm.error != null) {
-            return Scaffold(
-              appBar: AppBar(),
-              body: Center(child: Text(vm.error!)),
-            );
-          }
-
-          if (vm.board == null) {
-            return const Scaffold(
-              body: Center(child: Text('No board data available')),
-            );
-          }
-
-          // Main content
-          return ScaffoldFrame(
-            backgroundColor: AppTheme.white,
-            body: _buildContent(vm),
+          return ChooseBoardWrapper(
+            child: ScaffoldFrame(
+              backgroundColor: AppTheme.white,
+              body: _buildContent(vm),
+            ),
           );
         },
       ),

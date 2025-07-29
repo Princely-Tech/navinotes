@@ -2,43 +2,43 @@ import 'package:navinotes/packages.dart';
 import 'package:path/path.dart' as path;
 
 IconData getFileIcon(String? filePath) {
-    if (filePath == null) return Icons.insert_drive_file;
-    final ext = path.extension(filePath).toLowerCase();
-    switch (ext) {
-      case '.pdf':
-        return Icons.picture_as_pdf;
-      case '.doc':
-      case '.docx':
-        return Icons.description;
-      case '.xls':
-      case '.xlsx':
-      case '.csv':
-        return Icons.table_chart;
-      case '.ppt':
-      case '.pptx':
-        return Icons.slideshow;
-      case '.txt':
-        return Icons.article;
-      case '.zip':
-      case '.rar':
-      case '.7z':
-        return Icons.archive;
-      case '.jpg':
-      case '.jpeg':
-      case '.png':
-      case '.gif':
-        return Icons.image;
-      case '.mp3':
-      case '.wav':
-        return Icons.audio_file;
-      case '.mp4':
-      case '.mov':
-      case '.avi':
-        return Icons.video_file;
-      default:
-        return Icons.insert_drive_file;
-    }
+  if (filePath == null) return Icons.insert_drive_file;
+  final ext = path.extension(filePath).toLowerCase();
+  switch (ext) {
+    case '.pdf':
+      return Icons.picture_as_pdf;
+    case '.doc':
+    case '.docx':
+      return Icons.description;
+    case '.xls':
+    case '.xlsx':
+    case '.csv':
+      return Icons.table_chart;
+    case '.ppt':
+    case '.pptx':
+      return Icons.slideshow;
+    case '.txt':
+      return Icons.article;
+    case '.zip':
+    case '.rar':
+    case '.7z':
+      return Icons.archive;
+    case '.jpg':
+    case '.jpeg':
+    case '.png':
+    case '.gif':
+      return Icons.image;
+    case '.mp3':
+    case '.wav':
+      return Icons.audio_file;
+    case '.mp4':
+    case '.mov':
+    case '.avi':
+      return Icons.video_file;
+    default:
+      return Icons.insert_drive_file;
   }
+}
 
 /// Handles opening a file with appropriate application based on file type
 Future<void> handleOpenFile(Content file, BuildContext context) async {
@@ -47,13 +47,21 @@ Future<void> handleOpenFile(Content file, BuildContext context) async {
   try {
     final filePath = file.file;
     if (filePath == null || filePath.isEmpty) {
-      _showError(context, 'Cannot open file: No file path available');
+      MessageDisplayService.showErrorMessage(
+        context,
+        'Cannot open file: No file path available',
+      );
       return;
     }
 
     final fileEntity = File(filePath);
     if (!await fileEntity.exists()) {
-      _showError(context, 'File not found: ${path.basename(filePath)}');
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'File not found: ${path.basename(filePath)}',
+        );
+      }
       return;
     }
 
@@ -64,7 +72,12 @@ Future<void> handleOpenFile(Content file, BuildContext context) async {
       if (file.id != null) {
         NavigationHelper.navigateToPdfView(file.id!);
       } else {
-        _showError(context, 'Cannot open PDF: Invalid file reference');
+        if (context.mounted) {
+          MessageDisplayService.showErrorMessage(
+            context,
+            'Cannot open PDF: Invalid file reference',
+          );
+        }
       }
       return;
     }
@@ -76,82 +89,62 @@ Future<void> handleOpenFile(Content file, BuildContext context) async {
       throw Exception(result.message);
     }
   } catch (e) {
-    _showError(
-      context,
-      'Failed to open file: ${e.toString().replaceAll('Exception: ', '')}',
-    );
-  }
-}
-
-void _showError(BuildContext context, String message) {
-  if (context.mounted) {
-    MessageDisplayService.showErrorMessage(context, message);
-  }
-}
-
-//TODO download not working properly
-Future<void> handleFileDownload(Content file, BuildContext context) async {
-  try {
-    final filePath = file.file;
-    if (filePath == null || filePath.isEmpty) {
-      if (context.mounted) {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Failed to download file: File path is empty',
-        );
-      }
-      return;
-    }
-
-    final fileEntity = File(filePath);
-    if (!await fileEntity.exists()) {
-      if (context.mounted) {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Failed to download file: File not found',
-        );
-      }
-      return;
-    }
-
-    final fileName = path.basename(filePath);
-    // final directory = await getDownloadsDirectory();
-    Directory? directory;
-    if (Platform.isAndroid) {
-      directory =
-          await getExternalStorageDirectory(); // Not public, but accessible
-      // You may try accessing public directory via path tricks if needed
-    } else if (Platform.isIOS) {
-      directory =
-          await getApplicationDocumentsDirectory(); // Only sandboxed access
-    } else {
-      directory = await getDownloadsDirectory(); // Desktop
-    }
-    if (directory == null) {
-      if (context.mounted) {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Failed to download file: Could not access Downloads directory',
-        );
-      }
-      return;
-    }
-    final downloadPath = '${directory.path}/$fileName';
-    await fileEntity.copy(downloadPath);
-
-    if (context.mounted) {
-      MessageDisplayService.showMessage(
-        context,
-        'File downloaded to Downloads folder',
-      );
-    }
-  } catch (e) {
-    debugPrint('Error downloading file: $e');
     if (context.mounted) {
       MessageDisplayService.showErrorMessage(
         context,
-        'Failed to download file: ${e.toString()}',
+        'Failed to open file: ${e.toString().replaceAll('Exception: ', '')}',
       );
+    }
+  }
+}
+
+//TODO test this
+Future<void> handleFileDownload(Content file, BuildContext context) async {
+  try {
+    final sourcePath = file.file;
+    if (sourcePath == null || sourcePath.isEmpty) {
+      MessageDisplayService.showErrorMessage(context, 'No file to download');
+      return;
+    }
+
+    final fileEntity = File(sourcePath);
+    if (!await fileEntity.exists()) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(context, 'File not found');
+      }
+      return;
+    }
+
+    // Ask permission
+    if (Platform.isAndroid) {
+      final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        if (context.mounted) {
+          MessageDisplayService.showErrorMessage(
+            context,
+            'Storage permission denied',
+          );
+        }
+        return;
+      }
+    }
+
+    // Get Downloads path via plugin
+    final downloadsPath = await ExternalPath.getExternalStoragePublicDirectory(
+      'Download',
+    );
+
+    final fileName = path.basename(sourcePath);
+    final destPath = path.join(downloadsPath, fileName);
+
+    await fileEntity.copy(destPath);
+    if (context.mounted) {
+      MessageDisplayService.showMessage(context, 'File saved to: $destPath');
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+    if (context.mounted) {
+      MessageDisplayService.showErrorMessage(context, 'Download failed');
     }
   }
 }
@@ -209,4 +202,64 @@ Future<void> handleContentDelete({
       );
     }
   }
+}
+
+Future<Directory> getFilesDirectory() async {
+  final appDocDir = await getApplicationDocumentsDirectory();
+  final filesDir = Directory('${appDocDir.path}/files');
+  // Create the files directory if it doesn't exist
+  if (!await filesDir.exists()) {
+    await filesDir.create(recursive: true);
+  }
+  return filesDir;
+}
+
+Future<int?> saveFileToDb({
+  required PlatformFile pickedFile,
+  required BuildContext context,
+  required int boardId,
+}) async {
+  if (isNull(pickedFile.path)) return null;
+
+  try {
+    final dbHelper = DatabaseHelper.instance;
+    final filesDir = await getFilesDirectory();
+    if (context.mounted) {
+      final currentUser = getCurrentUserFromSession(context);
+      final file = File(pickedFile.path!);
+      final fileName =
+          '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
+      final savedFile = await file.copy('${filesDir.path}/$fileName');
+      final currentTimestamp = generateUnixTimestamp();
+      // Create content entry for the file
+
+      final content = Content(
+        guid: generateGUID(currentUser!.id!),
+        type: AppContentType.file,
+        metaData: {
+          ContentMetadataKey.originalFileName: pickedFile.name,
+          ContentMetadataKey.fileSize: pickedFile.size,
+          ContentMetadataKey.fileExtension: pickedFile.extension,
+        },
+        boardId: boardId,
+        title: pickedFile.name,
+        file: savedFile.path,
+        createdAt: currentTimestamp,
+        updatedAt: currentTimestamp,
+        fileNeedSync: true,
+      );
+
+      return dbHelper.insertContent(content);
+    }
+  } catch (e) {
+    debugPrint('Error saving file ${pickedFile.name}: $e');
+    if (context.mounted) {
+      MessageDisplayService.showErrorMessage(
+        context,
+        'Error saving file ${pickedFile.name}: $e',
+      );
+    }
+    return null;
+  }
+  return null;
 }

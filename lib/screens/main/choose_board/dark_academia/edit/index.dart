@@ -3,7 +3,6 @@ import 'package:navinotes/screens/main/choose_board/dark_academia/edit/header.da
 import '../../common/edit_vm.dart';
 import 'package:navinotes/packages.dart';
 
-
 double mobileHorPadding = 20;
 double laptopHorPadding = 30;
 double desktopHorPadding = 40;
@@ -12,8 +11,7 @@ class DarkAcademiaEditScreen extends StatefulWidget {
   const DarkAcademiaEditScreen({super.key});
 
   @override
-  State<DarkAcademiaEditScreen> createState() =>
-      _DarkAcademiaEditScreenState();
+  State<DarkAcademiaEditScreen> createState() => _DarkAcademiaEditScreenState();
 }
 
 class _DarkAcademiaEditScreenState extends State<DarkAcademiaEditScreen> {
@@ -36,11 +34,7 @@ class _DarkAcademiaEditScreenState extends State<DarkAcademiaEditScreen> {
       final showSuccess = args['showSuccess'] as bool? ?? false;
       final message = args['message'] as String?;
 
-      _viewModel.initialize(
-        boardId,
-        showSuccess: showSuccess,
-        message: message,
-      );
+      _viewModel.initialize(boardId);
     }
   }
 

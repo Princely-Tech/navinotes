@@ -5,8 +5,8 @@ class BoardEditVm extends ChangeNotifier {
   Board? _board;
   bool _isLoading = true;
   String? _error;
-  bool _showSuccess = false;
-  String? _successMessage;
+  // bool _showSuccess = false;
+  // String? _successMessage;
 
   GlobalKey<ScaffoldState>? scaffoldKey;
 
@@ -42,11 +42,39 @@ class BoardEditVm extends ChangeNotifier {
     scaffoldKey?.currentState?.openDrawer();
   }
 
+  CourseTimeline? getNextSession() {
+    final now = DateTime.now();
+    if (isNotNull(board) && isNotNull(board!.courseTimeLines)) {
+      for (var session in board!.courseTimeLines!) {
+        if (isNotNull(session.due)) {
+          final dueDate = DateTime.parse(session.due!);
+          // If the session's due date is today or in the future
+          if (dueDate.isAfter(now) ||
+              (dueDate.year == now.year &&
+                  dueDate.month == now.month &&
+                  dueDate.day == now.day)) {
+            return session;
+          }
+        }
+      }
+    }
+    return null; // Return null if no upcoming sessions
+  }
+
+  Future<void> goToNewNoteTemplate() async {
+    if (isNotNull(board)) {
+      await NavigationHelper.gotToNewNoteTemplate(board!);
+      loadFiles(board!.id!);
+    }
+  }
+
+  bool importingPdf = false;
+
   Board? get board => _board;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  bool get showSuccess => _showSuccess;
-  String? get successMessage => _successMessage;
+  // bool get showSuccess => _showSuccess;
+  // String? get successMessage => _successMessage;
 
   bool savingFiles = false;
 
@@ -56,14 +84,10 @@ class BoardEditVm extends ChangeNotifier {
   }
 
   // Initialize the ViewModel with board data
-  Future<void> initialize(
-    int boardId, {
-    bool showSuccess = false,
-    String? message,
-  }) async {
+  Future<void> initialize(int boardId) async {
     debugPrint('Initializing board with ID: $boardId');
-    _showSuccess = showSuccess;
-    _successMessage = message;
+    // _showSuccess = showSuccess;
+    // _successMessage = message;
 
     if (boardId > 0) {
       await _loadBoard(boardId);
@@ -99,10 +123,52 @@ class BoardEditVm extends ChangeNotifier {
     }
   }
 
-  void dismissSuccess() {
-    _showSuccess = false;
-    _successMessage = null;
-    notifyListeners();
+  Future<void> importPdfFile(BuildContext context) async {
+    try {
+      importingPdf = true;
+      notifyListeners();
+      final currentUser = getCurrentUserFromSession(context);
+      if (isNotNull(currentUser)) {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf'],
+        );
+
+        // if (isNotNull(result) && result!.files.isNotEmpty) {
+        final pickedFile = result!.files.first;
+
+        if (context.mounted) {
+          int? id = await saveFileToDb(
+            pickedFile: pickedFile,
+            context: context,
+            boardId: _board!.id!,
+          );
+
+          if (isNotNull(id)) {
+            if (context.mounted) {
+              MessageDisplayService.showMessage(
+                context,
+                'Successfully imported PDF file',
+              );
+            }
+            await NavigationHelper.navigateToPdfView(id!);
+            loadFiles(id);
+          }
+        }
+        // }
+      }
+    } catch (e) {
+      debugPrint('Error importing files: $e');
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Error importing files',
+        );
+      }
+    } finally {
+      importingPdf = false;
+      notifyListeners();
+    }
   }
 
   Future<void> importFiles(BuildContext context) async {
@@ -127,56 +193,16 @@ class BoardEditVm extends ChangeNotifier {
         );
 
         if (isNotNull(result) && result!.files.isNotEmpty) {
-          final dbHelper = DatabaseHelper.instance;
-          final appDocDir = await getApplicationDocumentsDirectory();
-          final filesDir = Directory('${appDocDir.path}/files');
-
-          // Create the files directory if it doesn't exist
-          if (!await filesDir.exists()) {
-            await filesDir.create(recursive: true);
-          }
-
           int successCount = 0;
 
           for (var pickedFile in result.files) {
-            try {
-              if (pickedFile.path == null) continue;
-
-              final file = File(pickedFile.path!);
-              final fileName =
-                  '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
-              final savedFile = await file.copy('${filesDir.path}/$fileName');
-              final currentTimestamp = generateUnixTimestamp();
-              // Create content entry for the file
-
-              final content = Content(
-                guid: generateGUID(currentUser!.id!),
-                type: AppContentType.file,
-                metaData: {
-                  ContentMetadataKey.originalFileName: pickedFile.name,
-                  ContentMetadataKey.fileSize: pickedFile.size,
-                  ContentMetadataKey.fileExtension: pickedFile.extension,
-                },
+            if (context.mounted) {
+              await saveFileToDb(
+                pickedFile: pickedFile,
+                context: context,
                 boardId: _board!.id!,
-                title: pickedFile.name,
-                file: savedFile.path,
-                createdAt: currentTimestamp,
-                updatedAt: currentTimestamp,
-                fileNeedSync: true,
               );
-
-              await dbHelper.insertContent(content);
-
-              // content.syncToBackend(apiServiceProvider); //TODO Work on synching created files to backend
               successCount++;
-            } catch (e) {
-              debugPrint('Error saving file ${pickedFile.name}: $e');
-              if (context.mounted) {
-                MessageDisplayService.showErrorMessage(
-                  context,
-                  'Error saving file ${pickedFile.name}: $e',
-                );
-              }
             }
           }
 

@@ -7,7 +7,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _headerSection(),
+        // _headerSection(),
         _courseActions(),
         Divider(height: 1, color: AppTheme.lightGray),
         _fileUploads(),
@@ -561,35 +561,46 @@ class BoardPlainPopupOverview extends StatelessWidget {
   }
 
   Widget _courseActions() {
-    return _section(
-      color: AppTheme.white,
-      header: _sectionHeader(
-        title: 'Course Actions',
-        subtitle: 'Access and manage your course materials efficiently',
-      ),
-      child: CustomGrid(
-        wrapWithIntrinsicHeight: false,
-        children: [
-          buildActionCard(
-            title: 'Create Note',
-            description: 'Document your insights and research findings',
-            buttonText: 'New Note',
-            imagePath: Images.boardPlainCreateNote,
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          color: AppTheme.white,
+          header: _sectionHeader(
+            title: 'Course Actions',
+            subtitle: 'Access and manage your course materials efficiently',
           ),
-          buildActionCard(
-            title: 'Import PDF',
-            description: 'Add research papers and reference materials',
-            buttonText: 'Upload PDF',
-            imagePath: Images.boardPlainImportPdf,
+          child: CustomGrid(
+            wrapWithIntrinsicHeight: false,
+            children: [
+              buildActionCard(
+                title: 'Create Note',
+                description: 'Document your insights and research findings',
+                buttonText: 'New Note',
+                imagePath: Images.boardPlainCreateNote,
+                onTap: vm.goToNewNoteTemplate,
+              ),
+              buildActionCard(
+                title: 'Import PDF',
+                description: 'Add research papers and reference materials',
+                buttonText: 'Upload PDF',
+                imagePath: Images.boardPlainImportPdf,
+                // onTap: vm.importPdfFile,
+                onTap: () => vm.importPdfFile(context),
+              ),
+              LoadingIndicator(
+                loading: vm.savingFiles,
+                child: buildActionCard(
+                  title: 'Import Files',
+                  description: 'Upload documents, images, and presentations',
+                  buttonText: 'Add Files',
+                  imagePath: Images.boardPlainImportFiles,
+                  onTap: () => vm.importFiles(context),
+                ),
+              ),
+            ],
           ),
-          buildActionCard(
-            title: 'Import Files',
-            description: 'Upload documents, images, and presentations',
-            buttonText: 'Add Files',
-            imagePath: Images.boardPlainImportFiles,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -598,6 +609,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     required String description,
     required String buttonText,
     required String imagePath,
+    required VoidCallback onTap,
   }) {
     return CustomCard(
       addBorder: true,
@@ -706,148 +718,173 @@ class BoardPlainPopupOverview extends StatelessWidget {
   Widget _headerLeft() {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        return Column(
-          spacing: 24,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 16,
+        return Consumer<BoardEditVm>(
+          builder: (_, vm, _) {
+            final board = vm.board!;
+            return Column(
+              spacing: 24,
               children: [
-                Text(
-                  'Explore Cell Biology & Genetics',
-                  style: TextStyle(
-                    color: const Color(0xFF1F2937),
-                    fontSize: getDeviceResponsiveValue(
-                      deviceType: layoutVm.deviceType,
-                      mobile: 24,
-                      laptop: 28,
-                      desktop: 30,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 16,
+                  children: [
+                    Text(
+                      'Explore ${board.name}',
+                      style: TextStyle(
+                        color: const Color(0xFF1F2937),
+                        fontSize: getDeviceResponsiveValue(
+                          deviceType: layoutVm.deviceType,
+                          mobile: 24,
+                          laptop: 28,
+                          desktop: 30,
+                        ),
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
                     ),
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
-                    height: 1.2,
-                  ),
+
+                    Text(
+                      board.description ??
+                          'Explore foundational concepts and key principles in this subject area through a mix of theoretical learning and practical application. This course offers an engaging introduction designed to build a solid understanding for further study',
+                      style: TextStyle(
+                        color: const Color(0xFF6B7280),
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Dive into the fascinating world of cellular structures, genetic inheritance, and evolutionary processes. This course provides a comprehensive introduction to modern biological concepts with hands-on laboratory experience.',
-                  style: TextStyle(
-                    color: const Color(0xFF6B7280),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    height: 1.5,
-                  ),
+                Row(
+                  spacing: 16,
+                  children: [
+                    //TODO this breaks
+                    AppButton(
+                      onTap: () => NavigationHelper.navigateToBoardNotes(board),
+                      text: 'View All Notes',
+                      mainAxisSize: MainAxisSize.min,
+                      color: AppTheme.vividBlue,
+                      wrapWithFlexible: true,
+                    ),
+                    //TODO return to this
+                    AppButton.secondary(
+                      onTap: () {},
+                      text: 'View Syllabus',
+                      mainAxisSize: MainAxisSize.min,
+                      color: Color(0xFFE5E7EB),
+                      wrapWithFlexible: true,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Inter',
+                        color: Color(0xFF1F2937),
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            ),
-            Row(
-              spacing: 16,
-              children: [
-                AppButton(
-                  onTap: () {},
-                  text: 'View All Notes',
-                  mainAxisSize: MainAxisSize.min,
-                  color: AppTheme.vividBlue,
-                  wrapWithFlexible: true,
-                ),
-                AppButton.secondary(
-                  onTap: () {},
-                  text: 'View Syllabus',
-                  mainAxisSize: MainAxisSize.min,
-                  color: Color(0xFFE5E7EB),
-                  wrapWithFlexible: true,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Inter',
-                    color: Color(0xFF1F2937),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            );
+          },
         );
       },
     );
   }
 
   Widget _headerRight() {
-    return CustomCard(
-      addCardShadow: true,
-      padding: const EdgeInsets.all(17),
-      addBorder: true,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 15,
-        children: [
-          const Text(
-            'Next Session',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Inter',
-              color: Color(0xFF1F2937),
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Monday, Sept 12 • 10:00-11:00 AM',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              fontFamily: 'Inter',
-              color: Color(0xFF6B7280),
-            ),
-          ),
-          Row(
-            spacing: 12,
+    return Consumer<BoardEditVm>(
+      builder: (_, vm, _) {
+        final board = vm.board!;
+        CourseTimeline? nextSession = vm.getNextSession();
+        //TODO return to this
+        return CustomCard(
+          addCardShadow: true,
+          padding: const EdgeInsets.all(17),
+          addBorder: true,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 23,
             children: [
-              OutlinedChild(
-                size: 40,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8F9FA),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFE5E7EB)),
-                ),
-                child: const Icon(
-                  Icons.science_outlined,
-                  size: 20,
-                  color: Colors.grey,
+              const Text(
+                'Next Session',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Inter',
+                  color: Color(0xFF1F2937),
                 ),
               ),
-              Expanded(
-                child: Column(
-                  spacing: 4,
+              if (isNull(nextSession))
+                Text('No upcoming sessions', style: AppTheme.text)
+              else
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'Cell Structure Lab',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Inter',
-                        color: Color(0xFF1F2937),
-                        height: 1.5,
-                      ),
-                    ),
-                    Text(
-                      'Science Building, Room 205',
+                  spacing: 15,
+                  children: [
+                    const Text(
+                      'Monday, Sept 12 • 10:00-11:00 AM',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Inter',
                         color: Color(0xFF6B7280),
-                        height: 1.43,
                       ),
+                    ),
+
+                    Row(
+                      spacing: 12,
+                      children: [
+                        OutlinedChild(
+                          size: 40,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F9FA),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xFFE5E7EB)),
+                          ),
+                          child: const Icon(
+                            Icons.science_outlined,
+                            size: 20,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            spacing: 4,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              Text(
+                                'Cell Structure Lab',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Inter',
+                                  color: Color(0xFF1F2937),
+                                  height: 1.5,
+                                ),
+                              ),
+                              Text(
+                                'Science Building, Room 205',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Inter',
+                                  color: Color(0xFF6B7280),
+                                  height: 1.43,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

@@ -18,7 +18,7 @@ class ChooseBoardHeader extends StatelessWidget {
               padding: EdgeInsets.all(15),
               color: AppTheme.white,
               child: Row(
-                spacing: 30,
+                spacing: 15,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
@@ -78,34 +78,37 @@ class ChooseBoardHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-
-                  Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppTheme.pastelBloom,
-                        ),
-                        child: Icon(Icons.person, color: AppTheme.vividRose),
+                  AppIconButton(
+                    onPressed: NavigationHelper.navigateToProfile,
+                    icon: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppTheme.pastelBloom,
                       ),
-                      VisibleController(
-                        mobile: getMenuVisible(layoutVm.deviceType),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: InkWell(
-                            onTap: vm.openEndDrawer,
-                            child: Icon(
-                              Icons.precision_manufacturing_outlined,
-                              size: 24,
-                              color: AppTheme.steelMist,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                      child: Icon(Icons.person, color: AppTheme.vividRose),
+                    ),
                   ),
+                  // Row(
+                  //   children: [
+
+                  //     // VisibleController(
+                  //     //   mobile: getMenuVisible(layoutVm.deviceType),
+                  //     //   child: Padding(
+                  //     //     padding: const EdgeInsets.only(left: 10),
+                  //     //     child: InkWell(
+                  //     //       onTap: vm.openEndDrawer,
+                  //     //       child: Icon(
+                  //     //         Icons.precision_manufacturing_outlined,
+                  //     //         size: 24,
+                  //     //         color: AppTheme.steelMist,
+                  //     //       ),
+                  //     //     ),
+                  //     //   ),
+                  //     // ),
+                  //   ],
+                  // ),
                 ],
               ),
             );

@@ -6,21 +6,30 @@ class BoardPlainPopupScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    Board? board = ModalRoute.of(context)?.settings.arguments as Board?;
     return ChangeNotifierProvider(
-      create: (context) => BoardEditVm(scaffoldKey: _scaffoldKey),
+      create: (context) {
+        final vm = BoardEditVm(scaffoldKey: _scaffoldKey);
+        if (isNotNull(board)) {
+          vm.initialize(board!.id!);
+        }
+        return vm;
+      },
       child: Consumer<BoardEditVm>(
         builder: (_, vm, _) {
-          return ScaffoldFrame(
-            scaffoldKey: _scaffoldKey,
-            backgroundColor: AppTheme.ghostWhite,
-            drawer: CustomDrawer(child: NavigationSideBar()),
-            body: Column(
-              children: [
-                _header(),
-                Expanded(
-                  child: ScrollableController(child: _returnTabItem(vm)),
-                ),
-              ],
+          return ChooseBoardWrapper(
+            child: ScaffoldFrame(
+              scaffoldKey: _scaffoldKey,
+              backgroundColor: AppTheme.ghostWhite,
+              drawer: CustomDrawer(child: NavigationSideBar()),
+              body: Column(
+                children: [
+                  _header(),
+                  Expanded(
+                    child: ScrollableController(child: _returnTabItem(vm)),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -111,7 +120,7 @@ class BoardPlainPopupScreen extends StatelessWidget {
                                 mobile: true,
                                 desktop: false,
                                 child: Text(
-                                  'BIOLOGY 101 - Fall Semester',
+                                  vm.board?.name ?? '',
                                   style: TextStyle(
                                     color: const Color(0xFF1F2937),
                                     fontSize: getDeviceResponsiveValue(

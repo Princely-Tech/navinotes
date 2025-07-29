@@ -1,5 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:path/path.dart' as path;
 
 class BoardEditUploads extends StatelessWidget {
   const BoardEditUploads(this.vm, {super.key});
@@ -10,8 +9,6 @@ class BoardEditUploads extends StatelessWidget {
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
     return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
-
-  
 
   @override
   Widget build(BuildContext context) {

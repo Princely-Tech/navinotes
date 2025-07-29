@@ -7,6 +7,7 @@ export 'widgets/index.dart';
 
 //Screens
 export 'screens/packages.dart';
+export 'screens/main/choose_board/common/board_wrapper.dart';
 
 //View Models
 export 'screens/main/pdf_view/overlay/vm.dart';
@@ -65,4 +66,5 @@ export 'package:intl/intl.dart' hide TextDirection;
 export 'package:file_picker/file_picker.dart';
 export 'package:popover/popover.dart';
 export 'package:open_file/open_file.dart';
-
+export 'package:external_path/external_path.dart';
+export 'package:permission_handler/permission_handler.dart';

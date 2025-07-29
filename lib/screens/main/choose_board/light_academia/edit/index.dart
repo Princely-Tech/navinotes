@@ -5,7 +5,8 @@ class BoardLightAcadEditScreen extends StatefulWidget {
   const BoardLightAcadEditScreen({super.key});
 
   @override
-  State<BoardLightAcadEditScreen> createState() => _BoardLightAcadEditScreenState();
+  State<BoardLightAcadEditScreen> createState() =>
+      _BoardLightAcadEditScreenState();
 }
 
 class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
@@ -28,11 +29,7 @@ class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
       final showSuccess = args['showSuccess'] as bool? ?? false;
       final message = args['message'] as String?;
 
-      _viewModel.initialize(
-        boardId,
-        showSuccess: showSuccess,
-        message: message,
-      );
+      _viewModel.initialize(boardId);
     }
   }
 
@@ -71,156 +68,149 @@ class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
   }
 
   Widget _buildContent(BoardEditVm vm) {
-    final board = vm.board!;   
-     return Column(
-            children: [
-              _header(board),
-              Expanded(
-                child: ScrollableController(
-                  mobilePadding: EdgeInsets.only(top: 40),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        child: ResponsivePadding(
-                          mobile: EdgeInsets.symmetric(
-                            horizontal: tabletPadding,
+    final board = vm.board!;
+    return Column(
+      children: [
+        _header(board),
+        Expanded(
+          child: ScrollableController(
+            mobilePadding: EdgeInsets.only(top: 40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: ResponsivePadding(
+                    mobile: EdgeInsets.symmetric(horizontal: tabletPadding),
+                    tablet: EdgeInsets.symmetric(horizontal: 30),
+                    child: WidthLimiter(
+                      mobile: largeDesktopSize,
+                      child: Column(
+                        spacing: 30,
+                        children: [
+                          _welcome(board),
+                          _sectionCard(
+                            header: 'Course Timeline',
+                            color: AppTheme.almondCream,
+                            img: Images.ques2,
+                            title: 'Your learning journey will bloom here',
+                            body:
+                                'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
+                            button: AppButton.secondary(
+                              mainAxisSize: MainAxisSize.min,
+                              onTap: () {},
+                              color: AppTheme.lightBrown,
+                              text: 'Upload syllabus to generate timeline',
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.lightBrown,
+                                fontSize: 16.0,
+                                fontFamily: AppTheme.fontEBGaramond,
+                              ),
+                            ),
                           ),
-                          tablet: EdgeInsets.symmetric(horizontal: 30),
-                          child: WidthLimiter(
-                            mobile: largeDesktopSize,
-                            child: Column(
-                              spacing: 30,
+                          Column(
+                            spacing: 15,
+                            children: [
+                              _titleSection('Quick Actions'),
+                              CustomGrid(
+                                children: [
+                                  _gridChild(
+                                    body: 'Start here to unlock AI features',
+                                    btnText: 'Upload now',
+                                    image: Images.scroll,
+                                    title: 'Upload Syllabus',
+                                  ),
+                                  _gridChild(
+                                    body: 'Begin taking notes right away',
+                                    btnText: 'Create note',
+                                    image: Images.leaf2,
+                                    title: 'Create Note',
+                                    route: Routes.boardLightAcademiaNotePage,
+                                  ),
+                                  _gridChild(
+                                    body: 'Add your course materials',
+                                    btnText: 'Import now',
+                                    image: Images.folder,
+                                    title: 'Import Files',
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          _sectionCard(
+                            header: 'Upcoming Assignments',
+                            color: AppTheme.almondCream,
+                            img: Images.menu,
+                            title:
+                                'Assignment tracking will appear after syllabus upload',
+                            body:
+                                'We\'ll automatically identify and track all your assignments, quizzes, and exams',
+                            button: AppButton.secondary(
+                              mainAxisSize: MainAxisSize.min,
+                              onTap: () {},
+                              color: AppTheme.lightBrown,
+                              minHeight: 35,
+                              padding: EdgeInsets.symmetric(
+                                vertical: 3,
+                                horizontal: 15,
+                              ),
+                              text: 'Upload syllabus to see assignments',
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.lightBrown,
+                                fontSize: 16.0,
+                                fontFamily: AppTheme.fontEBGaramond,
+                              ),
+                            ),
+                          ),
+                          _sectionCard(
+                            header: 'Course Materials',
+                            img: Images.cloudUpload,
+                            title: 'Upload and organize your study materials',
+                            body: 'Drag and drop files here',
+                            button: Column(
+                              spacing: 15,
                               children: [
-                                _welcome(board),
-                                _sectionCard(
-                                  header: 'Course Timeline',
-                                  color: AppTheme.almondCream,
-                                  img: Images.ques2,
-                                  title:
-                                      'Your learning journey will bloom here',
-                                  body:
-                                      'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
-                                  button: AppButton.secondary(
-                                    mainAxisSize: MainAxisSize.min,
-                                    onTap: () {},
-                                    color: AppTheme.lightBrown,
-                                    text:
-                                        'Upload syllabus to generate timeline',
-                                    style: AppTheme.text.copyWith(
-                                      color: AppTheme.lightBrown,
-                                      fontSize: 16.0,
-                                      fontFamily: AppTheme.fontEBGaramond,
+                                Text(
+                                  'or',
+                                  textAlign: TextAlign.center,
+                                  style: AppTheme.text.copyWith(
+                                    color: AppTheme.burntLeather.withAlpha(
+                                      0xFF,
                                     ),
+                                    fontSize: 16.0,
+                                    fontStyle: FontStyle.italic,
+                                    fontFamily: AppTheme.fontEBGaramond,
                                   ),
                                 ),
-                                Column(
-                                  spacing: 15,
-                                  children: [
-                                    _titleSection('Quick Actions'),
-                                    CustomGrid(
-                                      children: [
-                                        _gridChild(
-                                          body:
-                                              'Start here to unlock AI features',
-                                          btnText: 'Upload now',
-                                          image: Images.scroll,
-                                          title: 'Upload Syllabus',
-                                        ),
-                                        _gridChild(
-                                          body:
-                                              'Begin taking notes right away',
-                                          btnText: 'Create note',
-                                          image: Images.leaf2,
-                                          title: 'Create Note',
-                                          route:
-                                              Routes
-                                                  .boardLightAcademiaNotePage,
-                                        ),
-                                        _gridChild(
-                                          body: 'Add your course materials',
-                                          btnText: 'Import now',
-                                          image: Images.folder,
-                                          title: 'Import Files',
-                                        ),
-                                      ],
+                                AppButton.secondary(
+                                  mainAxisSize: MainAxisSize.min,
+                                  onTap: () {},
+                                  text: 'Browse files',
+                                  color: AppTheme.yellowishOrange.withAlpha(
+                                    0xFF,
+                                  ),
+                                  style: AppTheme.text.copyWith(
+                                    color: AppTheme.burntLeather.withAlpha(
+                                      0xFF,
                                     ),
-                                  ],
-                                ),
-                                _sectionCard(
-                                  header: 'Upcoming Assignments',
-                                  color: AppTheme.almondCream,
-                                  img: Images.menu,
-                                  title:
-                                      'Assignment tracking will appear after syllabus upload',
-                                  body:
-                                      'We\'ll automatically identify and track all your assignments, quizzes, and exams',
-                                  button: AppButton.secondary(
-                                    mainAxisSize: MainAxisSize.min,
-                                    onTap: () {},
-                                    color: AppTheme.lightBrown,
-                                    minHeight: 35,
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 3,
-                                      horizontal: 15,
-                                    ),
-                                    text:
-                                        'Upload syllabus to see assignments',
-                                    style: AppTheme.text.copyWith(
-                                      color: AppTheme.lightBrown,
-                                      fontSize: 16.0,
-                                      fontFamily: AppTheme.fontEBGaramond,
-                                    ),
+                                    fontSize: 16.0,
+                                    fontFamily: AppTheme.fontEBGaramond,
                                   ),
                                 ),
-                                _sectionCard(
-                                  header: 'Course Materials',
-                                  img: Images.cloudUpload,
-                                  title:
-                                      'Upload and organize your study materials',
-                                  body: 'Drag and drop files here',
-                                  button: Column(
-                                    spacing: 15,
-                                    children: [
-                                      Text(
-                                        'or',
-                                        textAlign: TextAlign.center,
-                                        style: AppTheme.text.copyWith(
-                                          color: AppTheme.burntLeather
-                                              .withAlpha(0xFF),
-                                          fontSize: 16.0,
-                                          fontStyle: FontStyle.italic,
-                                          fontFamily: AppTheme.fontEBGaramond,
-                                        ),
-                                      ),
-                                      AppButton.secondary(
-                                        mainAxisSize: MainAxisSize.min,
-                                        onTap: () {},
-                                        text: 'Browse files',
-                                        color: AppTheme.yellowishOrange
-                                            .withAlpha(0xFF),
-                                        style: AppTheme.text.copyWith(
-                                          color: AppTheme.burntLeather
-                                              .withAlpha(0xFF),
-                                          fontSize: 16.0,
-                                          fontFamily: AppTheme.fontEBGaramond,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                _courseInformation(),
                               ],
                             ),
                           ),
-                        ),
+                          _courseInformation(),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _titleSection(String title) {
@@ -387,7 +377,7 @@ class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: AppButton.text(
-                 onTap: () {
+                onTap: () {
                   if (isNotNull(route)) {
                     NavigationHelper.push(route!);
                   }
@@ -538,7 +528,10 @@ class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
 
   Widget _welcome(Board board) {
     return ResponsiveSection(
-      mobile: Column(spacing: 50, children: [_welcomeText(board.name), _welcomeImage()]),
+      mobile: Column(
+        spacing: 50,
+        children: [_welcomeText(board.name), _welcomeImage()],
+      ),
       desktop: Row(
         spacing: 30,
         crossAxisAlignment: CrossAxisAlignment.start,

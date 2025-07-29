@@ -51,8 +51,8 @@ class NavigationHelper {
     // push(Routes.noteTemplate, arguments: board);
   }
 
-  static void gotToNewNoteTemplate(Board board) {
-    push(Routes.noteTemplate, arguments: board);
+  static Future<void> gotToNewNoteTemplate(Board board) {
+    return push(Routes.noteTemplate, arguments: board);
   }
 
   //Note creation
@@ -100,9 +100,12 @@ class NavigationHelper {
 
   static Future navigateToBoard(
     Board board, {
-    Object? arguments,
+    // Object? arguments,
     bool replace = false,
   }) {
+    if (isNotNull(board.courseTimeLines)) {
+      return navigateToBoardPopup(board, replace: replace);
+    }
     final boardType = board.boardType ?? BoardTypeCodes.plain;
 
     final route = switch (boardType) {
@@ -113,32 +116,29 @@ class NavigationHelper {
       BoardTypeCodes.nature => Routes.boardNatureEdit,
     };
 
-    // Create a new map with explicit types
-    final Map<String, dynamic> mergedArguments = {
-      'boardId': board.id,
-      'board': board,
-    };
+    // // Create a new map with explicit types
+    // final Map<String, dynamic> mergedArguments = {
+    //   'boardId': board.id,
+    //   'board': board,
+    // };
 
     // NOTE:  spread operator with a Map literal creates a Map<dynamic, dynamic>
 
-    // Safely add existing arguments if they're a map
-    if (arguments is Map<String, dynamic>) {
-      mergedArguments.addAll(arguments);
-    } else if (arguments is Map) {
-      // If it's a Map but not Map<String, dynamic>, cast the values
-      mergedArguments.addAll(
-        Map<String, dynamic>.fromEntries(
-          arguments.entries.map((e) => MapEntry(e.key.toString(), e.value)),
-        ),
-      );
-    }
+    // // Safely add existing arguments if they're a map
+    // if (arguments is Map<String, dynamic>) {
+    //   mergedArguments.addAll(arguments);
+    // } else if (arguments is Map) {
+    //   // If it's a Map but not Map<String, dynamic>, cast the values
+    //   mergedArguments.addAll(
+    //     Map<String, dynamic>.fromEntries(
+    //       arguments.entries.map((e) => MapEntry(e.key.toString(), e.value)),
+    //     ),
+    //   );
+    // }
     if (replace) {
-      return NavigationHelper.pushReplacement(
-        route,
-        arguments: mergedArguments,
-      );
+      return NavigationHelper.pushReplacement(route, arguments: board);
     }
-    return NavigationHelper.push(route, arguments: mergedArguments);
+    return NavigationHelper.push(route, arguments: board);
   }
 
   static Future navigateToBoardPopup(Board board, {bool replace = false}) {
@@ -159,8 +159,8 @@ class NavigationHelper {
     return NavigationHelper.push(route, arguments: board);
   }
 
-  static void navigateToPdfView(int contentId) {
-    push(Routes.viewPdf, arguments: contentId);
+  static Future navigateToPdfView(int contentId) {
+    return push(Routes.viewPdf, arguments: contentId);
   }
 
   static void navigateToNotification() {}
