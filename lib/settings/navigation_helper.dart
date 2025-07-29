@@ -81,7 +81,7 @@ class NavigationHelper {
     push(route, arguments: contentId);
   }
 
-  static void navigateToBoardNotes(Board board) {
+  static Future navigateToBoardNotes(Board board) {
     final route = switch (board.boardType) {
       BoardTypeCodes.plain => Routes.boardPlainNotePage,
       BoardTypeCodes.minimalist => Routes.boardMinimalistNotePage,
@@ -91,7 +91,7 @@ class NavigationHelper {
       _ => Routes.boardPlainNotePage,
     };
 
-    push(route, arguments: board);
+   return push(route, arguments: board);
   }
 
   static void logOut() {

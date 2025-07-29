@@ -75,11 +75,28 @@ class BoardNoteAppBar extends StatelessWidget {
       color = AppTheme.asbestos;
     }
     return Row(
-      spacing: 15,
+      // spacing: 15,
       children: [
-        SVGImagePlaceHolder(imagePath: Images.settings, size: 16, color: color),
-        SVGImagePlaceHolder(imagePath: Images.filter, size: 18, color: color),
-        ProfilePic(borderColor: color),
+        AppIconButton(
+          onPressed: NavigationHelper.navigateToSettings,
+          icon: SVGImagePlaceHolder(
+            imagePath: Images.settings,
+            size: 16,
+            color: color,
+          ),
+        ),
+        AppIconButton(
+          onPressed: () {},
+          icon: SVGImagePlaceHolder(
+            imagePath: Images.filter,
+            size: 18,
+            color: color,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: ProfilePic(borderColor: color),
+        ),
       ],
     );
   }
@@ -154,20 +171,7 @@ class BoardNoteAppBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   spacing: 10,
                   children: [
-                    if (!isDarkAcademia)
-                      //   SVGImagePlaceHolder(imagePath: Images.logo, size: 24)
-                      // Text(
-                      //   'N',
-                      //   style: AppTheme.text.copyWith(
-                      //     color: AppTheme.royalGold,
-                      //     fontSize: 24.0,
-                      //     fontFamily: AppTheme.fontPlayfairDisplay,
-                      //     fontWeight: getFontWeight(700),
-                      //     height: 1.33,
-                      //   ),
-                      // )
-                      // else
-                      _outlinedProfileName(),
+                    // if (!isDarkAcademia) _outlinedProfileName(),
                     Flexible(
                       child: Text.rich(
                         TextSpan(
@@ -204,29 +208,34 @@ class BoardNoteAppBar extends StatelessWidget {
     );
   }
 
-  Widget _outlinedProfileName() {
-    BordThemeValues params = theme.values;
-    Color color = params.color1;
-    Color textColor = AppTheme.linen;
-    switch (theme) {
-      case BoardTheme.minimalist:
-        color = AppTheme.steelBlue;
-      case BoardTheme.lightAcademia:
-        color = AppTheme.royalGold.withAlpha(0x33);
-        textColor = AppTheme.royalGold;
-      default:
-    }
-    return OutlinedChild(
-      size: 32,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      child: Text(
-        'N',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 16.0,
-          fontFamily: params.fontFamily,
-        ),
-      ),
-    );
-  }
+  // Widget _outlinedProfileName() {
+  //   BordThemeValues params = theme.values;
+  //   Color color = params.color1;
+  //   Color textColor = AppTheme.linen;
+  //   switch (theme) {
+  //     case BoardTheme.minimalist:
+  //       color = AppTheme.steelBlue;
+  //     case BoardTheme.lightAcademia:
+  //       color = AppTheme.royalGold.withAlpha(0x33);
+  //       textColor = AppTheme.royalGold;
+  //     default:
+  //   }
+  //   return ClipRRect(
+  //     borderRadius: BorderRadiusGeometry.circular(999),
+  //     child: SVGImagePlaceHolder(imagePath: Images.logo, size: 32),
+  //   );
+  //   // return OutlinedChild(
+  //   //   size: 32,
+  //   //   decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+  //   //   child: SVGImagePlaceHolder(imagePath: Images.logo, size: 32),
+  //   //   // child: Text(
+  //   //   //   'N',
+  //   //   //   style: TextStyle(
+  //   //   //     color: textColor,
+  //   //   //     fontSize: 16.0,
+  //   //   //     fontFamily: params.fontFamily,
+  //   //   //   ),
+  //   //   // ),
+  //   // );
+  // }
 }

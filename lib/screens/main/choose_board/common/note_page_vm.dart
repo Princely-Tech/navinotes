@@ -17,6 +17,10 @@ class BoardNotePageVm extends ChangeNotifier {
     required this.context,
   });
 
+  void openEndDrawer() {
+    scaffoldKey.currentState?.openEndDrawer();
+  }
+
   @override
   void dispose() {
     sortByController.dispose();
@@ -44,7 +48,7 @@ class BoardNotePageVm extends ChangeNotifier {
     try {
       fetchingContent = true;
       notifyListeners();
-      contents = await dbHelper.getAllContents(
+      contents = await dbHelper.getAllNotes(
         board.id!,
         sortType: stringToNoteSortType(sortByController.text),
       );
@@ -64,6 +68,7 @@ class BoardNotePageVm extends ChangeNotifier {
   }
 
   Future<List<Content>> getRecentContents(int count) async {
+    //TODO check the recentViewedLogic
     final all = await dbHelper.getAllContents(
       board.id!,
       sortType: NoteSortType.updatedAt,
@@ -71,12 +76,12 @@ class BoardNotePageVm extends ChangeNotifier {
     return all.take(count).toList();
   }
 
-  void openDrawer() {
-    scaffoldKey.currentState?.openEndDrawer();
-  }
+  // void openDrawer() {
+  //   scaffoldKey.currentState?.openEndDrawer();
+  // }
 
   void gotToCreateNotePage() async {
-    await NavigationHelper.push(Routes.noteTemplate, arguments: board);
+    await NavigationHelper.gotToNewNoteTemplate(board);
     getContents();
   }
 

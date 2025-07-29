@@ -216,7 +216,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
   }
 
   Widget _sortBy() {
-    return Consumer<BoardNotePageVm>(
+    return Consumer<BoardNotePageVm>( 
       builder: (_, vm, _) {
         return ValueListenableBuilder(
           valueListenable: vm.sortByController,

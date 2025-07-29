@@ -24,7 +24,7 @@ class DatabaseHelper {
       path,
       version: _databaseVersion,
       onCreate: _createDB,
-      onUpgrade: _onUpgrade, 
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -123,12 +123,8 @@ class DatabaseHelper {
     }
 
     if (oldVersion < 5) {
-      await db.execute(
-        'ALTER TABLE boards ADD COLUMN course_info TEXT',
-      );
-      await db.execute(
-        'ALTER TABLE boards ADD COLUMN course_timelines TEXT',
-      );
+      await db.execute('ALTER TABLE boards ADD COLUMN course_info TEXT');
+      await db.execute('ALTER TABLE boards ADD COLUMN course_timelines TEXT');
     }
   }
 

@@ -8,7 +8,7 @@ class BoardDarkAcademiaEditOverview extends StatelessWidget {
     return Column(
       children: [
         _pic(),
-        _courseTimeLine(), //TODO check the line thats drawn
+        _courseTimeLine(),
         Column(
           spacing: 50,
           children: [_actions(), _upcomingAssignment(), _coarseMaterial()],
@@ -297,8 +297,8 @@ class BoardDarkAcademiaEditOverview extends StatelessWidget {
                         title: 'Create Note',
                         body: 'Begin taking notes right away',
                         onTap: () {
-                          return NavigationHelper.push(
-                            Routes.boardDarkAcademiaCreateNote,
+                          return NavigationHelper.navigateToBoardNotes(
+                            vm.board!,
                           );
                         },
                       ),

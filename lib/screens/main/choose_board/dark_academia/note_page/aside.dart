@@ -232,6 +232,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
   Widget _detailsItem({required String title, required String value}) {
     return Row(
       spacing: 15,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
@@ -242,9 +243,8 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
             height: 1.50,
           ),
         ),
-        Expanded(
+        Flexible(
           child: Text(
-            textAlign: TextAlign.right,
             value,
             style: AppTheme.text.copyWith(
               color: AppTheme.vanillaDust,

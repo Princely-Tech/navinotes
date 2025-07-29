@@ -118,37 +118,44 @@ class BoardPageMainHeader extends StatelessWidget {
     }
     return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
-        return WidthLimiter(
-          mobile: 200,
-          child: Row(
-            spacing: 10,
-            children: [
-              if (isNull(prefixIcon))
-                Text(
-                  'Sort by:',
-                  style: AppTheme.text.copyWith(
-                    color: txtColor,
-                    fontSize: 16.0,
-                    fontFamily: AppTheme.fontCrimsonPro,
-                    height: 1.50,
+        return ValueListenableBuilder(
+          valueListenable: vm.sortByController,
+          builder: (_, value, _) {
+            final sortByTxt = 'Sort by:';
+            final sortByStyle = AppTheme.text.copyWith(
+              color: txtColor,
+              fontSize: 16.0,
+              fontFamily: AppTheme.fontCrimsonPro,
+              height: 1.50,
+            );
+            final style = AppTheme.text.copyWith(color: params.color1);
+            final textWidth = calculateTextWidth(value.text, style) + 45;
+            final sortByTextWidth =
+                calculateTextWidth(sortByTxt, sortByStyle) + 30;
+            return WidthLimiter(
+              mobile: sortByTextWidth + textWidth,
+              // mobile: 200,
+              child: Row(
+                spacing: 10,
+                children: [
+                  if (isNull(prefixIcon)) Text(sortByTxt, style: sortByStyle),
+                  Expanded(
+                    child: CustomInputField(
+                      prefixIcon: prefixIcon,
+                      fillColor: fillColor,
+                      side: BorderSide(color: borderColor),
+                      controller: vm.sortByController,
+                      selectItems:
+                          NoteSortType.values
+                              .map((type) => noteSortTypeToString(type))
+                              .toList(),
+                      style: style,
+                    ),
                   ),
-                ),
-              Expanded(
-                child: CustomInputField(
-                  prefixIcon: prefixIcon,
-                  fillColor: fillColor,
-                  side: BorderSide(color: borderColor),
-                  controller: vm.sortByController,
-                  selectItems:
-                      NoteSortType.values
-                          .map((type) => noteSortTypeToString(type))
-                          .toList(),
-                  style: AppTheme.text.copyWith(color: params.color1),
-                  // constraints: BoxConstraints(maxHeight: 40),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
