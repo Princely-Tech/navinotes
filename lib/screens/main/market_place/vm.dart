@@ -164,8 +164,8 @@ Future<void> loadMarketplaceItems({int page = 1, String? query}) async {
       if (_searchQuery.isNotEmpty) 'search': _searchQuery,
       if (_selectedCategory != null) 'category': _selectedCategory!,
       if (_selectedSubCategory != null) 'sub_category': _selectedSubCategory!,
-      if (_minPrice != null) 'price_min': _minPrice!.toStringAsFixed(2),
-      if (_maxPrice != null) 'price_max': _maxPrice!.toStringAsFixed(2),
+      if (_minPrice != null) 'price_min': (_minPrice!*100).toStringAsFixed(2),
+      if (_maxPrice != null) 'price_max': (_maxPrice!*100).toStringAsFixed(2),
       if (_minDiscount != null) 'discount_percent_min': _minDiscount!.toString(),
       if (_maxDiscount != null) 'discount_percent_max': _maxDiscount!.toString(),
     };

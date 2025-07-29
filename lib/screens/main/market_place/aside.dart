@@ -2,10 +2,41 @@ import 'package:navinotes/models/markeplace_item.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/market_place/vm.dart';
 
-class MarketPlaceAside extends StatelessWidget {
+class MarketPlaceAside extends StatefulWidget {
   final MarketPlaceVm vm;
 
   const MarketPlaceAside({super.key, required this.vm});
+
+  @override
+  State<MarketPlaceAside> createState() => _MarketPlaceAsideState();
+}
+
+class _MarketPlaceAsideState extends State<MarketPlaceAside> {
+
+
+  late final TextEditingController _minPriceController;
+  late final TextEditingController _maxPriceController;
+  late final TextEditingController _minDiscountController;
+  late final TextEditingController _maxDiscountController;
+
+  @override
+  void initState() {
+    super.initState();
+    _minPriceController = TextEditingController(text: widget.vm.minPrice?.toStringAsFixed(2));
+    _maxPriceController = TextEditingController(text: widget.vm.maxPrice?.toStringAsFixed(2));
+    _minDiscountController = TextEditingController(text: widget.vm.minDiscount?.toString());
+    _maxDiscountController = TextEditingController(text: widget.vm.maxDiscount?.toString());
+  }
+
+  @override
+  void dispose() {
+    _minPriceController.dispose();
+    _maxPriceController.dispose();
+    _minDiscountController.dispose();
+    _maxDiscountController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +60,9 @@ class MarketPlaceAside extends StatelessWidget {
                     fontWeight: getFontWeight(500),
                   ),
                 ),
-                if (vm.activeFilterCount > 0)
+                if (widget.vm.activeFilterCount > 0)
                   TextButton(
-                    onPressed: vm.clearFilters,
+                    onPressed: widget.vm.clearFilters,
                     child: Text(
                       'Clear All',
                       style: AppTheme.text.copyWith(
@@ -57,7 +88,7 @@ class MarketPlaceAside extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children:
                           marketPlaceCategoryMap.keys.map((category) {
-                            final isSelected = vm.selectedCategory == category;
+                            final isSelected = widget.vm.selectedCategory == category;
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -66,14 +97,14 @@ class MarketPlaceAside extends StatelessWidget {
                                   value: isSelected,
                                   onChanged: (value) {
                                     if (value == true) {
-                                      vm.setCategory(category);
+                                      widget.vm.setCategory(category);
                                     } else {
-                                      vm.setCategory(null);
+                                      widget.vm.setCategory(null);
                                     }
                                   },
                                 ),
                                 // Show subcategories if this category is selected
-                                if (isSelected && vm.selectedCategory != null)
+                                if (isSelected && widget.vm.selectedCategory != null)
                                   Padding(
                                     padding: const EdgeInsets.only(left: 20),
                                     child: Column(
@@ -85,15 +116,15 @@ class MarketPlaceAside extends StatelessWidget {
                                               return CustomCheckBoxItem(
                                                 title: subCategory,
                                                 value:
-                                                    vm.selectedSubCategory ==
+                                                    widget.vm.selectedSubCategory ==
                                                     subCategory,
                                                 onChanged: (value) {
                                                   if (value == true) {
-                                                    vm.setSubCategory(
+                                                    widget.vm.setSubCategory(
                                                       subCategory,
                                                     );
                                                   } else {
-                                                    vm.setSubCategory(null);
+                                                    widget.vm.setSubCategory(null);
                                                   }
                                                 },
                                               );
@@ -107,51 +138,50 @@ class MarketPlaceAside extends StatelessWidget {
                     ),
                   ),
 
-                  // Price Range Filter
-                  _sections(
+_sections(
                     title: 'Price Range',
                     child: Row(
                       children: [
                         Expanded(
                           child: TextField(
+                            controller: _minPriceController,
                             decoration: const InputDecoration(
                               labelText: 'Min',
                               prefixText: '\$',
                               border: OutlineInputBorder(),
                             ),
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
                             onChanged: (value) {
                               final min = double.tryParse(value);
-                              vm.setPriceRange(min, vm.maxPrice);
+                              widget.vm.setPriceRange(min, widget.vm.maxPrice);
                             },
-                            controller: TextEditingController(
-                              text: vm.minPrice?.toStringAsFixed(2),
-                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: TextField(
+                            controller: _maxPriceController,
                             decoration: const InputDecoration(
                               labelText: 'Max',
                               prefixText: '\$',
                               border: OutlineInputBorder(),
                             ),
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
                             onChanged: (value) {
                               final max = double.tryParse(value);
-                              vm.setPriceRange(vm.minPrice, max);
+                              widget.vm.setPriceRange(widget.vm.minPrice, max);
                             },
-                            controller: TextEditingController(
-                              text: vm.maxPrice?.toStringAsFixed(2),
-                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-
-                  // Discount Filter
+                
+                // Discount Filter
                   _sections(
                     title: 'Discount',
                     child: Column(
@@ -169,10 +199,10 @@ class MarketPlaceAside extends StatelessWidget {
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   final min = int.tryParse(value);
-                                  vm.setDiscountRange(min, vm.maxDiscount);
+                                  widget.vm.setDiscountRange(min, widget.vm.maxDiscount);
                                 },
                                 controller: TextEditingController(
-                                  text: vm.minDiscount?.toString(),
+                                  text: widget.vm.minDiscount?.toString(),
                                 ),
                               ),
                             ),
@@ -187,10 +217,10 @@ class MarketPlaceAside extends StatelessWidget {
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   final max = int.tryParse(value);
-                                  vm.setDiscountRange(vm.minDiscount, max);
+                                  widget.vm.setDiscountRange(widget.vm.minDiscount, max);
                                 },
                                 controller: TextEditingController(
-                                  text: vm.maxDiscount?.toString(),
+                                  text: widget.vm.maxDiscount?.toString(),
                                 ),
                               ),
                             ),
@@ -207,7 +237,7 @@ class MarketPlaceAside extends StatelessWidget {
                       width: double.infinity,
                       child: AppButton(
                         onTap: () {
-                          vm.loadMarketplaceItems(page: 1);
+                          widget.vm.loadMarketplaceItems(page: 1);
                           Navigator.pop(context); // Close the drawer
                         },
                         text: 'Apply Filters',
