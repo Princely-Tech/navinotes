@@ -20,7 +20,9 @@ class BoardEditUploads extends StatelessWidget {
         icon: Icons.folder_open,
         title: 'No files yet',
         subtitle: 'Upload files to get started',
+        
         footer: AppButton(
+          loading: vm.fetchingFiles,
           onTap: () {
             vm.importFiles(context);
           },

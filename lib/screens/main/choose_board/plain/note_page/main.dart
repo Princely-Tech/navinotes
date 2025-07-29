@@ -1,5 +1,4 @@
 import 'shared.dart';
-import 'vm.dart';
 import 'package:navinotes/packages.dart';
 
 class BoardPlainNotePageMain extends StatelessWidget {
@@ -7,7 +6,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BoardPlainNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return Column(
           children: [
@@ -29,76 +28,6 @@ class BoardPlainNotePageMain extends StatelessWidget {
                               text: 'Create New Note Page',
                             ),
                           ],
-
-                          // children: [
-
-                          //   _noteCard(
-                          //     lastEdited: 'Apr 25, 2025',
-                          //     title: 'Newton\'s Laws',
-                          //     image: Images.noteNewton,
-                          //     outLines: _outlineRow(
-                          //       outline1: _outline(),
-                          //       outline2: _outline(
-                          //         image: Images.video,
-                          //         color: AppTheme.pastelPurple,
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   _noteCard(
-                          //     lastEdited: 'Apr 22, 2025',
-                          //     title: 'Thermodynamics',
-                          //     image: Images.noteThermodynamics,
-                          //     outLines: _outlineRow(
-                          //       outline1: _outline(),
-                          //       outline2: _outline(
-                          //         image: Images.copy2,
-                          //         color: AppTheme.softGold,
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   _noteCard(
-                          //     lastEdited: 'Apr 20, 2025',
-                          //     title: 'Electromagnetism',
-                          //     image: Images.noteElectromagnetism,
-                          //     outLines: _outlineRow(
-                          //       outline1: _outline(),
-                          //       outline2: _outline(
-                          //         image: Images.chart,
-                          //         color: AppTheme.blushPink,
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   _noteCard(
-                          //     lastEdited: 'Apr 18, 2025',
-                          //     title: 'Quantum Mechanics',
-                          //     image: Images.noteMechanics,
-                          //     outLines: _outlineRow(
-                          //       outline1: _outline(),
-                          //       outline2: _outline(
-                          //         image: Images.calculator,
-                          //         color: AppTheme.periwinkle,
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   _noteCard(
-                          //     lastEdited: 'Apr 28, 2025',
-                          //     title: 'Optics & Light',
-                          //     image: Images.noteOptics,
-                          //     outLines: _outlineRow(
-                          //       outline1: _outline(),
-                          //       outline2: _outline(
-                          //         image: Images.img,
-                          //         color: AppTheme.paleJade,
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   if (isNotNull(board))
-                          //     CreateCard(
-                          //       width: double.infinity,
-                          //       onTap: () => vm.gotToCreateNotePage(board!),
-                          //       text: 'Create New Note Page',
-                          //     ),
-                          // ],
                         ),
                       ),
             ),
@@ -137,7 +66,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
     BoardNoteTemplate template = getNoteTemplateFromString(
       content.metaData[ContentMetadataKey.template],
     );
-    return Consumer<BoardPlainNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         Radius radius = Radius.circular(12);
         return InkWell(
@@ -212,11 +141,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
     );
   }
 
-  Widget _header(BoardPlainNotePageVm vm) {
-    String title = '${vm.contents.length} Note Page';
-    if (vm.contents.length > 1) {
-      title = '${title}s';
-    }
+  Widget _header(BoardNotePageVm vm) {
     return Container(
       constraints: BoxConstraints(minHeight: 60),
       decoration: ShapeDecoration(
@@ -229,7 +154,10 @@ class BoardPlainNotePageMain extends StatelessWidget {
       child: Row(
         spacing: 20,
         children: [
-          Text(title, style: AppTheme.text.copyWith(fontSize: 16.0)),
+          Text(
+            getNoteCountText(vm.contents),
+            style: AppTheme.text.copyWith(fontSize: 16.0),
+          ),
           VisibleController(
             mobile: false,
             tablet: true,
@@ -288,7 +216,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
   }
 
   Widget _sortBy() {
-    return Consumer<BoardPlainNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return ValueListenableBuilder(
           valueListenable: vm.sortByController,

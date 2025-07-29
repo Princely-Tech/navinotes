@@ -6,77 +6,82 @@ class BoardPageMainHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BordThemeValues params = theme.values;
-    return Container(
-      decoration: params.mainHeaderDecoration,
-      padding: EdgeInsets.all(10),
-      child: Row(
-        spacing: 20,
-        children: [
-          Text(
-            '8 Note Pages',
-            style: AppTheme.text.copyWith(
-              color: params.color1,
-              fontSize: 20.0,
-              fontFamily: params.fontFamily,
-              height: 1.40,
-            ),
-          ),
-          VisibleController(
-            mobile: false,
-            tablet: true,
-            child: Expanded(
-              child: LayoutBuilder(
-                builder: (_, constraints) {
-                  return ScrollableController(
-                    scrollDirection: Axis.horizontal,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: constraints.maxWidth,
-                      ),
-                      child: ResponsiveSection(
-                        mobile: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          spacing: 10,
-                          children: [
-                            if (theme.isMinimalist)
-                              Row(
-                                spacing: 15,
-                                children: [
-                                  SVGImagePlaceHolder(
-                                    imagePath: Images.ques,
-                                    color: AppTheme.asbestos,
-                                    size: 16,
-                                  ),
-                                  SVGImagePlaceHolder(
-                                    imagePath: Images.menu,
-                                    color: AppTheme.asbestos,
-                                    size: 16,
-                                  ),
-                                ],
-                              )
-                            else
-                              DisplayFormatSelect(theme: theme),
-                            _sortBy(),
-                            VisibleController(
-                              mobile: false,
-                              desktop: true,
-                              child: GoNewNoteButton(theme: theme),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return Container(
+          decoration: params.mainHeaderDecoration,
+          padding: EdgeInsets.all(10),
+          child: Row(
+            spacing: 20,
+            children: [
+              Text(
+                getNoteCountText(vm.contents),
+                style: AppTheme.text.copyWith(
+                  color: params.color1,
+                  fontSize: 20.0,
+                  fontFamily: params.fontFamily,
+                  height: 1.40,
+                ),
               ),
-            ),
+              VisibleController(
+                mobile: false,
+                tablet: true,
+                child: Expanded(
+                  child: LayoutBuilder(
+                    builder: (_, constraints) {
+                      return ScrollableController(
+                        scrollDirection: Axis.horizontal,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth: constraints.maxWidth,
+                          ),
+                          child: ResponsiveSection(
+                            mobile: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              spacing: 10,
+                              children: [
+                                if (theme.isMinimalist)
+                                  Row(
+                                    spacing: 15,
+                                    children: [
+                                      SVGImagePlaceHolder(
+                                        imagePath: Images.ques,
+                                        color: AppTheme.asbestos,
+                                        size: 16,
+                                      ),
+                                      SVGImagePlaceHolder(
+                                        imagePath: Images.menu,
+                                        color: AppTheme.asbestos,
+                                        size: 16,
+                                      ),
+                                    ],
+                                  )
+                                else
+                                  DisplayFormatSelect(theme: theme),
+                                _sortBy(),
+                                VisibleController(
+                                  mobile: false,
+                                  desktop: true,
+                                  child: GoNewNoteButton(theme: theme),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _sortBy() {
+    //TODO make input width follow text style
     BordThemeValues params = theme.values;
     Color txtColor = AppTheme.vanillaDust.withAlpha(0xCC);
     Color fillColor = AppTheme.burntLeather;
@@ -111,34 +116,41 @@ class BoardPageMainHeader extends StatelessWidget {
         break;
       default:
     }
-    return WidthLimiter(
-      mobile: 200,
-      child: Row(
-        spacing: 10,
-        children: [
-          if (isNull(prefixIcon))
-            Text(
-              'Sort by:',
-              style: AppTheme.text.copyWith(
-                color: txtColor,
-                fontSize: 16.0,
-                fontFamily: AppTheme.fontCrimsonPro,
-                height: 1.50,
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return WidthLimiter(
+          mobile: 200,
+          child: Row(
+            spacing: 10,
+            children: [
+              if (isNull(prefixIcon))
+                Text(
+                  'Sort by:',
+                  style: AppTheme.text.copyWith(
+                    color: txtColor,
+                    fontSize: 16.0,
+                    fontFamily: AppTheme.fontCrimsonPro,
+                    height: 1.50,
+                  ),
+                ),
+              Expanded(
+                child: CustomInputField(
+                  prefixIcon: prefixIcon,
+                  fillColor: fillColor,
+                  side: BorderSide(color: borderColor),
+                  controller: vm.sortByController,
+                  selectItems:
+                      NoteSortType.values
+                          .map((type) => noteSortTypeToString(type))
+                          .toList(),
+                  style: AppTheme.text.copyWith(color: params.color1),
+                  // constraints: BoxConstraints(maxHeight: 40),
+                ),
               ),
-            ),
-          Expanded(
-            child: CustomInputField(
-              prefixIcon: prefixIcon,
-              fillColor: fillColor,
-              side: BorderSide(color: borderColor),
-              controller: TextEditingController(text: 'Last modified'),
-              selectItems: ['Last modified', 'Created', 'Alphabetical'],
-              style: AppTheme.text.copyWith(color: params.color1),
-              constraints: BoxConstraints(maxHeight: 40),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

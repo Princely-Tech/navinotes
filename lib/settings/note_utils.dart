@@ -79,11 +79,15 @@ String noteSortTypeToString(NoteSortType sortType) {
 }
 
 NoteSortType stringToNoteSortType(String sortType) {
-  return stringToEnum<NoteSortType>(sortType, NoteSortType.values);
+  switch (sortType) {
+    case 'Last modified':
+      return NoteSortType.updatedAt;
+    // case 'Date created':
+    default:
+      return NoteSortType.createdAt;
+  }
 }
 
 AppContentType stringToAppContentType(String sortType) {
   return stringToEnum<AppContentType>(sortType, AppContentType.values);
 }
-
-

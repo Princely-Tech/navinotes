@@ -1,13 +1,12 @@
 import 'package:navinotes/packages.dart';
 import 'shared.dart';
-import 'vm.dart';
 
 class BoardPlainNotePageAppBar extends StatelessWidget {
   const BoardPlainNotePageAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BoardPlainNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         final board = vm.board;
         return Container(
@@ -23,7 +22,7 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ResponsiveSection(
-                mobile: _leading(board!),
+                mobile: _leading(board),
                 desktop: Flexible(child: _leading(board)),
               ),
               ResponsiveSection(
@@ -45,49 +44,21 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
   }
 
   Widget _searchField() {
-    return Consumer<BoardPlainNotePageVm>(
-      builder: (_, vm, _) {
-        return LoadingIndicator(
-          loading: vm.fetchingContent,
-          child: SearchDropdownField<Content>(
-            suggestionsCallback: (search) {
-              return vm.contents
-                  .where((item) => checkStringMatch(item.title, search))
-                  .toList();
-            },
-            itemBuilder: (_, item) {
-              return CustomListTile(
-                onTap: () => vm.goToNotePage(item),
-                title: item.title,
-                color: AppTheme.steelMist,
-                activeColor: AppTheme.strongBlue,
-              );
-            },
-            input: CustomInputField(
-              prefixIcon: Icon(
-                Icons.search,
-                color: AppTheme.slateGray,
-                size: 20,
-              ),
-              hintText: 'Search in this board',
-              fillColor: AppTheme.lightAsh,
-              side: BorderSide.none,
-              hintStyle: AppTheme.text.copyWith(
-                color: AppTheme.slateGray,
-                height: 1.43,
-              ),
-            ),
-          ),
-        );
-      },
+    return NotePageSearchDropdown(
+      input: CustomInputField(
+        prefixIcon: Icon(Icons.search, color: AppTheme.slateGray, size: 20),
+        hintText: 'Search in this board',
+        fillColor: AppTheme.lightAsh,
+        side: BorderSide.none,
+        hintStyle: AppTheme.text.copyWith(
+          color: AppTheme.slateGray,
+          height: 1.43,
+        ),
+      ),
     );
   }
 
   Widget _leading(Board board) {
-    final title =
-        board.name.length > 13
-            ? '${board.name.substring(0, 13)}...'
-            : board.name;
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 10,
@@ -106,17 +77,6 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
               spacing: 10,
               children: [
                 SVGImagePlaceHolder(imagePath: Images.logo, size: 32),
-                // OutlinedChild(
-                //   decoration: BoxDecoration(color: AppTheme.paleBlue),
-                //   child: Text(
-                //     'N',
-                //     style: AppTheme.text.copyWith(
-                //       color: AppTheme.strongBlue,
-                //       fontSize: 16.0,
-                //       fontWeight: getFontWeight(600),
-                //     ),
-                //   ),
-                // ),
                 Flexible(
                   child: Text.rich(
                     TextSpan(
@@ -137,7 +97,7 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: title,
+                          text: getSlicedBoardName(board),
                           style: AppTheme.text.copyWith(
                             color: AppTheme.darkSlateGray,
                             fontSize: 16.0,

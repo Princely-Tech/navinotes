@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 
-class BoardPlainNotePageVm extends ChangeNotifier {
+class BoardNotePageVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  final Board? board;
+  Board board;
   List<Content> contents = [];
   final DatabaseHelper dbHelper = DatabaseHelper.instance;
   TextEditingController sortByController = TextEditingController(
@@ -10,9 +10,8 @@ class BoardPlainNotePageVm extends ChangeNotifier {
   );
 
   bool fetchingContent = true;
-
   BuildContext context;
-  BoardPlainNotePageVm({
+  BoardNotePageVm({
     required this.scaffoldKey,
     required this.board,
     required this.context,
@@ -34,16 +33,24 @@ class BoardPlainNotePageVm extends ChangeNotifier {
     sortByController.addListener(_onSortByChanged);
   }
 
+  PageDisplayFormat pageDisplayFormat = PageDisplayFormat.list;
+
+  void updatePageDisplayFormat(PageDisplayFormat format) {
+    pageDisplayFormat = format;
+    notifyListeners();
+  }
+
   void getContents() async {
     try {
       fetchingContent = true;
       notifyListeners();
       contents = await dbHelper.getAllContents(
-        board!.id!,
+        board.id!,
         sortType: stringToNoteSortType(sortByController.text),
       );
       notifyListeners();
     } catch (e) {
+      debugPrint('Error ${e.toString()}');
       if (context.mounted) {
         MessageDisplayService.showErrorMessage(
           context,
@@ -58,7 +65,7 @@ class BoardPlainNotePageVm extends ChangeNotifier {
 
   Future<List<Content>> getRecentContents(int count) async {
     final all = await dbHelper.getAllContents(
-      board!.id!,
+      board.id!,
       sortType: NoteSortType.updatedAt,
     );
     return all.take(count).toList();

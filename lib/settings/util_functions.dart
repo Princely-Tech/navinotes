@@ -119,3 +119,17 @@ bool getBoolFromInt(value) {
 int getIntFromBool(bool value) {
   return value ? 1 : 0;
 }
+
+String getSlicedBoardName(Board board) {
+  return board.name.length > 13
+      ? '${board.name.substring(0, 13)}...'
+      : board.name;
+}
+
+String getNoteCountText(List<Content> contents) {
+  String text = '${contents.length} Note Page';
+  if (contents.length > 1) {
+    text = '${text}s';
+  }
+  return text;
+}

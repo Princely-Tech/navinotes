@@ -31,36 +31,40 @@ class BoardNoteAppBar extends StatelessWidget {
         );
       default:
     }
-    return Container(
-      decoration: BoxDecoration(
-        color: isNotNull(gradient) ? null : color,
-        gradient: gradient,
-        border: Border(bottom: BorderSide(color: params.borderColor)),
-      ),
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: ResponsiveHorizontalPadding(
-        child: Row(
-          spacing: 20,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ResponsiveSection(
-              mobile: _leading(),
-              desktop: Flexible(child: _leading()),
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return Container(
+          decoration: BoxDecoration(
+            color: isNotNull(gradient) ? null : color,
+            gradient: gradient,
+            border: Border(bottom: BorderSide(color: params.borderColor)),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: ResponsiveHorizontalPadding(
+            child: Row(
+              spacing: 20,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ResponsiveSection(
+                  mobile: _leading(),
+                  desktop: Flexible(child: _leading()),
+                ),
+                ResponsiveSection(
+                  mobile: Expanded(child: _searchField()),
+                  desktop: WidthLimiter(mobile: 512, child: _searchField()),
+                ),
+                ResponsiveSection(
+                  mobile: MenuButton(
+                    onPressed: openEndDrawer,
+                    decoration: BoxDecoration(color: params.color1),
+                  ),
+                  desktop: _actions(),
+                ),
+              ],
             ),
-            ResponsiveSection(
-              mobile: Expanded(child: _searchField()),
-              desktop: WidthLimiter(mobile: 512, child: _searchField()),
-            ),
-            ResponsiveSection(
-              mobile: MenuButton(
-                onPressed: openEndDrawer,
-                decoration: BoxDecoration(color: params.color1),
-              ),
-              desktop: _actions(),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -87,26 +91,28 @@ class BoardNoteAppBar extends StatelessWidget {
   Widget _searchField() {
     BordThemeValues params = theme.values;
     bool iconIsSuffix = theme.isDarkAcademia;
-    return CustomInputField(
-      suffixIcon: iconIsSuffix ? _searchIcon() : null,
-      prefixIcon: !iconIsSuffix ? _searchIcon() : null,
-      hintText: 'Search notes...',
-      fillColor: params.inputBackgroundColor,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(theme.isNature ? 999 : 8),
-        borderSide: BorderSide(color: params.inputBorderColor),
-      ),
-      style: AppTheme.text.copyWith(
-        color: params.color1,
-        fontSize: 16.0,
-        fontFamily: AppTheme.fontCrimsonPro,
-        height: 1.50,
-      ),
-      hintStyle: AppTheme.text.copyWith(
-        color: AppTheme.slateGray,
-        fontSize: 16.0,
-        fontFamily: AppTheme.fontCrimsonPro,
-        height: 1.50,
+    return NotePageSearchDropdown(
+      input: CustomInputField(
+        suffixIcon: iconIsSuffix ? _searchIcon() : null,
+        prefixIcon: !iconIsSuffix ? _searchIcon() : null,
+        hintText: 'Search notes...',
+        fillColor: params.inputBackgroundColor,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(theme.isNature ? 999 : 8),
+          borderSide: BorderSide(color: params.inputBorderColor),
+        ),
+        style: AppTheme.text.copyWith(
+          color: params.color1,
+          fontSize: 16.0,
+          fontFamily: AppTheme.fontCrimsonPro,
+          height: 1.50,
+        ),
+        hintStyle: AppTheme.text.copyWith(
+          color: AppTheme.slateGray,
+          fontSize: 16.0,
+          fontFamily: AppTheme.fontCrimsonPro,
+          height: 1.50,
+        ),
       ),
     );
   }
@@ -123,76 +129,78 @@ class BoardNoteAppBar extends StatelessWidget {
       case BoardTheme.darkAcademia:
         appNameColor = AppTheme.vanillaDust.withAlpha(0xE5);
         break;
-      case BoardTheme.lightAcademia:
-        // appNameColor = AppTheme.sepiaBrown;
-        // subjectNameColor = AppTheme.asbestos;
-        break;
       case BoardTheme.minimalist:
         subjectNameColor = AppTheme.asbestos;
         break;
       default:
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 10,
-      children: [
-        InkWell(
-          onTap: NavigationHelper.pop,
-          child: Icon(Icons.arrow_back, size: 24, color: params.color1),
-        ),
-        VisibleController(
-          mobile: false,
-          tablet: true,
-          child: Flexible(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 10,
-              children: [
-                if (isDarkAcademia)
-                  Text(
-                    'N',
-                    style: AppTheme.text.copyWith(
-                      color: AppTheme.royalGold,
-                      fontSize: 24.0,
-                      fontFamily: AppTheme.fontPlayfairDisplay,
-                      fontWeight: getFontWeight(700),
-                      height: 1.33,
-                    ),
-                  )
-                else
-                  _outlinedProfileName(),
-                Flexible(
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '${AppStrings.appName} /',
-                          style: AppTheme.text.copyWith(
-                            color: appNameColor,
-                            fontSize: 16.0,
-                            fontFamily: params.fontFamily,
-                            height: 1.50,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Physics 101',
-                          style: AppTheme.text.copyWith(
-                            color: subjectNameColor,
-                            fontSize: 16.0,
-                            fontFamily: params.fontFamily,
-                            height: 1.50,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        final board = vm.board;
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 10,
+          children: [
+            InkWell(
+              onTap: NavigationHelper.pop,
+              child: Icon(Icons.arrow_back, size: 24, color: params.color1),
             ),
-          ),
-        ),
-      ],
+            VisibleController(
+              mobile: false,
+              tablet: true,
+              child: Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 10,
+                  children: [
+                    if (!isDarkAcademia)
+                      //   SVGImagePlaceHolder(imagePath: Images.logo, size: 24)
+                      // Text(
+                      //   'N',
+                      //   style: AppTheme.text.copyWith(
+                      //     color: AppTheme.royalGold,
+                      //     fontSize: 24.0,
+                      //     fontFamily: AppTheme.fontPlayfairDisplay,
+                      //     fontWeight: getFontWeight(700),
+                      //     height: 1.33,
+                      //   ),
+                      // )
+                      // else
+                      _outlinedProfileName(),
+                    Flexible(
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '${AppStrings.appName} /',
+                              style: AppTheme.text.copyWith(
+                                color: appNameColor,
+                                fontSize: 16.0,
+                                fontFamily: params.fontFamily,
+                                height: 1.50,
+                              ),
+                            ),
+                            TextSpan(
+                              text: getSlicedBoardName(board),
+                              style: AppTheme.text.copyWith(
+                                color: subjectNameColor,
+                                fontSize: 16.0,
+                                fontFamily: params.fontFamily,
+                                height: 1.50,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

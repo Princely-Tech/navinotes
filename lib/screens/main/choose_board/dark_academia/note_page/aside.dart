@@ -1,12 +1,11 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
 
 class DarkAcademiaCreateNoteAside extends StatelessWidget {
   const DarkAcademiaCreateNoteAside({super.key, this.isFull = false});
   final bool isFull;
   @override
   Widget build(BuildContext context) {
-    return Consumer<DarkAcademiaCreateNoteVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +39,8 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 15),
                               child: AppButton(
-                                onTap: () => NavigationHelper.gotToNoteTemplate(),
+                                onTap:
+                                    () => NavigationHelper.gotToNoteTemplate(),
                                 text: 'New Note Page',
                                 minHeight: 40,
                                 color: AppTheme.burntLeather.withAlpha(0xFF),
@@ -151,17 +151,43 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return EditHeaderSection(
-      theme: BoardTheme.darkAcademia,
-      title: 'Recently Viewed',
-      child: Column(
-        spacing: 15,
-        children: [
-          _viewedItem(title: 'Wave Properties', time: '2h ago'),
-          _viewedItem(title: 'Newton\'s Laws', time: '5h ago'),
-          _viewedItem(title: 'Thermodynamics', time: '1d ago'),
-        ],
-      ),
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return EditHeaderSection(
+          theme: BoardTheme.darkAcademia,
+          title: 'Recently Viewed',
+          child: FutureBuilder(
+            future: vm.getRecentContents(3),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text(
+                  'Failed to load recent notes',
+                  style: AppTheme.text.copyWith(color: AppTheme.coralRed),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text(
+                  'No recent notes found',
+                  style: AppTheme.text.copyWith(color: AppTheme.white),
+                );
+              }
+              final recentNotes = snapshot.data!;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  for (final note in recentNotes)
+                    _viewedItem(
+                      title: note.title,
+                      time: formatRelativeTime(note.updatedAt),
+                    ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -186,6 +212,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
   }
 
   Widget _tags() {
+    //TODO return to this
     return EditHeaderSection(
       theme: BoardTheme.darkAcademia,
       title: 'Tags',
@@ -232,17 +259,34 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
   }
 
   Widget _boardDetails() {
-    return EditHeaderSection(
-      theme: BoardTheme.darkAcademia,
-      title: 'Board Details',
-      child: Column(
-        spacing: 15,
-        children: [
-          _detailsItem(title: 'Created', value: 'Mar 15, 2025'),
-          _detailsItem(title: 'Pages', value: '8'),
-          _detailsItem(title: 'Owner', value: 'Professor Hawking'),
-        ],
-      ),
+    return Consumer<SessionManager>(
+      builder: (_, sessionVm, _) {
+        return Consumer<BoardNotePageVm>(
+          builder: (_, vm, _) {
+            return EditHeaderSection(
+              theme: BoardTheme.darkAcademia,
+              title: 'Board Details',
+              child: Column(
+                spacing: 15,
+                children: [
+                  _detailsItem(
+                    title: 'Created',
+                    value: formatUnixTimestamp(vm.board.createdAt),
+                  ),
+                  _detailsItem(
+                    title: 'Pages',
+                    value: vm.contents.length.toString(),
+                  ),
+                  _detailsItem(
+                    title: 'Owner',
+                    value: sessionVm.getName() ?? '',
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

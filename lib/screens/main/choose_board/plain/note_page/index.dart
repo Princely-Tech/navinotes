@@ -2,7 +2,6 @@
 import 'aside.dart';
 import 'appbar.dart';
 import 'main.dart';
-import 'vm.dart';
 import 'package:navinotes/packages.dart';
 
 class BoardPlainNotePageScreen extends StatelessWidget {
@@ -12,18 +11,19 @@ class BoardPlainNotePageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Extract board from route arguments
-    final routeArgs = ModalRoute.of(context)?.settings.arguments;
-    final Board? board =
-        routeArgs is Map<String, dynamic>
-            ? Board.fromMap(routeArgs)
-            : routeArgs is Board
-            ? routeArgs
-            : null;
+    Board board = ModalRoute.of(context)?.settings.arguments as Board;
+    // // Extract board from route arguments
+    // final routeArgs = ModalRoute.of(context)?.settings.arguments;
+    // final Board? board =
+    //     routeArgs is Map<String, dynamic>
+    //         ? Board.fromMap(routeArgs)
+    //         : routeArgs is Board
+    //         ? routeArgs
+    //         : null;
 
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = BoardPlainNotePageVm(
+        final vm = BoardNotePageVm(
           scaffoldKey: _scaffoldKey,
           board: board,
           context: context,
@@ -31,7 +31,7 @@ class BoardPlainNotePageScreen extends StatelessWidget {
         vm.initialize();
         return vm;
       },
-      child: Consumer<BoardPlainNotePageVm>(
+      child: Consumer<BoardNotePageVm>(
         builder: (_, vm, __) {
           // Show error if no board is provided
           if (vm.board == null) {

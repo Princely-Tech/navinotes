@@ -8,6 +8,7 @@ export 'widgets/index.dart';
 //Screens
 export 'screens/packages.dart';
 export 'screens/main/choose_board/common/board_wrapper.dart';
+export 'package:navinotes/screens/main/choose_board/common/note_page_vm.dart';
 
 //View Models
 export 'screens/main/pdf_view/overlay/vm.dart';

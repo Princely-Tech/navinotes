@@ -1,5 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
 
 class NotesAppBarActions extends StatelessWidget {
   const NotesAppBarActions({super.key});
@@ -28,8 +27,9 @@ class NewNotesButton extends StatelessWidget {
   const NewNotesButton({super.key, required this.isAside});
   final bool isAside;
   @override
+  
   Widget build(BuildContext context) {
-    return Consumer<BoardPlainNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (context, vm, child) {
         return AppButton(
           // color: AppTheme.primaryColor,

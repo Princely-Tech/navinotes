@@ -1,12 +1,11 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
 
 class DarkAcademiaCreateNoteMain extends StatelessWidget {
   const DarkAcademiaCreateNoteMain({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DarkAcademiaCreateNoteVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return Column(
           children: [
@@ -18,40 +17,43 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                 ),
                 child: CustomGrid(
                   children: [
-                    _noteCard(
-                      lastEdited: 'Apr 28, 2025',
-                      title: 'Wave Properties',
-                      body:
-                          'Amplitude, frequency, wavelength, and phase relationships...',
-                      image: Images.boardDarkAcadNoteWave,
+                    ...vm.contents.map(
+                      (content) => _noteCard(content: content), 
                     ),
-                    _noteCard(
-                      lastEdited: 'Apr 25, 2025',
-                      title: 'Newton\'s Laws',
-                      body:
-                          'The three fundamental laws of motion and their applications...',
-                      image: Images.boardDarkAcadNoteNewton,
-                    ),
-                    _noteCard(
-                      lastEdited: 'Apr 22, 2025',
-                      title: 'Thermodynamics',
-                      body:
-                          'Laws of thermodynamics, entropy, and energy transfer...',
-                      image: Images.boardDarkAcadNoteThermodynamics,
-                    ),
-                    _noteCard(
-                      lastEdited: 'Apr 20, 2025',
-                      title: 'Electromagnetism',
-                      body:
-                          'Maxwell\'s equations, electric and magnetic fields...',
-                      image: Images.boardDarkAcadNoteElectromagnetism,
-                    ),
-                    _noteCard(
-                      lastEdited: 'Apr 28, 2025',
-                      title: 'Quantum Mechanics',
-                      body: 'Wave-particle duality, uncertainty principle...',
-                      image: Images.boardDarkAcadNoteQuantum,
-                    ),
+                    // _noteCard(
+                    //   lastEdited: 'Apr 28, 2025',
+                    //   title: 'Wave Properties',
+                    //   body:
+                    //       'Amplitude, frequency, wavelength, and phase relationships...',
+                    //   image: Images.boardDarkAcadNoteWave,
+                    // ),
+                    // _noteCard(
+                    //   lastEdited: 'Apr 25, 2025',
+                    //   title: 'Newton\'s Laws',
+                    //   body:
+                    //       'The three fundamental laws of motion and their applications...',
+                    //   image: Images.boardDarkAcadNoteNewton,
+                    // ),
+                    // _noteCard(
+                    //   lastEdited: 'Apr 22, 2025',
+                    //   title: 'Thermodynamics',
+                    //   body:
+                    //       'Laws of thermodynamics, entropy, and energy transfer...',
+                    //   image: Images.boardDarkAcadNoteThermodynamics,
+                    // ),
+                    // _noteCard(
+                    //   lastEdited: 'Apr 20, 2025',
+                    //   title: 'Electromagnetism',
+                    //   body:
+                    //       'Maxwell\'s equations, electric and magnetic fields...',
+                    //   image: Images.boardDarkAcadNoteElectromagnetism,
+                    // ),
+                    // _noteCard(
+                    //   lastEdited: 'Apr 28, 2025',
+                    //   title: 'Quantum Mechanics',
+                    //   body: 'Wave-particle duality, uncertainty principle...',
+                    //   image: Images.boardDarkAcadNoteQuantum,
+                    // ),
                     Column(
                       children: [
                         InkWell(
@@ -111,12 +113,10 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
     );
   }
 
-  Widget _noteCard({
-    required String image,
-    required String title,
-    required String body,
-    required String lastEdited,
-  }) {
+  Widget _noteCard({required Content content}) {
+    BoardNoteTemplate template = getNoteTemplateFromString(
+      content.metaData[ContentMetadataKey.template],
+    );
     Radius radius = Radius.circular(12);
     return CustomCard(
       padding: EdgeInsets.zero,
@@ -142,7 +142,7 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 5 / 2,
               child: ImagePlaceHolder(
-                imagePath: image,
+                imagePath: template.image,
                 isCardHeader: true,
                 borderRadius: BorderRadius.circular(0),
                 fit: BoxFit.fill,
@@ -156,7 +156,7 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  content.title,
                   style: AppTheme.text.copyWith(
                     color: AppTheme.royalGold,
                     fontSize: 18.0,
@@ -164,21 +164,22 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                     height: 1.56,
                   ),
                 ),
-                Text(
-                  body,
-                  style: AppTheme.text.copyWith(
-                    color: const Color(0xB2F5F5DC),
-                    fontFamily: AppTheme.fontCrimsonPro,
-                    height: 1.43,
-                  ),
-                ),
+                //TODO check this
+                // Text(
+                //   body,
+                //   style: AppTheme.text.copyWith(
+                //     color: const Color(0xB2F5F5DC),
+                //     fontFamily: AppTheme.fontCrimsonPro,
+                //     height: 1.43,
+                //   ),
+                // ),
                 Row(
                   spacing: 15,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
                       child: Text(
-                        'Last edited: $lastEdited',
+                        'Last edited: ${formatUnixTimestamp(content.updatedAt)}',
                         style: AppTheme.text.copyWith(
                           color: AppTheme.vanillaDust.withAlpha(0x99),
                           fontSize: 12.0,

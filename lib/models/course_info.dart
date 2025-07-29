@@ -8,6 +8,13 @@ class CourseInfo {
   final String? schedule;
   final String? location;
 
+  // final String? officeHours; 
+  // final String? email; 
+  // final String? duration; 
+  // final String? officeLocation; 
+  // final String? phone; 
+  // final String? quickLinks; 
+
   const CourseInfo({
     this.title,
     this.code,

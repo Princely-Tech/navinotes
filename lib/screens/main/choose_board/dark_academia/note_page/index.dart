@@ -1,4 +1,3 @@
-import 'vm.dart';
 import 'main.dart';
 import 'package:navinotes/packages.dart';
 import 'aside.dart';
@@ -8,9 +7,18 @@ class DarkAcademiaCreateNoteScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
-      create: (_) => DarkAcademiaCreateNoteVm(scaffoldKey: _scaffoldKey),
-      child: Consumer<DarkAcademiaCreateNoteVm>(
+      create: (_) {
+        final vm = BoardNotePageVm(
+          scaffoldKey: _scaffoldKey,
+          board: board,
+          context: context,
+        );
+        vm.initialize();
+        return vm;
+      },
+      child: Consumer<BoardNotePageVm>(
         builder: (_, vm, _) {
           return Consumer<LayoutProviderVm>(
             builder: (_, layoutVm, _) {

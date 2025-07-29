@@ -1,5 +1,4 @@
 import 'shared.dart';
-import 'vm.dart';
 import 'package:navinotes/packages.dart';
 
 class BoardPlainNotePageAside extends StatelessWidget {
@@ -9,7 +8,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        return Consumer<BoardPlainNotePageVm>(
+        return Consumer<BoardNotePageVm>(
           builder: (_, vm, _) {
             return Container(
               width: double.infinity,
@@ -30,7 +29,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
                           VisibleController(
                             mobile: getMenuVisible(layoutVm.deviceType),
                             child: Column(
-                              children: [_actionRow(vm.board!), _divider()],
+                              children: [_actionRow(vm.board), _divider()],
                             ),
                           ),
                           _boardDetails(),
@@ -116,7 +115,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return Consumer<BoardPlainNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,7 +239,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
   Widget _boardDetails() {
     return Consumer<SessionManager>(
       builder: (_, sessionVm, _) {
-        return Consumer<BoardPlainNotePageVm>(
+        return Consumer<BoardNotePageVm>(
           builder: (_, vm, _) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +251,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
                 ),
                 _detailItem(
                   title: 'Created',
-                  value: formatUnixTimestamp(vm.board!.createdAt),
+                  value: formatUnixTimestamp(vm.board.createdAt),
                   icon: Images.calender,
                 ),
                 _detailItem(

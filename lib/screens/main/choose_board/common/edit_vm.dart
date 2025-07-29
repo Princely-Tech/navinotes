@@ -236,11 +236,12 @@ class BoardEditVm extends ChangeNotifier {
     }
   }
 
-  void uploadSyllabus({
+  Future uploadSyllabus({
     required BuildContext context,
     required ApiServiceProvider apiServiceProvider,
   }) async {
     try {
+      if (uploadingSyllabus) return;
       updateUploadSyllabus(true);
       final currentUser = getCurrentUserFromSession(context);
       if (isNotNull(currentUser)) {
@@ -285,14 +286,13 @@ class BoardEditVm extends ChangeNotifier {
             );
             await dbHelper.updateBoard(updatedBoard);
 
-            NavigationHelper.navigateToBoardPopup(board!, replace: true);
-
             if (context.mounted) {
               MessageDisplayService.showMessage(
                 context,
                 'Syllabus uploaded successfully',
               );
             }
+            return NavigationHelper.navigateToBoardPopup(board!, replace: true);
           } else {
             throw Exception('Failed to process syllabus');
           }
@@ -308,6 +308,17 @@ class BoardEditVm extends ChangeNotifier {
       }
     } finally {
       updateUploadSyllabus(false);
+    }
+  }
+
+  Widget returnSelectedTabItem(Widget overviewTab) {
+    switch (selectedTab) {
+      case EditBoardTab.overview:
+        return overviewTab;
+      case EditBoardTab.uploads:
+        return BoardEditUploads(this);
+      case EditBoardTab.assignments:
+        return BoardEditAssignment(this);
     }
   }
 

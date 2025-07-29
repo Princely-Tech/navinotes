@@ -1,66 +1,30 @@
-import '../../common/edit_vm.dart';
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/choose_board/light_academia/edit/overview.dart';
 
-class BoardLightAcadEditScreen extends StatefulWidget {
-  const BoardLightAcadEditScreen({super.key});
-
+class BoardLightAcadEditScreen extends StatelessWidget {
+  BoardLightAcadEditScreen({super.key});
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
-  State<BoardLightAcadEditScreen> createState() =>
-      _BoardLightAcadEditScreenState();
-}
-
-class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
-  late final BoardEditVm _viewModel;
-
-  @override
-  void initState() {
-    super.initState();
-    _viewModel = BoardEditVm();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Get the board ID from route arguments
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    if (args != null && mounted) {
-      final boardId = args['boardId'] as int? ?? 0;
-      final showSuccess = args['showSuccess'] as bool? ?? false;
-      final message = args['message'] as String?;
-
-      _viewModel.initialize(boardId);
-    }
-  }
-
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: _viewModel,
+    Board? board = ModalRoute.of(context)?.settings.arguments as Board?;
+    return ChangeNotifierProvider(
+      create: (context) {
+        final vm = BoardEditVm();
+        if (isNotNull(board)) {
+          vm.initialize(board!.id!);
+        }
+        return vm;
+      },
       child: Consumer<BoardEditVm>(
-        builder: (_, vm, __) {
-          if (vm.isLoading) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-
-          if (vm.error != null) {
-            return Scaffold(
-              appBar: AppBar(),
-              body: Center(child: Text(vm.error!)),
-            );
-          }
-
-          if (vm.board == null) {
-            return const Scaffold(
-              body: Center(child: Text('No board data available')),
-            );
-          }
-
-          // Main content
-          return ScaffoldFrame(
-            backgroundColor: AppTheme.eggShell.withAlpha(0xFF),
-            body: _buildContent(vm),
+        builder: (_, vm, _) {
+          return ChooseBoardWrapper(
+            //Essential; add loading until ready!!
+            child: ScaffoldFrame(
+              scaffoldKey: _scaffoldKey,
+              drawer: CustomDrawer(child: NavigationSideBar()),
+              backgroundColor: AppTheme.eggShell.withAlpha(0xFF),
+              body: ApiServiceComponent(child: _buildContent(vm)),
+            ),
           );
         },
       ),
@@ -84,124 +48,7 @@ class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
                     tablet: EdgeInsets.symmetric(horizontal: 30),
                     child: WidthLimiter(
                       mobile: largeDesktopSize,
-                      child: Column(
-                        spacing: 30,
-                        children: [
-                          _welcome(board),
-                          _sectionCard(
-                            header: 'Course Timeline',
-                            color: AppTheme.almondCream,
-                            img: Images.ques2,
-                            title: 'Your learning journey will bloom here',
-                            body:
-                                'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
-                            button: AppButton.secondary(
-                              mainAxisSize: MainAxisSize.min,
-                              onTap: () {},
-                              color: AppTheme.lightBrown,
-                              text: 'Upload syllabus to generate timeline',
-                              style: AppTheme.text.copyWith(
-                                color: AppTheme.lightBrown,
-                                fontSize: 16.0,
-                                fontFamily: AppTheme.fontEBGaramond,
-                              ),
-                            ),
-                          ),
-                          Column(
-                            spacing: 15,
-                            children: [
-                              _titleSection('Quick Actions'),
-                              CustomGrid(
-                                children: [
-                                  _gridChild(
-                                    body: 'Start here to unlock AI features',
-                                    btnText: 'Upload now',
-                                    image: Images.scroll,
-                                    title: 'Upload Syllabus',
-                                  ),
-                                  _gridChild(
-                                    body: 'Begin taking notes right away',
-                                    btnText: 'Create note',
-                                    image: Images.leaf2,
-                                    title: 'Create Note',
-                                    route: Routes.boardLightAcademiaNotePage,
-                                  ),
-                                  _gridChild(
-                                    body: 'Add your course materials',
-                                    btnText: 'Import now',
-                                    image: Images.folder,
-                                    title: 'Import Files',
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          _sectionCard(
-                            header: 'Upcoming Assignments',
-                            color: AppTheme.almondCream,
-                            img: Images.menu,
-                            title:
-                                'Assignment tracking will appear after syllabus upload',
-                            body:
-                                'We\'ll automatically identify and track all your assignments, quizzes, and exams',
-                            button: AppButton.secondary(
-                              mainAxisSize: MainAxisSize.min,
-                              onTap: () {},
-                              color: AppTheme.lightBrown,
-                              minHeight: 35,
-                              padding: EdgeInsets.symmetric(
-                                vertical: 3,
-                                horizontal: 15,
-                              ),
-                              text: 'Upload syllabus to see assignments',
-                              style: AppTheme.text.copyWith(
-                                color: AppTheme.lightBrown,
-                                fontSize: 16.0,
-                                fontFamily: AppTheme.fontEBGaramond,
-                              ),
-                            ),
-                          ),
-                          _sectionCard(
-                            header: 'Course Materials',
-                            img: Images.cloudUpload,
-                            title: 'Upload and organize your study materials',
-                            body: 'Drag and drop files here',
-                            button: Column(
-                              spacing: 15,
-                              children: [
-                                Text(
-                                  'or',
-                                  textAlign: TextAlign.center,
-                                  style: AppTheme.text.copyWith(
-                                    color: AppTheme.burntLeather.withAlpha(
-                                      0xFF,
-                                    ),
-                                    fontSize: 16.0,
-                                    fontStyle: FontStyle.italic,
-                                    fontFamily: AppTheme.fontEBGaramond,
-                                  ),
-                                ),
-                                AppButton.secondary(
-                                  mainAxisSize: MainAxisSize.min,
-                                  onTap: () {},
-                                  text: 'Browse files',
-                                  color: AppTheme.yellowishOrange.withAlpha(
-                                    0xFF,
-                                  ),
-                                  style: AppTheme.text.copyWith(
-                                    color: AppTheme.burntLeather.withAlpha(
-                                      0xFF,
-                                    ),
-                                    fontSize: 16.0,
-                                    fontFamily: AppTheme.fontEBGaramond,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          _courseInformation(),
-                        ],
-                      ),
+                      child: BoardLightAcademiaEditOverview(),
                     ),
                   ),
                 ),
@@ -213,464 +60,129 @@ class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
     );
   }
 
-  Widget _titleSection(String title) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: AppTheme.royalGold.withAlpha(0x4C)),
-        ),
-      ),
-      padding: EdgeInsets.only(bottom: 5),
-      child: Text(
-        title,
-        style: AppTheme.text.copyWith(
-          color: AppTheme.jetCharcoal,
-          fontSize: 24.0,
-          fontFamily: AppTheme.fontPlayfairDisplay,
-        ),
-      ),
-    );
-  }
-
-  Widget _courseItem({required String title, required List<Widget> children}) {
-    return Column(
-      spacing: 15,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: AppTheme.text.copyWith(
-            color: AppTheme.jetCharcoal,
-            fontSize: 20.0,
-            fontFamily: AppTheme.fontPlayfairDisplay,
-            height: 1.40,
-          ),
-        ),
-        Column(
-          spacing: 10,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
-      ],
-    );
-  }
-
-  Widget _keyVal({required String title, required String value}) {
-    final style = AppTheme.text.copyWith(
-      color: AppTheme.sepiaBrown,
-      fontSize: 16.0,
-      fontFamily: AppTheme.fontEBGaramond,
-      height: 1.50,
-    );
-    return Text.rich(
-      TextSpan(
-        children: [
-          TextSpan(text: title, style: style),
-          TextSpan(
-            text: ' $value',
-            style: style.copyWith(fontStyle: FontStyle.italic),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _courseInformation() {
-    return CustomCard(
-      addCardShadow: true,
-      decoration: BoxDecoration(
-        color: AppTheme.almondCream,
-        border: Border.all(color: AppTheme.royalGold.withAlpha(0x4C)),
-      ),
-      child: CustomGrid(
-        largeDesktop: 2,
-        children: [
-          _courseItem(
-            title: 'Course Details',
-            children: [
-              _keyVal(
-                title: 'Professor:',
-                value: '[Will be extracted from syllabus]',
-              ),
-              _keyVal(
-                title: 'Email:',
-                value: '[Contact info will appear here]',
-              ),
-              _keyVal(
-                title: 'Office Hours:',
-                value: '[Schedule will be populated]',
-              ),
-              _keyVal(
-                title: 'Office Location:',
-                value: '[Location will be extracted]',
-              ),
-            ],
-          ),
-          _courseItem(
-            title: 'Class Information',
-            children: [
-              _keyVal(title: 'Schedule:', value: '[Class times from syllabus]'),
-              _keyVal(
-                title: 'Location:',
-                value: '[Classroom info will appear]',
-              ),
-              _keyVal(
-                title: 'Duration:',
-                value: '[Semester dates will populate]',
-              ),
-              _keyVal(
-                title: 'Credits:',
-                value: '[Credit hours will be extracted]',
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _gridChild({
-    required String title,
-    required String body,
-    required String btnText,
-    required String image,
-    String? route, //TODO make required
-  }) {
-    return InkWell(
-      onTap: () {
-        if (isNotNull(route)) {
-          NavigationHelper.push(route!);
-        }
-      },
-      child: CustomCard(
-        addCardShadow: true,
-        decoration: BoxDecoration(
-          color: AppTheme.ivoryCream,
-          border: Border.all(color: AppTheme.royalGold.withAlpha(0x66)),
-        ),
-        child: Column(
-          spacing: 5,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SVGImagePlaceHolder(
-              imagePath: image,
-              size: 30,
-              color: AppTheme.yellowishOrange.withAlpha(0xFF),
-            ),
-            Text(
-              title,
-              style: AppTheme.text.copyWith(
-                color: AppTheme.jetCharcoal,
-                fontSize: 20.0,
-                fontFamily: AppTheme.fontEBGaramond,
-              ),
-            ),
-            Text(
-              body,
-              style: AppTheme.text.copyWith(
-                color: AppTheme.sepiaBrown,
-                fontSize: 16.0,
-                fontFamily: AppTheme.fontEBGaramond,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: AppButton.text(
-                onTap: () {
-                  if (isNotNull(route)) {
-                    NavigationHelper.push(route!);
-                  }
-                },
-                text: '$btnText →',
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.yellowishOrange.withAlpha(0xFF),
-                  fontSize: 16.0,
-                  fontFamily: AppTheme.fontEBGaramond,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _sectionCard({
-    required String title,
-    required String header,
-    required String body,
-    required Widget button,
-    Color? color,
-    required String img,
-  }) {
-    return Column(
-      spacing: 20,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _titleSection(header),
-        CustomCard(
-          addCardShadow: true,
-          decoration: BoxDecoration(
-            color: color,
-            border: Border.all(color: AppTheme.royalGold.withAlpha(0x66)),
-          ),
-          child: Column(
-            spacing: 10,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: SVGImagePlaceHolder(
-                  imagePath: img,
-                  size: 34,
-                  color: AppTheme.burntLeather.withAlpha(0xFF),
-                ),
-              ),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.jetCharcoal,
-                  fontSize: 20.0,
-                  fontFamily: AppTheme.fontEBGaramond,
-                  height: 1.40,
-                ),
-              ),
-              Text(
-                body,
-                textAlign: TextAlign.center,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.sepiaBrown,
-                  fontSize: 16.0,
-                  fontFamily: AppTheme.fontEBGaramond,
-                  height: 1.50,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                child: button,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _welcomeText(String boardName) {
-    return Consumer<LayoutProviderVm>(
-      builder: (_, layoutVm, _) {
-        TextAlign textAlign = getDeviceResponsiveValue(
-          deviceType: layoutVm.deviceType,
-          mobile: TextAlign.center,
-          desktop: TextAlign.start,
-        );
-        return Column(
-          spacing: 30,
-          crossAxisAlignment: getDeviceResponsiveValue(
-            deviceType: layoutVm.deviceType,
-            mobile: CrossAxisAlignment.center,
-            desktop: CrossAxisAlignment.start,
-          ),
-          children: [
-            Text(
-              'Welcome to your $boardName workspace',
-              textAlign: textAlign,
-              style: AppTheme.text.copyWith(
-                color: AppTheme.jetCharcoal,
-                fontSize: getDeviceResponsiveValue(
-                  deviceType: layoutVm.deviceType,
-                  mobile: 25.0,
-                  laptop: 30.0,
-                  desktop: 35.0,
-                  largeDesktop: 48,
-                ),
-                fontFamily: AppTheme.fontPlayfairDisplay,
-                height: 1.0,
-              ),
-            ),
-            Text(
-              'Upload your syllabus to unlock AI-powered course insights',
-              textAlign: textAlign,
-              style: AppTheme.text.copyWith(
-                color: AppTheme.sepiaBrown,
-                fontSize: 18.0,
-                fontFamily: AppTheme.fontEBGaramond,
-                height: 1.56,
-              ),
-            ),
-            AppButton(
-              mainAxisSize: MainAxisSize.min,
-              color: AppTheme.lightBrown,
-              onTap: () {},
-              text: 'Get Started',
-              style: AppTheme.text.copyWith(
-                color: AppTheme.white,
-                fontSize: 18.0,
-                fontFamily: AppTheme.fontEBGaramond,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _welcomeImage() {
-    return WidthLimiter(
-      mobile: 600,
-      child: ImagePlaceHolder(
-        imagePath: Images.boardLightAcadScience,
-        borderRadius: BorderRadius.zero,
-      ),
-    );
-  }
-
-  Widget _welcome(Board board) {
-    return ResponsiveSection(
-      mobile: Column(
-        spacing: 50,
-        children: [_welcomeText(board.name), _welcomeImage()],
-      ),
-      desktop: Row(
-        spacing: 30,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [Expanded(child: _welcomeText(board.name)), _welcomeImage()],
-      ),
-    );
-  }
-
-  Widget _selectRows() {
-    return TextRowSelect(
-      fillWidth: false,
-      items: ['Overview', 'Uploads', 'Assignments'],
-      selected: 'Overview',
-      borderColor: AppTheme.yellowishOrange.withAlpha(0xFF),
-      padding: EdgeInsets.symmetric(vertical: 10),
-      btnStyle: TextButton.styleFrom(
-        shape: RoundedRectangleBorder(),
-        backgroundColor: AppTheme.yellowishOrange.withAlpha(0x19),
-      ),
-      selectedTextStyle: AppTheme.text.copyWith(
-        color: AppTheme.burntLeather.withAlpha(0xFF),
-        fontSize: 16.0,
-        fontFamily: AppTheme.fontEBGaramond,
-      ),
-      style: AppTheme.text.copyWith(
-        color: AppTheme.sepiaBrown,
-        fontSize: 16.0,
-        fontFamily: AppTheme.fontEBGaramond,
-        height: 1.50,
-      ),
-    );
-  }
-
   Widget _header(Board board) {
-    return Consumer<LayoutProviderVm>(
-      builder: (_, layoutVm, _) {
-        return Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: AppTheme.royalGold.withAlpha(0x4C)),
-            ),
-            color: AppTheme.ivoryCream,
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.black.withAlpha(0x19),
-                blurRadius: 6,
-                offset: Offset(0, 4),
-                spreadRadius: 0,
-              ),
-              BoxShadow(
-                color: AppTheme.black.withAlpha(0x19),
-                blurRadius: 4,
-                offset: Offset(0, 2),
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          padding: EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: WidthLimiter(
-                  mobile: largeDesktopSize,
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return Consumer<ApiServiceProvider>(
+          builder: (_, apiServiceProvider, _) {
+            return Consumer<LayoutProviderVm>(
+              builder: (_, layoutVm, _) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: AppTheme.royalGold.withAlpha(0x4C),
+                      ),
+                    ),
+                    color: AppTheme.ivoryCream,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.black.withAlpha(0x19),
+                        blurRadius: 6,
+                        offset: Offset(0, 4),
+                        spreadRadius: 0,
+                      ),
+                      BoxShadow(
+                        color: AppTheme.black.withAlpha(0x19),
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                        spreadRadius: 0,
+                      ),
+                    ],
+                  ),
+                  padding: EdgeInsets.all(10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 10,
-                          children: [
-                            MenuButton(
-                              onPressed: () {},
-                              decoration: BoxDecoration(
-                                color: AppTheme.sepiaBrown,
-                              ),
-                            ),
-                            AppButton.text(
-                              wrapWithFlexible: true,
-                              mainAxisSize: MainAxisSize.min,
-                              prefix: Icon(
-                                Icons.arrow_back,
-                                color: AppTheme.sepiaBrown,
-                                size: 18,
-                              ),
-                              onTap: NavigationHelper.pop,
-                              text: board.name,
-                              style: AppTheme.text.copyWith(
-                                color: AppTheme.jetCharcoal,
-                                fontSize: 20.0,
-                                fontFamily: AppTheme.fontEBGaramond,
-                                height: 1.40,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      VisibleController(
-                        mobile: false,
-                        desktop: true,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: _selectRows(),
-                        ),
-                      ),
-
-                      VisibleController(
-                        mobile: false,
-                        tablet: true,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
+                        child: WidthLimiter(
+                          mobile: largeDesktopSize,
                           child: Row(
-                            spacing: 10,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              AppButton(
-                                mainAxisSize: MainAxisSize.min,
-                                color: AppTheme.lightBrown,
-                                text: 'Upload Syllabus',
-                                onTap: () {},
-                                style: AppTheme.text.copyWith(
-                                  color: AppTheme.white,
-                                  fontSize: 16.0,
-                                  fontFamily: AppTheme.fontEBGaramond,
+                              Flexible(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  spacing: 10,
+                                  children: [
+                                    MenuButton(
+                                      onPressed: vm.openDrawer,
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.sepiaBrown,
+                                      ),
+                                    ),
+                                    AppButton.text(
+                                      wrapWithFlexible: true,
+                                      mainAxisSize: MainAxisSize.min,
+                                      prefix: Icon(
+                                        Icons.arrow_back,
+                                        color: AppTheme.sepiaBrown,
+                                        size: 18,
+                                      ),
+                                      onTap: NavigationHelper.pop,
+                                      text: board.name,
+                                      style: AppTheme.text.copyWith(
+                                        color: AppTheme.jetCharcoal,
+                                        fontSize: 20.0,
+                                        fontFamily: AppTheme.fontEBGaramond,
+                                        height: 1.40,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Icon(
-                                Icons.search,
-                                color: AppTheme.sepiaBrown,
-                                size: 24,
+
+                              VisibleController(
+                                mobile: false,
+                                desktop: true,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: _selectRows(),
+                                ),
                               ),
-                              Icon(
-                                Icons.notifications,
-                                color: AppTheme.sepiaBrown,
-                                size: 24,
-                              ),
-                              ProfilePic(
-                                borderColor: AppTheme.royalGold.withAlpha(0x7F),
+
+                              VisibleController(
+                                mobile: false,
+                                tablet: true,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    spacing: 10,
+                                    children: [
+                                      AppButton(
+                                        mainAxisSize: MainAxisSize.min,
+                                        color: AppTheme.lightBrown,
+                                        text: 'Upload Syllabus',
+                                        loading: vm.uploadingSyllabus,
+                                        onTap:
+                                            () => vm.uploadSyllabus(
+                                              context: context,
+                                              apiServiceProvider:
+                                                  apiServiceProvider,
+                                            ),
+                                        style: AppTheme.text.copyWith(
+                                          color: AppTheme.white,
+                                          fontSize: 16.0,
+                                          fontFamily: AppTheme.fontEBGaramond,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.search,
+                                        color: AppTheme.sepiaBrown,
+                                        size: 24,
+                                      ),
+                                      Icon(
+                                        Icons.notifications,
+                                        color: AppTheme.sepiaBrown,
+                                        size: 24,
+                                      ),
+                                      ProfilePic(
+                                        borderColor: AppTheme.royalGold
+                                            .withAlpha(0x7F),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -678,9 +190,42 @@ class _BoardLightAcadEditScreenState extends State<BoardLightAcadEditScreen> {
                       ),
                     ],
                   ),
-                ),
-              ),
-            ],
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _selectRows() {
+    return Consumer<BoardEditVm>(
+      builder: (_, vm, __) {
+        return TextRowSelect(
+          fillWidth: false,
+          items: EditBoardTab.values.map((item) => item.toString()).toList(),
+          onSelected: (value) {
+            vm.updateSelectedTab(
+              stringToEnum<EditBoardTab>(value, EditBoardTab.values),
+            );
+          },
+          borderColor: AppTheme.yellowishOrange.withAlpha(0xFF),
+          padding: EdgeInsets.symmetric(vertical: 10),
+          btnStyle: TextButton.styleFrom(
+            shape: RoundedRectangleBorder(),
+            backgroundColor: AppTheme.yellowishOrange.withAlpha(0x19),
+          ),
+          selectedTextStyle: AppTheme.text.copyWith(
+            color: AppTheme.burntLeather.withAlpha(0xFF),
+            fontSize: 16.0,
+            fontFamily: AppTheme.fontEBGaramond,
+          ),
+          style: AppTheme.text.copyWith(
+            color: AppTheme.sepiaBrown,
+            fontSize: 16.0,
+            fontFamily: AppTheme.fontEBGaramond,
+            height: 1.50,
           ),
         );
       },

@@ -5,91 +5,121 @@ class BoardMinimalistEditOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BoardEditVm>(
-      builder: (_, vm, _) {
-        final board = vm.board!;
-        return Column(
-          spacing: 30,
-          children: [
-            _welcome(),
-            _sectionCard(
-              header: 'Course Timeline',
-              color: AppTheme.snowGray,
-              title: 'Your learning journey will bloom here',
-              body:
-                  'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
-              button: AppButton.secondary(
-                mainAxisSize: MainAxisSize.min,
-                onTap: () {},
-                color: AppTheme.strongBlue,
-                text: 'Upload syllabus to generate timeline',
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.strongBlue,
-                  fontSize: 16.0,
-                  fontWeight: getFontWeight(300),
-                ),
-              ),
-            ),
-
-            CustomGrid(
+    return Consumer<ApiServiceProvider>(
+      builder: (_, apiServiceProvider, _) {
+        return Consumer<BoardEditVm>(
+          builder: (_, vm, _) {
+            return Column(
+              spacing: 30,
               children: [
-                _gridChild(
-                  body: 'Start here to unlock AI features',
-                  btnText: 'Upload now',
-                  image: Images.ques2,
-                  title: 'Upload Syllabus',
+                _welcome(),
+                _sectionCard(
+                  header: 'Course Timeline',
+                  color: AppTheme.snowGray,
+                  title: 'Your learning journey will bloom here',
+                  body:
+                      'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
+                  button: AppButton.secondary(
+                    mainAxisSize: MainAxisSize.min,
+                    loading: vm.uploadingSyllabus,
+                    onTap:
+                        () => vm.uploadSyllabus(
+                          context: context,
+                          apiServiceProvider: apiServiceProvider,
+                        ),
+                    color: AppTheme.strongBlue,
+                    text: 'Upload syllabus to generate timeline',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.strongBlue,
+                      fontSize: 16.0,
+                      fontWeight: getFontWeight(300),
+                    ),
+                  ),
                 ),
-                _gridChild(
-                  body: 'Begin taking notes right away',
-                  btnText: 'Create note',
-                  image: Images.edit,
-                  title: 'Create Note',
-                  route: Routes.boardMinimalistNotePage,
+
+                CustomGrid(
+                  children: [
+                    _gridChild(
+                      body: 'Start here to unlock AI features',
+                      btnText: 'Upload now',
+                      image: Images.ques2,
+                      title: 'Upload Syllabus',
+                      loading: vm.uploadingSyllabus,
+                      onTap: () {
+                        return vm.uploadSyllabus(
+                          context: context,
+                          apiServiceProvider: apiServiceProvider,
+                        );
+                      },
+                    ),
+                    _gridChild(
+                      body: 'Begin taking notes right away',
+                      btnText: 'Create note',
+                      image: Images.edit,
+                      title: 'Create Note',
+                      onTap: () {
+                        return NavigationHelper.push(
+                          Routes.boardMinimalistNotePage,
+                        );
+                      },
+                    ),
+                    _gridChild(
+                      body: 'Add your course materials',
+                      btnText: 'Import now',
+                      image: Images.folder,
+                      title: 'Import Files',
+                      loading: vm.savingFiles,
+                      onTap: () {
+                        return vm.importFiles(context);
+                      },
+                    ),
+                  ],
                 ),
-                _gridChild(
-                  body: 'Add your course materials',
-                  btnText: 'Import now',
-                  image: Images.folder,
-                  title: 'Import Files',
+                _sectionCard(
+                  header: 'Upcoming Assignments',
+                  color: AppTheme.snowGray,
+                  img: Images.menu3,
+                  title:
+                      'Assignment tracking will appear after syllabus upload',
+                  body:
+                      'We\'ll automatically identify and track all your assignments, quizzes, and exams',
+                  button: AppButton.secondary(
+                    mainAxisSize: MainAxisSize.min,
+                    onTap:
+                        () => vm.uploadSyllabus(
+                          context: context,
+                          apiServiceProvider: apiServiceProvider,
+                        ),
+                    loading: vm.uploadingSyllabus,
+                    color: AppTheme.strongBlue,
+                    text: 'Upload syllabus to see assignments',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.strongBlue,
+                      fontSize: 16.0,
+                      fontWeight: getFontWeight(300),
+                    ),
+                  ),
                 ),
+                _sectionCard(
+                  header: 'Course Materials',
+                  img: Images.ques2,
+                  title: 'Upload and organize your study materials',
+                  body: 'Drag and drop files here',
+                  button: AppButton.text(
+                    loading: vm.savingFiles,
+                    onTap: () => vm.importFiles(context),
+                    text: 'Browse files',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.strongBlue,
+                      fontSize: 16.0,
+                      fontWeight: getFontWeight(300),
+                    ),
+                  ),
+                ),
+                _courseInformation(),
               ],
-            ),
-            _sectionCard(
-              header: 'Upcoming Assignments',
-              color: AppTheme.snowGray,
-              img: Images.menu3,
-              title: 'Assignment tracking will appear after syllabus upload',
-              body:
-                  'We\'ll automatically identify and track all your assignments, quizzes, and exams',
-              button: AppButton.secondary(
-                mainAxisSize: MainAxisSize.min,
-                onTap: () {},
-                color: AppTheme.strongBlue,
-                text: 'Upload syllabus to see assignments',
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.strongBlue,
-                  fontSize: 16.0,
-                  fontWeight: getFontWeight(300),
-                ),
-              ),
-            ),
-            _sectionCard(
-              header: 'Course Materials',
-              img: Images.ques2,
-              title: 'Upload and organize your study materials',
-              body: 'Drag and drop files here',
-              button: AppButton.text(
-                onTap: () {},
-                text: 'Browse files',
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.strongBlue,
-                  fontSize: 16.0,
-                  fontWeight: getFontWeight(300),
-                ),
-              ),
-            ),
-            _courseInformation(),
-          ],
+            );
+          },
         );
       },
     );
@@ -149,6 +179,7 @@ class BoardMinimalistEditOverview extends StatelessWidget {
     );
   }
 
+  //TODO return to this
   Widget _courseInformation() {
     return CustomGrid(
       largeDesktop: 2,
@@ -190,72 +221,85 @@ class BoardMinimalistEditOverview extends StatelessWidget {
     );
   }
 
+  void gridChildHandler({
+    required BoardEditVm vm,
+    required Future Function() onTap,
+  }) async {
+    await onTap();
+    if (isNotNull(vm.board)) {
+      vm.loadFiles(vm.board!.id!);
+    }
+  }
+
   Widget _gridChild({
     required String title,
     required String body,
     required String btnText,
     required String image,
-    String? route, //TODO make required
+    bool loading = false,
+    required Future Function() onTap,
   }) {
-    return InkWell(
-      onTap: () {
-        if (isNotNull(route)) {
-          NavigationHelper.push(route!);
-        }
+    return Consumer<BoardEditVm>(
+      builder: (_, vm, _) {
+        return LoadingIndicator(
+          loading: loading,
+          child: InkWell(
+            onTap: () => gridChildHandler(vm: vm, onTap: onTap),
+            child: CustomCard(
+              addBorder: true,
+              child: Column(
+                spacing: 5,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Opacity(
+                    opacity: 0.5,
+                    child: SVGImagePlaceHolder(
+                      imagePath: image,
+                      size: 24,
+                      color: AppTheme.graniteGray,
+                    ),
+                  ),
+                  Text(
+                    title,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.graniteGray,
+                      fontSize: 20.0,
+                      fontWeight: getFontWeight(300),
+                      height: 1.40,
+                    ),
+                  ),
+                  Text(
+                    body,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.midGray,
+                      fontSize: 16.0,
+                      fontWeight: getFontWeight(300),
+                      height: 1.62,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: AppButton.text(
+                      onTap: () => gridChildHandler(vm: vm, onTap: onTap),
+                      text: btnText,
+                      suffix: Icon(
+                        Icons.arrow_forward,
+                        color: AppTheme.strongBlue,
+                      ),
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.strongBlue,
+                        fontSize: 16.0,
+                        fontWeight: getFontWeight(300),
+                        height: 1.50,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
-      child: CustomCard(
-        addBorder: true,
-        child: Column(
-          spacing: 5,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Opacity(
-              opacity: 0.5,
-              child: SVGImagePlaceHolder(
-                imagePath: image,
-                size: 24,
-                color: AppTheme.graniteGray,
-              ),
-            ),
-            Text(
-              title,
-              style: AppTheme.text.copyWith(
-                color: AppTheme.graniteGray,
-                fontSize: 20.0,
-                fontWeight: getFontWeight(300),
-                height: 1.40,
-              ),
-            ),
-            Text(
-              body,
-              style: AppTheme.text.copyWith(
-                color: AppTheme.midGray,
-                fontSize: 16.0,
-                fontWeight: getFontWeight(300),
-                height: 1.62,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: AppButton.text(
-                onTap: () {
-                  if (isNotNull(route)) {
-                    NavigationHelper.push(route!);
-                  }
-                },
-                text: btnText,
-                suffix: Icon(Icons.arrow_forward, color: AppTheme.strongBlue),
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.strongBlue,
-                  fontSize: 16.0,
-                  fontWeight: getFontWeight(300),
-                  height: 1.50,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -353,7 +397,7 @@ class BoardMinimalistEditOverview extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    
+
                     Text(
                       'Upload your syllabus to unlock AI-powered course insights',
                       textAlign: TextAlign.center,

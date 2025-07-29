@@ -32,22 +32,26 @@ class GoNewNoteButton extends StatelessWidget {
         radius = 8;
       default:
     }
-    return AppButton(
-      onTap: NavigationHelper.gotToNoteTemplate,
-      text: 'New Note Page',
-      mainAxisSize: MainAxisSize.min,
-      minHeight: 40,
-      color: bgColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radius),
-        side: BorderSide(color: borderColor),
-      ),
-      prefix: Icon(Icons.add, color: txtColor, size: 20),
-      style: AppTheme.text.copyWith(
-        color: txtColor,
-        fontSize: 16.0,
-        fontFamily: fontFamily,
-      ),
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return AppButton(
+          onTap: () => NavigationHelper.gotToNewNoteTemplate(vm.board),
+          text: 'New Note Page',
+          mainAxisSize: MainAxisSize.min,
+          minHeight: 40,
+          color: bgColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radius),
+            side: BorderSide(color: borderColor),
+          ),
+          prefix: Icon(Icons.add, color: txtColor, size: 20),
+          style: AppTheme.text.copyWith(
+            color: txtColor,
+            fontSize: 16.0,
+            fontFamily: fontFamily,
+          ),
+        );
+      },
     );
   }
 }
