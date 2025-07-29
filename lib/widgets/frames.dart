@@ -29,7 +29,7 @@ class ScaffoldFrame extends StatelessWidget {
         child: Scaffold(
           key: scaffoldKey,
           bottomNavigationBar: bottomNavigationBar,
-          body: body,
+          body: ApiServiceComponent(child: body),
           drawer: drawer,
           endDrawer: endDrawer,
           backgroundColor: backgroundColor ?? AppTheme.lightGray,

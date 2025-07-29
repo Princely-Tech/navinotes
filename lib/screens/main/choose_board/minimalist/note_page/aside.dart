@@ -1,11 +1,10 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
 
 class MinimalistNotePageAside extends StatelessWidget {
   const MinimalistNotePageAside({super.key});
   @override
   Widget build(BuildContext context) {
-    return Consumer<MinimalistNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,16 +149,39 @@ class MinimalistNotePageAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return _section(
-      title: 'Recently Viewed',
-      child: Column(
-        spacing: 15,
-        children: [
-          _viewedItem(title: 'Wave Properties', time: '2 hours ago'),
-          _viewedItem(title: 'Quantum Mechanics', time: 'yesterday'),
-          _viewedItem(title: 'Thermodynamics', time: '2 days ago'),
-        ],
-      ),
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return _section(
+          title: 'Recently Viewed',
+          child: FutureBuilder(
+            future: vm.getRecentContents(3),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text(
+                  'Failed to load recent notes',
+                  style: AppTheme.text.copyWith(color: AppTheme.coralRed),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('No recent notes found', style: AppTheme.text);
+              }
+              final recentNotes = snapshot.data!;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  for (final note in recentNotes)
+                    _viewedItem(
+                      title: note.title,
+                      time: formatRelativeTime(note.updatedAt),
+                    ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -182,6 +204,7 @@ class MinimalistNotePageAside extends StatelessWidget {
   }
 
   Widget _tags() {
+    //TODO Return to this
     return _section(
       title: 'Tags',
       child: Wrap(
@@ -261,16 +284,33 @@ class MinimalistNotePageAside extends StatelessWidget {
   }
 
   Widget _boardDetails() {
-    return _section(
-      title: 'Board Details',
-      child: Column(
-        spacing: 10,
-        children: [
-          _detailsItem(title: 'Created', value: 'Mar 15, 2025'),
-          _detailsItem(title: 'Pages', value: '8'),
-          _detailsItem(title: 'Owner', value: 'Professor Hawking'),
-        ],
-      ),
+    return Consumer<SessionManager>(
+      builder: (_, sessionVm, _) {
+        return Consumer<BoardNotePageVm>(
+          builder: (_, vm, _) {
+            return _section(
+              title: 'Board Details',
+              child: Column(
+                spacing: 10,
+                children: [
+                  _detailsItem(
+                    title: 'Created',
+                    value: formatUnixTimestamp(vm.board.createdAt),
+                  ),
+                  _detailsItem(
+                    title: 'Pages',
+                    value: vm.contents.length.toString(),
+                  ),
+                  _detailsItem(
+                    title: 'Owner',
+                    value: sessionVm.getName() ?? '',
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

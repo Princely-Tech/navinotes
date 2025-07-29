@@ -1,12 +1,15 @@
 import 'package:navinotes/packages.dart';
 
-Future<T?> goToNotePageWithContent<T>({
+Future<void> goToNotePageWithContent({
   required Content content,
   required BuildContext context,
 }) async {
   if (isNull(content.id)) {
     MessageDisplayService.showErrorMessage(context, 'Content ID not found!');
-    return null;
+    return;
+  }
+  if (isNotNull(content.file)) {
+    return handleOpenFile(content, context);
   }
   BoardNoteTemplate template = getNoteTemplateFromString(
     content.metaData[ContentMetadataKey.template],

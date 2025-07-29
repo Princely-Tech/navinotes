@@ -1,4 +1,3 @@
-
 import 'aside.dart';
 import 'appbar.dart';
 import 'main.dart';
@@ -12,15 +11,6 @@ class BoardPlainNotePageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Board board = ModalRoute.of(context)?.settings.arguments as Board;
-    // // Extract board from route arguments
-    // final routeArgs = ModalRoute.of(context)?.settings.arguments;
-    // final Board? board =
-    //     routeArgs is Map<String, dynamic>
-    //         ? Board.fromMap(routeArgs)
-    //         : routeArgs is Board
-    //         ? routeArgs
-    //         : null;
-
     return ChangeNotifierProvider(
       create: (context) {
         final vm = BoardNotePageVm(
@@ -33,28 +23,6 @@ class BoardPlainNotePageScreen extends StatelessWidget {
       },
       child: Consumer<BoardNotePageVm>(
         builder: (_, vm, __) {
-          // Show error if no board is provided
-          if (vm.board == null) {
-            return Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Error: No board data found',
-                      style: TextStyle(fontSize: 18, color: Colors.red),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () => NavigationHelper.pop(),
-                      child: const Text('Go Back'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
             endDrawer: CustomDrawer(child: BoardPlainNotePageAside()),

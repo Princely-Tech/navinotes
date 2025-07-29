@@ -1,12 +1,11 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
 
 class MinimalistNotePageMain extends StatelessWidget {
   const MinimalistNotePageMain({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MinimalistNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return ResponsivePadding(
           mobile: EdgeInsets.only(top: 5),
@@ -19,35 +18,8 @@ class MinimalistNotePageMain extends StatelessWidget {
                   mobilePadding: EdgeInsets.only(bottom: 30),
                   child: CustomGrid(
                     children: [
-                      _noteCard(
-                        lastEdited: 'Apr 28, 2025',
-                        title: 'Wave Properties',
-                        image: Images.boardMinimalistWave,
-                        icons: [Images.file2, Images.img, Images.hook],
-                      ),
-                      _noteCard(
-                        lastEdited: 'Apr 25, 2025',
-                        title: 'Newton\'s Laws',
-                        image: Images.boardMinimalistNewton,
-                        icons: [Images.file2, Images.calculator],
-                      ),
-                      _noteCard(
-                        lastEdited: 'Apr 22, 2025',
-                        title: 'Thermodynamics',
-                        image: Images.boardMinimalistThermodynamics,
-                        icons: [Images.file2, Images.chart3],
-                      ),
-                      _noteCard(
-                        lastEdited: 'Apr 20, 2025',
-                        title: 'Electromagnetism',
-                        image: Images.boardMinimalistElectromagnetism,
-                        icons: [Images.file2, Images.img],
-                      ),
-                      _noteCard(
-                        lastEdited: 'Apr 18, 2025',
-                        title: 'Quantum Mechanics',
-                        image: Images.boardMinimalistQuantum,
-                        icons: [Images.file2, Images.calculator],
+                      ...vm.contents.map(
+                        (content) => _noteCard(content: content),
                       ),
                       Column(
                         children: [
@@ -100,78 +72,89 @@ class MinimalistNotePageMain extends StatelessWidget {
     );
   }
 
-  Widget _noteCard({
-    required String image,
-    required String title,
-    required String lastEdited,
-    required List<String> icons,
-  }) {
-    return CustomCard(
-      addCardShadow: true,
-      addBorder: true,
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: AspectRatio(
-              aspectRatio: 5 / 2,
-              child: SVGImagePlaceHolder(imagePath: image),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
+  Widget _noteCard({required Content content}) {
+    BoardNoteTemplate template = getNoteTemplateFromString(
+      content.metaData[ContentMetadataKey.template],
+    );
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return InkWell(
+          onTap: () => vm.goToNotePage(content),
+          child: CustomCard(
+            addCardShadow: true,
+            addBorder: true,
+            padding: EdgeInsets.zero,
             child: Column(
-              spacing: 20,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  spacing: 5,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: AppTheme.text.copyWith(
-                        color: AppTheme.wetAsphalt,
-                        fontSize: 16.0,
-                        fontWeight: getFontWeight(500),
-                        height: 1.50,
-                      ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(8),
                     ),
-                    Text(
-                      'Last edited: $lastEdited',
-                      style: AppTheme.text.copyWith(
-                        color: AppTheme.asbestos,
-                        fontSize: 12.0,
-                      ),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: AspectRatio(
+                    aspectRatio: 5 / 2,
+                    child: ImagePlaceHolder(
+                      imagePath: template.image,
+                      borderRadius: BorderRadius.zero,
                     ),
-                  ],
+                  ),
                 ),
-                ScrollableController(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 10,
-                    children:
-                        icons
-                            .map(
-                              (icon) => SVGImagePlaceHolder(
-                                imagePath: icon,
-                                size: 16,
-                                color: AppTheme.silver,
-                              ),
-                            )
-                            .toList(),
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    spacing: 20,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        spacing: 5,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            content.title,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.wetAsphalt,
+                              fontSize: 16.0,
+                              fontWeight: getFontWeight(500),
+                              height: 1.50,
+                            ),
+                          ),
+                          Text(
+                            'Last edited: ${formatUnixTimestamp(content.updatedAt)}',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.asbestos,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      //TODO return to this
+                      // ScrollableController(
+                      //   scrollDirection: Axis.horizontal,
+                      //   child: Row(
+                      //     spacing: 10,
+                      //     children:
+                      //         icons
+                      //             .map(
+                      //               (icon) => SVGImagePlaceHolder(
+                      //                 imagePath: icon,
+                      //                 size: 16,
+                      //                 color: AppTheme.silver,
+                      //               ),
+                      //             )
+                      //             .toList(),
+                      //   ),
+                      // ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

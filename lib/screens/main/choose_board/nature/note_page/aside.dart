@@ -1,12 +1,11 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
 
 class NatureNotePageAside extends StatelessWidget {
   const NatureNotePageAside({super.key});
   // final bool isFull;
   @override
   Widget build(BuildContext context) {
-    return Consumer<NatureNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,28 +117,42 @@ class NatureNotePageAside extends StatelessWidget {
     );
   }
 
-  Widget _viewedItem({
-    required String title,
-    required String time,
-    required Widget icon,
-  }) {
+  Widget _viewedItem({required Content content}) {
+    String iconImg = getRandomListElement([Images.boardNatureWaveLine]);
+    Color iconColor = AppTheme.deepMoss.withAlpha(0x33);
+    switch (iconImg) {
+      case Images.boardNatureQuantumIcon:
+        iconColor = AppTheme.deepPeach.withAlpha(0x33);
+        break;
+      case Images.boardNatureThermometer:
+        iconColor = AppTheme.sageMist.withAlpha(0x33);
+        break;
+    }
     return Row(
       spacing: 10,
       children: [
-        icon,
+        OutlinedChild(
+          size: 32,
+          decoration: BoxDecoration(
+            color: iconColor,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: SVGImagePlaceHolder(imagePath: iconImg, size: 14),
+        ),
+
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                content.title,
                 style: AppTheme.text.copyWith(
                   color: AppTheme.darkMossGreen,
                   fontFamily: AppTheme.fontCrimsonText,
                 ),
               ),
               Text(
-                time,
+                formatRelativeTime(content.updatedAt),
                 style: AppTheme.text.copyWith(
                   color: AppTheme.coffee,
                   fontSize: 12.0,
@@ -154,59 +167,36 @@ class NatureNotePageAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return EditHeaderSection(
-      theme: BoardTheme.nature,
-      title: 'Recently Viewed',
-      child: Column(
-        spacing: 15,
-        children: [
-          _viewedItem(
-            title: 'Wave Properties',
-            time: '2 hours ago',
-            icon: OutlinedChild(
-              size: 32,
-              decoration: BoxDecoration(
-                color: AppTheme.deepMoss.withAlpha(0x33),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: SVGImagePlaceHolder(
-                imagePath: Images.boardNatureWaveLine,
-                size: 14,
-              ),
-            ),
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return EditHeaderSection(
+          theme: BoardTheme.nature,
+          title: 'Recently Viewed',
+          child: FutureBuilder(
+            future: vm.getRecentContents(3),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text(
+                  'Failed to load recent notes',
+                  style: AppTheme.text.copyWith(color: AppTheme.coralRed),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('No recent notes found', style: AppTheme.text);
+              }
+              final recentNotes = snapshot.data!;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  for (final note in recentNotes) _viewedItem(content: note),
+                ],
+              );
+            },
           ),
-          _viewedItem(
-            title: 'Quantum Mechanics',
-            time: 'yesterday',
-            icon: OutlinedChild(
-              size: 32,
-              decoration: BoxDecoration(
-                color: AppTheme.deepPeach.withAlpha(0x33),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: SVGImagePlaceHolder(
-                imagePath: Images.boardNatureQuantumIcon,
-                size: 14,
-              ),
-            ),
-          ),
-          _viewedItem(
-            title: 'Thermodynamics',
-            time: '2 days ago',
-            icon: OutlinedChild(
-              size: 32,
-              decoration: BoxDecoration(
-                color: AppTheme.sageMist.withAlpha(0x33),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: SVGImagePlaceHolder(
-                imagePath: Images.boardNatureThermometer,
-                size: 14,
-              ),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -237,6 +227,7 @@ class NatureNotePageAside extends StatelessWidget {
   }
 
   Widget _tags() {
+    //TODO RETURN TO this
     return EditHeaderSection(
       theme: BoardTheme.nature,
       title: 'Tags',
@@ -276,6 +267,7 @@ class NatureNotePageAside extends StatelessWidget {
   Widget _detailsItem({required String title, required String value}) {
     return Row(
       spacing: 15,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
@@ -286,7 +278,7 @@ class NatureNotePageAside extends StatelessWidget {
             height: 1.43,
           ),
         ),
-        Expanded(
+        Flexible(
           child: Text(
             textAlign: TextAlign.right,
             value,
@@ -303,17 +295,34 @@ class NatureNotePageAside extends StatelessWidget {
   }
 
   Widget _boardDetails() {
-    return EditHeaderSection(
-      theme: BoardTheme.nature,
-      title: 'Board Details',
-      child: Column(
-        spacing: 15,
-        children: [
-          _detailsItem(title: 'Created', value: 'Mar 15, 2025'),
-          _detailsItem(title: 'Pages', value: '8'),
-          _detailsItem(title: 'Owner', value: 'Professor Hawking'),
-        ],
-      ),
+    return Consumer<SessionManager>(
+      builder: (_, sessionVm, _) {
+        return Consumer<BoardNotePageVm>(
+          builder: (_, vm, _) {
+            return EditHeaderSection(
+              theme: BoardTheme.nature,
+              title: 'Board Details',
+              child: Column(
+                spacing: 15,
+                children: [
+                  _detailsItem(
+                    title: 'Created',
+                    value: formatUnixTimestamp(vm.board.createdAt),
+                  ),
+                  _detailsItem(
+                    title: 'Pages',
+                    value: vm.contents.length.toString(),
+                  ),
+                  _detailsItem(
+                    title: 'Owner',
+                    value: sessionVm.getName() ?? '',
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -31,7 +31,7 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
               ),
               ResponsiveSection(
                 mobile: InkWell(
-                  onTap: vm.openDrawer,
+                  onTap: vm.openEndDrawer,
                   child: Icon(Icons.menu, color: AppTheme.stormGray),
                 ),
                 desktop: NotesAppBarActions(),

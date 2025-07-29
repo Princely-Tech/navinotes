@@ -6,12 +6,12 @@ class BoardLightAcadEditScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    Board? board = ModalRoute.of(context)?.settings.arguments as Board?;
+    Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = BoardEditVm();
+        final vm = BoardEditVm(scaffoldKey: _scaffoldKey);
         if (isNotNull(board)) {
-          vm.initialize(board!.id!);
+          vm.initialize(board.id!);
         }
         return vm;
       },
@@ -48,7 +48,9 @@ class BoardLightAcadEditScreen extends StatelessWidget {
                     tablet: EdgeInsets.symmetric(horizontal: 30),
                     child: WidthLimiter(
                       mobile: largeDesktopSize,
-                      child: BoardLightAcademiaEditOverview(),
+                      child: vm.returnSelectedTabItem(
+                        BoardLightAcademiaEditOverview(),
+                      ),
                     ),
                   ),
                 ),
@@ -147,7 +149,7 @@ class BoardLightAcadEditScreen extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 10),
                                   child: Row(
-                                    spacing: 10,
+                                    // spacing: 10,
                                     children: [
                                       AppButton(
                                         mainAxisSize: MainAxisSize.min,
@@ -166,15 +168,21 @@ class BoardLightAcadEditScreen extends StatelessWidget {
                                           fontFamily: AppTheme.fontEBGaramond,
                                         ),
                                       ),
-                                      Icon(
-                                        Icons.search,
-                                        color: AppTheme.sepiaBrown,
-                                        size: 24,
-                                      ),
-                                      Icon(
-                                        Icons.notifications,
-                                        color: AppTheme.sepiaBrown,
-                                        size: 24,
+                                      //TODO ask about this
+                                      // Icon(
+                                      //   Icons.search,
+                                      //   color: AppTheme.sepiaBrown,
+                                      //   size: 24,
+                                      // ),
+                                      AppIconButton(
+                                        onPressed:
+                                            NavigationHelper
+                                                .navigateToNotification,
+                                        icon: Icon(
+                                          Icons.notifications,
+                                          color: AppTheme.sepiaBrown,
+                                          size: 24,
+                                        ),
                                       ),
                                       ProfilePic(
                                         borderColor: AppTheme.royalGold

@@ -35,7 +35,7 @@ class GoNewNoteButton extends StatelessWidget {
     return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return AppButton(
-          onTap: () => NavigationHelper.gotToNewNoteTemplate(vm.board),
+          onTap: vm.gotToCreateNotePage,
           text: 'New Note Page',
           mainAxisSize: MainAxisSize.min,
           minHeight: 40,

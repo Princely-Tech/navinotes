@@ -12,15 +12,11 @@ class BoardEditUploads extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (vm.fetchingFiles) {
-      return const Center(child: CircularProgressIndicator());
-    }
     if (vm.uploadedFiles.isEmpty) {
       return EmptyState(
         icon: Icons.folder_open,
         title: 'No files yet',
         subtitle: 'Upload files to get started',
-        
         footer: AppButton(
           loading: vm.fetchingFiles,
           onTap: () {
