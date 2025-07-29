@@ -1,3 +1,4 @@
+import 'package:navinotes/models/markeplace_item.dart';
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
@@ -154,23 +155,44 @@ class MarketplaceMain extends StatelessWidget {
                         spacing: 10,
                         children: [
                           if (item.tags.isNotEmpty)
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 5,
-                              children: [
-                                SVGImagePlaceHolder(
-                                  imagePath: Images.share,
-                                  color: AppTheme.steelMist,
-                                  size: 13,
-                                ),
-                                Text(
-                                  item.tags.first,
-                                  style: AppTheme.text.copyWith(
-                                    color: AppTheme.steelMist,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ],
+                            // Replace the current tags Row with this Wrap widget
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 4,
+                              children:
+                                  item.tags
+                                      .take(3)
+                                      .map(
+                                        (tag) => Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppTheme.lightGray
+                                                .withOpacity(0.2),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            border: Border.all(
+                                              color: AppTheme.steelMist
+                                                  .withOpacity(0.3),
+                                              width: 0.5,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            tag,
+                                            style: AppTheme.text.copyWith(
+                                              color: AppTheme.steelMist,
+                                              fontSize: 10.0,
+                                              height: 1.2,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
                             ),
                           AppButton(
                             onTap: () {},
@@ -186,7 +208,7 @@ class MarketplaceMain extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              '\$${(item.price * (1 - item.discountPercent! / 100)).toStringAsFixed(2)}',
+                              '\$${item.getAmount().toStringAsFixed(2)}',
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.strongBlue,
                                 fontWeight: FontWeight.bold,
@@ -195,7 +217,7 @@ class MarketplaceMain extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              '\$${item.price.toStringAsFixed(2)}',
+                              '\$${item.getOriginalAmount().toStringAsFixed(2)}',
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.stormGray,
                                 fontSize: 12.0,
@@ -206,7 +228,7 @@ class MarketplaceMain extends StatelessWidget {
                         )
                       else
                         Text(
-                          '\$${item.price.toStringAsFixed(2)}',
+                          '\$${item.getAmount().toStringAsFixed(2)}',
                           style: AppTheme.text.copyWith(
                             color: AppTheme.strongBlue,
                             fontWeight: FontWeight.bold,
