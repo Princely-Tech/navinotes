@@ -40,13 +40,13 @@ class NoteKanbanScreen extends StatelessWidget {
                         fillWidth: true,
                         selectedTextStyle: TextStyle(
                           color: const Color(0xFF0284C7),
-                          fontSize: 16,
+                          fontSize: 16.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w500,
                         ),
                         style: TextStyle(
                           color: const Color(0xFF6B7280),
-                          fontSize: 16,
+                          fontSize: 16.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w400,
                         ),
@@ -157,7 +157,7 @@ class NoteKanbanScreen extends StatelessWidget {
                           title,
                           style: TextStyle(
                             color: Color(0xFF374151),
-                            fontSize: 16,
+                            fontSize: 16.0,
                             fontWeight: FontWeight.w500,
                             height: 1.5,
                           ),
@@ -172,7 +172,7 @@ class NoteKanbanScreen extends StatelessWidget {
                             count.toString(),
                             style: TextStyle(
                               color: Color(0xFF374151),
-                              fontSize: 12,
+                              fontSize: 12.0,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -234,7 +234,7 @@ class NoteKanbanScreen extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: const Color(0xFF6B7280),
-                                    fontSize: 16,
+                                    fontSize: 16.0,
                                     fontFamily: 'Inter',
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -315,7 +315,7 @@ class NoteKanbanScreen extends StatelessWidget {
                   'Define research question',
                   style: TextStyle(
                     color: Color(0xFF1F2937),
-                    fontSize: 16,
+                    fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                     height: 1.5,
                     decoration: titleDecoration,
@@ -334,7 +334,7 @@ class NoteKanbanScreen extends StatelessWidget {
           Text(
             'Develop clear, focused research question for psychology paper',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.0,
               color: Color(0xFF4B5563),
               fontWeight: FontWeight.w400,
             ),
@@ -368,7 +368,7 @@ class NoteKanbanScreen extends StatelessWidget {
                   Text(
                     'Due in 2 days',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.0,
                       color: Color(0xFF6B7280),
                       fontWeight: FontWeight.w400,
                     ),
@@ -382,7 +382,7 @@ class NoteKanbanScreen extends StatelessWidget {
                   Text(
                     'Est. 2 hours',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 12.0,
                       color: Color(0xFF6B7280),
                       fontWeight: FontWeight.w400,
                     ),
@@ -411,7 +411,7 @@ class NoteKanbanScreen extends StatelessWidget {
       child: Text(
         label,
         style: TextStyle(
-          fontSize: 12,
+          fontSize: 12.0,
           color: textColor,
           fontWeight: FontWeight.w400,
         ),
@@ -501,14 +501,14 @@ class NoteKanbanScreen extends StatelessWidget {
                     builder: (context) {
                       final richStyle = TextStyle(
                         color: const Color(0xFF4B5563),
-                        fontSize: 14,
+                        fontSize: 14.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w600,
                         height: 1.43,
                       );
                       final style = TextStyle(
                         color: const Color(0xFF4B5563),
-                        fontSize: 14,
+                        fontSize: 14.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                       );
@@ -559,7 +559,7 @@ class NoteKanbanScreen extends StatelessWidget {
               text,
               style: TextStyle(
                 color: color,
-                fontSize: 14,
+                fontSize: 14.0,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -710,7 +710,7 @@ class NoteKanbanScreen extends StatelessWidget {
                               text: 'Research Paper Project',
                               style: TextStyle(
                                 color: Color(0xFF6B7280),
-                                fontSize: 14,
+                                fontSize: 14.0,
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
                                 height: 1.43,
@@ -720,7 +720,7 @@ class NoteKanbanScreen extends StatelessWidget {
                               text: ' • ',
                               style: TextStyle(
                                 color: Color(0xFF6B7280),
-                                fontSize: 14,
+                                fontSize: 14.0,
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
                                 height: 1.43,
@@ -730,7 +730,7 @@ class NoteKanbanScreen extends StatelessWidget {
                               text: 'Academic Project Management',
                               style: TextStyle(
                                 color: Color(0xFF6B7280),
-                                fontSize: 14,
+                                fontSize: 14.0,
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
                                 height: 1.43,
@@ -766,7 +766,7 @@ class NoteKanbanScreen extends StatelessWidget {
                         'Auto-saved',
                         style: TextStyle(
                           color: const Color(0xFF6B7280),
-                          fontSize: 14,
+                          fontSize: 14.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w400,
                         ),

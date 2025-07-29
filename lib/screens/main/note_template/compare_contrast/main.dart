@@ -28,7 +28,7 @@ class NoteCompareContrastMain extends StatelessWidget {
                 'Category',
                 style: TextStyle(
                   color: const Color(0xFF374151),
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w600,
                   height: 1.50,
@@ -62,7 +62,7 @@ class NoteCompareContrastMain extends StatelessWidget {
                             str,
                             style: TextStyle(
                               color: const Color(0xFF374151),
-                              fontSize: 16,
+                              fontSize: 16.0,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w600,
                             ),
@@ -126,7 +126,7 @@ class NoteCompareContrastMain extends StatelessWidget {
             ),
             style: TextStyle(
               color: textColor,
-              fontSize: 16,
+              fontSize: 16.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w600,
               height: 1.50,

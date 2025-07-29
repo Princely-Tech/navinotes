@@ -113,7 +113,7 @@ class NoteTemplateMain extends StatelessWidget {
                         template.type.toString(),
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 14,
+                          fontSize: 14.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w500,
                           height: 1.43,
@@ -123,7 +123,7 @@ class NoteTemplateMain extends StatelessWidget {
                         template.body,
                         style: TextStyle(
                           color: const Color(0xFF6B7280),
-                          fontSize: 12,
+                          fontSize: 12.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w400,
                           height: 1.33,
@@ -161,7 +161,7 @@ class NoteTemplateMain extends StatelessWidget {
               title,
               style: TextStyle(
                 color: const Color(0xFF00555A),
-                fontSize: 16,
+                fontSize: 16.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
                 height: 1.50,

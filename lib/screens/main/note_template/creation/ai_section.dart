@@ -54,13 +54,13 @@ class NoteAiSection extends StatelessWidget {
                                     inActiveBorderColor: AppTheme.lightGray,
                                     selectedTextStyle: TextStyle(
                                       color: const Color(0xFF00555A),
-                                      fontSize: 14,
+                                      fontSize: 14.0,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.w500,
                                     ),
                                     style: TextStyle(
                                       color: const Color(0xFF6B7280),
-                                      fontSize: 14,
+                                      fontSize: 14.0,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -70,7 +70,7 @@ class NoteAiSection extends StatelessWidget {
                                     maxLines: 3,
                                     hintStyle: TextStyle(
                                       color: const Color(0xFFADAEBC),
-                                      fontSize: 14,
+                                      fontSize: 14.0,
                                       fontFamily: 'Inter',
                                       fontWeight: FontWeight.w400,
                                       height: 1.43,
@@ -125,7 +125,7 @@ class NoteAiSection extends StatelessWidget {
   Widget _btns() {
     final style = TextStyle(
       color: const Color(0xFF374151),
-      fontSize: 14,
+      fontSize: 14.0,
       fontFamily: 'Inter',
       fontWeight: FontWeight.w400,
     );
@@ -204,7 +204,7 @@ class NoteAiSection extends StatelessWidget {
             'Summary',
             style: TextStyle(
               color: Colors.black,
-              fontSize: 16,
+              fontSize: 16.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w500,
             ),
@@ -213,7 +213,7 @@ class NoteAiSection extends StatelessWidget {
             'Memory formation in cognitive psychology consists of three key processes: encoding, storage, and retrieval. Encoding involves converting information into a usable form through',
             style: TextStyle(
               color: const Color(0xFF374151),
-              fontSize: 14,
+              fontSize: 14.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
             ),
@@ -232,7 +232,7 @@ class NoteAiSection extends StatelessWidget {
             title,
             style: TextStyle(
               color: const Color(0xFF374151),
-              fontSize: 14,
+              fontSize: 14.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
             ),
@@ -312,7 +312,7 @@ class NoteAiSection extends StatelessWidget {
                                 isSelected
                                     ? const Color(0xFF00555A)
                                     : const Color(0xFF6B7280),
-                            fontSize: 14,
+                            fontSize: 14.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w500,
                           ),

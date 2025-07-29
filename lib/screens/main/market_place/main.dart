@@ -1,32 +1,71 @@
+import 'package:navinotes/models/markeplace_item.dart';
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
 class MarketplaceMain extends StatelessWidget {
-  const MarketplaceMain({super.key});
+  MarketplaceMain({super.key});
 
+  final PageController _featuredController = PageController(
+    viewportFraction: 0.9,
+  );
   @override
   Widget build(BuildContext context) {
-    return ResponsivePadding(
-      mobile: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      tablet: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      child: Column(
-        children: [
-          _header(),
-          Expanded(
-            child: ScrollableController(
-              mobilePadding: EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                spacing: 30,
-                children: [_featured(), _allContent(), CustomPaination()],
-              ),
+    return ApiServiceComponent(
+      child: Consumer<ApiServiceProvider>(
+        builder: (_, apiServiceProvider, __) {
+          return ChangeNotifierProvider(
+            create:
+                (_) => MarketPlaceVm(
+                  scaffoldKey: GlobalKey<ScaffoldState>(),
+                  apiServiceProvider: apiServiceProvider,
+                ),
+            child: Consumer<MarketPlaceVm>(
+              builder: (context, vm, _) {
+                // Load data when the widget is first built
+                if (vm.items.isEmpty && !vm.isLoading) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    vm.loadMarketplaceItems();
+                    vm.loadFeaturedItems();
+                  });
+                }
+
+                return ResponsivePadding(
+                  mobile: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  tablet: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Column(
+                    children: [
+                      _header(),
+                      Expanded(
+                        child: ScrollableController(
+                          mobilePadding: EdgeInsets.symmetric(vertical: 20),
+                          onEndReached:
+                              vm.hasMorePages ? vm.loadNextPage : null,
+                          child: Column(
+                            spacing: 30,
+                            children: [
+                              _featured(vm: vm),
+                              _allContent(vm: vm),
+                              if (vm.totalPages > 1) _pagination(vm: vm),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget _allContent() {
+  Widget _allContent({required MarketPlaceVm vm}) {
+    if (vm.isLoading && vm.items.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return _section(
       title: 'All Content',
       titleRight: Row(
@@ -36,21 +75,22 @@ class MarketplaceMain extends StatelessWidget {
           _layoutBtn(PageDisplayFormat.list),
         ],
       ),
-      child: CustomGrid(
-        spacing: 20,
-        children: [
-          _contentItem(Images.marketPlaceNeuroanatomy),
-          _contentItem(Images.marketPlacePhysics),
-          _contentItem(Images.marketPlaceLogic),
-          _contentItem(Images.marketPlaceBiomedesty),
-          _contentItem(Images.marketPlacePmpCertification),
-          _contentItem(Images.marketPlaceMandarin),
-        ],
-      ),
+      child:
+          vm.items.isEmpty
+              ? Center(
+                child: Text(
+                  'No items found',
+                  style: AppTheme.text.copyWith(color: AppTheme.stormGray),
+                ),
+              )
+              : CustomGrid(
+                spacing: 20,
+                children: vm.items.map((item) => _contentItem(item)).toList(),
+              ),
     );
   }
 
-  Widget _contentItem(String image) {
+  Widget _contentItem(MarketItem item) {
     return Consumer<MarketPlaceVm>(
       builder: (_, vm, _) {
         return InkWell(
@@ -63,7 +103,11 @@ class MarketplaceMain extends StatelessWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 3,
-                  child: ImagePlaceHolder(imagePath: image, isCardHeader: true),
+                  child: ImagePlaceHolder(
+                    imagePath: item.coverImagePath,
+                    isCardHeader: true,
+                    type: ImagePlaceHolderTypes.network,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15),
@@ -76,15 +120,17 @@ class MarketplaceMain extends StatelessWidget {
                         spacing: 10,
                         children: [
                           Text(
-                            'Neuroanatomy & Function Mind Map',
+                            item.title,
                             style: AppTheme.text.copyWith(
                               color: AppTheme.charcoalBlue,
                               fontSize: 16.0,
                               fontWeight: getFontWeight(500),
                             ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            'by Neuroscience Hub',
+                            'by ${item.author}',
                             style: AppTheme.text.copyWith(
                               color: AppTheme.stormGray,
                               fontSize: 12.0,
@@ -93,9 +139,12 @@ class MarketplaceMain extends StatelessWidget {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              StarRows(fullStars: 5, emptyStars: 0),
+                              StarRows(
+                                fullStars: item.rating.round(),
+                                emptyStars: 5 - item.rating.round(),
+                              ),
                               Text(
-                                '(87)',
+                                '(${item.ratingCount})',
                                 style: AppTheme.text.copyWith(
                                   color: AppTheme.stormGray,
                                   fontSize: 12.0,
@@ -109,24 +158,46 @@ class MarketplaceMain extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         spacing: 10,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            spacing: 5,
-                            children: [
-                              SVGImagePlaceHolder(
-                                imagePath: Images.share,
-                                color: AppTheme.steelMist,
-                                size: 13,
-                              ),
-                              Text(
-                                'Mind Map',
-                                style: AppTheme.text.copyWith(
-                                  color: AppTheme.steelMist,
-                                  fontSize: 12.0,
-                                ),
-                              ),
-                            ],
-                          ),
+                          if (item.tags.isNotEmpty)
+                            // Replace the current tags Row with this Wrap widget
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 4,
+                              children:
+                                  item.tags
+                                      .take(3)
+                                      .map(
+                                        (tag) => Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppTheme.lightGray
+                                                .withOpacity(0.2),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            border: Border.all(
+                                              color: AppTheme.steelMist
+                                                  .withOpacity(0.3),
+                                              width: 0.5,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            tag,
+                                            style: AppTheme.text.copyWith(
+                                              color: AppTheme.steelMist,
+                                              fontSize: 10.0,
+                                              height: 1.2,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                            ),
                           AppButton(
                             onTap: () {},
                             text: 'Add To Cart',
@@ -136,6 +207,38 @@ class MarketplaceMain extends StatelessWidget {
                           ),
                         ],
                       ),
+                      if (item.discountPercent != null &&
+                          item.discountPercent! > 0)
+                        Row(
+                          children: [
+                            Text(
+                              '\$${item.getAmount().toStringAsFixed(2)}',
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.strongBlue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              '\$${item.getOriginalAmount().toStringAsFixed(2)}',
+                              style: AppTheme.text.copyWith(
+                                color: AppTheme.stormGray,
+                                fontSize: 12.0,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        Text(
+                          '\$${item.getAmount().toStringAsFixed(2)}',
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.strongBlue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -162,7 +265,14 @@ class MarketplaceMain extends StatelessWidget {
     );
   }
 
-  Widget _featured() {
+  Widget _featured({required MarketPlaceVm vm}) {
+      if (vm.isLoadingFeatured && vm.featuredItems.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (vm.featuredItems.isEmpty) {
+      return const SizedBox.shrink();
+    }
     return _section(
       title: 'Featured for You',
       titleRight: Row(
@@ -189,18 +299,13 @@ class MarketplaceMain extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           spacing: 15,
-          children: [
-            _featureItem(Images.marketPlaceBiochemistry),
-            _featureItem(Images.marketPlaceFlashcards),
-            _featureItem(Images.marketPlaceOrganicChemistry),
-            _featureItem(Images.marketPlaceSpanish),
-          ],
+          children: vm.featuredItems.map((item) => _featureItem(item)).toList(),
         ),
       ),
     );
   }
-
-  Widget _featureItem(String image) {
+  Widget _featureItem(MarketItem item) {
+    String image = item.coverImagePath;
     return Consumer<MarketPlaceVm>(
       builder: (_, vm, _) {
         return InkWell(
@@ -215,7 +320,7 @@ class MarketplaceMain extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   height: 144,
-                  child: ImagePlaceHolder(imagePath: image, isCardHeader: true),
+                  child: ImagePlaceHolder(imagePath: image, isCardHeader: true, type: ImagePlaceHolderTypes.network),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15),
@@ -224,7 +329,7 @@ class MarketplaceMain extends StatelessWidget {
                     spacing: 15,
                     children: [
                       Text(
-                        'Comprehensive MCAT Biochemistry Mind Map',
+                        item.title,
                         style: AppTheme.text.copyWith(
                           color: AppTheme.charcoalBlue,
                           fontSize: 16.0,
@@ -232,7 +337,7 @@ class MarketplaceMain extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'by Dr. Sarah Johnson',
+                        item.author,
                         style: AppTheme.text.copyWith(
                           color: AppTheme.stormGray,
                           fontSize: 12.0,
@@ -249,9 +354,9 @@ class MarketplaceMain extends StatelessWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                StarRows(fullStars: 4, emptyStars: 0),
+                                StarRows(fullStars: item.rating.round(), emptyStars: 5 - item.rating.round()),
                                 Text(
-                                  '(128)',
+                                  '(${item.ratingCount})',
                                   style: AppTheme.text.copyWith(
                                     color: AppTheme.stormGray,
                                     fontSize: 12.0,
@@ -260,7 +365,7 @@ class MarketplaceMain extends StatelessWidget {
                               ],
                             ),
                             Text(
-                              '\$24.99',
+                              '\$${item.getAmount().toStringAsFixed(2)}',
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.jungleGreen,
                                 fontSize: 16.0,
@@ -394,6 +499,96 @@ class MarketplaceMain extends StatelessWidget {
       hintStyle: AppTheme.text.copyWith(
         color: AppTheme.slateGray,
         height: 1.43,
+      ),
+    );
+  }
+
+  Widget _pagination({required MarketPlaceVm vm}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed:
+                vm.currentPage > 1
+                    ? () => vm.loadMarketplaceItems(page: vm.currentPage - 1)
+                    : null,
+          ),
+          ...List.generate(vm.totalPages > 5 ? 5 : vm.totalPages, (index) {
+            int pageNumber;
+            if (vm.totalPages <= 5) {
+              pageNumber = index + 1;
+            } else if (vm.currentPage <= 3) {
+              pageNumber = index + 1;
+            } else if (vm.currentPage >= vm.totalPages - 2) {
+              pageNumber = vm.totalPages - 4 + index;
+            } else {
+              pageNumber = vm.currentPage - 2 + index;
+            }
+
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              child: InkWell(
+                onTap: () => vm.loadMarketplaceItems(page: pageNumber),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color:
+                        vm.currentPage == pageNumber
+                            ? AppTheme.strongBlue
+                            : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    '$pageNumber',
+                    style: AppTheme.text.copyWith(
+                      color:
+                          vm.currentPage == pageNumber
+                              ? Colors.white
+                              : AppTheme.charcoalBlue,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+          if (vm.totalPages > 5 && vm.currentPage < vm.totalPages - 2)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Text('...'),
+            ),
+          if (vm.totalPages > 5 && vm.currentPage < vm.totalPages - 2)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              child: InkWell(
+                onTap: () => vm.loadMarketplaceItems(page: vm.totalPages),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  alignment: Alignment.center,
+                  child: Text(
+                    '$vm.totalPages',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.charcoalBlue,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            onPressed:
+                vm.hasMorePages
+                    ? () => vm.loadMarketplaceItems(page: vm.currentPage + 1)
+                    : null,
+          ),
+        ],
       ),
     );
   }

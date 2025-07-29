@@ -12,8 +12,13 @@ class MarketPlaceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    return ApiServiceComponent(
+      child: Consumer<ApiServiceProvider>(
+        builder: (_, apiServiceProvider, _) {
+
     return ChangeNotifierProvider(
-      create: (context) => MarketPlaceVm(scaffoldKey: _scaffoldKey),
+      create: (context) => MarketPlaceVm(scaffoldKey: _scaffoldKey, apiServiceProvider: apiServiceProvider),
       child: ScaffoldFrame(
         scaffoldKey: _scaffoldKey,
         drawer: CustomDrawer(child: MarketPlaceAside()),
@@ -38,5 +43,10 @@ class MarketPlaceScreen extends StatelessWidget {
         ),
       ),
     );
+   },
+      ),
+    );
+
+  
   }
 }

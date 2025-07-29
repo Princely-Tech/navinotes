@@ -4,14 +4,14 @@ import 'vm.dart';
 double itemSpacing = 30;
 const hintStyle = TextStyle(
   color: const Color(0xFFADAEBC),
-  fontSize: 16,
+  fontSize: 16.0,
   fontFamily: 'Inter',
   fontWeight: FontWeight.w400,
   height: 1.50,
 );
 final labelStyle = TextStyle(
   color: const Color(0xFF374151),
-  fontSize: 14,
+  fontSize: 14.0,
   fontFamily: 'Inter',
   fontWeight: FontWeight.w500,
 );
@@ -199,13 +199,13 @@ class PrelabReportScreen extends StatelessWidget {
       controller: TextEditingController(text: value),
       style: TextStyle(
         color: Colors.black,
-        fontSize: 14,
+        fontSize: 14.0,
         fontFamily: 'Inter',
         fontWeight: FontWeight.w400,
       ),
       labelStyle: TextStyle(
         color: Colors.black,
-        fontSize: 14,
+        fontSize: 14.0,
         fontFamily: 'Inter',
         fontWeight: FontWeight.w500,
         height: 1.43,
@@ -238,7 +238,7 @@ class PrelabReportScreen extends StatelessWidget {
                 'Hypothesis',
                 style: TextStyle(
                   color: const Color(0xFF374151),
-                  fontSize: 14,
+                  fontSize: 14.0,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
                 ),
@@ -275,7 +275,7 @@ class PrelabReportScreen extends StatelessWidget {
           label,
           style: TextStyle(
             color: const Color(0xFF4B5563),
-            fontSize: 14,
+            fontSize: 14.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w400,
             height: 1.43,
@@ -414,13 +414,13 @@ class PrelabReportScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 15),
         selectedTextStyle: TextStyle(
           color: const Color(0xFF0284C7),
-          fontSize: 14,
+          fontSize: 14.0,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
         ),
         style: TextStyle(
           color: const Color(0xFF6B7280),
-          fontSize: 14,
+          fontSize: 14.0,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w500,
         ),
@@ -490,7 +490,7 @@ class PrelabReportScreen extends StatelessWidget {
                         'Changes saved',
                         style: TextStyle(
                           color: Color(0xFF4B5563),
-                          fontSize: 14,
+                          fontSize: 14.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w400,
                         ),

@@ -3,7 +3,7 @@ import 'vm.dart';
 
 final labelStyle = TextStyle(
   color: const Color(0xFF374151),
-  fontSize: 14,
+  fontSize: 14.0,
   fontFamily: 'Inter',
   fontWeight: FontWeight.w500,
 );
@@ -144,7 +144,7 @@ class NoteTimelineScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: textColor,
-              fontSize: 16,
+              fontSize: 16.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w500,
             ),
@@ -154,7 +154,7 @@ class NoteTimelineScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: textColor,
-              fontSize: 12,
+              fontSize: 12.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
             ),
@@ -332,7 +332,7 @@ class NoteTimelineScreen extends StatelessWidget {
                                       'Auto-saved',
                                       style: TextStyle(
                                         color: const Color(0xFF6B7280),
-                                        fontSize: 14,
+                                        fontSize: 14.0,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w400,
                                         height: 1.43,
@@ -379,7 +379,7 @@ class NoteTimelineScreen extends StatelessWidget {
                             text: 'Current project: ',
                             style: TextStyle(
                               color: const Color(0xFF4B5563),
-                              fontSize: 14,
+                              fontSize: 14.0,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w500,
                               height: 1.43,
@@ -389,7 +389,7 @@ class NoteTimelineScreen extends StatelessWidget {
                             text: 'World War II Timeline',
                             style: TextStyle(
                               color: const Color(0xFF4B5563),
-                              fontSize: 14,
+                              fontSize: 14.0,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w400,
                               height: 1.43,
@@ -399,7 +399,7 @@ class NoteTimelineScreen extends StatelessWidget {
                             text: ' • ',
                             style: TextStyle(
                               color: const Color(0xFF4B5563),
-                              fontSize: 14,
+                              fontSize: 14.0,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w400,
                               height: 1.43,
@@ -410,7 +410,7 @@ class NoteTimelineScreen extends StatelessWidget {
                             text: 'Type: ',
                             style: TextStyle(
                               color: const Color(0xFF4B5563),
-                              fontSize: 14,
+                              fontSize: 14.0,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w500,
                               height: 1.43,
@@ -421,7 +421,7 @@ class NoteTimelineScreen extends StatelessWidget {
                             text: 'Historical Analysis',
                             style: TextStyle(
                               color: const Color(0xFF4B5563),
-                              fontSize: 14,
+                              fontSize: 14.0,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w400,
                               height: 1.43,

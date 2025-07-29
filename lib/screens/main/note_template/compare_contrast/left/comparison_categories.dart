@@ -18,7 +18,7 @@ class NoteCompareContrastCategories extends StatelessWidget {
               'Default Categories',
               style: TextStyle(
                 color: const Color(0xFF374151),
-                fontSize: 16,
+                fontSize: 16.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
                 height: 1.50,
@@ -42,7 +42,7 @@ class NoteCompareContrastCategories extends StatelessWidget {
               'Custom Categories',
               style: TextStyle(
                 color: const Color(0xFF374151),
-                fontSize: 16,
+                fontSize: 16.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
                 height: 1.50,
@@ -55,7 +55,7 @@ class NoteCompareContrastCategories extends StatelessWidget {
               contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               hintStyle: TextStyle(
                 color: const Color(0xFFADAEBC),
-                fontSize: 14,
+                fontSize: 14.0,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w400,
                 height: 1.43,

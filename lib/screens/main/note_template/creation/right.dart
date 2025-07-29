@@ -81,7 +81,7 @@ class NoteCreationRight extends StatelessWidget {
             'Cell Biology Textbook Ch.3',
             style: TextStyle(
               color: const Color(0xFF2563EB),
-              fontSize: 14,
+              fontSize: 14.0,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w400,
               height: 1.43,
@@ -122,7 +122,7 @@ class NoteCreationRight extends StatelessWidget {
         //             textAlign: TextAlign.center,
         //             style: TextStyle(
         //               color: const Color(0xFF6B7280),
-        //               fontSize: 12,
+        //               fontSize: 12.0,
         //               fontFamily: 'Inter',
         //               fontWeight: FontWeight.w400,
         //               height: 1.33,
@@ -170,7 +170,7 @@ class NoteCreationRight extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 14,
+                          fontSize: 14.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w400,
                         ),
@@ -193,7 +193,7 @@ class NoteCreationRight extends StatelessWidget {
                           ),
                           style: TextStyle(
                             color: const Color(0xFF374151),
-                            fontSize: 14,
+                            fontSize: 14.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w400,
                           ),
@@ -211,7 +211,7 @@ class NoteCreationRight extends StatelessWidget {
                           ),
                           style: TextStyle(
                             color: const Color(0xFF374151),
-                            fontSize: 14,
+                            fontSize: 14.0,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w400,
                           ),
@@ -222,7 +222,7 @@ class NoteCreationRight extends StatelessWidget {
                       'Card 1 of 8',
                       style: TextStyle(
                         color: const Color(0xFF6B7280),
-                        fontSize: 12,
+                        fontSize: 12.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                       ),
@@ -280,7 +280,7 @@ class NoteCreationRight extends StatelessWidget {
                       ),
                       style: TextStyle(
                         color: AppTheme.white,
-                        fontSize: 14,
+                        fontSize: 14.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                       ),
@@ -298,7 +298,7 @@ class NoteCreationRight extends StatelessWidget {
                       ),
                       style: TextStyle(
                         color: const Color(0xFF374151),
-                        fontSize: 14,
+                        fontSize: 14.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                       ),
@@ -340,7 +340,7 @@ class NoteCreationRight extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: const Color(0xFF374151),
-                    fontSize: 14,
+                    fontSize: 14.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w500,
                     height: 1.43,
@@ -367,7 +367,7 @@ class NoteCreationRight extends StatelessWidget {
         'Study Tools',
         style: TextStyle(
           color: const Color(0xFF1F2937),
-          fontSize: 16,
+          fontSize: 16.0,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w600,
           height: 1.50,

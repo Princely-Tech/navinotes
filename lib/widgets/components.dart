@@ -122,10 +122,19 @@ class ImagePlaceHolder extends StatelessWidget {
 
   Widget _returnChild() {
     if (type.isNetwork) {
+      String imageURL = imagePath;
+
+      // prefix the path with env('FILE_URL') if the path is not a full url
+      if (!imagePath.startsWith('http')) {
+        imageURL = '${EnvironmentConfig.fileUrl}/$imagePath';
+      } 
+
+      debugPrint(imageURL);
+
       return Image.network(
         height: size,
         width: isCardHeader ? double.infinity : size,
-        imagePath,
+        imageURL,
         fit: fit,
         errorBuilder: (context, error, stackTrace) {
           return const Icon(Icons.error);

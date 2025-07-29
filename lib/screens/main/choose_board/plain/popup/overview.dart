@@ -34,7 +34,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 'Course Details',
                 style: TextStyle(
                   color: const Color(0xFF1F2937),
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -65,7 +65,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 'Class Information',
                 style: TextStyle(
                   color: const Color(0xFF1F2937),
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -82,7 +82,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 'Quick Links',
                 style: TextStyle(
                   color: const Color(0xFF1F2937),
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -115,7 +115,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
           label,
           style: TextStyle(
             color: const Color(0xFF1F2937),
-            fontSize: 16,
+            fontSize: 16.0,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -124,7 +124,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
             value,
             style: TextStyle(
               color: color,
-              fontSize: 16,
+              fontSize: 16.0,
               fontWeight: FontWeight.w400,
             ),
           ),
@@ -139,7 +139,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
       text,
       style: TextStyle(
         color: const Color(0xFF3B82F6),
-        fontSize: 14,
+        fontSize: 14.0,
         fontWeight: FontWeight.w400,
       ),
     );
@@ -167,14 +167,14 @@ class BoardPlainPopupOverview extends StatelessWidget {
         Text(
           'Week 1-2',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 16.0,
             fontWeight: FontWeight.w600,
             color: Color(0xFF1F2937),
           ),
         ),
         Text(
           'Sept 5 - Sept 16',
-          style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+          style: TextStyle(fontSize: 14.0, color: Color(0xFF6B7280)),
         ),
       ],
     );
@@ -212,7 +212,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     child: const Text(
                       'Cell Structure Lab Report',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF1F2937),
                       ),
@@ -227,7 +227,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
               ),
               const Text(
                 'Complete a detailed analysis of cell structures observed in the laboratory session.',
-                style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+                style: TextStyle(fontSize: 14.0, color: Color(0xFF6B7280)),
               ),
               // Progress Bar
               Container(
@@ -384,14 +384,14 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 16.0,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1F2937),
                     ),
                   ),
                   Text(
                     description,
-                    style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+                    style: TextStyle(fontSize: 14.0, color: Color(0xFF6B7280)),
                   ),
                   SizedBox(height: 16),
                   Row(
@@ -400,14 +400,14 @@ class BoardPlainPopupOverview extends StatelessWidget {
                       Text(
                         usage,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 12.0,
                           color: Color(0xFF6B7280),
                         ),
                       ),
                       Text(
                         'Use Template',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF3B82F6),
                         ),
@@ -490,7 +490,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 16.0,
                       fontWeight: FontWeight.w500,
                       color: Color(0xFF1F2937),
                     ),
@@ -498,7 +498,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   Text(
                     subtitle,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 14.0,
                       color: Color(0xFF6B7280),
                     ),
                   ),
@@ -510,7 +510,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                         child: Text(
                           status,
                           style: const TextStyle(
-                            fontSize: 12,
+                            fontSize: 12.0,
                             color: Color(0xFF6B7280),
                           ),
                         ),
@@ -550,7 +550,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
           subtitle,
           style: TextStyle(
             color: const Color(0xFF6B7280),
-            fontSize: 16,
+            fontSize: 16.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w400,
             height: 1.5,
@@ -642,7 +642,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: const Color(0xFF1F2937),
-                    fontSize: 16,
+                    fontSize: 16.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w600,
                     height: 1.5,
@@ -653,7 +653,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   description,
                   style: TextStyle(
                     color: const Color(0xFF6B7280),
-                    fontSize: 14,
+                    fontSize: 14.0,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w400,
                     height: 1.43,
@@ -667,7 +667,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                         buttonText,
                         style: TextStyle(
                           color: AppTheme.vividBlue,
-                          fontSize: 16,
+                          fontSize: 16.0,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w500,
                           height: 1.5,
@@ -749,7 +749,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                           'Explore foundational concepts and key principles in this subject area through a mix of theoretical learning and practical application. This course offers an engaging introduction designed to build a solid understanding for further study',
                       style: TextStyle(
                         color: const Color(0xFF6B7280),
-                        fontSize: 16,
+                        fontSize: 16.0,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
                         height: 1.5,
@@ -776,7 +776,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                       color: Color(0xFFE5E7EB),
                       wrapWithFlexible: true,
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 16.0,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Inter',
                         color: Color(0xFF1F2937),
@@ -810,7 +810,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
               const Text(
                 'Next Session',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.0,
                   fontWeight: FontWeight.w500,
                   fontFamily: 'Inter',
                   color: Color(0xFF1F2937),
@@ -826,7 +826,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     const Text(
                       'Monday, Sept 12 • 10:00-11:00 AM',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.0,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Inter',
                         color: Color(0xFF6B7280),
@@ -857,7 +857,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                               Text(
                                 'Cell Structure Lab',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: 'Inter',
                                   color: Color(0xFF1F2937),
@@ -867,7 +867,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                               Text(
                                 'Science Building, Room 205',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 14.0,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: 'Inter',
                                   color: Color(0xFF6B7280),

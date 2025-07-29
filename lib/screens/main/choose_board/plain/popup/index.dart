@@ -63,13 +63,13 @@ class BoardPlainPopupScreen extends StatelessWidget {
           },
           selectedTextStyle: TextStyle(
             color: const Color(0xFF3B82F6),
-            fontSize: 16,
+            fontSize: 16.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w500,
           ),
           style: TextStyle(
             color: const Color(0xFF6B7280),
-            fontSize: 16,
+            fontSize: 16.0,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w500,
             height: 1.50,
