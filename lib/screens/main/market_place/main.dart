@@ -8,6 +8,10 @@ class MarketplaceMain extends StatelessWidget {
   final PageController _featuredController = PageController(
     viewportFraction: 0.9,
   );
+    final double _featuredItemWidth =
+      254; // Width of each featured item including spacing
+
+
   @override
   Widget build(BuildContext context) {
     return ApiServiceComponent(
@@ -265,41 +269,64 @@ class MarketplaceMain extends StatelessWidget {
     );
   }
 
-  Widget _featured({required MarketPlaceVm vm}) {
-      if (vm.isLoadingFeatured && vm.featuredItems.isEmpty) {
+ Widget _featured({required MarketPlaceVm vm}) {
+    if (vm.isLoadingFeatured && vm.featuredItems.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
     if (vm.featuredItems.isEmpty) {
       return const SizedBox.shrink();
     }
+
+    // Function to handle scrolling
+    void _scrollFeatured(int direction) {
+      final double scrollAmount = _featuredItemWidth * 2; // Scroll by 2 items
+      final double newPosition =
+          _featuredController.offset + (scrollAmount * direction);
+
+      // Clamp the position to valid range
+      final double maxScroll = _featuredController.position.maxScrollExtent;
+      final double clampedPosition = newPosition.clamp(0.0, maxScroll);
+
+      _featuredController.animateTo(
+        clampedPosition,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+
     return _section(
       title: 'Featured for You',
       titleRight: Row(
         children: [
           OutlinedButton(
-            onPressed: () {},
+            onPressed: () => _scrollFeatured(-1), // Scroll left
             style: OutlinedButton.styleFrom(
               shape: CircleBorder(side: BorderSide(color: AppTheme.lightGray)),
               padding: EdgeInsets.zero,
             ),
-            child: Icon(Icons.keyboard_arrow_left, size: 25),
+            child: const Icon(Icons.keyboard_arrow_left, size: 25),
           ),
           OutlinedButton(
-            onPressed: () {},
+            onPressed: () => _scrollFeatured(1), // Scroll right
             style: OutlinedButton.styleFrom(
               shape: CircleBorder(side: BorderSide(color: AppTheme.lightGray)),
               padding: EdgeInsets.zero,
             ),
-            child: Icon(Icons.keyboard_arrow_right, size: 25),
+            child: const Icon(Icons.keyboard_arrow_right, size: 25),
           ),
         ],
       ),
-      child: ScrollableController(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          spacing: 15,
-          children: vm.featuredItems.map((item) => _featureItem(item)).toList(),
+      child: SizedBox(
+        //height: 200,
+        child: ScrollableController(
+          scrollDirection: Axis.horizontal,
+          controller: _featuredController, // Add this line
+          child: Row(
+            spacing: 15,
+            children:
+                vm.featuredItems.map((item) => _featureItem(item)).toList(),
+          ),
         ),
       ),
     );
@@ -313,7 +340,7 @@ class MarketplaceMain extends StatelessWidget {
           child: CustomCard(
             padding: EdgeInsets.zero,
             addBorder: true,
-            width: 254,
+            width: _featuredItemWidth,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -335,6 +362,7 @@ class MarketplaceMain extends StatelessWidget {
                           fontSize: 16.0,
                           fontWeight: getFontWeight(500),
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         item.author,
