@@ -13,7 +13,6 @@ class MarketPlaceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     return ApiServiceComponent(
       child: Consumer<ApiServiceProvider>(
         builder: (_, apiServiceProvider, _) {
