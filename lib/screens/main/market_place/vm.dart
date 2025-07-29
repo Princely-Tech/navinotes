@@ -8,6 +8,13 @@ class MarketPlaceVm extends ChangeNotifier {
   FToast fToast = FToast();
   BuildContext context;
 
+
+  MarketPlaceVm({
+    required this.scaffoldKey,
+    required this.apiServiceProvider,
+    required this.context,
+  });
+
   bool _isLoading = false;
   List<MarketItem> _items = [];
   bool _hasLoadedItems = false; // prevents widget from always loading data on every build
@@ -41,11 +48,6 @@ String _searchQuery = '';
  PageDisplayFormat _displayFormat = PageDisplayFormat.grid;
   PageDisplayFormat get displayFormat => _displayFormat;
 
-  MarketPlaceVm({
-    required this.scaffoldKey,
-    required this.apiServiceProvider,
-    required this.context,
-  });
 
   void initialize() {
     fToast.init(context);
@@ -310,6 +312,6 @@ Future<void> loadMarketplaceItems({int page = 1, String? query}) async {
     _minDiscount = null;
     _maxDiscount = null;
     notifyListeners();
-    loadMarketplaceItems(page: 1);
+    //loadMarketplaceItems(page: 1);
   }
 }

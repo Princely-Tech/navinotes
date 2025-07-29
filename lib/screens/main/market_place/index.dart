@@ -38,7 +38,7 @@ class MarketPlaceScreen extends StatelessWidget {
       child: Consumer<ApiServiceProvider>(
         builder: (_, apiServiceProvider, __) {
           return ChangeNotifierProvider(
-           create: (context) {
+            create: (context) {
               MarketPlaceVm vm = MarketPlaceVm(
                 scaffoldKey: _scaffoldKey,
                 apiServiceProvider: apiServiceProvider,
@@ -56,16 +56,13 @@ class MarketPlaceScreen extends StatelessWidget {
                 // Only load data if we're not already loading and there's no error
                 if (vm.shouldLoadData) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
+                    //Future.delayed(const Duration(seconds: 1), () {
+                      // check again
+                      if (!vm.shouldLoadData) return;
 
-Future.delayed(const Duration(seconds: 1), () {
-  // check again
-  if (!vm.shouldLoadData) return;
-  
-  vm.loadMarketplaceItems();
-  vm.loadFeaturedItems();
-});
-                  
-                  
+                      vm.loadMarketplaceItems();
+                      vm.loadFeaturedItems();
+                    //});
                   });
                 }
 
@@ -86,7 +83,9 @@ Future.delayed(const Duration(seconds: 1), () {
                                 mobile: 256,
                                 child: MarketPlaceAside(vm: vm),
                               ),
-                              Expanded(child: _mainWidget(vm: vm, context: context)),
+                              Expanded(
+                                child: _mainWidget(vm: vm, context: context),
+                              ),
                             ],
                           ),
                         ),
@@ -773,10 +772,11 @@ Future.delayed(const Duration(seconds: 1), () {
                     minHeight: 35,
                     onTap: () {
                       // Remove the dialog and open the drawer instead
-                      if (Scaffold.of(context).isDrawerOpen) {
+                      if (vm.scaffoldKey.currentState!.isDrawerOpen) {
                         Navigator.pop(context); // Close if already open
                       } else {
-                        Scaffold.of(context).openDrawer(); // Open the drawer
+                        vm.scaffoldKey.currentState!
+                            .openDrawer(); // Open the drawer
                       }
                     },
                     text: 'Filter',
