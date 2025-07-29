@@ -103,6 +103,12 @@ class Content {
     );
   }
 
+  Future<Board> getBoard() async {
+    final dbHelper = DatabaseHelper.instance;
+    final board = await dbHelper.getBoard(boardId);
+    return board;
+  }
+
   // TODO: Thompson correct this. When you save the image/file to storage, extract it back here
   File? getCoverImageFile() {
     if (coverImage == null || coverImage == "") {
@@ -118,7 +124,7 @@ class Content {
     return File(file!);
   }
 
-  syncToBackend(ApiServiceProvider apiServiceProvider) async {
+  syncToBackend(ApiServiceProvider apiServiceProvider, {String? boardGuid}) async {
     Map<String, File> files = {};
 
     if (coverImageNeedSync) {
@@ -137,15 +143,20 @@ class Content {
       }
     }
 
+    if (boardGuid == null) {
+      final board = await getBoard();
+      boardGuid = board.guid;
+    }
+
     final body = FormDataRequest.post(
       ApiEndpoints.contentSync,
       body: {
         'guid': guid,
+        'board_guid': boardGuid,
         'title': title,
         'cover_image': coverImage,
         'type': type,
         'meta_data': metaData,
-        'board_id': boardId,
         'tags': tags,
         'content': content,
         'file': file,

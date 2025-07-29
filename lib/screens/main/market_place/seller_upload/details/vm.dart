@@ -31,82 +31,61 @@ class SellerUploadVm extends ChangeNotifier {
   }
 
 final Map<String, List<String>> categoryMap = {
-    'Science': [
-      'Physics',
-      'Chemistry',
-      'Biology',
-      'Mathematics',
-      'Environmental Science',
+    'Medical & Health Professional Tests': [
+      'MCAT (Medical College Admission Test)',
+      'DAT (Dental Admission Test)',
+      'PCAT (Pharmacy College Admission Test)',
+      'OAT (Optometry Admission Test)',
+      'VCAT (Veterinary College Admission Test)',
     ],
-    'Arts & Humanities': [
-      'History',
-      'Philosophy',
-      'Literature',
-      'Theology',
-      'Visual Arts',
+    'Law School Admission': ['LSAT (Law School Admission Test)'],
+    'Graduate School Admission': [
+      'GRE (Graduate Record Examination)',
+      'GMAT (Graduate Management Admission Test)',
     ],
-    'Social Sciences': [
-      'Sociology',
-      'Psychology',
-      'Political Science',
-      'Anthropology',
-      'Geography',
+    'Undergraduate Admission': [
+      'SAT (Scholastic Assessment Test)',
+      'ACT (American College Testing)',
+      'PSAT/NMSQT',
     ],
-    'Engineering': [
-      'Mechanical Engineering',
-      'Civil Engineering',
-      'Electrical Engineering',
-      'Computer Engineering',
-      'Chemical Engineering',
+    'Professional Licensing & Certification': [
+      'Bar Exam Preparation',
+      'CPA Exam (Certified Public Accountant)',
+      'FE Exam (Fundamentals of Engineering)',
+      'NCLEX (National Council Licensure Examination)',
     ],
-    'Business & Economics': [
-      'Accounting',
-      'Finance',
-      'Marketing',
-      'Economics',
-      'Entrepreneurship',
+    'IT & Technology Certifications': [
+      'CompTIA Certifications',
+      'Cisco Certifications',
+      'Microsoft Certifications',
+      'AWS Certifications',
     ],
-    'Medical & Health Sciences': [
-      'Nursing',
-      'Medicine',
-      'Pharmacy',
-      'Public Health',
-      'Anatomy',
+    'Project Management & Business': [
+      'PMP (Project Management Professional)',
+      'Six Sigma Certifications',
+      'CFA (Chartered Financial Analyst)',
     ],
-    'Technology & Computing': [
-      'Computer Science',
-      'Information Technology',
-      'Software Engineering',
-      'Data Science',
-      'Cybersecurity',
+    'Advanced Placement (AP) Tests': [
+      'STEM AP Exams',
+      'Humanities AP Exams',
+      'Language AP Exams',
     ],
-    'Law': [
-      'Criminal Law',
-      'Civil Law',
-      'International Law',
-      'Constitutional Law',
-      'Corporate Law',
+    'International Tests': [
+      'TOEFL (Test of English as a Foreign Language)',
+      'IELTS (International English Language Testing System)',
+      'GED (General Educational Development)',
     ],
-    'Education': [
-      'Curriculum Studies',
-      'Educational Psychology',
-      'Early Childhood Education',
-      'Guidance and Counselling',
-      'Educational Administration',
+    'Specialty Professional Tests': [
+      'USMLE (United States Medical Licensing Examination)',
+      'COMLEX (Comprehensive Osteopathic Medical Licensing Examination)',
+      'Real Estate Licensing Exams',
     ],
-    'Languages': [
-      'English Language',
-      'French',
-      'Spanish',
-      'German',
-      'Linguistics',
+    'Other': [
+      'Other',
     ],
-    'Other': [],
   };
 
   List<String> subCategories = [];
-
-
 
   bool _isFormValid = false;
   bool get isFormValid => _isFormValid;
@@ -135,16 +114,16 @@ final Map<String, List<String>> categoryMap = {
     return null;
   }
 
-List<String> getCategories() {
-return categoryMap.keys.toList();
-}
+  List<String> getCategories() {
+    return categoryMap.keys.toList();
+  }
 
   void loadSubCategories(String category) {
     debugPrint('loadSubCategories category: $category');
     subCategories = categoryMap[category] ?? ['Other'];
     notifyListeners();
   }
-  
+
   setScreen(Screen screen) {
     currentScreen = screen;
     notifyListeners();
@@ -358,7 +337,7 @@ return categoryMap.keys.toList();
   }
 
   publish() async {
-    if(isPublishing){
+    if (isPublishing) {
       debugPrint('Already publishing');
       return;
     }
@@ -397,11 +376,8 @@ return categoryMap.keys.toList();
     await Future.delayed(const Duration(seconds: 2));
     isPublishing = false;
     notifyListeners();
-    // navigate to marketplace    
+    // navigate to marketplace
     NavigationHelper.pushReplacement(Routes.myStore);
-    
-
-
   }
 
   uploadContent() async {
@@ -413,7 +389,7 @@ return categoryMap.keys.toList();
     // sync content
     board.getContents(forceRefresh: true).then((contents) {
       for (var content in contents) {
-        content.syncToBackend(apiServiceProvider);
+        content.syncToBackend(apiServiceProvider, boardGuid: board.guid);
       }
     });
   }
@@ -426,7 +402,6 @@ return categoryMap.keys.toList();
   uploadMarketPlace() async {
     var previewFiles = [];
     for (var previewImage in previewImages) {
-
       final type = lookupMimeType(previewImage.path);
       final contentType = type != null ? MediaType.parse(type) : null;
 
@@ -450,7 +425,6 @@ return categoryMap.keys.toList();
         'price': getPriceCent(),
         'discount_percent': discountController.text,
         'preview_images_files[]': previewFiles,
-        
       },
       files: {'cover_image_file': coverImage!},
     );
