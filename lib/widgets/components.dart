@@ -129,8 +129,6 @@ class ImagePlaceHolder extends StatelessWidget {
         imageURL = '${EnvironmentConfig.fileUrl}/$imagePath';
       } 
 
-      debugPrint(imageURL);
-
       return Image.network(
         height: size,
         width: isCardHeader ? double.infinity : size,
@@ -290,11 +288,13 @@ class OutlinedChild extends StatelessWidget {
     required this.child,
     this.decoration = const BoxDecoration(),
     this.size = 36,
+    this.onTap,
   });
 
   final Widget child;
   final BoxDecoration decoration;
   final double? size;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +308,7 @@ class OutlinedChild extends StatelessWidget {
         borderRadius: decoration.shape == BoxShape.circle ? null : borderRadius,
         // border: decoration.border,
       ),
-      child: Center(child: child),
+      child: onTap != null ? InkWell(onTap: onTap, child: Center(child: child)) : Center(child: child),
     );
   }
 }

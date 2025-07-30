@@ -1,3 +1,4 @@
+import 'package:navinotes/models/markeplace_item.dart';
 import 'package:navinotes/packages.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -30,61 +31,6 @@ class SellerUploadVm extends ChangeNotifier {
     notifyListeners();
   }
 
-final Map<String, List<String>> categoryMap = {
-    'Medical & Health Professional Tests': [
-      'MCAT (Medical College Admission Test)',
-      'DAT (Dental Admission Test)',
-      'PCAT (Pharmacy College Admission Test)',
-      'OAT (Optometry Admission Test)',
-      'VCAT (Veterinary College Admission Test)',
-    ],
-    'Law School Admission': ['LSAT (Law School Admission Test)'],
-    'Graduate School Admission': [
-      'GRE (Graduate Record Examination)',
-      'GMAT (Graduate Management Admission Test)',
-    ],
-    'Undergraduate Admission': [
-      'SAT (Scholastic Assessment Test)',
-      'ACT (American College Testing)',
-      'PSAT/NMSQT',
-    ],
-    'Professional Licensing & Certification': [
-      'Bar Exam Preparation',
-      'CPA Exam (Certified Public Accountant)',
-      'FE Exam (Fundamentals of Engineering)',
-      'NCLEX (National Council Licensure Examination)',
-    ],
-    'IT & Technology Certifications': [
-      'CompTIA Certifications',
-      'Cisco Certifications',
-      'Microsoft Certifications',
-      'AWS Certifications',
-    ],
-    'Project Management & Business': [
-      'PMP (Project Management Professional)',
-      'Six Sigma Certifications',
-      'CFA (Chartered Financial Analyst)',
-    ],
-    'Advanced Placement (AP) Tests': [
-      'STEM AP Exams',
-      'Humanities AP Exams',
-      'Language AP Exams',
-    ],
-    'International Tests': [
-      'TOEFL (Test of English as a Foreign Language)',
-      'IELTS (International English Language Testing System)',
-      'GED (General Educational Development)',
-    ],
-    'Specialty Professional Tests': [
-      'USMLE (United States Medical Licensing Examination)',
-      'COMLEX (Comprehensive Osteopathic Medical Licensing Examination)',
-      'Real Estate Licensing Exams',
-    ],
-    'Other': [
-      'Other',
-    ],
-  };
-
   List<String> subCategories = [];
 
   bool _isFormValid = false;
@@ -115,12 +61,12 @@ final Map<String, List<String>> categoryMap = {
   }
 
   List<String> getCategories() {
-    return categoryMap.keys.toList();
+    return marketPlaceCategoryMap.keys.toList();
   }
 
   void loadSubCategories(String category) {
     debugPrint('loadSubCategories category: $category');
-    subCategories = categoryMap[category] ?? ['Other'];
+    subCategories = marketPlaceCategoryMap[category] ?? ['Other'];
     notifyListeners();
   }
 

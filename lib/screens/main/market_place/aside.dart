@@ -1,7 +1,42 @@
+import 'package:navinotes/models/markeplace_item.dart';
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/market_place/vm.dart';
 
-class MarketPlaceAside extends StatelessWidget {
-  const MarketPlaceAside({super.key});
+class MarketPlaceAside extends StatefulWidget {
+  final MarketPlaceVm vm;
+
+  const MarketPlaceAside({super.key, required this.vm});
+
+  @override
+  State<MarketPlaceAside> createState() => _MarketPlaceAsideState();
+}
+
+class _MarketPlaceAsideState extends State<MarketPlaceAside> {
+
+
+  late final TextEditingController _minPriceController;
+  late final TextEditingController _maxPriceController;
+  late final TextEditingController _minDiscountController;
+  late final TextEditingController _maxDiscountController;
+
+  @override
+  void initState() {
+    super.initState();
+    _minPriceController = TextEditingController(text: widget.vm.minPrice?.toStringAsFixed(2));
+    _maxPriceController = TextEditingController(text: widget.vm.maxPrice?.toStringAsFixed(2));
+    _minDiscountController = TextEditingController(text: widget.vm.minDiscount?.toString());
+    _maxDiscountController = TextEditingController(text: widget.vm.maxDiscount?.toString());
+  }
+
+  @override
+  void dispose() {
+    _minPriceController.dispose();
+    _maxPriceController.dispose();
+    _minDiscountController.dispose();
+    _maxDiscountController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -13,92 +48,180 @@ class MarketPlaceAside extends StatelessWidget {
       ),
       child: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Filters',
+                  style: AppTheme.text.copyWith(
+                    fontSize: 18.0,
+                    fontWeight: getFontWeight(500),
+                  ),
+                ),
+                if (widget.vm.activeFilterCount > 0)
+                  TextButton(
+                    onPressed: widget.vm.clearFilters,
+                    child: Text(
+                      'Clear All',
+                      style: AppTheme.text.copyWith(
+                        color: AppTheme.coralRed,
+                        fontSize: 14.0,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20,
                 children: [
-                  Text(
-                    'Filters',
-                    style: AppTheme.text.copyWith(
-                      fontSize: 18.0,
-                      fontWeight: getFontWeight(500),
+                  // Category Filter
+                  _sections(
+                    title: 'Category',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:
+                          marketPlaceCategoryMap.keys.map((category) {
+                            final isSelected = widget.vm.selectedCategory == category;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomCheckBoxItem(
+                                  title: category,
+                                  value: isSelected,
+                                  onChanged: (value) {
+                                    if (value == true) {
+                                      widget.vm.setCategory(category);
+                                    } else {
+                                      widget.vm.setCategory(null);
+                                    }
+                                  },
+                                ),
+                                // Show subcategories if this category is selected
+                                if (isSelected && widget.vm.selectedCategory != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children:
+                                          marketPlaceCategoryMap[category]!.map(
+                                            (subCategory) {
+                                              return CustomCheckBoxItem(
+                                                title: subCategory,
+                                                value:
+                                                    widget.vm.selectedSubCategory ==
+                                                    subCategory,
+                                                onChanged: (value) {
+                                                  if (value == true) {
+                                                    widget.vm.setSubCategory(
+                                                      subCategory,
+                                                    );
+                                                  } else {
+                                                    widget.vm.setSubCategory(null);
+                                                  }
+                                                },
+                                              );
+                                            },
+                                          ).toList(),
+                                    ),
+                                  ),
+                              ],
+                            );
+                          }).toList(),
                     ),
                   ),
+
+_sections(
+                    title: 'Price Range',
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _minPriceController,
+                            decoration: const InputDecoration(
+                              labelText: 'Min',
+                              prefixText: '\$',
+                              border: OutlineInputBorder(),
+                            ),
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            onChanged: (value) {
+                              final min = double.tryParse(value);
+                              widget.vm.setPriceRange(min, widget.vm.maxPrice);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            controller: _maxPriceController,
+                            decoration: const InputDecoration(
+                              labelText: 'Max',
+                              prefixText: '\$',
+                              border: OutlineInputBorder(),
+                            ),
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            onChanged: (value) {
+                              final max = double.tryParse(value);
+                              widget.vm.setPriceRange(widget.vm.minPrice, max);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                
+                // Discount Filter
                   _sections(
-                    title: 'Categories',
+                    title: 'Discount',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomCheckBoxItem(title: 'Test Prep'),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomCheckBoxItem(title: 'MCAT'),
-                              CustomCheckBoxItem(title: 'LSAT'),
-                              CustomCheckBoxItem(title: 'DAT'),
-                            ],
-                          ),
-                        ),
-                        CustomCheckBoxItem(title: 'Academic Subjects'),
-                        CustomCheckBoxItem(
-                          title: 'Professional Certifications',
-                        ),
-                        CustomCheckBoxItem(title: 'Language Learning'),
-                      ],
-                    ),
-                  ),
-                  _sections(
-                    title: 'Price Range',
-                    child: Column(
-                      children: [
-                        CustomSlider(
-                          slider: Slider(value: 0.6, onChanged: (value) {}),
-                        ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children:
-                              ['\$0', '\$100']
-                                  .map(
-                                    (str) => Text(
-                                      str,
-                                      style: AppTheme.text.copyWith(
-                                        color: AppTheme.stormGray,
-                                        fontSize: 12.0,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  _sections(
-                    title: 'Rating',
-                    child: Column(
-                      children: [
-                        StarRowWithText(
-                          text: '& up',
-                          starRows: CustomCheckBoxItem(
-                            child: StarRows(fullStars: 4, emptyStars: 1),
-                          ),
-                        ),
-                        Row(
-                          spacing: 5,
                           children: [
-                            Flexible(
-                              child: CustomCheckBoxItem(
-                                child: StarRows(fullStars: 3, emptyStars: 2),
+                            Expanded(
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Min %',
+                                  border: OutlineInputBorder(),
+                                  suffixText: '%',
+                                ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  final min = int.tryParse(value);
+                                  widget.vm.setDiscountRange(min, widget.vm.maxDiscount);
+                                },
+                                controller: TextEditingController(
+                                  text: widget.vm.minDiscount?.toString(),
+                                ),
                               ),
                             ),
-                            Text(
-                              '& up',
-                              style: AppTheme.text.copyWith(
-                                color: AppTheme.darkSlateGray,
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Max %',
+                                  border: OutlineInputBorder(),
+                                  suffixText: '%',
+                                ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  final max = int.tryParse(value);
+                                  widget.vm.setDiscountRange(widget.vm.minDiscount, max);
+                                },
+                                controller: TextEditingController(
+                                  text: widget.vm.maxDiscount?.toString(),
+                                ),
                               ),
                             ),
                           ],
@@ -106,15 +229,21 @@ class MarketPlaceAside extends StatelessWidget {
                       ],
                     ),
                   ),
-                  _sections(
-                    title: 'Content Type',
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomCheckBoxItem(title: 'Mind Maps'),
-                        CustomCheckBoxItem(title: 'Flashcards'),
-                        CustomCheckBoxItem(title: 'Study Guides'),
-                      ],
+
+                  // Apply Filters Button
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: AppButton(
+                        onTap: () {
+                          widget.vm.loadMarketplaceItems(page: 1);
+                          Navigator.pop(context); // Close the drawer
+                        },
+                        text: 'Apply Filters',
+                        color: AppTheme.strongBlue,
+                        textColor: AppTheme.white,
+                      ),
                     ),
                   ),
                 ],
@@ -126,19 +255,21 @@ class MarketPlaceAside extends StatelessWidget {
     );
   }
 
-  Widget _sections({required Widget child, required String title}) {
+  Widget _sections({required String title, required Widget child}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 10,
       children: [
         Text(
           title,
           style: AppTheme.text.copyWith(
-            color: AppTheme.steelMist,
+            fontSize: 16.0,
             fontWeight: getFontWeight(500),
+            color: AppTheme.charcoalBlue,
           ),
         ),
+        const SizedBox(height: 12),
         child,
+        const SizedBox(height: 16),
       ],
     );
   }

@@ -16,6 +16,7 @@ class ScrollableController extends StatelessWidget {
     this.desktop,
     this.largeDesktop,
     this.onEndReached,
+    this.controller,
   });
 
   final Widget child;
@@ -32,6 +33,7 @@ class ScrollableController extends StatelessWidget {
   final bool? largeDesktop;
   final VoidCallback? onEndReached;
   final double endReachedThreshold = 100.0; // pixels from bottom to trigger onEndReached
+  final ScrollController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +73,7 @@ class ScrollableController extends StatelessWidget {
           child: SingleChildScrollView(
             padding: padding,
             scrollDirection: scrollDirection,
+            controller: controller,
             child: child,
           ),
         );
