@@ -3,7 +3,9 @@ import 'widgets.dart';
 import 'vm.dart';
 
 class ProductDetailMain extends StatelessWidget {
-  const ProductDetailMain({super.key});
+  const ProductDetailMain({super.key, required this.vm});
+
+  final ProductDetailVm vm;
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +16,10 @@ class ProductDetailMain extends StatelessWidget {
         spacing: 30,
         children: [
           _overview(),
-          _previewGallery(),
+          _previewGallery(context),
           _description(),
           _aboutCreator(),
-          _customerReview(),
+          _customerReviewNone(),
         ],
       ),
     );
@@ -84,6 +86,27 @@ class ProductDetailMain extends StatelessWidget {
             text: 'See All 124 Reviews',
             color: AppTheme.strongBlue,
           ),
+        ],
+      ),
+    );
+  }
+
+Widget _customerReviewNone() {
+    return _section(
+      title: 'Customer Reviews',
+      // titleRight: AppButton(
+      //   onTap: () {},
+      //   text: 'Write a Review',
+      //   mainAxisSize: MainAxisSize.min,
+      //   minHeight: 32,
+      //   padding: const EdgeInsets.symmetric(horizontal: 15),
+      //   color: AppTheme.strongBlue,
+      // ),
+      spacing: 25,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+         Text('No reviews yet'),
         ],
       ),
     );
@@ -204,20 +227,20 @@ class ProductDetailMain extends StatelessWidget {
   Widget _aboutCreator() {
     return _section(
       title: 'About the Creator',
-      titleRight: AppButton(
-        onTap: () {},
-        text: 'Follow',
-        mainAxisSize: MainAxisSize.min,
-        minHeight: 32,
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        color: AppTheme.paleBlue,
-        textColor: AppTheme.electricIndigo,
-        prefix: SVGImagePlaceHolder(
-          imagePath: Images.personPlus,
-          size: 14,
-          color: AppTheme.electricIndigo,
-        ),
-      ),
+      // titleRight: AppButton(
+      //   onTap: () {},
+      //   text: 'Follow',
+      //   mainAxisSize: MainAxisSize.min,
+      //   minHeight: 32,
+      //   padding: const EdgeInsets.symmetric(horizontal: 15),
+      //   color: AppTheme.paleBlue,
+      //   textColor: AppTheme.electricIndigo,
+      //   prefix: SVGImagePlaceHolder(
+      //     imagePath: Images.personPlus,
+      //     size: 14,
+      //     color: AppTheme.electricIndigo,
+      //   ),
+      // ),
       child: Padding(
         padding: const EdgeInsets.only(top: 10),
         child: Column(
@@ -225,30 +248,31 @@ class ProductDetailMain extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _profile(),
-            Column(
-              spacing: 15,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'More from this Creator',
-                  style: AppTheme.text.copyWith(
-                    fontSize: 16.0,
-                    fontWeight: getFontWeight(500),
-                  ),
-                ),
-                ScrollableController(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 20,
-                    children: [
-                      _creatorMoreItem(),
-                      _creatorMoreItem(),
-                      _creatorMoreItem(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            // TODO: Get from backend
+            // Column(
+            //   spacing: 15,
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     Text(
+            //       'More from this Creator',
+            //       style: AppTheme.text.copyWith(
+            //         fontSize: 16.0,
+            //         fontWeight: getFontWeight(500),
+            //       ),
+            //     ),
+            //     ScrollableController(
+            //       scrollDirection: Axis.horizontal,
+            //       child: Row(
+            //         spacing: 20,
+            //         children: [
+            //           _creatorMoreItem(),
+            //           _creatorMoreItem(),
+            //           _creatorMoreItem(),
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
@@ -312,36 +336,50 @@ class ProductDetailMain extends StatelessWidget {
     );
   }
 
+  Widget _authorImage(double size) {
+    return (vm.product.authorImage != null)
+        ? ImagePlaceHolder.network(
+          size: size,
+          imagePath: vm.product.authorImage ?? '',
+        )
+        : Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: AppTheme.whisperGrey, width: 2),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: SVGImagePlaceHolder(imagePath: Images.avatar, size: size),
+          ),
+        );
+  }
+
   Widget _profile() {
     return Row(
       spacing: 15,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ImagePlaceHolder.network(
-          size: 64,
-          imagePath:
-              'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D',
-        ),
+        _authorImage(64),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 5,
             children: [
               Text(
-                'Dr. Michael Chen, Ph.D.',
+                vm.product.author,
                 style: AppTheme.text.copyWith(
                   fontSize: 16.0,
                   fontWeight: getFontWeight(500),
                 ),
               ),
               Text(
-                'Biology Professor at Stanford University',
+                vm.product.getAuthorTitle(),
                 style: AppTheme.text.copyWith(color: AppTheme.stormGray),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  'Specializing in creating visual learning tools for complex biology concepts. Former MCAT prep instructor with 15+ years of teaching experience. Author of "Visual Biology: Concepts and Connections".',
+                  vm.product.authorAbout??'',
                   style: AppTheme.text.copyWith(color: AppTheme.darkSlateGray),
                 ),
               ),
@@ -356,100 +394,111 @@ class ProductDetailMain extends StatelessWidget {
     return _section(
       title: 'Description',
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 20,
         children: [
           Text(
-            'Comprehensive MCAT Biology Mind Map Bundle designed to help you visualize and connect key concepts for the MCAT exam. This bundle includes 15 detailed mind maps covering all major biology topics tested on the MCAT, with clear visual connections between related concepts.',
+            textAlign: TextAlign.justify,
+            vm.product.description,
             style: AppTheme.text.copyWith(fontSize: 16.0, height: 1.0),
           ),
-          Text(
-            'Perfect for visual learners who want to understand the relationships between biological systems and processes. Each mind map is carefully designed to highlight high-yield information and commonly tested concepts.',
-            style: AppTheme.text.copyWith(fontSize: 16.0, height: 1.0),
-          ),
-
           ExpandableSection(
             title: 'What\'s Included',
-            items: [
-              '15 comprehensive mind maps in high resolution',
-              'Interactive PDF format compatible with iPad and Apple Pencil',
-              'Printable versions for offline study',
-              '3 bonus quiz sheets to test your knowledge',
-            ],
-          ),
-          ExpandableSection(
-            title: 'Topics Covered',
-            items: [
-              'Cell Biology & Cell Structure',
-              'Cellular Respiration & Photosynthesis',
-              'DNA Replication & Protein Synthesis',
-            ],
+            items: vm.product.whatsIncluded,
           ),
         ],
       ),
     );
   }
 
-  Widget _previewItem(String image) {
-    return Container(
-      margin: EdgeInsets.only(right: 10),
-      child: Stack(
-        children: [
-          Container(
-            height: 158,
-            decoration: ShapeDecoration(
-              image: DecorationImage(
-                image: AssetImage(image),
-                fit: BoxFit.cover,
-              ),
-              shape: RoundedRectangleBorder(
-                side: BorderSide(color: AppTheme.lightGray),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 10,
-            left: 10,
-            right: 10,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppTheme.white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 3,
-                    ),
-                    child: Row(
-                      spacing: 5,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SVGImagePlaceHolder(
-                          imagePath: Images.padlock,
-                          size: 12,
-                          color: AppTheme.darkSlateGray,
-                        ),
-                        Flexible(
-                          child: Text(
-                            'Preview',
-                            style: AppTheme.text.copyWith(
-                              color: AppTheme.darkSlateGray,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ),
-                      ],
+  Widget _previewItem(String image, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Dialog.fullscreen(
+              child: Stack(
+                children: [
+                  Center(
+                    child: InteractiveViewer(
+                      panEnabled: true,
+                      minScale: 0.5,
+                      maxScale: 4.0,
+                      child: Image.network(
+                        EnvironmentConfig.fileUrl + "/$image",
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
+                  Positioned(
+                    top: 20,
+                    right: 20,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.close, color: Colors.white, size: 30),
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.black54,
+                          padding: EdgeInsets.all(8),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 10),
+        child: Stack(
+          children: [
+            Container(
+              height: 158,
+              decoration: ShapeDecoration(
+                image: DecorationImage(
+                  image: NetworkImage("${EnvironmentConfig.fileUrl}/$image"),
+                  fit: BoxFit.cover,
                 ),
-              ],
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: AppTheme.lightGray),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 10,
+              left: 10,
+              right: 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Icon(Icons.zoom_in, color: Colors.white, size: 16),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -482,7 +531,7 @@ class ProductDetailMain extends StatelessWidget {
     );
   }
 
-  Widget _previewGallery() {
+  Widget _previewGallery(BuildContext context) {
     return _section(
       title: 'Preview Gallery',
       child: Consumer<LayoutProviderVm>(
@@ -507,12 +556,10 @@ class ProductDetailMain extends StatelessWidget {
                           showIndicator: false,
                           padEnds: false,
                         ),
-                        items: [
-                          _previewItem(Images.marketPlacePreview1),
-                          _previewItem(Images.marketPlacePreview2),
-                          _previewItem(Images.marketPlacePreview3),
-                          _previewItem(Images.marketPlacePreview4),
-                        ],
+                        items:
+                            vm.product.previewImagesPaths
+                                .map((image) => _previewItem(image, context))
+                                .toList(),
                       ),
                       Positioned(
                         top: 0,
@@ -600,7 +647,8 @@ class ProductDetailMain extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ImagePlaceHolder(
-                  imagePath: Images.marketPlaceDetail,
+                  type: ImagePlaceHolderTypes.network,
+                  imagePath: vm.product.coverImagePath,
                   borderRadius: BorderRadius.circular(0),
                 ),
               ],
@@ -661,15 +709,12 @@ class ProductDetailMain extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       spacing: 10,
-                      children: [
-                        _tag('Mind Map'),
-                        _tag('Biology'),
-                        _tag('MCAT'),
-                      ],
+                      children:
+                          vm.product.tags.map((tag) => _tag(tag)).toList(),
                     ),
                   ),
                   Text(
-                    'MCAT Biology Complete Mind Map Bundle',
+                    vm.product.title,
                     style: AppTheme.text.copyWith(
                       fontSize: 24.0,
                       fontWeight: getFontWeight(700),
@@ -710,24 +755,21 @@ class ProductDetailMain extends StatelessWidget {
                   Row(
                     spacing: 10,
                     children: [
-                      ImagePlaceHolder.network(
-                        size: 32,
-                        imagePath:
-                            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D',
-                      ),
+                      _authorImage(32),
+
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: 5,
                           children: [
                             Text(
-                              'Dr. Michael Chen',
+                              vm.product.author,
                               style: AppTheme.text.copyWith(
                                 fontWeight: getFontWeight(500),
                               ),
                             ),
                             Text(
-                              'Biology Professor',
+                              vm.product.authorIam??'',
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.steelMist,
                                 fontSize: 12.0,
@@ -752,13 +794,14 @@ class ProductDetailMain extends StatelessWidget {
                               TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: '4.8',
+                                    text: vm.product.rating.toStringAsFixed(1),
                                     style: AppTheme.text.copyWith(
                                       fontWeight: getFontWeight(500),
                                     ),
                                   ),
                                   TextSpan(
-                                    text: ' (124 reviews)',
+                                    text:
+                                        ' (${vm.product.ratingCount} reviews)',
                                     style: AppTheme.text.copyWith(
                                       color: AppTheme.steelMist,
                                     ),
@@ -778,7 +821,7 @@ class ProductDetailMain extends StatelessWidget {
                               color: AppTheme.steelMist,
                             ),
                             Text(
-                              '1,245 purchases',
+                              '${vm.product.ratingCount} purchases',
                               style: AppTheme.text.copyWith(
                                 color: AppTheme.steelMist,
                               ),
@@ -795,27 +838,32 @@ class ProductDetailMain extends StatelessWidget {
                       spacing: 20,
                       children: [
                         Text(
-                          '\$29.99',
+                          '\$${vm.product.getAmount()}',
                           style: AppTheme.text.copyWith(
                             color: AppTheme.charcoalBlue,
                             fontSize: 30.0,
                             fontWeight: getFontWeight(700),
                           ),
                         ),
-                        Text(
-                          '\$49.99',
-                          style: AppTheme.text.copyWith(
-                            color: AppTheme.steelMist,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
 
-                        CustomTag(
-                          '40% OFF',
-                          color: AppTheme.lightRed,
-                          textColor: AppTheme.bloodFire,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
+                        if (vm.product.discountPercent != null &&
+                            vm.product.discountPercent! > 0)
+                          Text(
+                            '\$${vm.product.getOriginalAmount().toStringAsFixed(2)}',
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.steelMist,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+
+                        if (vm.product.discountPercent != null &&
+                            vm.product.discountPercent! > 0)
+                          CustomTag(
+                            '${vm.product.discountPercent!.toStringAsFixed(0)}% OFF',
+                            color: AppTheme.lightRed,
+                            textColor: AppTheme.bloodFire,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
                       ],
                     ),
                   ),
@@ -825,7 +873,9 @@ class ProductDetailMain extends StatelessWidget {
                     children: [
                       AppButton.secondary(
                         wrapWithFlexible: true,
-                        onTap: () {},
+                        onTap: () {
+                          vm.addToCart();
+                        },
                         text: 'Add to Cart',
                         color: AppTheme.vividRose,
                         prefix: SVGImagePlaceHolder(

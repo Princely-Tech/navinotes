@@ -52,33 +52,33 @@ class ProductDetailAppBar extends StatelessWidget {
     );
   }
 
-  Widget _searchField() {
-    return CustomInputField(
-      prefixIcon: Icon(Icons.search, color: AppTheme.blueGray, size: 20),
-      hintText: 'Search marketplace',
-      fillColor: AppTheme.lightAsh,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(999),
-        borderSide: BorderSide.none,
-      ),
-      hintStyle: AppTheme.text.copyWith(
-        color: AppTheme.slateGray,
-        height: 1.43,
-      ),
-    );
-  }
+  // Widget _searchField() {
+  //   return CustomInputField(
+  //     prefixIcon: Icon(Icons.search, color: AppTheme.blueGray, size: 20),
+  //     hintText: 'Search marketplace',
+  //     fillColor: AppTheme.lightAsh,
+  //     border: OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(999),
+  //       borderSide: BorderSide.none,
+  //     ),
+  //     hintStyle: AppTheme.text.copyWith(
+  //       color: AppTheme.slateGray,
+  //       height: 1.43,
+  //     ),
+  //   );
+  // }
 
   Widget _trailing(ProductDetailVm vm) {
     return Row(
       children: [
-        VisibleController(
-          mobile: false,
-          laptop: true,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 15),
-            child: WidthLimiter(mobile: 256, child: _searchField()),
-          ),
-        ),
+        // VisibleController(
+        //   mobile: false,
+        //   laptop: true,
+        //   child: Padding(
+        //     padding: const EdgeInsets.only(right: 15),
+        //     child: WidthLimiter(mobile: 256, child: _searchField()),
+        //   ),
+        // ),
         Row(
           spacing: 15,
           children: [
@@ -88,7 +88,7 @@ class ProductDetailAppBar extends StatelessWidget {
                 color: AppTheme.white,
                 fontSize: 8.0,
               ),
-              label: Center(child: Text('2', textAlign: TextAlign.center)),
+             // label: Center(child: Text('2', textAlign: TextAlign.center)), // TODO: Count cart items here
               child: SVGImagePlaceHolder(
                 imagePath: Images.shoppingCart,
                 size: 20,
@@ -98,14 +98,14 @@ class ProductDetailAppBar extends StatelessWidget {
             ProfilePic(size: 32),
           ],
         ),
-        VisibleController(
-          mobile: true,
-          desktop: false,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: MenuButton(onPressed: vm.openEndDrawer),
-          ),
-        ),
+        // VisibleController(
+        //   mobile: true,
+        //   desktop: false,
+        //   child: Padding(
+        //     padding: const EdgeInsets.only(left: 10),
+        //     child: MenuButton(onPressed: vm.openEndDrawer),
+        //   ),
+        // ),
       ],
     );
   }

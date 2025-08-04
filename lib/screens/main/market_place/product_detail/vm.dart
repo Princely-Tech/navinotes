@@ -1,8 +1,23 @@
+import 'package:navinotes/models/markeplace_item.dart';
 import 'package:navinotes/packages.dart';
 
 class ProductDetailVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
-  ProductDetailVm({required this.scaffoldKey});
+  final MarketItem product;
+  ApiServiceProvider apiServiceProvider;
+  FToast fToast = FToast();
+  BuildContext context;
+  
+  ProductDetailVm({
+    required this.scaffoldKey,
+    required this.product,
+    required this.apiServiceProvider,
+    required this.context,
+  });
+
+    void initialize() {
+    fToast.init(context);
+  }
 
   ExpandableCarouselController carouselController = ExpandableCarouselController();
 
@@ -22,5 +37,15 @@ class ProductDetailVm extends ChangeNotifier {
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  void addToCart() {
+    // TODO: implement addToCart
+    
+    fToast.showToast(
+      child: MessageDisplayContainer('Item added to cart', isError: false),
+      gravity: AppConstants.toastGravity,
+      toastDuration: AppConstants.toastDuration,
+    );
   }
 }
