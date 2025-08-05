@@ -24,198 +24,175 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
   Widget _main() {
     return Column(
       children: [
-        // _header(),
+        _header(),
         Expanded(
           child: ScrollableController(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // _heroSection(),
-                // _courseActions(),
-                // _fileUploadsSection(),
-                // _studyTemplatesSection(),
+                _heroSection(),
+                _courseActions(),
+                _fileUploadsSection(),
+                _studyTemplatesSection(),
                 _courseTimeline(),
-
-                // Footer Section
-                Container(
-                  width: 1440,
-                  height: 463,
-                  color: const Color(0xFF4A3426),
-                  padding: EdgeInsets.only(left: 80, top: 49),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'HISTORY 1302',
-                                style: TextStyle(
-                                  color: const Color(0xFFF7F3E9),
-                                  fontSize: 24,
-                                  fontFamily: 'Playfair Display',
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.33,
-                                ),
-                              ),
-                              Text(
-                                'Modern American History - Semester 2',
-                                style: TextStyle(
-                                  color: const Color(0xB2F7F3E9),
-                                  fontSize: 16,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.50,
-                                ),
-                              ),
-                            ],
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFC19B47),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
-                              ),
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              'Contact Professor',
-                              style: TextStyle(
-                                color: const Color(0xFF2B1810),
-                                fontSize: 16,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 40),
-                      Divider(color: const Color(0x19F7F3E9)),
-                      SizedBox(height: 33),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Quick Links',
-                                style: TextStyle(
-                                  color: const Color(0xFFC19B47),
-                                  fontSize: 16,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.50,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Course Syllabus',
-                                style: TextStyle(
-                                  color: const Color(0xB2F7F3E9),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.43,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Academic Calendar',
-                                style: TextStyle(
-                                  color: const Color(0xB2F7F3E9),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.43,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Library Resources',
-                                style: TextStyle(
-                                  color: const Color(0xB2F7F3E9),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.43,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Class Information',
-                                style: TextStyle(
-                                  color: const Color(0xFFC19B47),
-                                  fontSize: 16,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.50,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'History Department',
-                                style: TextStyle(
-                                  color: const Color(0xB2F7F3E9),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Humanities Building, Room 302',
-                                style: TextStyle(
-                                  color: const Color(0xB2F7F3E9),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Office Hours: Mon-Fri, 9AM-4PM',
-                                style: TextStyle(
-                                  color: const Color(0xB2F7F3E9),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Phone: (555) 123-4567',
-                                style: TextStyle(
-                                  color: const Color(0xB2F7F3E9),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                _footer(),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _footer() {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return Container(
+          color: const Color(0xFF4A3426),
+          child: Stack(
+            children: [
+              Positioned(
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Opacity(
+                    opacity: getDeviceResponsiveValue(
+                      deviceType: layoutVm.deviceType,
+                      mobile: 0.3,
+                      desktop: 1,
+                    ),
+                    child: ImagePlaceHolder(
+                      imagePath: Images.boardDarkAcadBook,
+                      borderRadius: BorderRadius.zero,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 50),
+                child: ResponsiveHorizontalPadding(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        spacing: 15,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'HISTORY 1302',
+                                  style: TextStyle(
+                                    color: const Color(0xFFF7F3E9),
+                                    fontSize: 24,
+                                    fontFamily: 'Playfair Display',
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.33,
+                                  ),
+                                ),
+                                Text(
+                                  'Modern American History - Semester 2',
+                                  style: TextStyle(
+                                    color: const Color(0xB2F7F3E9),
+                                    fontSize: 16,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.50,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          AppButton(
+                            mainAxisSize: MainAxisSize.min,
+                            onTap: () {},
+                            text: 'Contact Professor',
+                            color: const Color(0xFFC19B47),
+                            minHeight: 40,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            style: TextStyle(
+                              color: const Color(0xFF2B1810),
+                              fontSize: 16,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 40),
+                      Divider(color: const Color(0x19F7F3E9), height: 1),
+                      SizedBox(height: 33),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        spacing: 30,
+                        children: [_footerItem(), _footerItem()],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _footerItem() {
+    return Flexible(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Quick Links',
+            style: TextStyle(
+              color: const Color(0xFFC19B47),
+              fontSize: 16,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w500,
+              height: 1.50,
+            ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Course Syllabus',
+            style: TextStyle(
+              color: const Color(0xB2F7F3E9),
+              fontSize: 14,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
+              height: 1.43,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Academic Calendar',
+            style: TextStyle(
+              color: const Color(0xB2F7F3E9),
+              fontSize: 14,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
+              height: 1.43,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Library Resources',
+            style: TextStyle(
+              color: const Color(0xB2F7F3E9),
+              fontSize: 14,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
+              height: 1.43,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -249,41 +226,37 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 40),
-            HeightLimiter(
-              maxHeight: 400,
-              child: ListView(
-                children: [
-                  _buildTimelineItem(
-                    week: 'Week 1-2',
-                    title: 'Civil War & Reconstruction',
-                    description:
-                        'Examine the causes, course, and consequences of the American Civil War and the challenges of Reconstruction.',
-                    assignment:
-                        'Primary source analysis of Lincoln\'s speeches and Confederate documents',
-                    dueDate: 'June 15, 2025',
-                  ),
-                  SizedBox(height: 40),
-                  _buildTimelineItem(
-                    week: 'Week 3-4',
-                    title: 'Industrialization Era',
-                    description:
-                        'Study the rapid industrial growth and its impact on American society, economy, and politics.',
-                    assignment:
-                        'Research paper on a major industrialist and their influence on America',
-                    dueDate: 'June 29, 2025',
-                  ),
-                  SizedBox(height: 40),
-                  _buildTimelineItem(
-                    week: 'Week 5-6',
-                    title: 'Progressive Era',
-                    description:
-                        'Analyze the reform movements that addressed the problems created by industrialization and urbanization.',
-                    assignment:
-                        'Comparative analysis of progressive reforms and their effectiveness',
-                    dueDate: 'July 13, 2025',
-                  ),
-                ],
-              ),
+            Column(
+              children: [
+                _buildTimelineItem(
+                  isFirst: true,
+                  week: 'Week 1-2',
+                  title: 'Civil War & Reconstruction',
+                  description:
+                      'Examine the causes, course, and consequences of the American Civil War and the challenges of Reconstruction.',
+                  assignment:
+                      'Primary source analysis of Lincoln\'s speeches and Confederate documents',
+                  dueDate: 'June 15, 2025',
+                ),
+                _buildTimelineItem(
+                  week: 'Week 3-4',
+                  title: 'Industrialization Era',
+                  description:
+                      'Study the rapid industrial growth and its impact on American society, economy, and politics.',
+                  assignment:
+                      'Research paper on a major industrialist and their influence on America',
+                  dueDate: 'June 29, 2025',
+                ),
+                _buildTimelineItem(
+                  week: 'Week 5-6',
+                  title: 'Progressive Era',
+                  description:
+                      'Analyze the reform movements that addressed the problems created by industrialization and urbanization.',
+                  assignment:
+                      'Comparative analysis of progressive reforms and their effectiveness',
+                  dueDate: 'July 13, 2025',
+                ),
+              ],
             ),
           ],
         ),
@@ -1120,51 +1093,56 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     required String description,
     required String assignment,
     required String dueDate,
+    bool isFirst = false,
   }) {
+    final padding = EdgeInsets.only(top: isFirst ? 0 : 40);
     return IntrinsicHeight(
       child: Row(
         spacing: 30,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  week,
-                  style: TextStyle(
-                    color: const Color(0xFFC19B47),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w500,
-                    height: 1.50,
+            child: Padding(
+              padding: padding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    week,
+                    style: TextStyle(
+                      color: const Color(0xFFC19B47),
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                      height: 1.50,
+                    ),
                   ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  title,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: const Color(0xFFF7F3E9),
-                    fontSize: 24,
-                    fontFamily: 'Playfair Display',
-                    fontWeight: FontWeight.w600,
-                    height: 1.33,
+                  SizedBox(height: 16),
+                  Text(
+                    title,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: const Color(0xFFF7F3E9),
+                      fontSize: 24,
+                      fontFamily: 'Playfair Display',
+                      fontWeight: FontWeight.w600,
+                      height: 1.33,
+                    ),
                   ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  description,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: const Color(0xB2F7F3E9),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    height: 1.50,
+                  SizedBox(height: 16),
+                  Text(
+                    description,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: const Color(0xB2F7F3E9),
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      height: 1.50,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Stack(
@@ -1176,66 +1154,71 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                 bottom: 0,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [VerticalDivider(width: 1)],
+                  children: [
+                    VerticalDivider(width: 1, color: const Color(0x4CC19B47)),
+                  ],
                 ),
               ),
               Center(
                 child: OutlinedChild(
+                  size: 40,
                   decoration: BoxDecoration(
                     color: const Color(0xFFC19B47),
                     shape: BoxShape.circle,
                   ),
-                  child: SVGImagePlaceHolder(imagePath: Images.book),
+                  child: SVGImagePlaceHolder(
+                    imagePath: Images.book,
+                    color: const Color(0xFF2B1810),
+                    size: 16,
+                  ),
                 ),
               ),
             ],
           ),
-          // Container(
-          //   margin: EdgeInsets.symmetric(horizontal: 16),
-          //   child: Container(
-          //     width: 37.52,
-          //     height: 40,
-
-          //     child: Icon(Icons.arrow_forward, color: Colors.white),
-          //   ),
-          // ),
           Expanded(
-            child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF4A3426),
-                borderRadius: BorderRadius.circular(2),
-              ),
+            child: Padding(
+              padding: padding,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Assignment',
-                    style: TextStyle(
-                      color: const Color(0xFFF7F3E9),
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4A3426),
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    assignment,
-                    style: TextStyle(
-                      color: const Color(0xB2F7F3E9),
-                      fontSize: 14,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Due: $dueDate',
-                    style: TextStyle(
-                      color: const Color(0xFFC19B47),
-                      fontSize: 12,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Assignment',
+                          style: TextStyle(
+                            color: const Color(0xFFF7F3E9),
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          assignment,
+                          style: TextStyle(
+                            color: const Color(0xB2F7F3E9),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'Due: $dueDate',
+                          style: TextStyle(
+                            color: const Color(0xFFC19B47),
+                            fontSize: 12,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
