@@ -64,10 +64,16 @@ class MarketItem {
   // price is in cent
   final double? discountPercent;
   final String author;
+  final String? authorImage;
+  final String? authorIam;
+  final String? authorSchool;
+  final String? authorField;
+  final String? authorAbout;
   final double rating;
   final int ratingCount;
   final List<String> tags;
   final List<String> whatsIncluded;
+  final List<String> previewImagesPaths;
 
   MarketItem({
     required this.id,
@@ -77,11 +83,17 @@ class MarketItem {
     required this.price,
     this.discountPercent,
     required this.author,
-    this.rating = 0,
+     this.authorImage,
+     this.authorIam,
+     this.authorSchool,
+     this.authorField,
+     this.authorAbout,
+          this.rating = 0,
     this.ratingCount = 0,
     this.tags = const [],
     this.whatsIncluded = const [],
-  });
+    this.previewImagesPaths = const [],
+      });
 
   factory MarketItem.fromJson(Map<String, dynamic> json) {
     return MarketItem(
@@ -92,6 +104,11 @@ class MarketItem {
       price: (json['price'] as num).toDouble(),
       discountPercent: json['discount_percent']?.toDouble(),
       author: json['user']?['name'] ?? 'Unknown',
+      authorImage: json['user']?['profile_picture'],
+      authorIam: json['user']?['iam'],
+      authorSchool: json['user']?['school_name'],
+      authorField: json['user']?['school_field'],
+      authorAbout: json['user']?['about'],
       rating:
           json['rating_count'] > 0
               ? (json['rating_sum'] / json['rating_count']).toDouble()
@@ -99,6 +116,7 @@ class MarketItem {
       ratingCount: json['rating_count'],
       tags: List<String>.from(json['tags'] ?? []),
       whatsIncluded: List<String>.from(json['whats_included'] ?? []),
+      previewImagesPaths: List<String>.from(json['preview_images_paths'] ?? []),
     );
   }
 
@@ -115,5 +133,14 @@ class MarketItem {
     }
 
     return amount / 100;
+  }
+
+
+  String getAuthorTitle() {
+    // if iam is set and field is set, return I am "of" field
+    if (authorIam != null && authorField != null) {
+      return '$authorIam of $authorField';
+    }
+    return authorIam ?? '';
   }
 }
