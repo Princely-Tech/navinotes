@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/choose_board/dark_academia/popup/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -49,6 +50,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.noteKanban: (context) => NoteKanbanScreen(),
   Routes.noteLabReport: (context) => NoteLabReportScreen(),
   Routes.boardPlainPopup: (context) => BoardPlainPopupScreen(),
+  Routes.boardDarkAcademiaPopup: (context) => BoardDarkAcadPopupScreen(),
 };
 
 class Routes {

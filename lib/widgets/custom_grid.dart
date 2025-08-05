@@ -10,7 +10,8 @@ class CustomGrid extends StatelessWidget {
     this.desktop,
     this.spacing,
     this.largeDesktop = 3,
-    this.wrapWithIntrinsicHeight = true,
+    this.wrapWithIntrinsicHeight =
+        false, //TODO check that this doesnt break previous screens
     this.mobileSpacing,
   });
   final List<Widget> children;

@@ -219,17 +219,21 @@ class Images {
   static const String boardDarkAcadEditHeader =
       '$boardsDarkAcademiaPath/edit_header.png';
   static const String boardDarkAcadPaper = '$boardsDarkAcademiaPath/paper.png';
-
-  static const String boardDarkAcadNoteNewton =
-      '$boardsDarkAcademiaPath/newton.png';
-  static const String boardDarkAcadNoteQuantum =
-      '$boardsDarkAcademiaPath/quantum.png';
-  static const String boardDarkAcadNoteWave =
-      '$boardsDarkAcademiaPath/wave.png';
-  static const String boardDarkAcadNoteElectromagnetism =
-      '$boardsDarkAcademiaPath/electromagnetism.png';
-  static const String boardDarkAcadNoteThermodynamics =
-      '$boardsDarkAcademiaPath/thermodynamics.png';
+  static const String boardDarkAcadKro = '$boardsDarkAcademiaPath/kro.png';
+  static const String boardDarkAcadFave = '$boardsDarkAcademiaPath/fave.png';
+  static const String boardDarkAcadFileImport =
+      '$boardsDarkAcademiaPath/file_import.png';
+  static const String boardDarkAcadbgPapers = '$boardsDarkAcademiaPath/bg_papers.png';
+  static const String boardDarkAcadStudy = '$boardsDarkAcademiaPath/study.png';
+  static const String boardDarkAcadCreateNote = '$boardsDarkAcademiaPath/create_note.png';
+  static const String boardDarkAcadAnalysis = '$boardsDarkAcademiaPath/analysis.png';
+  static const String boardDarkAcadImportPdf = '$boardsDarkAcademiaPath/import_pdf.png';
+  static const String boardDarkAcadBook = '$boardsDarkAcademiaPath/book.png';
+  static const String boardDarkAcadResearchPaper = '$boardsDarkAcademiaPath/research_paper.png';
+  static const String boardDarkAcadTemplateBg = '$boardsDarkAcademiaPath/template_bg.png';
+  static const String boardDarkAcadFileUploadBg = '$boardsDarkAcademiaPath/file_upload_bg.png';
+  static const String boardDarkAcadCourseActionsBg = '$boardsDarkAcademiaPath/course_actions_bg.png';
+  static const String boardDarkAcadPopupHeader = '$boardsDarkAcademiaPath/popup_header.png';
   // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
 
   //board light academia

@@ -81,6 +81,9 @@ flutter:
     - .env
 
   fonts:
+    - family: Luxurious Script
+      fonts:
+        - asset: assets/fonts/Luxurious_Script/LuxuriousScript-Regular.ttf
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter/static/Inter_18pt-Thin.ttf
