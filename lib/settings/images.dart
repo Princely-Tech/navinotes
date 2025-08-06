@@ -181,7 +181,7 @@ class Images {
   static const String authCardBg = '$imagePath/auth_card_bg.svg';
   //  static const String auth_card_bg = '$imagePath/auth_card_bg.png';
 
-  //boards 
+  //boards
   static const String board1 = '$boardsPath/board1.png';
   static const String board2 = '$boardsPath/board2.png';
   static const String board3 = '$boardsPath/board3.png';
@@ -223,17 +223,26 @@ class Images {
   static const String boardDarkAcadFave = '$boardsDarkAcademiaPath/fave.png';
   static const String boardDarkAcadFileImport =
       '$boardsDarkAcademiaPath/file_import.png';
-  static const String boardDarkAcadbgPapers = '$boardsDarkAcademiaPath/bg_papers.png';
+  static const String boardDarkAcadbgPapers =
+      '$boardsDarkAcademiaPath/bg_papers.png';
   static const String boardDarkAcadStudy = '$boardsDarkAcademiaPath/study.png';
-  static const String boardDarkAcadCreateNote = '$boardsDarkAcademiaPath/create_note.png';
-  static const String boardDarkAcadAnalysis = '$boardsDarkAcademiaPath/analysis.png';
-  static const String boardDarkAcadImportPdf = '$boardsDarkAcademiaPath/import_pdf.png';
+  static const String boardDarkAcadCreateNote =
+      '$boardsDarkAcademiaPath/create_note.png';
+  static const String boardDarkAcadAnalysis =
+      '$boardsDarkAcademiaPath/analysis.png';
+  static const String boardDarkAcadImportPdf =
+      '$boardsDarkAcademiaPath/import_pdf.png';
   static const String boardDarkAcadBook = '$boardsDarkAcademiaPath/book.png';
-  static const String boardDarkAcadResearchPaper = '$boardsDarkAcademiaPath/research_paper.png';
-  static const String boardDarkAcadTemplateBg = '$boardsDarkAcademiaPath/template_bg.png';
-  static const String boardDarkAcadFileUploadBg = '$boardsDarkAcademiaPath/file_upload_bg.png';
-  static const String boardDarkAcadCourseActionsBg = '$boardsDarkAcademiaPath/course_actions_bg.png';
-  static const String boardDarkAcadPopupHeader = '$boardsDarkAcademiaPath/popup_header.png';
+  static const String boardDarkAcadResearchPaper =
+      '$boardsDarkAcademiaPath/research_paper.png';
+  static const String boardDarkAcadTemplateBg =
+      '$boardsDarkAcademiaPath/template_bg.png';
+  static const String boardDarkAcadFileUploadBg =
+      '$boardsDarkAcademiaPath/file_upload_bg.png';
+  static const String boardDarkAcadCourseActionsBg =
+      '$boardsDarkAcademiaPath/course_actions_bg.png';
+  static const String boardDarkAcadPopupHeader =
+      '$boardsDarkAcademiaPath/popup_header.png';
   // static const String boardDarkAcad = '$boardsDarkAcademiaPath/.png';
 
   //board light academia
@@ -258,7 +267,8 @@ class Images {
   //board plain
   static const String boardPlainPreview = '$boardsPlainPath/preview.png';
   static const String boardPlainScience = '$boardsPlainPath/science.png';
-  static const String boardPlainImportFiles = '$boardsPlainPath/import_files.png';
+  static const String boardPlainImportFiles =
+      '$boardsPlainPath/import_files.png';
   static const String boardPlainImportPdf = '$boardsPlainPath/import_pdf.png';
   static const String boardPlainCreateNote = '$boardsPlainPath/create_note.png';
   // static const String boardPlain = '$boardsPlainPath/.png';
@@ -266,14 +276,28 @@ class Images {
 
   //Board nature
   static const String boardNaturePreview = '$boardsNaturePath/preview.png';
-  static const String boardNatureThermodynamics =
-      '$boardsNaturePath/thermodynamics.png';
-  static const String boardNatureWave = '$boardsNaturePath/wave.png';
-  static const String boardNatureNewton = '$boardsNaturePath/newton.png';
-  static const String boardNatureQuantum = '$boardsNaturePath/quantum.png';
-  static const String boardNatureOptics = '$boardsNaturePath/optics.png';
-  static const String boardNatureElectromagnetism =
-      '$boardsNaturePath/electromagnetism.png';
+  static const String boardNatureWaveLine = '$boardsNaturePath/wave_line.svg';
+  static const String boardNatureQuantumIcon =
+      '$boardsNaturePath/quantum_icon.svg';
+  static const String boardNatureThermometer =
+      '$boardsNaturePath/thermometer.svg';
+  static const String boardNatureResearchPaper =
+      '$boardsNaturePath/research_paper.png';
+  static const String boardNatureLandscape =
+      '$boardsNaturePath/landscape.png';
+  static const String boardNatureHeader = '$boardsNaturePath/header.png';
+  static const String boardNatureCreateNote =
+      '$boardsNaturePath/create_note.png';
+  static const String boardNatureImportFiles =
+      '$boardsNaturePath/import_files.png';
+  static const String boardNatureImportPdf = '$boardsNaturePath/import_pdf.png';
+  static const String boardNatureDataCollection =
+      '$boardsNaturePath/data_collection.png';
+  static const String boardNatureObservationLog =
+      '$boardsNaturePath/observation_log.png';
+  static const String boardNatureFileUploadBg =
+      '$boardsNaturePath/file_upload_bg.png';
+  // static const String boardNature = '$boardsNaturePath/.png';
   // static const String boardNature = '$boardsNaturePath/.png';
 
   //Board minimalist
@@ -292,12 +316,6 @@ class Images {
       '$boardsMinimalistPath/thermodynamics.svg';
   // static const String boardMinimalist = '$boardsMinimalistPath/.png';
 
-  static const String boardNatureWaveLine = '$boardsNaturePath/wave_line.svg';
-  static const String boardNatureQuantumIcon =
-      '$boardsNaturePath/quantum_icon.svg';
-  static const String boardNatureThermometer =
-      '$boardsNaturePath/thermometer.svg';
-
   //boards create
   static const String boardPlain = '$boardsCreatePath/plain.png';
   static const String boardMinimalist = '$boardsCreatePath/minimalist.png';
@@ -307,8 +325,8 @@ class Images {
   static const String boardNature = '$boardsCreatePath/nature.png';
   static const String boardPastel = '$boardsCreatePath/pastel.png';
   static const String boardNeon = '$boardsCreatePath/neon.png';
-  
-    //TODO might delete
+
+  //TODO might delete
   static const String boardPreview = '$boardsCreatePath/preview.png';
   static const String boardVintage = '$boardsCreatePath/vintage.png';
 
@@ -324,19 +342,23 @@ class Images {
   static const String noteOptics = '$boardsNotesPath/optics.png';
 
   //note template
-  static const String noteTemplateCompareContrast = '$noteTemplatePath/compare_contrast.png';
+  static const String noteTemplateCompareContrast =
+      '$noteTemplatePath/compare_contrast.png';
   static const String noteTemplateKanban = '$noteTemplatePath/kanban.png';
   static const String noteTemplateAi = '$noteTemplatePath/ai.png';
   static const String noteTemplateBlank = '$noteTemplatePath/blank.png';
   static const String noteTemplateCornell = '$noteTemplatePath/cornell.png';
-  static const String noteTemplateLapReport = '$noteTemplatePath/lap_report.png';
+  static const String noteTemplateLapReport =
+      '$noteTemplatePath/lap_report.png';
   static const String noteTemplateSquared = '$noteTemplatePath/squared.png';
   static const String noteTemplateLined = '$noteTemplatePath/lined.png';
   static const String noteTemplateTimeline = '$noteTemplatePath/timeline.png';
   static const String noteTemplateThesis = '$noteTemplatePath/thesis.png';
-  static const String noteTemplateFlashcards = '$noteTemplatePath/flashcards.png';
+  static const String noteTemplateFlashcards =
+      '$noteTemplatePath/flashcards.png';
   static const String noteTemplateCritical = '$noteTemplatePath/critical.png';
-  static const String noteTemplateComparative = '$noteTemplatePath/comparative.png';
+  static const String noteTemplateComparative =
+      '$noteTemplatePath/comparative.png';
   static const String noteTemplateResearch = '$noteTemplatePath/research.png';
   static const String noteTemplateDotted = '$noteTemplatePath/dotted.png';
   static const String noteTemplateApa = '$noteTemplatePath/apa.png';
