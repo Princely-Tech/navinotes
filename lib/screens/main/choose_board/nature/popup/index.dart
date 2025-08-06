@@ -16,7 +16,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
             _courseActions(),
             _fileUploadsSection(),
             _studyTemplateSection(),
-
+            _semesterJourney(),
             // Semester Journey Section
             Container(
               color: const Color(0xFF2D5016),
@@ -313,7 +313,9 @@ class BoardNaturePopupScreen extends StatelessWidget {
       ),
     );
   }
-
+Widget _semesterJourney(){
+  return Container();
+}
   Widget _studyTemplateSection() {
     return _section(
       title: 'Study Templates',
