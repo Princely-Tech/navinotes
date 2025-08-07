@@ -17,269 +17,206 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
             child: ScrollableController(
               mobilePadding: EdgeInsets.symmetric(vertical: 15),
               tabletPadding: EdgeInsets.symmetric(vertical: 30),
-              child: ResponsiveHorizontalPadding(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 50,
-                  children: [
-                    // _courseTitle(),
-                    // _courseActions(),
-                    _fileUploads(),
-
-                    // Study Templates Section
-                    Padding(
-                      padding: EdgeInsets.only(top: 96),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Study Templates',
-                            style: TextStyle(
-                              color: const Color(0xFF2C2C2C),
-                              fontSize: 20,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Professional formats for your scientific analysis',
-                            style: TextStyle(
-                              color: const Color(0xFF6B6B6B),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          SizedBox(height: 48),
-                          Row(
-                            children: [
-                              _buildTemplateCard(
-                                icon: Icons.description,
-                                title: 'Lab Report',
-                                description:
-                                    'Format for experimental documentation',
-                                usage: 'Used 24 times',
-                              ),
-                              SizedBox(width: 32),
-                              _buildTemplateCard(
-                                icon: Icons.analytics,
-                                title: 'Research Analysis',
-                                description:
-                                    'Framework for evaluating scientific sources',
-                                usage: 'Used 12 times',
-                              ),
-                              SizedBox(width: 32),
-                              _buildTemplateCard(
-                                icon: Icons.summarize,
-                                title: 'Scientific Summary',
-                                description:
-                                    'Templates for summarizing complex topics',
-                                usage: 'Used 8 times',
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 50,
+                children: [
+                  _widthLimiter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 50,
+                      children: [
+                        _courseTitle(),
+                        _courseActions(),
+                        _fileUploads(),
+                        _studyTemplates(),
+                        _courseTimeLine(),
+                      ],
                     ),
-
-                    // Course Timeline Section
-                    Padding(
-                      padding: EdgeInsets.only(top: 96),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Course Timeline',
-                            style: TextStyle(
-                              color: const Color(0xFF2C2C2C),
-                              fontSize: 20,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Key events and assignments throughout the semester',
-                            style: TextStyle(
-                              color: const Color(0xFF6B6B6B),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          SizedBox(height: 48),
-                          Column(
-                            children: [
-                              _buildTimelineCard(
-                                title: 'Week 1-2: Cell Structure & Function',
-                                status: 'In Progress',
-                                assignment:
-                                    'Assignment: Cell Structure Lab Report',
-                                dueDate: 'Due Sept 16',
-                                progress: 0.65,
-                                tags: [
-                                  'Cell Membrane',
-                                  'Cytoplasm',
-                                  'Organelles',
-                                  'Microscopy',
-                                ],
-                              ),
-                              SizedBox(height: 40),
-                              _buildTimelineCard(
-                                title: 'Week 3-4: Genetics & DNA',
-                                status: 'Upcoming',
-                                assignment:
-                                    'Assignment: Genetic Inheritance Quiz',
-                                dueDate: 'Due Sept 27',
-                                progress: 0.1,
-                                tags: [
-                                  'DNA Structure',
-                                  'Inheritance',
-                                  'Genes',
-                                  'Mutations',
-                                ],
-                              ),
-                              SizedBox(height: 40),
-                              _buildTimelineCard(
-                                title:
-                                    'Week 5-6: Evolution & Natural Selection',
-                                status: 'Not Started',
-                                assignment: 'Assignment: Evolution Case Study',
-                                dueDate: 'Not Started',
-                                progress: 0.0,
-                                tags: [
-                                  'Natural Selection',
-                                  'Adaptation',
-                                  'Speciation',
-                                  'Fossil Record',
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Footer Section
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 49),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(
-                            width: 1,
-                            color: const Color(0xFFF0F0F0),
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Course Details',
-                                  style: TextStyle(
-                                    color: const Color(0xFF6B6B6B),
-                                    fontSize: 14,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                                SizedBox(height: 24),
-                                _buildDetailItem('Course: BIOLOGY 101'),
-                                _buildDetailItem('Instructor: Dr. Sarah Chen'),
-                                _buildDetailItem(
-                                  'Email: s.chen@university.edu',
-                                ),
-                                _buildDetailItem(
-                                  'Office: Science Building, Room 110',
-                                ),
-                                _buildDetailItem(
-                                  'Office Hours: Tues 1-3pm, Thurs 2-4pm',
-                                ),
-                                _buildDetailItem('Phone: (555) 123-4567'),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Class Information',
-                                  style: TextStyle(
-                                    color: const Color(0xFF6B6B6B),
-                                    fontSize: 14,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                                SizedBox(height: 24),
-                                _buildDetailItem(
-                                  'Schedule: Mon, Wed, Fri 10:00-11:00 AM',
-                                ),
-                                _buildDetailItem(
-                                  'Location: Science Building, Room 205',
-                                ),
-                                _buildDetailItem('Semester: Fall 2025'),
-                                SizedBox(height: 48),
-                                Text(
-                                  'Quick Links',
-                                  style: TextStyle(
-                                    color: const Color(0xFF6B6B6B),
-                                    fontSize: 14,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                                SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: Text('Syllabus'),
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF00555A,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 32),
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: Text('Library Resources'),
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF00555A,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 32),
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: Text('Academic Calendar'),
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF00555A,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  _footer(),
+                ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _widthLimiter({required Widget child}) {
+    return ResponsiveHorizontalPadding(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(child: WidthLimiter(mobile: largeDesktopSize, child: child)),
+        ],
+      ),
+    );
+  }
+
+  Widget _footerItem({required String title, required List<Widget> children}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: const Color(0xFF6B6B6B),
+            fontSize: 14,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        SizedBox(height: 24),
+        ...children,
+      ],
+    );
+  }
+
+  Widget _footer() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 50),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(width: 1, color: const Color(0xFFF0F0F0)),
+        ),
+      ),
+      child: _widthLimiter(
+        child: CustomGrid(
+          largeDesktop: 2,
+          children: [
+            _footerItem(
+              title: 'Course Details',
+              children: [
+                _buildDetailItem('Course: BIOLOGY 101'),
+                _buildDetailItem('Instructor: Dr. Sarah Chen'),
+                _buildDetailItem('Email: s.chen@university.edu'),
+                _buildDetailItem('Office: Science Building, Room 110'),
+                _buildDetailItem('Office Hours: Tues 1-3pm, Thurs 2-4pm'),
+                _buildDetailItem('Phone: (555) 123-4567'),
+              ],
+            ),
+            _footerItem(
+              title: 'Class Information',
+              children: [
+                _buildDetailItem('Schedule: Mon, Wed, Fri 10:00-11:00 AM'),
+                _buildDetailItem('Location: Science Building, Room 205'),
+                _buildDetailItem('Semester: Fall 2025'),
+                SizedBox(height: 25),
+                Text(
+                  'Quick Links',
+                  style: TextStyle(
+                    color: const Color(0xFF6B6B6B),
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Row(
+                  spacing: 15,
+                  children:
+                      ['Syllabus', 'Library Resources', 'Academic Calendar']
+                          .map(
+                            (str) => AppButton.text(
+                              onTap: () {},
+                              wrapWithFlexible: true,
+                              child: Flexible(
+                                child: Text(
+                                  str,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: const Color(0xFF00555A),
+                                    fontSize: 14,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w300,
+                                    height: 1.43,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _courseTimeLine() {
+    return _section(
+      title: 'Course Timeline',
+      subTitle: 'Key events and assignments throughout the semester',
+      child: Column(
+        spacing: 40,
+        children: [
+          _buildTimelineCard(
+            title: 'Week 1-2: Cell Structure & Function',
+            status: 'In Progress',
+            assignment: 'Assignment: Cell Structure Lab Report',
+            dueDate: 'Due Sept 16',
+            progress: 0.65,
+            tags: ['Cell Membrane', 'Cytoplasm', 'Organelles', 'Microscopy'],
+          ),
+
+          _buildTimelineCard(
+            title: 'Week 3-4: Genetics & DNA',
+            status: 'Upcoming',
+            assignment: 'Assignment: Genetic Inheritance Quiz',
+            dueDate: 'Due Sept 27',
+            progress: 0.1,
+            tags: ['DNA Structure', 'Inheritance', 'Genes', 'Mutations'],
+          ),
+
+          _buildTimelineCard(
+            title: 'Week 5-6: Evolution & Natural Selection',
+            status: 'Not Started',
+            assignment: 'Assignment: Evolution Case Study',
+            dueDate: 'Not Started',
+            progress: 0.0,
+            tags: [
+              'Natural Selection',
+              'Adaptation',
+              'Speciation',
+              'Fossil Record',
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _studyTemplates() {
+    return _section(
+      title: 'Study Templates',
+      subTitle: 'Professional formats for your scientific analysis',
+      child: CustomGrid(
+        spacing: 32,
+        children: [
+          _buildTemplateCard(
+            icon: Images.flask,
+            title: 'Lab Report',
+            description: 'Format for experimental documentation',
+            usage: 'Used 24 times',
+          ),
+
+          _buildTemplateCard(
+            icon: Images.chart3,
+            title: 'Research Analysis',
+            description: 'Framework for evaluating scientific sources',
+            usage: 'Used 12 times',
+          ),
+
+          _buildTemplateCard(
+            icon: Images.file2,
+            title: 'Scientific Summary',
+            description: 'Templates for summarizing complex topics',
+            usage: 'Used 8 times',
           ),
         ],
       ),
@@ -702,48 +639,52 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
   }
 
   Widget _buildTemplateCard({
-    required IconData icon,
+    required String icon,
     required String title,
     required String description,
     required String usage,
   }) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(25),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFF0F0F0)),
-          borderRadius: BorderRadius.circular(2),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 20),
-            SizedBox(height: 16),
-            Text(
-              title,
-              style: TextStyle(
-                color: const Color(0xFF2C2C2C),
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-              ),
+    return Container(
+      padding: EdgeInsets.all(25),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xFFF0F0F0)),
+        borderRadius: BorderRadius.circular(2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SVGImagePlaceHolder(
+            imagePath: icon,
+            size: 20,
+            color: const Color(0xFF00555A),
+          ),
+          SizedBox(height: 16),
+          Text(
+            title,
+            style: TextStyle(
+              color: const Color(0xFF2C2C2C),
+              fontSize: 16,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
             ),
-            SizedBox(height: 8),
-            Text(
-              description,
-              style: TextStyle(
-                color: const Color(0xFF6B6B6B),
-                fontSize: 14,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w300,
-              ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            description,
+            style: TextStyle(
+              color: const Color(0xFF6B6B6B),
+              fontSize: 14,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w300,
             ),
-            SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
+          ),
+          SizedBox(height: 24),
+          Row(
+            spacing: 15,
+            children: [
+              Expanded(
+                child: Text(
                   usage,
                   style: TextStyle(
                     color: const Color(0xFF6B6B6B),
@@ -752,20 +693,20 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-                TextButton(
-                  onPressed: () {},
-                  child: Text('Use Template'),
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xFF00555A),
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
+              ),
+              Text(
+                'Use Template',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: const Color(0xFF00555A),
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w300,
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
