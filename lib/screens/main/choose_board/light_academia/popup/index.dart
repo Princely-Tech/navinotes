@@ -1,584 +1,535 @@
-import 'package:flutter/material.dart';
+import 'package:navinotes/packages.dart';
 
 class BoardLightAcadPopupScreen extends StatelessWidget {
   const BoardLightAcadPopupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 2, color: const Color(0xFFCED4DA)),
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header Section
-          Container(
-            width: 1440,
-            height: 67,
-            decoration: ShapeDecoration(
-              color: const Color(0xFFFAF7F0),
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: const Color(0x4CFFB347)),
-              ),
-              shadows: [
-                BoxShadow(
-                  color: Color(0x0C000000),
-                  blurRadius: 2,
-                  offset: Offset(0, 1),
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 80),
-              child: Row(
-                children: [
-                  // Course Title
-                  // Expanded(
-                  //   child: Row(
-                  //     children: [
-                  //       IconButton(onPressed: () {
-
-                  //       }, icon: Icon(Icons.arrow_back)
-                  //       ), // Replace with actual icon
-                  //       SizedBox(width: 16),
-                  //       IconButton(icon: Icon(Icons.home)), // Replace with actual icon
-                  //       SizedBox(width: 38),
-                  //       Text(
-                  //         'BIOLOGY 101 - Fall Semester',
-                  //         style: TextStyle(
-                  //           color: const Color(0xFF654321),
-                  //           fontSize: 16,
-                  //           fontFamily: 'EB Garamond',
-                  //           fontWeight: FontWeight.w400,
-                  //           height: 1.50,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
-                  // Navigation Tabs
-                  // Container(
-                  //   width: 309.50,
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       Container(
-                  //         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                  //         decoration: BoxDecoration(
-                  //           border: Border.all(width: 2, color: const Color(0xFFD4AF37)),
-                  //         child: Text('Overview', style: TextStyle(color: const Color(0xFFD4AF37)))),
-                  //       Text('Uploads', style: TextStyle(color: const Color(0xFF8B4513))),
-                  //       Text('Assignments', style: TextStyle(color: const Color(0xFF8B4513))),
-                  //     ],
-                  //   ),
-                  // ),
-
-                  // User Actions
-                  Container(
-                    width: 150,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+    return ScaffoldFrame(
+      backgroundColor: const Color(0xFFF5F2E8),
+      body: Consumer<LayoutProviderVm>(
+        builder: (_, layoutVm, _) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _header(),
+              Expanded(
+                child: ScrollableController(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.search),
-                        ), // Replace with actual icon
-                        Stack(
-                          children: [
-                            IconButton(icon: Icon(Icons.notifications)),
-                            Positioned(
-                              top: -4,
-                              right: 0,
-                              child: Container(
-                                width: 16,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFD4AF37),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '3',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.settings),
-                        ), // Replace with actual icon
-                        CircleAvatar(
-                          radius: 16,
-                          backgroundImage: NetworkImage(
-                            "https://placehold.co/32x32",
+                        _widthLimiter(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 48,
+                            children: [
+                              _courseTitleSection(),
+                              _courseActions(),
+                              _fileUploads(),
+                            ],
                           ),
                         ),
+                        Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(Images.boardLightAcadPopupImg),
+                              fit: getDeviceResponsiveValue(
+                                deviceType: layoutVm.deviceType,
+                                mobile: BoxFit.cover,
+                                largeDesktop: BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          padding: EdgeInsets.only(top: 25, bottom: 40),
+                          child: _widthLimiter(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 25,
+                              children: [_studyTemplates(), _courseTimeline()],
+                            ),
+                          ),
+                        ),
+                        _footer(),
                       ],
                     ),
                   ),
-                ],
+                ),
               ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _footerItem({required String title, required Widget child}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
+      children: [
+        Text(
+          'Course Details',
+          style: TextStyle(
+            color: const Color(0xFFFFB347),
+            fontSize: 20,
+            fontFamily: 'EB Garamond',
+            fontWeight: FontWeight.w400,
+            height: 1.40,
+          ),
+        ),
+
+        child,
+      ],
+    );
+  }
+
+  Widget _courseDetails() {
+    return _footerItem(
+      title: 'Course Details',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildDetailItem('Instructor:', 'Dr. Eleanor Blackwood'),
+          _buildDetailItem('Email:', 'e.blackwood@academia.edu'),
+          _buildDetailItem('Office Hours:', 'Mon/Wed 2:00-4:00 PM'),
+          _buildDetailItem('Phone:', '(555) 123-4567'),
+        ],
+      ),
+    );
+  }
+
+  Widget _classInfo() {
+    return _footerItem(
+      title: 'Class Information',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildDetailItem('Schedule:', 'Tue/Thu 10:30 AM - 12:00 PM'),
+          _buildDetailItem('Location:', 'Science Hall, Room 305'),
+          _buildDetailItem('Semester:', 'Fall 2025'),
+          SizedBox(height: 16),
+          Text(
+            'Quick Links',
+            style: TextStyle(
+              color: const Color(0xFFFFB347),
+              fontSize: 16,
+              fontFamily: 'EB Garamond',
+              fontWeight: FontWeight.w400,
+              height: 1.50,
             ),
           ),
+          SizedBox(height: 8),
+          Wrap(
+            spacing: 16,
+            children:
+                ['Syllabus', 'Academic Calendar', 'Library Resources']
+                    .map(
+                      (str) => Text(
+                        str,
+                        style: TextStyle(
+                          color: const Color(0xFFFAF7F0),
+                          fontSize: 16,
+                          fontFamily: 'Open Sans',
+                          fontWeight: FontWeight.w400,
+                          height: 1.50,
+                        ),
+                      ),
+                    )
+                    .toList(),
+          ),
+        ],
+      ),
+    );
+  }
 
-          // Main Content
-          Expanded(
-            child: Container(
-              width: 1440,
-              decoration: ShapeDecoration(
-                color: const Color(0xFFF5F2E8),
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(color: const Color(0xFFE5E7EB)),
+  Widget _footer() {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return Container(
+          decoration: BoxDecoration(color: const Color(0xFF654321)),
+          child: Stack(
+            children: [
+              Positioned(
+                right: 0,
+                top: 0,
+                bottom: 0,
+                child: Opacity(
+                  opacity: getDeviceResponsiveValue(
+                    deviceType: layoutVm.deviceType,
+                    mobile: 0.5,
+                    desktop: 1,
+                  ),
+                  child: ImagePlaceHolder(
+                    imagePath: Images.boardLightAcadPopupFooterBg,
+                    borderRadius: BorderRadius.zero,
+                  ),
                 ),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 80),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              VisibleController(
+                mobile: false,
+                desktop: true,
+                child: Positioned(
+                  right: getDeviceResponsiveValue(
+                    deviceType: layoutVm.deviceType,
+                    mobile: 250,
+                    largeDesktop: 350,
+                  ),
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(height: 32),
-
-                      // Course Title and Description
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Explore Cell Biology & Genetics',
-                                  style: TextStyle(
-                                    color: const Color(0xFF654321),
-                                    fontSize: 36,
-                                    fontFamily: 'EB Garamond',
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                SizedBox(height: 16),
-                                Text(
-                                  'Dive into the fascinating world of cellular structures and genetic mechanisms...',
-                                  style: TextStyle(
-                                    color: const Color(0xFF8B4513),
-                                    fontSize: 16,
-                                    fontFamily: 'Open Sans',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Next Session Card
-                          Container(
-                            width: 416,
-                            height: 256,
-                            decoration: BoxDecoration(
-                              color: const Color(0x19FFB347),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: const Color(0x4CFFB347),
-                              ),
-                            ),
-                            padding: EdgeInsets.all(21),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Next Session',
-                                  style: TextStyle(
-                                    color: const Color(0xFF654321),
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                SizedBox(height: 16),
-                                Text(
-                                  'DNA Replication Mechanisms',
-                                  style: TextStyle(
-                                    color: const Color(0xFF2F2F2F),
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Dr. Eleanor Blackwood',
-                                  style: TextStyle(
-                                    color: const Color(0xFF2F2F2F),
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(Icons.calendar_today, size: 14),
-                                    SizedBox(width: 8),
-                                    Text('Tuesday, October 12th'),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(Icons.access_time, size: 14),
-                                    SizedBox(width: 8),
-                                    Text('10:30 AM - 12:00 PM'),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(Icons.location_on, size: 14),
-                                    SizedBox(width: 8),
-                                    Text('Science Hall, Room 305'),
-                                  ],
-                                ),
-                                SizedBox(height: 24),
-                                ElevatedButton(
-                                  onPressed: () {},
-                                  child: Text('Prepare Materials'),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: const Color(0xFF8B4513),
-                                    onPrimary: const Color(0xFFD4AF37),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 48),
-
-                      // Course Actions Section
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Course Actions',
-                            style: TextStyle(
-                              color: const Color(0xFF654321),
-                              fontSize: 24,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Create and manage your study materials',
-                            style: TextStyle(color: const Color(0xFF8B4513)),
-                          ),
-                          SizedBox(height: 24),
-
-                          Row(
-                            children: [
-                              // Create Note Card
-                              _buildActionCard(
-                                icon: Icons.edit,
-                                title: 'Create Note',
-                                description:
-                                    'Start a new study note with customizable templates and formatting options.',
-                                actionText: 'Create a new note',
-                              ),
-                              SizedBox(width: 24),
-
-                              // Import PDF Card
-                              _buildActionCard(
-                                icon: Icons.picture_as_pdf,
-                                title: 'Import PDF',
-                                description:
-                                    'Upload and annotate PDF documents from your course materials or research.',
-                                actionText: 'Import document',
-                              ),
-                              SizedBox(width: 24),
-
-                              // Import Files Card
-                              _buildActionCard(
-                                icon: Icons.attach_file,
-                                title: 'Import Files',
-                                description:
-                                    'Upload multiple files including images, documents, and presentations.',
-                                actionText: 'Upload files',
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 48),
-
-                      // File Uploads Section
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'File Uploads',
-                            style: TextStyle(
-                              color: const Color(0xFF654321),
-                              fontSize: 24,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Recently uploaded study materials',
-                            style: TextStyle(color: const Color(0xFF8B4513)),
-                          ),
-                          SizedBox(height: 24),
-
-                          Row(
-                            children: [
-                              _buildFileCard(
-                                'Cell_Membrane_Notes.pdf',
-                                '2.4 MB',
-                                'Oct 8, 2023',
-                              ),
-                              SizedBox(width: 24),
-                              _buildFileCard(
-                                'DNA_Structure_Lecture.pptx',
-                                '5.7 MB',
-                                'Oct 5, 2023',
-                              ),
-                              SizedBox(width: 24),
-                              _buildFileCard(
-                                'Cell_Microscopy_Images.zip',
-                                '18.2 MB',
-                                'Oct 2, 2023',
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 48),
-
-                      // Study Templates Section
-                      Container(
-                        padding: EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: const Color(0xC99A8634),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Study Templates',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Pre-designed formats for effective studying',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: 24),
-
-                            Row(
-                              children: [
-                                _buildTemplateCard(
-                                  icon: Icons.description,
-                                  title: 'Lab Report',
-                                  description:
-                                      'Structured template for documenting laboratory experiments and findings.',
-                                  usedBy: '127 students',
-                                ),
-                                SizedBox(width: 24),
-                                _buildTemplateCard(
-                                  icon: Icons.analytics,
-                                  title: 'Research Analysis',
-                                  description:
-                                      'Framework for analyzing scientific papers and research findings.',
-                                  usedBy: '89 students',
-                                ),
-                                SizedBox(width: 24),
-                                _buildTemplateCard(
-                                  icon: Icons.summarize,
-                                  title: 'Scientific Summary',
-                                  description:
-                                      'Template for concise summaries of complex scientific concepts.',
-                                  usedBy: '104 students',
-                                ),
-                              ],
-                            ),
-                          ],
+                      Flexible(
+                        child: ImagePlaceHolder(
+                          imagePath: Images.boardLightAcadFooterImg,
+                          borderRadius: BorderRadius.zero,
                         ),
                       ),
-
-                      SizedBox(height: 48),
-
-                      // Course Timeline Section
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: const Color(0xC99A8634),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Course Timeline',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Weekly course progression and assignments',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 24),
-
-                          // Timeline Items
-                          _buildTimelineItem(
-                            week: 'Week 1-2: Cell Structure & Function',
-                            assignment: 'Cell Structure Lab Report',
-                            status: 'In Progress',
-                            progress: 0.65,
-                            tags: [
-                              'Cell Membrane',
-                              'Cytoplasm',
-                              'Organelles',
-                              'Microscopy',
-                            ],
-                          ),
-                          SizedBox(height: 24),
-                          _buildTimelineItem(
-                            week: 'Week 3-4: Genetics & DNA',
-                            assignment: 'Genetic Inheritance Quiz',
-                            status: 'Due Oct 15',
-                            tags: [
-                              'DNA Structure',
-                              'Inheritance',
-                              'Genes',
-                              'Mutations',
-                            ],
-                          ),
-                          SizedBox(height: 24),
-                          _buildTimelineItem(
-                            week: 'Week 5-6: Evolution & Natural Selection',
-                            assignment: 'Evolution Case Study',
-                            status: 'Not Started',
-                            tags: [
-                              'Natural Selection',
-                              'Adaptation',
-                              'Speciation',
-                              'Fossil Record',
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 48),
                     ],
                   ),
                 ),
               ),
-            ),
+              ResponsivePadding(
+                mobile: EdgeInsets.symmetric(vertical: 40),
+                desktop: EdgeInsets.only(top: 80, bottom: 40),
+                largeDesktop: EdgeInsets.only(top: 100, bottom: 40),
+                child: _widthLimiter(
+                  child: CustomGrid(
+                    largeDesktop: 2,
+                    children: [_courseDetails(), _classInfo()],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _courseTimeline() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xC99A8634),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: const Color(0x4C8B4513)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
+              Text(
+                'Course Timeline',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontFamily: 'EB Garamond',
+                  fontWeight: FontWeight.w400,
+                  height: 1.33,
+                ),
+              ),
+              Text(
+                'Weekly course progression and assignments',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontFamily: 'Open Sans',
+                  fontWeight: FontWeight.w400,
+                  height: 1.50,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 24),
+        // Timeline Items
+        _buildTimelineItem(
+          week: 'Week 1-2: Cell Structure & Function',
+          assignment: 'Cell Structure Lab Report',
+          status: 'In Progress',
+          progress: 0.65,
+          tags: ['Cell Membrane', 'Cytoplasm', 'Organelles', 'Microscopy'],
+        ),
+        SizedBox(height: 24),
+        _buildTimelineItem(
+          week: 'Week 3-4: Genetics & DNA',
+          assignment: 'Genetic Inheritance Quiz',
+          status: 'Due Oct 15',
+          tags: ['DNA Structure', 'Inheritance', 'Genes', 'Mutations'],
+        ),
+        SizedBox(height: 24),
+        _buildTimelineItem(
+          week: 'Week 5-6: Evolution & Natural Selection',
+          assignment: 'Evolution Case Study',
+          status: 'Not Started',
+          tags: [
+            'Natural Selection',
+            'Adaptation',
+            'Speciation',
+            'Fossil Record',
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _studyTemplates() {
+    return _section(
+      title: 'Study Templates',
+      subTitle: 'Pre-designed formats for effective studying',
+      isWhite: true,
+      child: CustomGrid(
+        spacing: 24,
+        children: [
+          _buildTemplateCard(
+            icon: Images.flask,
+            title: 'Lab Report',
+            description:
+                'Structured template for documenting laboratory experiments and findings.',
+            usedBy: '127 students',
           ),
 
-          // Footer Section
-          Container(
-            width: 1440,
-            padding: EdgeInsets.symmetric(vertical: 60, horizontal: 80),
-            decoration: BoxDecoration(color: const Color(0xFF654321)),
-            child: Row(
-              children: [
-                // Course Details
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Course Details',
-                        style: TextStyle(
-                          color: const Color(0xFFFFB347),
-                          fontSize: 20,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      _buildDetailItem('Instructor:', 'Dr. Eleanor Blackwood'),
-                      _buildDetailItem('Email:', 'e.blackwood@academia.edu'),
-                      _buildDetailItem('Office Hours:', 'Mon/Wed 2:00-4:00 PM'),
-                      _buildDetailItem('Phone:', '(555) 123-4567'),
-                    ],
-                  ),
-                ),
+          _buildTemplateCard(
+            icon: Images.chart3,
+            title: 'Research Analysis',
+            description:
+                'Framework for analyzing scientific papers and research findings.',
+            usedBy: '89 students',
+          ),
 
-                // Class Information
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Class Information',
-                        style: TextStyle(
-                          color: const Color(0xFFFFB347),
-                          fontSize: 20,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      _buildDetailItem(
-                        'Schedule:',
-                        'Tue/Thu 10:30 AM - 12:00 PM',
-                      ),
-                      _buildDetailItem('Location:', 'Science Hall, Room 305'),
-                      _buildDetailItem('Semester:', 'Fall 2025'),
-                      SizedBox(height: 16),
-                      Text(
-                        'Quick Links',
-                        style: TextStyle(color: const Color(0xFFFFB347)),
-                      ),
-                      SizedBox(height: 8),
-                      Wrap(
-                        spacing: 16,
-                        children: [
-                          Text(
-                            'Syllabus',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            'Academic Calendar',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            'Library Resources',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+          _buildTemplateCard(
+            icon: Images.file,
+            title: 'Scientific Summary',
+            description:
+                'Template for concise summaries of complex scientific concepts.',
+            usedBy: '104 students',
+          ),
+        ],
+      ),
+    );
+  }
 
-                // Footer Image
-                Container(
-                  width: 272,
-                  height: 272,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage("https://placehold.co/272x272"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+  Widget _fileUploads() {
+    return _section(
+      title: 'File Uploads',
+      subTitle: 'Recently uploaded study materials',
+      child: ScrollableController(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          spacing: 24,
+          children: [
+            _buildFileCard('Cell_Membrane_Notes.pdf', '2.4 MB', 'Oct 8, 2023'),
+            _buildFileCard(
+              'DNA_Structure_Lecture.pptx',
+              '5.7 MB',
+              'Oct 5, 2023',
+            ),
+            _buildFileCard(
+              'Cell_Microscopy_Images.zip',
+              '18.2 MB',
+              'Oct 2, 2023',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _section({
+    required String title,
+    required String subTitle,
+    required Widget child,
+    bool isWhite = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 20,
+      children: [
+        Column(
+          spacing: 4,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: isWhite ? AppTheme.white : const Color(0xFF654321),
+                fontSize: 24,
+                fontFamily: 'EB Garamond',
+                fontWeight: FontWeight.w400,
+                height: 1.33,
+              ),
+            ),
+            Text(
+              subTitle,
+              style: TextStyle(
+                color: isWhite ? AppTheme.white : const Color(0xFF8B4513),
+                fontSize: 16,
+                fontFamily: 'Open Sans',
+                fontWeight: FontWeight.w400,
+                height: 1.50,
+              ),
+            ),
+          ],
+        ),
+        child,
+      ],
+    );
+  }
+
+  Widget _courseActions() {
+    return _section(
+      title: 'Course Actions',
+      subTitle: 'Create and manage your study materials',
+      child: CustomGrid(
+        spacing: 24,
+        children: [
+          _buildActionCard(
+            icon: Images.pen2,
+            title: 'Create Note',
+            description:
+                'Start a new study note with customizable templates and formatting options.',
+            actionText: 'Create a new note',
+          ),
+          _buildActionCard(
+            icon: Images.pdf,
+            title: 'Import PDF',
+            description:
+                'Upload and annotate PDF documents from your course materials or research.',
+            actionText: 'Import document',
+          ),
+          _buildActionCard(
+            icon: Images.folder,
+            title: 'Import Files',
+            description:
+                'Upload multiple files including images, documents, and presentations.',
+            actionText: 'Upload files',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _title() {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Explore Cell Biology & Genetics',
+              style: TextStyle(
+                color: const Color(0xFF654321),
+                fontSize: getDeviceResponsiveValue(
+                  deviceType: layoutVm.deviceType,
+                  mobile: 30,
+                  tablet: 36,
                 ),
-              ],
+                fontFamily: 'EB Garamond',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Dive into the fascinating world of cellular structures and genetic mechanisms. This course explores the fundamental building blocks of life, from microscopic cell components to the intricate dance of DNA replication and genetic inheritance patterns.',
+              style: TextStyle(
+                color: const Color(0xFF8B4513),
+                fontSize: 16,
+                fontFamily: 'Open Sans',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _nextSession() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: const Color(0x19FFB347),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x19000000),
+            blurRadius: 6,
+            offset: Offset(0, 4),
+            spreadRadius: 0,
+          ),
+          BoxShadow(
+            color: Color(0x19000000),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+            spreadRadius: 0,
+          ),
+        ],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0x4CFFB347)),
+      ),
+      padding: EdgeInsets.all(21),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Next Session',
+            style: TextStyle(
+              color: const Color(0xFF654321),
+              fontSize: 20,
+              fontFamily: 'EB Garamond',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'DNA Replication Mechanisms',
+            style: TextStyle(
+              color: const Color(0xFF2F2F2F),
+              fontSize: 16,
+              fontFamily: 'Open Sans',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            'Dr. Eleanor Blackwood',
+            style: TextStyle(
+              color: const Color(0xFF2F2F2F),
+              fontSize: 14,
+              fontFamily: 'Open Sans',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          SizedBox(height: 8),
+          Column(
+            spacing: 8,
+            children: [
+              _nextSessionRow(
+                icon: Images.calender,
+                text: 'Tuesday, October 12th',
+              ),
+              _nextSessionRow(icon: Images.clock, text: '10:30 AM - 12:00 PM'),
+              _nextSessionRow(
+                icon: Images.location,
+                text: 'Science Hall, Room 305',
+              ),
+            ],
+          ),
+          SizedBox(height: 24),
+          AppButton(
+            onTap: () {},
+            text: 'Prepare Materials',
+            color: const Color(0xFF8B4513),
+            style: TextStyle(
+              color: const Color(0xFFD4AF37),
+              fontSize: 16,
+              fontFamily: 'EB Garamond',
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],
@@ -586,289 +537,333 @@ class BoardLightAcadPopupScreen extends StatelessWidget {
     );
   }
 
+  Widget _nextSessionRow({required String text, required String icon}) {
+    return Row(
+      spacing: 8,
+      children: [
+        SVGImagePlaceHolder(
+          imagePath: icon,
+          size: 14,
+          color: const Color(0xFF8B4513),
+        ),
+        Text(
+          text,
+          style: TextStyle(
+            color: const Color(0xFF8B4513),
+            fontSize: 14,
+            fontFamily: 'Open Sans',
+            fontWeight: FontWeight.w400,
+            height: 1.43,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _courseTitleSection() {
+    return ResponsiveSection(
+      mobile: Column(spacing: 30, children: [_title(), _nextSession()]),
+      desktop: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 30,
+        children: [
+          Expanded(child: _title()),
+          WidthLimiter(mobile: 500, child: _nextSession()),
+        ],
+      ),
+    );
+  }
+
+  Widget _widthLimiter({required Widget child}) {
+    return ResponsiveHorizontalPadding(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(child: WidthLimiter(mobile: largeDesktopSize, child: child)),
+        ],
+      ),
+    );
+  }
+
+  Widget _textRowSelect() {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        bool isBottom = getDeviceResponsiveValue(
+          deviceType: layoutVm.deviceType,
+          mobile: true,
+          laptop: false,
+        );
+        return TextRowSelect(
+          items: EditBoardTab.values.map((item) => item.toString()).toList(),
+          inActiveBorderColor:
+              isBottom
+                  ? const Color(0xFFD4AF37).withAlpha(100)
+                  : AppTheme.transparent,
+          selectedTextStyle: TextStyle(
+            color: const Color(0xFFD4AF37),
+            fontSize: 16,
+            fontFamily: 'EB Garamond',
+            fontWeight: FontWeight.w400,
+          ),
+          fillWidth: isBottom,
+          borderColor: const Color(0xFFD4AF37),
+          style: TextStyle(
+            color: const Color(0xFF8B4513),
+            fontSize: 16,
+            fontFamily: 'EB Garamond',
+            fontWeight: FontWeight.w400,
+            height: 1.50,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _header() {
+    return Column(
+      children: [
+        Container(
+          decoration: ShapeDecoration(
+            color: const Color(0xFFFAF7F0),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 1, color: const Color(0x4CFFB347)),
+            ),
+            shadows: [
+              BoxShadow(
+                color: Color(0x0C000000),
+                blurRadius: 2,
+                offset: Offset(0, 1),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: _widthLimiter(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      MenuButton(
+                        onPressed: () {},
+                        decoration: BoxDecoration(
+                          color: AppTheme.burntLeather.withAlpha(0XFF),
+                        ),
+                      ),
+                      AppIconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: AppTheme.burntLeather.withAlpha(0XFF),
+                        ),
+                      ),
+                      Flexible(
+                        child: Text(
+                          'BIOLOGY 101 - Fall Semester',
+                          style: TextStyle(
+                            color: const Color(0xFF654321),
+                            fontSize: 16,
+                            fontFamily: 'EB Garamond',
+                            fontWeight: FontWeight.w400,
+                            height: 1.50,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                VisibleController(
+                  mobile: false,
+                  laptop: true,
+                  child: _textRowSelect(),
+                ),
+
+                Row(
+                  children: [
+                    AppIconButton(
+                      onPressed: NavigationHelper.navigateToNotification,
+                      icon: Badge(
+                        backgroundColor: const Color(0xFFD4AF37),
+                        textStyle: AppTheme.text.copyWith(
+                          color: AppTheme.white,
+                          fontSize: 8.0,
+                        ),
+                        label: Center(
+                          child: Text('3', textAlign: TextAlign.center),
+                        ),
+                        child: Icon(
+                          Icons.notifications,
+                          color: const Color(0xFF8B4513),
+                        ),
+                      ),
+                    ),
+                    AppIconButton(
+                      onPressed: () {},
+                      icon: SVGImagePlaceHolder(
+                        imagePath: Images.ques,
+                        size: 16,
+                        color: const Color(0xFF8B4513),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: ProfilePic(borderColor: const Color(0xFFD4AF37)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        VisibleController(
+          mobile: true,
+          laptop: false,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: _textRowSelect(),
+          ),
+        ),
+      ],
+    );
+  }
+
   // Helper Widgets
   Widget _buildActionCard({
-    IconData icon,
-    String title,
-    String description,
-    String actionText,
+    required String icon,
+    required String title,
+    required String description,
+    required String actionText,
   }) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(21),
-        decoration: BoxDecoration(
-          color: const Color(0x33A67C52),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0x4C8B4513)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: const Color(0x338B4513),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, color: const Color(0xFF654321)),
+    return CustomCard(
+      addShadow: true,
+      padding: EdgeInsets.all(21),
+      decoration: BoxDecoration(
+        color: const Color(0x33A67C52),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0x4C8B4513)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          Row(
+            spacing: 12,
+            children: [
+              OutlinedChild(
+                size: 48,
+                decoration: BoxDecoration(
+                  color: const Color(0x338B4513),
+                  shape: BoxShape.circle,
                 ),
-                SizedBox(width: 12),
-                Text(
+                child: SVGImagePlaceHolder(
+                  imagePath: icon,
+                  size: 20,
+                  color: const Color(0xFFD4AF37),
+                ),
+              ),
+              Expanded(
+                child: Text(
                   title,
                   style: TextStyle(
                     color: const Color(0xFF654321),
                     fontSize: 20,
                   ),
                 ),
-              ],
+              ),
+            ],
+          ),
+          Text(
+            description,
+            style: TextStyle(
+              color: const Color(0xFF8B4513),
+              fontSize: 16,
+              fontFamily: 'Open Sans',
+              fontWeight: FontWeight.w400,
             ),
-            SizedBox(height: 16),
-            Text(description, style: TextStyle(color: const Color(0xFF8B4513))),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Text(
+          ),
+          Row(
+            spacing: 4,
+            children: [
+              Flexible(
+                child: Text(
                   actionText,
-                  style: TextStyle(color: const Color(0xFF948247)),
+                  style: TextStyle(
+                    color: const Color(0xFF948247),
+                    fontSize: 16,
+                    fontFamily: 'EB Garamond',
+                    fontWeight: FontWeight.w400,
+                    height: 1.50,
+                  ),
                 ),
-                SizedBox(width: 8),
-                Icon(
-                  Icons.arrow_forward,
-                  size: 16,
-                  color: const Color(0xFF948247),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              Icon(
+                Icons.arrow_forward,
+                size: 16,
+                color: const Color(0xFF948247),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildFileCard(String fileName, String size, String date) {
-    return Expanded(
-      child: Container(
+    return ConstrainedBox(
+      constraints: BoxConstraints(minWidth: 400),
+      child: CustomCard(
+        width: null,
+        addShadow: true,
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: const Color(0x19A67C52),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(width: 4, color: const Color(0xFFD4AF37)),
+          border: Border(
+            left: BorderSide(width: 4, color: const Color(0xFFD4AF37)),
+          ),
         ),
         child: Row(
-          children: [
-            Icon(Icons.insert_drive_file, size: 32),
-            SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    fileName,
-                    style: TextStyle(color: const Color(0xFF654321)),
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        size,
-                        style: TextStyle(
-                          color: const Color(0xFF8B4513),
-                          fontSize: 12,
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Text(
-                        date,
-                        style: TextStyle(
-                          color: const Color(0xFF8B4513),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.more_vert),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTemplateCard({
-    IconData icon,
-    String title,
-    String description,
-    String usedBy,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(21),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFAF7F0),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0x338B4513)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
+              spacing: 16,
               children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: const Color(0x33FFB347),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, color: const Color(0xFF654321)),
+                SVGImagePlaceHolder(
+                  imagePath: Images.pdf,
+                  size: 24,
+                  width: 4,
+                  color: const Color(0xFFD4AF37),
                 ),
-                SizedBox(width: 12),
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: const Color(0xFF654321),
-                    fontSize: 20,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Text(description, style: TextStyle(color: const Color(0xFF8B4513))),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(Icons.people, size: 12),
-                SizedBox(width: 8),
-                Text(
-                  'Used by $usedBy',
-                  style: TextStyle(
-                    color: const Color(0xFF8B4513),
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text('Use Template'),
-              style: ElevatedButton.styleFrom(
-                primary: const Color(0xFFF0EBE0),
-                onPrimary: const Color(0xFF654321),
-                minimumSize: Size(double.infinity, 42),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTimelineItem({
-    String week,
-    String assignment,
-    String status,
-    double progress = 0,
-    List<String> tags = const [],
-  }) {
-    return Stack(
-      children: [
-        Positioned(
-          left: 16,
-          top: 0,
-          child: Container(
-            width: 2,
-            height: 208,
-            color: const Color(0x99FFB347),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.all(24),
-          margin: EdgeInsets.only(left: 48),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFAF7F0),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0x338B4513)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                week,
-                style: TextStyle(color: const Color(0xFF654321), fontSize: 20),
-              ),
-              SizedBox(height: 16),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0x7FF0EBE0),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color(0x198B4513)),
-                ),
-                child: Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          assignment,
-                          style: TextStyle(color: const Color(0xFF654321)),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color:
-                                status == 'In Progress'
-                                    ? const Color(0x33FFB347)
-                                    : status == 'Due Oct 15'
-                                    ? const Color(0x33D4AF37)
-                                    : const Color(0xFFF5F2E8),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            status,
-                            style: TextStyle(
-                              color: const Color(0xFF8B4513),
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    if (progress > 0) ...[
-                      SizedBox(height: 16),
-                      LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: const Color(0xFFF5F2E8),
-                        color: const Color(0xFFD4AF37),
+                    Text(
+                      fileName,
+                      style: TextStyle(
+                        color: const Color(0xFF654321),
+                        fontSize: 16,
+                        fontFamily: 'EB Garamond',
+                        fontWeight: FontWeight.w400,
+                        height: 1.50,
                       ),
-                    ],
-
-                    SizedBox(height: 16),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      spacing: 16,
                       children:
-                          tags
+                          [size, date]
                               .map(
-                                (tag) => Chip(
-                                  label: Text(
-                                    tag,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  backgroundColor: const Color(0xFFF5F2E8),
-                                  labelStyle: TextStyle(
+                                (str) => Text(
+                                  str,
+                                  style: TextStyle(
                                     color: const Color(0xFF8B4513),
+                                    fontSize: 12,
+                                    fontFamily: 'Open Sans',
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.33,
                                   ),
                                 ),
                               )
@@ -876,24 +871,269 @@ class BoardLightAcadPopupScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+              ],
+            ),
+
+            SVGImagePlaceHolder(
+              imagePath: Images.upload4,
+              color: const Color(0xFFD4AF37),
+              size: 16,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTemplateCard({
+    required String icon,
+    required String title,
+    required String description,
+    required String usedBy,
+  }) {
+    return Container(
+      padding: EdgeInsets.all(21),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFAF7F0),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0x338B4513)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          Row(
+            spacing: 12,
+            children: [
+              OutlinedChild(
+                size: 40,
+                decoration: BoxDecoration(
+                  color: const Color(0x33FFB347),
+                  shape: BoxShape.circle,
+                ),
+                child: SVGImagePlaceHolder(
+                  imagePath: icon,
+                  color: const Color(0xFFD4AF37),
+                ),
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                  color: const Color(0xFF654321),
+                  fontSize: 20,
+                  fontFamily: 'EB Garamond',
+                  fontWeight: FontWeight.w400,
+                  height: 1.40,
+                ),
               ),
             ],
           ),
-        ),
-        Positioned(
-          left: 0,
-          top: 4,
-          child: Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: const Color(0xFFD4AF37),
-              shape: BoxShape.circle,
+          Text(
+            description,
+            style: TextStyle(
+              color: const Color(0xFF8B4513),
+              fontSize: 16,
+              fontFamily: 'Open Sans',
+              fontWeight: FontWeight.w400,
             ),
-            child: Icon(Icons.check, color: Colors.white, size: 16),
           ),
-        ),
-      ],
+          Row(
+            spacing: 8,
+            children: [
+              SVGImagePlaceHolder(
+                imagePath: Images.people,
+                size: 12,
+                color: const Color(0xFF8B4513),
+              ),
+              Expanded(
+                child: Text(
+                  'Used by $usedBy',
+                  style: TextStyle(
+                    color: const Color(0xFF8B4513),
+                    fontSize: 12,
+                    fontFamily: 'Open Sans',
+                    fontWeight: FontWeight.w400,
+                    height: 1.33,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          AppButton(
+            onTap: () {},
+            color: const Color(0xFFF0EBE0),
+            text: 'Use Template',
+            borderColor: const Color(0x338B4513),
+            minHeight: 40,
+            style: TextStyle(
+              color: const Color(0xFF654321),
+              fontSize: 16,
+              fontFamily: 'EB Garamond',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimelineItem({
+    required String week,
+    required String assignment,
+    required String status,
+    double progress = 0,
+    List<String> tags = const [],
+  }) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          VisibleController(
+            mobile: false,
+            tablet: true,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    top: 0,
+                    child: Center(
+                      child: Container(
+                        width: 2,
+                        color: const Color(0x99FFB347),
+                      ),
+                    ),
+                  ),
+                  OutlinedChild(
+                    size: 32,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFD4AF37),
+                      shape: BoxShape.circle,
+                    ),
+                    child: SVGImagePlaceHolder(
+                      imagePath: Images.flask,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: CustomCard(
+              addCardShadow: true,
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFAF7F0),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0x338B4513)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  Text(
+                    week,
+                    style: TextStyle(
+                      color: const Color(0xFF654321),
+                      fontSize: 20,
+                      fontFamily: 'EB Garamond',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0x7FF0EBE0),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0x198B4513)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          spacing: 15,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                assignment,
+                                style: TextStyle(
+                                  color: const Color(0xFF654321),
+                                  fontSize: 16,
+                                  fontFamily: 'EB Garamond',
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.50,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    status == 'In Progress'
+                                        ? const Color(0x33FFB347)
+                                        : status == 'Due Oct 15'
+                                        ? const Color(0x33D4AF37)
+                                        : const Color(0xFFF5F2E8),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                status,
+                                style: TextStyle(
+                                  color: const Color(0xFF8B4513),
+                                  fontSize: 12,
+                                  fontFamily: 'Open Sans',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        if (progress > 0) ...[
+                          SizedBox(height: 16),
+                          LinearProgressIndicator(
+                            value: progress,
+                            backgroundColor: const Color(0xFFF5F2E8),
+                            color: const Color(0xFFD4AF37),
+                          ),
+                        ],
+
+                        SizedBox(height: 16),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children:
+                              tags
+                                  .map(
+                                    (tag) => Text(
+                                      tag,
+                                      style: TextStyle(
+                                        color: const Color(0xFF8B4513),
+                                        fontSize: 12,
+                                        fontFamily: 'Open Sans',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
