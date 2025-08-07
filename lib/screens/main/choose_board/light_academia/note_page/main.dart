@@ -22,36 +22,36 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                     child: CustomGrid(
                       wrapWithIntrinsicHeight: false,
                       children: [
-                        _noteCard(
-                          lastEdited: 'Apr 28, 2025',
-                          title: 'Wave Properties',
-                          image: Images.boardLightAcadNoteWave,
-                        ),
-                        _noteCard(
-                          lastEdited: 'Apr 25, 2025',
-                          title: 'Newton\'s Laws',
-                          image: Images.boardLightAcadNoteNewton,
-                        ),
-                        _noteCard(
-                          lastEdited: 'Apr 22, 2025',
-                          title: 'Thermodynamics',
-                          image: Images.boardLightAcadNoteThermodynamics,
-                        ),
-                        _noteCard(
-                          lastEdited: 'Apr 20, 2025',
-                          title: 'Electromagnetism',
-                          image: Images.boardLightAcadNoteElectromagnetism,
-                        ),
-                        _noteCard(
-                          lastEdited: 'Apr 18, 2025',
-                          title: 'Quantum Mechanics',
-                          image: Images.boardLightAcadNoteQuantum,
-                        ),
-                        _noteCard(
-                          lastEdited: 'Apr 18, 2025',
-                          title: 'Optics & Light',
-                          image: Images.boardLightAcadNoteOptics,
-                        ),
+                        // _noteCard(
+                        //   lastEdited: 'Apr 28, 2025',
+                        //   title: 'Wave Properties',
+                        //   image: Images.boardLightAcadNoteWave,
+                        // ),
+                        // _noteCard(
+                        //   lastEdited: 'Apr 25, 2025',
+                        //   title: 'Newton\'s Laws',
+                        //   image: Images.boardLightAcadNoteNewton,
+                        // ),
+                        // _noteCard(
+                        //   lastEdited: 'Apr 22, 2025',
+                        //   title: 'Thermodynamics',
+                        //   image: Images.boardLightAcadNoteThermodynamics,
+                        // ),
+                        // _noteCard(
+                        //   lastEdited: 'Apr 20, 2025',
+                        //   title: 'Electromagnetism',
+                        //   image: Images.boardLightAcadNoteElectromagnetism,
+                        // ),
+                        // _noteCard(
+                        //   lastEdited: 'Apr 18, 2025',
+                        //   title: 'Quantum Mechanics',
+                        //   image: Images.boardLightAcadNoteQuantum,
+                        // ),
+                        // _noteCard(
+                        //   lastEdited: 'Apr 18, 2025',
+                        //   title: 'Optics & Light',
+                        //   image: Images.boardLightAcadNoteOptics,
+                        // ),
                         Column(
                           children: [
                             InkWell(

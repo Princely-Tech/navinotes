@@ -250,18 +250,11 @@ class Images {
       '$boardsLightAcademiaPath/preview.png';
   static const String boardLightAcadScience =
       '$boardsLightAcademiaPath/science.png';
-  static const String boardLightAcadNoteNewton =
-      '$boardsLightAcademiaPath/newton.png';
-  static const String boardLightAcadNoteQuantum =
-      '$boardsLightAcademiaPath/quantum.png';
-  static const String boardLightAcadNoteWave =
-      '$boardsLightAcademiaPath/wave.png';
-  static const String boardLightAcadNoteElectromagnetism =
-      '$boardsLightAcademiaPath/electromagnetism.png';
-  static const String boardLightAcadNoteThermodynamics =
-      '$boardsLightAcademiaPath/thermodynamics.png';
-  static const String boardLightAcadNoteOptics =
-      '$boardsLightAcademiaPath/optics.png';
+  // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
+  // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
+  // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
+  // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
+  // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
   // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
 
   //board plain
