@@ -22,7 +22,7 @@ void main() async {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),
-        initialRoute: Routes.boardNaturePopup,
+        initialRoute: Routes.boardMinimalistPopup,
         // initialRoute: Routes.splash, //TODO uncomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,

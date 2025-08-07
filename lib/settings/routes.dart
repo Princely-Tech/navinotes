@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/choose_board/dark_academia/popup/index.dart';
+import 'package:navinotes/screens/main/choose_board/minimalist/popup/index.dart';
 import 'package:navinotes/screens/main/choose_board/nature/popup/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
@@ -53,6 +54,8 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardPlainPopup: (context) => BoardPlainPopupScreen(),
   Routes.boardDarkAcademiaPopup: (context) => BoardDarkAcadPopupScreen(),
   Routes.boardNaturePopup: (context) => BoardNaturePopupScreen(),
+  Routes.boardMinimalistPopup: (context) => BoardMinimalistPopupScreen(),
+  
 };
 
 class Routes {

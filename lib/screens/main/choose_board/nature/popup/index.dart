@@ -17,305 +17,302 @@ class BoardNaturePopupScreen extends StatelessWidget {
             _fileUploadsSection(),
             _studyTemplateSection(),
             _semesterJourney(),
-            // Semester Journey Section
-            Container(
-              color: const Color(0xFF2D5016),
-              padding: EdgeInsets.symmetric(vertical: 64, horizontal: 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Semester Journey',
-                        style: TextStyle(
-                          color: const Color(0xFFF8F6F0),
-                          fontSize: 30,
-                          fontFamily: 'Crimson Text',
-                          fontWeight: FontWeight.w400,
-                          height: 1.20,
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward, color: Colors.white),
-                    ],
-                  ),
-                  Divider(color: Colors.white.withValues(alpha: 0.5)),
-                  SizedBox(height: 32),
-                  _buildTimelineItem(
-                    title: 'Week 1-2: Ecosystem Foundations',
-                    description:
-                        'Examine the building blocks of natural systems',
-                    assignment: 'Assignment: Local Ecosystem Analysis',
-                    dueDate: 'Due: September 15, 2025',
-                    color: const Color(0xFF4A7C59),
-                    alignment: CrossAxisAlignment.start,
-                  ),
-                  SizedBox(height: 32),
-                  _buildTimelineItem(
-                    title: 'Week 3-4: Climate Science',
-                    description:
-                        'Understanding atmospheric and oceanic systems',
-                    assignment: 'Assignment: Climate Data Research Project',
-                    dueDate: 'Due: October 1, 2025',
-                    color: const Color(0xFF8B7355),
-                    alignment: CrossAxisAlignment.end,
-                  ),
-                  SizedBox(height: 32),
-                  _buildTimelineItem(
-                    title: 'Week 5-6: Conservation Biology',
-                    description:
-                        'Biodiversity preservation and restoration methods',
-                    assignment: 'Assignment: Species Conservation Plan',
-                    dueDate: 'Due: October 15, 2025',
-                    color: const Color(0xFF9CAF88),
-                    alignment: CrossAxisAlignment.start,
-                  ),
-                ],
-              ),
-            ),
+            _courseInfo(),
+          ],
+        ),
+      ),
+    );
+  }
 
-            // Course Information Section
-            Container(
-              color: const Color(0xFF8B7355),
-              padding: EdgeInsets.symmetric(vertical: 64, horizontal: 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Course Information',
-                        style: TextStyle(
-                          color: const Color(0xFFF8F6F0),
-                          fontSize: 30,
-                          fontFamily: 'Crimson Text',
-                          fontWeight: FontWeight.w400,
-                          height: 1.20,
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward, color: Colors.white),
-                    ],
+  Widget _section({
+    required Widget child,
+    required String title,
+    bool isSemester = false,
+    bool isCourseInfo = false,
+  }) {
+    Color textColor = const Color(0xFF2D5016);
+    Color dividerColor = const Color(0xFF9CAF88).withValues(alpha: 0.5);
+    String icon = Images.leaf;
+    Color? iconColor;
+    if (isSemester) {
+      textColor = const Color(0xFFF8F6F0);
+      dividerColor = Colors.white.withValues(alpha: 0.5);
+      icon = Images.tree;
+      iconColor = const Color(0xB2F8F6F0);
+    }
+    if (isCourseInfo) {
+      icon = Images.plant;
+      textColor = const Color(0xFFF8F6F0);
+      dividerColor = const Color(0x7FF8F6F0);
+      iconColor = const Color(0xB2F8F6F0);
+    }
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 64),
+      child: ResponsiveHorizontalPadding(
+        child: Column(
+          spacing: 32,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 30,
+                    fontFamily: 'Crimson Text',
+                    fontWeight: FontWeight.w400,
+                    height: 1.20,
                   ),
-                  Divider(color: Colors.white.withValues(alpha: 0.5)),
-                  SizedBox(height: 32),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.2),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.person, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Professor Information',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontFamily: 'Crimson Text',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 24),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 64,
-                                    height: 64,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(32),
-                                      border: Border.all(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                        width: 2,
-                                      ),
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                          "https://placehold.co/60x60",
-                                        ),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 16),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Dr. Sarah Chen',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Environmental Sciences Department',
-                                        style: TextStyle(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.8,
-                                          ),
-                                          fontSize: 16,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.info_outline,
-                                            size: 14,
-                                            color: Colors.white.withValues(
-                                              alpha: 0.7,
-                                            ),
-                                          ),
-                                          SizedBox(width: 4),
-                                          Text(
-                                            'AI-populated from syllabus',
-                                            style: TextStyle(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.7,
-                                              ),
-                                              fontSize: 14,
-                                              fontFamily: 'Inter',
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 24),
-                              _buildInfoItem(
-                                Icons.email,
-                                's.chen@university.edu',
-                              ),
-                              _buildInfoItem(
-                                Icons.location_on,
-                                'Environmental Sciences Building, Room 304',
-                              ),
-                              _buildInfoItem(
-                                Icons.schedule,
-                                'Office Hours: Tuesdays & Thursdays, 2:00-4:00 PM',
-                              ),
-                              _buildInfoItem(Icons.phone, '(555) 123-4567'),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 32),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(24),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.2),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.school, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Class Information',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontFamily: 'Crimson Text',
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 24),
-                              _buildInfoItem(
-                                Icons.calendar_today,
-                                'Schedule: MWF 10:00-11:30 AM',
-                              ),
-                              _buildInfoItem(
-                                Icons.room,
-                                'Location: Science Complex, Room 150',
-                              ),
-                              _buildInfoItem(
-                                Icons.date_range,
-                                'Semester: Spring 2025',
-                              ),
-                              _buildInfoItem(
-                                Icons.credit_card,
-                                'Credits: 4 credit hours',
-                              ),
-                              SizedBox(height: 24),
-                              Text(
-                                'Quick Links',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                children: [
-                                  _buildQuickLinkButton(
-                                    'Syllabus',
-                                    Icons.description,
-                                  ),
-                                  _buildQuickLinkButton(
-                                    'Academic Calendar',
-                                    Icons.calendar_month,
-                                  ),
-                                  _buildQuickLinkButton(
-                                    'Library Resources',
-                                    Icons.library_books,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                ),
+                SizedBox(width: 30),
+                Expanded(child: Divider(color: dividerColor, height: 1)),
+                SizedBox(width: 15),
+                SVGImagePlaceHolder(
+                  imagePath: icon,
+                  size: 16,
+                  color: iconColor,
+                ),
+              ],
+            ),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _professorInfo() {
+    return Container(
+      padding: EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            spacing: 8,
+            children: [
+              Icon(Icons.person, color: Colors.white),
+              Expanded(
+                child: Text(
+                  'Professor Information',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Crimson Text',
+                    fontWeight: FontWeight.w400,
                   ),
-                ],
+                ),
               ),
+            ],
+          ),
+          SizedBox(height: 24),
+          Row(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 2,
+                  ),
+                  image: DecorationImage(
+                    image: NetworkImage("https://placehold.co/60x60"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Dr. Sarah Chen',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Environmental Sciences Department',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          size: 14,
+                          color: Colors.white.withValues(alpha: 0.7),
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          'AI-populated from syllabus',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 24),
+          _buildInfoItem(Icons.email, 's.chen@university.edu'),
+          _buildInfoItem(
+            Icons.location_on,
+            'Environmental Sciences Building, Room 304',
+          ),
+          _buildInfoItem(
+            Icons.schedule,
+            'Office Hours: Tuesdays & Thursdays, 2:00-4:00 PM',
+          ),
+          _buildInfoItem(Icons.phone, '(555) 123-4567'),
+        ],
+      ),
+    );
+  }
+
+  Widget _classInfo() {
+    return Container(
+      padding: EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.school, color: Colors.white),
+              SizedBox(width: 8),
+              Text(
+                'Class Information',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontFamily: 'Crimson Text',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 24),
+          _buildInfoItem(Icons.calendar_today, 'Schedule: MWF 10:00-11:30 AM'),
+          _buildInfoItem(Icons.room, 'Location: Science Complex, Room 150'),
+          _buildInfoItem(Icons.date_range, 'Semester: Spring 2025'),
+          _buildInfoItem(Icons.credit_card, 'Credits: 4 credit hours'),
+          SizedBox(height: 24),
+          Text(
+            'Quick Links',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildQuickLinkButton('Syllabus', Icons.description),
+              _buildQuickLinkButton('Academic Calendar', Icons.calendar_month),
+              _buildQuickLinkButton('Library Resources', Icons.library_books),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _courseInfo() {
+    return Container(
+      color: const Color(0xFF8B7355),
+      child: _section(
+        title: 'Course Information',
+        isCourseInfo: true,
+        child: ResponsiveSection(
+          mobile: Column(
+            spacing: 32,
+            children: [_professorInfo(), _classInfo()],
+          ),
+          laptop: Row(
+            spacing: 32,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _professorInfo()),
+              Expanded(child: _classInfo()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _semesterJourney() {
+    return Container(
+      color: const Color(0xFF2D5016),
+      child: _section(
+        isSemester: true,
+        title: 'Semester Journey',
+        child: Column(
+          children: [
+            _buildTimelineItem(
+              title: 'Week 1-2: Ecosystem Foundations',
+              description: 'Examine the building blocks of natural systems',
+              assignment: 'Assignment: Local Ecosystem Analysis',
+              dueDate: 'Due: September 15, 2025',
+              color: const Color(0xFF4A7C59),
+              alignment: CrossAxisAlignment.start,
+            ),
+            // SizedBox(height: 32),
+            _buildTimelineItem(
+              title: 'Week 3-4: Climate Science',
+              description: 'Understanding atmospheric and oceanic systems',
+              assignment: 'Assignment: Climate Data Research Project',
+              dueDate: 'Due: October 1, 2025',
+              color: const Color(0xFF8B7355),
+              alignment: CrossAxisAlignment.end,
+            ),
+            // SizedBox(height: 32),
+            _buildTimelineItem(
+              title: 'Week 5-6: Conservation Biology',
+              description: 'Biodiversity preservation and restoration methods',
+              assignment: 'Assignment: Species Conservation Plan',
+              dueDate: 'Due: October 15, 2025',
+              color: const Color(0xFF9CAF88),
+              alignment: CrossAxisAlignment.start,
+              isLast: true,
             ),
           ],
         ),
       ),
     );
   }
-Widget _semesterJourney(){
-  return Container();
-}
+
   Widget _studyTemplateSection() {
     return _section(
       title: 'Study Templates',
@@ -458,44 +455,6 @@ Widget _semesterJourney(){
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _section({required Widget child, required String title}) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 64),
-      child: ResponsiveHorizontalPadding(
-        child: Column(
-          spacing: 32,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: const Color(0xFF2D5016),
-                    fontSize: 30,
-                    fontFamily: 'Crimson Text',
-                    fontWeight: FontWeight.w400,
-                    height: 1.20,
-                  ),
-                ),
-                SizedBox(width: 30),
-                Expanded(
-                  child: Divider(
-                    color: const Color(0xFF9CAF88).withValues(alpha: 0.5),
-                    height: 1,
-                  ),
-                ),
-                SizedBox(width: 15),
-                SVGImagePlaceHolder(imagePath: Images.leaf, size: 16),
-              ],
-            ),
-            child,
-          ],
         ),
       ),
     );
@@ -1104,6 +1063,26 @@ Widget _semesterJourney(){
     );
   }
 
+  Widget _timeLineDivider({required Color color}) {
+    return Stack(
+      children: [
+        Center(child: VerticalDivider(color: const Color(0x4C9CAF88))),
+        Padding(
+          padding: const EdgeInsets.only(top: 32),
+          child: Container(
+            width: 15,
+            height: 15,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              // border: Border.all(width: 4, color: const Color(0xFF2D5016)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildTimelineItem({
     required String title,
     required String description,
@@ -1111,103 +1090,131 @@ Widget _semesterJourney(){
     required String dueDate,
     required Color color,
     required CrossAxisAlignment alignment,
+    bool isLast = false,
   }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (alignment == CrossAxisAlignment.start)
-          Expanded(flex: 2, child: Container()),
-        Expanded(
-          flex: 5,
-          child: Column(
-            crossAxisAlignment: alignment,
+    Widget divider = _timeLineDivider(color: color);
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        bool show2 = getDeviceResponsiveValue(
+          deviceType: layoutVm.deviceType,
+          mobile: false,
+          laptop: true,
+        );
+        return IntrinsicHeight(
+          child: Row(
+            spacing: 32,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: color.withValues(alpha: 0.3)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Crimson Text',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      description,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        fontSize: 16,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(9999),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.assignment, size: 16, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text(
-                            assignment,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                            ),
+              if (alignment == CrossAxisAlignment.end && show2) ...[
+                Expanded(child: SizedBox()),
+                divider,
+              ],
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    bottom:
+                        isLast
+                            ? 0
+                            : show2
+                            ? 50
+                            : 20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment:
+                        alignment == CrossAxisAlignment.start
+                            ? CrossAxisAlignment.end
+                            : CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: show2 ? null : double.infinity,
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: color.withValues(alpha: 0.3),
                           ),
-                        ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontFamily: 'Crimson Text',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              description,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.8),
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: color.withValues(alpha: 0.3),
+                                borderRadius: BorderRadius.circular(9999),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.assignment,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Flexible(
+                                    child: Text(
+                                      assignment,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              dueDate,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.6),
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      dueDate,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.6),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+              if (alignment == CrossAxisAlignment.start && show2) ...[
+                divider,
+                Expanded(child: SizedBox()),
+              ],
             ],
           ),
-        ),
-        SizedBox(width: 32),
-        Container(
-          width: 24,
-          height: 24,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            border: Border.all(width: 4, color: const Color(0xFF2D5016)),
-          ),
-        ),
-        SizedBox(width: 32),
-        if (alignment == CrossAxisAlignment.end)
-          Expanded(flex: 2, child: Container()),
-      ],
+        );
+      },
     );
   }
 
@@ -1218,13 +1225,15 @@ Widget _semesterJourney(){
         children: [
           Icon(icon, size: 16, color: Colors.white.withValues(alpha: 0.8)),
           SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.9),
+                fontSize: 16,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ],
