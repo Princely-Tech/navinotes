@@ -1,5 +1,19 @@
 import 'package:navinotes/packages.dart';
 
+class LargeDesktopWidthLimiter extends StatelessWidget {
+  const LargeDesktopWidthLimiter({super.key, required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(child: WidthLimiter(mobile: largeDesktopSize, child: child)),
+      ],
+    );
+  }
+}
+
 class ScrollableController extends StatelessWidget {
   const ScrollableController({
     super.key,
@@ -32,7 +46,8 @@ class ScrollableController extends StatelessWidget {
   final bool? desktop;
   final bool? largeDesktop;
   final VoidCallback? onEndReached;
-  final double endReachedThreshold = 100.0; // pixels from bottom to trigger onEndReached
+  final double endReachedThreshold =
+      100.0; // pixels from bottom to trigger onEndReached
   final ScrollController? controller;
 
   @override
@@ -47,7 +62,7 @@ class ScrollableController extends StatelessWidget {
           desktop: desktopPadding,
           largeDesktop: largeDesktopPadding,
         );
-        
+
         final shouldScroll = getDeviceResponsiveValue(
           deviceType: layoutVm.deviceType,
           mobile: mobile,
@@ -56,16 +71,17 @@ class ScrollableController extends StatelessWidget {
           desktop: desktop,
           largeDesktop: largeDesktop,
         );
-        
+
         if (!shouldScroll) {
           return Padding(padding: padding, child: child);
         }
-        
+
         return NotificationListener<ScrollEndNotification>(
           onNotification: (scrollEnd) {
             final metrics = scrollEnd.metrics;
-            if (onEndReached != null && 
-                metrics.pixels >= metrics.maxScrollExtent - endReachedThreshold) {
+            if (onEndReached != null &&
+                metrics.pixels >=
+                    metrics.maxScrollExtent - endReachedThreshold) {
               onEndReached!();
             }
             return false;
