@@ -1,5 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/choose_board/light_academia/edit/overview.dart';
 import 'package:navinotes/screens/main/choose_board/light_academia/popup/overview.dart';
 
 class BoardLightAcadPopupScreen extends StatelessWidget {
