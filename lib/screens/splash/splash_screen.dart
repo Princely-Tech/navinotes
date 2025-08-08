@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
     await context.read<SessionManager>().init();
     if (mounted) {
       //TODO UNCOMMENT
-     return _navigateToNextScreen();
+      //  return _navigateToNextScreen();
 
       //TODO DELETE
       _navigateToDashboard();
@@ -71,6 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigateToDashboard() async {
     //TODO delete this
+    // NavigationHelper.pushReplacement(Routes.chooseBoard);
     List<Board> boards = await DatabaseHelper.instance.getAllBoards();
     // Board board = boards[3];
     Board board = boards.first;
@@ -90,8 +91,8 @@ class _SplashScreenState extends State<SplashScreen>
     // print(board.courseTimeLines);
     // NavigationHelper.navigateToPdfView(allFiles.last.id!);
     // NavigationHelper.navigateToBoard(board);
-    NavigationHelper.navigateToBoardNotes(board);
-    // NavigationHelper.navigateToBoardPopup(board);
+    // NavigationHelper.navigateToBoardNotes(board);
+    NavigationHelper.navigateToBoardPopup(board);
     // NavigationHelper.pushReplacement(
     //   Routes.noteTemplate,
     //   arguments: board,

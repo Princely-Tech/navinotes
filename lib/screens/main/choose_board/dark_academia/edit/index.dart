@@ -11,13 +11,11 @@ class DarkAcademiaEditScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    Board? board = ModalRoute.of(context)?.settings.arguments as Board?;
+    Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = BoardEditVm();
-        if (isNotNull(board)) {
-          vm.initialize(board!.id!);
-        }
+        final vm = BoardEditVm(board: board);
+        vm.initialize();
         return vm;
       },
       child: Consumer<BoardEditVm>(
@@ -31,7 +29,7 @@ class DarkAcademiaEditScreen extends StatelessWidget {
               body: ApiServiceComponent(
                 child: Column(
                   children: [
-                    DarkAcademiaEditHeader(board: vm.board!),
+                    DarkAcademiaEditHeader(board: vm.board),
                     Expanded(
                       child: ScrollableController(
                         child: vm.returnSelectedTabItem(

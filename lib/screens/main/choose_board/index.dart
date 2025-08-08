@@ -15,7 +15,6 @@ class ChooseBoardScreen extends StatelessWidget {
       create: (context) => ChooseBoardVm(scaffoldKey: _scaffoldKey),
       child: ScaffoldFrame(
         scaffoldKey: _scaffoldKey,
-        // endDrawer: CustomDrawer(child: ChooseBoardAside()),
         drawer: CustomDrawer(
           child: NavigationSideBar(activeRoute: activeRoute),
         ),
@@ -30,28 +29,36 @@ class ChooseBoardScreen extends StatelessWidget {
                 shrinkWrap: true,
               ),
             ),
+
             Expanded(
               child: Column(
                 children: [
                   ChooseBoardHeader(),
-                  Expanded(
-                    child: ChooseBoardMain(),
-                    // child: ResponsiveSection(
-                    //   mobile: ChooseBoardMain(),
-                    //   desktop: Row(
-                    //     children: [
-                    //       Expanded(child: ChooseBoardMain()),
-                    //       WidthLimiter(
-                    //         mobile: 280,
-                    //         largeDesktop: 360,
-                    //         child: ChooseBoardAside(),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                  ),
+                  Expanded(child: ChooseBoardMain()),
                   _footer(),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    return ChangeNotifierProvider(
+      create: (context) => ChooseBoardVm(scaffoldKey: _scaffoldKey),
+      child: ScaffoldFrame(
+        scaffoldKey: _scaffoldKey,
+        drawer: CustomDrawer(
+          child: NavigationSideBar(activeRoute: activeRoute),
+        ),
+        backgroundColor: AppTheme.whiteSmoke,
+        body: Row(
+          children: [
+            VisibleController(
+              mobile: false,
+              largeDesktop: true,
+              child: NavigationSideBar(
+                activeRoute: activeRoute,
+                shrinkWrap: true,
               ),
             ),
           ],

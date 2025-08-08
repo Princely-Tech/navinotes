@@ -1,6 +1,15 @@
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart' as path;
 
+String getFileSize(dynamic bytes) {
+  if (bytes is int) {
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
+  return 'Unknown size';
+}
+
 IconData getFileIcon(String? filePath) {
   if (filePath == null) return Icons.insert_drive_file;
   final ext = path.extension(filePath).toLowerCase();
@@ -37,6 +46,34 @@ IconData getFileIcon(String? filePath) {
       return Icons.video_file;
     default:
       return Icons.insert_drive_file;
+  }
+}
+String getFileType(String? filePath) {
+  if (filePath == null) return 'FILE';
+  final ext = path.extension(filePath).toLowerCase();
+  switch (ext) {
+    case '.pdf': return 'PDF';
+    case '.doc':
+    case '.docx': return 'DOC';
+    case '.xls':
+    case '.xlsx':
+    case '.csv': return 'XLS';
+    case '.ppt':
+    case '.pptx': return 'PPT';
+    case '.txt': return 'TXT';
+    case '.zip':
+    case '.rar':
+    case '.7z': return 'ZIP';
+    case '.jpg':
+    case '.jpeg':
+    case '.png':
+    case '.gif': return 'IMG';
+    case '.mp3':
+    case '.wav': return 'AUD';
+    case '.mp4':
+    case '.mov':
+    case '.avi': return 'VID';
+    default: return 'FILE';
   }
 }
 

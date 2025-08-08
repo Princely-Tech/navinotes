@@ -1,14 +1,26 @@
 import 'package:navinotes/packages.dart';
 
 class BoardEditVm extends ChangeNotifier {
-  BoardEditVm({this.scaffoldKey});
-  Board? _board;
-  bool _isLoading = true;
+  BoardEditVm({this.scaffoldKey, required this.board});
+  Board board;
+  // bool _isLoading = true;
   String? _error;
   // bool _showSuccess = false;
   // String? _successMessage;
 
   GlobalKey<ScaffoldState>? scaffoldKey;
+  final GlobalKey courseTimelineKey = GlobalKey();
+
+  void scrollToCourseTimeline() {
+    final context = courseTimelineKey.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   EditBoardTab selectedTab = EditBoardTab.overview;
 
@@ -44,8 +56,8 @@ class BoardEditVm extends ChangeNotifier {
 
   CourseTimeline? getNextSession() {
     final now = DateTime.now();
-    if (isNotNull(board) && isNotNull(board!.courseTimeLines)) {
-      for (var session in board!.courseTimeLines!) {
+    if (isNotNull(board) && isNotNull(board.courseTimeLines)) {
+      for (var session in board.courseTimeLines!) {
         if (isNotNull(session.due)) {
           final dueDate = DateTime.parse(session.due!);
           // If the session's due date is today or in the future
@@ -61,17 +73,22 @@ class BoardEditVm extends ChangeNotifier {
     return null; // Return null if no upcoming sessions
   }
 
+  Future<void> goToBoardNotes() async {
+    await NavigationHelper.navigateToBoardNotes(board);
+    loadFiles(board.id!);
+  }
+
   Future<void> goToNewNoteTemplate() async {
     if (isNotNull(board)) {
-      await NavigationHelper.gotToNewNoteTemplate(board!);
-      loadFiles(board!.id!);
+      await NavigationHelper.gotToNewNoteTemplate(board);
+      loadFiles(board.id!);
     }
   }
 
   bool importingPdf = false;
 
-  Board? get board => _board;
-  bool get isLoading => _isLoading;
+  // Board? get board => _board;
+  // bool get isLoading => _isLoading;
   String? get error => _error;
   // bool get showSuccess => _showSuccess;
   // String? get successMessage => _successMessage;
@@ -84,43 +101,9 @@ class BoardEditVm extends ChangeNotifier {
   }
 
   // Initialize the ViewModel with board data
-  Future<void> initialize(int boardId) async {
-    debugPrint('Initializing board with ID: $boardId');
-    // _showSuccess = showSuccess;
-    // _successMessage = message;
-
-    if (boardId > 0) {
-      await _loadBoard(boardId);
-      loadFiles(boardId);
-    } else {
-      _error = 'Your board cannot be loaded at this time. Please try again';
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> _loadBoard(int boardId) async {
-    try {
-      _isLoading = true;
-      _error = null;
-      _board = null; // Clear previous board data
-      notifyListeners();
-
-      final dbHelper = DatabaseHelper.instance;
-      final board = await dbHelper.getBoard(boardId);
-
-      debugPrint('Board loaded: ${board.name}');
-
-      _board = board;
-      _error = null;
-    } catch (e) {
-      debugPrint('Error loading board: $e');
-      _error = 'Failed to load board: ${e.toString()}';
-      _board = null;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+  Future<void> initialize() async {
+    debugPrint('Initializing board with ID: ${board.id}');
+    loadFiles(board.id!);
   }
 
   Future<void> importPdfFile(BuildContext context) async {
@@ -141,7 +124,7 @@ class BoardEditVm extends ChangeNotifier {
           int? id = await saveFileToDb(
             pickedFile: pickedFile,
             context: context,
-            boardId: _board!.id!,
+            boardId: board.id!,
           );
 
           if (isNotNull(id)) {
@@ -155,7 +138,7 @@ class BoardEditVm extends ChangeNotifier {
             loadFiles(id);
           }
         }
-        // }
+        loadFiles(board.id!);
       }
     } catch (e) {
       debugPrint('Error importing files: $e');
@@ -200,7 +183,7 @@ class BoardEditVm extends ChangeNotifier {
               await saveFileToDb(
                 pickedFile: pickedFile,
                 context: context,
-                boardId: _board!.id!,
+                boardId: board.id!,
               );
               successCount++;
             }
@@ -212,7 +195,7 @@ class BoardEditVm extends ChangeNotifier {
                 context,
                 'Successfully imported $successCount file(s)',
               );
-              loadFiles(board!.id!);
+              loadFiles(board.id!);
             } else {
               MessageDisplayService.showErrorMessage(
                 context,
@@ -278,7 +261,7 @@ class BoardEditVm extends ChangeNotifier {
 
           // Update the board with the new syllabus
           if (isNotNull(board)) {
-            final updatedBoard = board!.copyWith(
+            final updatedBoard = board.copyWith(
               courseTimeLines: timeLines,
               courseInfo: CourseInfo.fromMap(
                 response['response']['course_info'],
@@ -292,12 +275,13 @@ class BoardEditVm extends ChangeNotifier {
                 'Syllabus uploaded successfully',
               );
             }
-            return NavigationHelper.navigateToBoardPopup(board!, replace: true);
+            return NavigationHelper.navigateToBoardPopup(board, replace: true);
           } else {
             throw Exception('Failed to process syllabus');
           }
         }
       }
+      loadFiles(board.id!);
     } catch (e) {
       debugPrint('Error Uploading syllabus $e');
       if (context.mounted) {

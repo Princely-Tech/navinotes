@@ -9,9 +9,9 @@ class BoardLightAcadEditScreen extends StatelessWidget {
     Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = BoardEditVm(scaffoldKey: _scaffoldKey);
+        final vm = BoardEditVm(scaffoldKey: _scaffoldKey, board: board);
         if (isNotNull(board)) {
-          vm.initialize(board.id!);
+          vm.initialize();
         }
         return vm;
       },

@@ -7,11 +7,11 @@ class ChooseBoardWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<BoardEditVm>(
       builder: (_, vm, __) {
-        if (vm.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+        // if (vm.isLoading) {
+        //   return const Scaffold(
+        //     body: Center(child: CircularProgressIndicator()),
+        //   );
+        // }
 
         if (vm.error != null) {
           return Scaffold(

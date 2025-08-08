@@ -19,6 +19,7 @@ class ChooseBoardMain extends StatelessWidget {
           child: Column(
             spacing: 10,
             children: [
+            
               Expanded(
                 child: ScrollableController(
                   mobile: true,
@@ -112,7 +113,8 @@ class ChooseBoardMain extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 25,
               children: [
-                Expanded(child: header),
+                header,
+                // Expanded(child: header),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 8,

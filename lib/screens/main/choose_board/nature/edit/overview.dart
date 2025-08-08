@@ -391,15 +391,7 @@ class BoardNatureEditOverview extends StatelessWidget {
     );
   }
 
-  void gridChildHandler({
-    required BoardEditVm vm,
-    required Future<void> Function() onTap,
-  }) async {
-    await onTap();
-    if (isNotNull(vm.board)) {
-      vm.loadFiles(vm.board!.id!);
-    }
-  }
+
 
   Widget _gridChild({
     required String title,
@@ -415,7 +407,7 @@ class BoardNatureEditOverview extends StatelessWidget {
         return LoadingIndicator(
           loading: loading,
           child: InkWell(
-            onTap: () => gridChildHandler(vm: vm, onTap: onTap),
+            onTap: onTap,
             child: CustomCard(
               decoration: BoxDecoration(color: color),
               child: Column(
@@ -451,7 +443,7 @@ class BoardNatureEditOverview extends StatelessWidget {
                   ),
                   AppButton.text(
                     mainAxisSize: MainAxisSize.min,
-                    onTap: () => gridChildHandler(vm: vm, onTap: onTap),
+                    onTap: onTap,
                     text: btnText,
                     suffix: Icon(Icons.arrow_forward, color: AppTheme.white),
                     style: AppTheme.text.copyWith(

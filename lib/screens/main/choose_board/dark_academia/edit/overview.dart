@@ -184,15 +184,7 @@ class BoardDarkAcademiaEditOverview extends StatelessWidget {
     );
   }
 
-  void actionCardHandler({
-    required BoardEditVm vm,
-    required Future Function() onTap,
-  }) async {
-    await onTap();
-    if (isNotNull(vm.board)) {
-      vm.loadFiles(vm.board!.id!);
-    }
-  }
+ 
 
   Widget _actionCard({
     required String title,
@@ -207,7 +199,7 @@ class BoardDarkAcademiaEditOverview extends StatelessWidget {
         return LoadingIndicator(
           loading: loading,
           child: InkWell(
-            onTap: () => actionCardHandler(vm: vm, onTap: onTap),
+            onTap: onTap,
             child: CustomCard(
               decoration: BoxDecoration(
                 color: isCaramelMist ? AppTheme.caramelMist : AppTheme.white,
@@ -296,11 +288,7 @@ class BoardDarkAcademiaEditOverview extends StatelessWidget {
                         icon: Images.pen2,
                         title: 'Create Note',
                         body: 'Begin taking notes right away',
-                        onTap: () {
-                          return NavigationHelper.navigateToBoardNotes(
-                            vm.board!,
-                          );
-                        },
+                        onTap: vm.goToBoardNotes,
                       ),
                       _actionCard(
                         icon: Images.folder,

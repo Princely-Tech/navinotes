@@ -6,13 +6,11 @@ class BoardNatureEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Board? board = ModalRoute.of(context)?.settings.arguments as Board?;
+    Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = BoardEditVm();
-        if (isNotNull(board)) {
-          vm.initialize(board!.id!);
-        }
+       final vm = BoardEditVm( board: board);
+        vm.initialize();
         return vm;
       },
       child: Consumer<BoardEditVm>(

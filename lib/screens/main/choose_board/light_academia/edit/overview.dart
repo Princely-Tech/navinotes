@@ -270,15 +270,6 @@ class BoardLightAcademiaEditOverview extends StatelessWidget {
     );
   }
 
-  void gridChildHandler({
-    required BoardEditVm vm,
-    required Future<void> Function() onTap,
-  }) async {
-    await onTap();
-    if (isNotNull(vm.board)) {
-      vm.loadFiles(vm.board!.id!);
-    }
-  }
 
   Widget _gridChild({
     required String title,
@@ -293,7 +284,7 @@ class BoardLightAcademiaEditOverview extends StatelessWidget {
         return LoadingIndicator(
           loading: loading,
           child: InkWell(
-            onTap: () => gridChildHandler(vm: vm, onTap: onTap),
+            onTap:onTap,
             child: CustomCard(
               addCardShadow: true,
               decoration: BoxDecoration(
@@ -328,7 +319,7 @@ class BoardLightAcademiaEditOverview extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: AppButton.text(
-                      onTap: () => gridChildHandler(vm: vm, onTap: onTap),
+                      onTap: onTap,
                       text: '$btnText →',
                       style: AppTheme.text.copyWith(
                         color: AppTheme.yellowishOrange.withAlpha(0xFF),

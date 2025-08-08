@@ -6,18 +6,17 @@ class BoardPlainEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Board? board = ModalRoute.of(context)?.settings.arguments as Board?;
+    Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = BoardEditVm();
-        if (isNotNull(board)) {
-          vm.initialize(board!.id!);
-        }
+        final vm = BoardEditVm(board: board);
+        vm.initialize();
         return vm;
       },
       child: Consumer<BoardEditVm>(
         builder: (_, vm, __) {
-          return ChooseBoardWrapper( //Essential; add loading until ready!!
+          return ChooseBoardWrapper(
+            //Essential; add loading until ready!!
             child: ScaffoldFrame(
               backgroundColor: AppTheme.white,
               body: _buildContent(vm),
@@ -28,9 +27,8 @@ class BoardPlainEditScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(BoardEditVm vm) { 
-    final board = vm.board!;
-
+  Widget _buildContent(BoardEditVm vm) {
+    final board = vm.board;
     return Column(
       children: [
         _header(board),

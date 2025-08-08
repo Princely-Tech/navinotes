@@ -4,11 +4,7 @@ class BoardEditUploads extends StatelessWidget {
   const BoardEditUploads(this.vm, {super.key});
   final BoardEditVm vm;
 
-  String _formatFileSize(int bytes) {
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +28,7 @@ class BoardEditUploads extends StatelessWidget {
       children:
           vm.uploadedFiles.map((file) {
             final metaDataSize = file.metaData[ContentMetadataKey.fileSize];
-            final size =
-                metaDataSize is int
-                    ? _formatFileSize(metaDataSize)
-                    : 'Unknown size';
+            final size = getFileSize(metaDataSize);
             final name = file.title;
             return CustomCard(
               addBorder: true,
@@ -111,7 +104,7 @@ class BoardEditUploads extends StatelessWidget {
                                           file: file,
                                           context: context,
                                           onSuccess:
-                                              () => vm.loadFiles(vm.board!.id!),
+                                              () => vm.loadFiles(vm.board.id!),
                                         );
                                       },
                                     ),

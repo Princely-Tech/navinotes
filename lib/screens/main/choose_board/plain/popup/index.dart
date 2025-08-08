@@ -6,13 +6,11 @@ class BoardPlainPopupScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    Board? board = ModalRoute.of(context)?.settings.arguments as Board?;
+    Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = BoardEditVm(scaffoldKey: _scaffoldKey);
-        if (isNotNull(board)) {
-          vm.initialize(board!.id!);
-        }
+        final vm = BoardEditVm(scaffoldKey: _scaffoldKey, board: board);
+        vm.initialize();
         return vm;
       },
       child: Consumer<BoardEditVm>(
@@ -120,7 +118,7 @@ class BoardPlainPopupScreen extends StatelessWidget {
                                 mobile: true,
                                 desktop: false,
                                 child: Text(
-                                  vm.board?.name ?? '',
+                                  vm.board.name ?? '',
                                   style: TextStyle(
                                     color: const Color(0xFF1F2937),
                                     fontSize: getDeviceResponsiveValue(
