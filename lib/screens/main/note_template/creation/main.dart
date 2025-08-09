@@ -171,6 +171,11 @@ class NoteCreationMain extends StatelessWidget {
           const SquaredNoteBackground(),
           const LinedNoteBackground(),
           const DottedNoteBackground(),
+          Container(
+            color: color,
+            width: inputWidth,
+            height: inputHeight,
+          ),
           // Editor content
           _buildEditorArea(vm, color, inputWidth, inputHeight),
         ],
@@ -187,21 +192,16 @@ class NoteCreationMain extends StatelessWidget {
     if (vm.currentMode == NoteMode.text) {
       return Stack(
         children: [
-          _buildDrawingBoard(vm, color, inputWidth, inputHeight),
-
-
-         
-
+          _buildDrawingBoard(vm, inputWidth, inputHeight),
           _buildEditorToolBar(vm),
-          _buildTextEditor(vm, color, inputWidth, inputHeight),
+          _buildTextEditor(vm, inputWidth, inputHeight),
         ],
       );
     } else if (vm.currentMode == NoteMode.drawing) {
       return Stack(
         children: [
-          _buildTextEditor(vm, color, inputWidth, inputHeight),
-
-          _buildDrawingBoard(vm, color, inputWidth, inputHeight),
+          _buildTextEditor(vm, inputWidth, inputHeight),
+          _buildDrawingBoard(vm, inputWidth, inputHeight),
         ],
       );
     } else {
@@ -249,18 +249,16 @@ class NoteCreationMain extends StatelessWidget {
   // Build text editor components
   Widget _buildTextEditor(
     NoteCreationVm vm,
-    Color color,
     double inputWidth,
     double inputHeight,
   ) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(top: 35),
+        padding: const EdgeInsets.only(top: 55),
         child: Container(
         width: inputWidth,
         height: inputHeight,
-        color: color,
-        padding: const EdgeInsets.symmetric(vertical: 15),
+        color: Colors.transparent,
         child: ResponsiveHorizontalPadding(
           child: QuillEditor.basic(
             controller: vm.richEditorController,
@@ -274,24 +272,22 @@ class NoteCreationMain extends StatelessWidget {
   // Build drawing board
   Widget _buildDrawingBoard(
     NoteCreationVm vm,
-    Color color,
     double inputWidth,
     double inputHeight,
   ) {
     return Container(
-      color: color,
+      color: Colors.transparent,
       child: DrawingBoard(
         controller: vm.drawingController,
         background: SingleChildScrollView(
           child: Container(
-            color: color, // Paper color
+            color: Colors.transparent, // Paper color
             width: inputWidth,
             height: inputHeight,
           ),
         ),
-
-        showDefaultActions: true,
-        showDefaultTools: true,
+        showDefaultActions: vm.currentMode == NoteMode.drawing,
+        showDefaultTools: vm.currentMode == NoteMode.drawing,
       ),
     );
   }
