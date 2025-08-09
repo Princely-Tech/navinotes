@@ -49,32 +49,43 @@ IconData getFileIcon(String? filePath) {
       return Icons.insert_drive_file;
   }
 }
+
 String getFileType(String? filePath) {
   if (filePath == null) return 'FILE';
   final ext = path.extension(filePath).toLowerCase();
   switch (ext) {
-    case '.pdf': return 'PDF';
+    case '.pdf':
+      return 'PDF';
     case '.doc':
-    case '.docx': return 'DOC';
+    case '.docx':
+      return 'DOC';
     case '.xls':
     case '.xlsx':
-    case '.csv': return 'XLS';
+    case '.csv':
+      return 'XLS';
     case '.ppt':
-    case '.pptx': return 'PPT';
-    case '.txt': return 'TXT';
+    case '.pptx':
+      return 'PPT';
+    case '.txt':
+      return 'TXT';
     case '.zip':
     case '.rar':
-    case '.7z': return 'ZIP';
+    case '.7z':
+      return 'ZIP';
     case '.jpg':
     case '.jpeg':
     case '.png':
-    case '.gif': return 'IMG';
+    case '.gif':
+      return 'IMG';
     case '.mp3':
-    case '.wav': return 'AUD';
+    case '.wav':
+      return 'AUD';
     case '.mp4':
     case '.mov':
-    case '.avi': return 'VID';
-    default: return 'FILE';
+    case '.avi':
+      return 'VID';
+    default:
+      return 'FILE';
   }
 }
 
@@ -136,7 +147,34 @@ Future<void> handleOpenFile(Content file, BuildContext context) async {
   }
 }
 
-//TODO test this
+Rect _safeShareOrigin(BuildContext context) {
+  try {
+    final box = context.findRenderObject() as RenderBox?;
+    if (box != null && box.hasSize) {
+      final offset = box.localToGlobal(Offset.zero);
+      final rect = offset & box.size;
+
+      final screenSize = MediaQuery.of(context).size;
+      final withinBounds =
+          rect.left >= 0 &&
+          rect.top >= 0 &&
+          rect.right <= screenSize.width &&
+          rect.bottom <= screenSize.height;
+
+      if (rect.width > 0 && rect.height > 0 && withinBounds) {
+        return rect;
+      }
+    }
+  } catch (_) {}
+
+  // fallback: center of screen (safe for iPad)
+  final size = MediaQuery.of(context).size;
+  return Rect.fromCenter(
+    center: Offset(size.width / 2, size.height / 2),
+    width: 1,
+    height: 1,
+  );
+}
 Future<void> handleFileDownload(Content file, BuildContext context) async {
   final sourcePath = file.file;
   if (sourcePath == null || sourcePath.isEmpty) {
@@ -150,14 +188,12 @@ Future<void> handleFileDownload(Content file, BuildContext context) async {
     return;
   }
 
-// ipad bug
-final box = context.findRenderObject() as RenderBox?;
+  // ipad bug
 
-final params = ShareParams(
-    text: file.title,
+  final params = ShareParams(
+    //text: file.title,
     files: [XFile(sourcePath)],
-    sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size, // fix ipad bug
-
+    sharePositionOrigin: Platform.isIOS ? _safeShareOrigin(context) : null,
   );
 
   final result = await SharePlus.instance.share(params);
@@ -165,7 +201,6 @@ final params = ShareParams(
   if (result.status == ShareResultStatus.success) {
     debugPrint('File shared successfully');
   }
-
 }
 
 Future<void> handleContentDelete({

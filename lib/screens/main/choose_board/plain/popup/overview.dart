@@ -14,15 +14,19 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 // _headerSection(),
                 _courseActions(),
                 Divider(height: 1, color: AppTheme.lightGray),
-                _fileUploads(),
+                _fileUploads(vm: vm),
                 //  _studyTemplates(), // not completed
-                _syllabus(vm: vm, apiServiceProvider: apiServiceProvider, context: context),
+                _syllabus(
+                  vm: vm,
+                  apiServiceProvider: apiServiceProvider,
+                  context: context,
+                ),
                 _courseOutline(vm: vm),
                 Divider(height: 1, color: AppTheme.lightGray),
                 _courseDetails(vm: vm),
               ],
             );
-          }
+          },
         );
       },
     );
@@ -30,101 +34,96 @@ class BoardPlainPopupOverview extends StatelessWidget {
 
   Widget _courseDetails({required BoardEditVm vm}) {
     if (vm.board.courseInfo == null) {
-          return const SizedBox.shrink();
-        }
+      return const SizedBox.shrink();
+    }
 
-        final courseInfo = vm.board.courseInfo;
-        final courseName = courseInfo?.title ?? 'Not specified';
-        final instructor = courseInfo?.instructor ?? 'Not specified';
-        final email = courseInfo?.email ?? 'Not specified';
-        final schedule = courseInfo?.schedule ?? 'Not specified';
-        final location = courseInfo?.location ?? 'Not specified';
-        final semester = courseInfo?.semester ?? 'Not specified';
-        final semesterDuration =
-            courseInfo?.semesterDuration ?? 'Not specified';
-        final officeHours = courseInfo?.officeHours ?? 'Not specified';
-        final phone = courseInfo?.phone ?? 'Not specified';
+    final courseInfo = vm.board.courseInfo;
+    final courseName = courseInfo?.title ?? 'Not specified';
+    final instructor = courseInfo?.instructor ?? 'Not specified';
+    final email = courseInfo?.email ?? 'Not specified';
+    final schedule = courseInfo?.schedule ?? 'Not specified';
+    final location = courseInfo?.location ?? 'Not specified';
+    final semester = courseInfo?.semester ?? 'Not specified';
+    final semesterDuration = courseInfo?.semesterDuration ?? 'Not specified';
+    final officeHours = courseInfo?.officeHours ?? 'Not specified';
+    final phone = courseInfo?.phone ?? 'Not specified';
 
-        return _section(
-          color: AppTheme.white,
-          child: CustomGrid(
-            wrapWithIntrinsicHeight: false,
-            largeDesktop: 2,
+    return _section(
+      color: AppTheme.white,
+      child: CustomGrid(
+        wrapWithIntrinsicHeight: false,
+        largeDesktop: 2,
+        children: [
+          Column(
+            spacing: 16,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                spacing: 16,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Course Details',
-                    style: TextStyle(
-                      color: const Color(0xFF1F2937),
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _detailRow('Course:', courseName),
-                      _detailRow('Instructor:', instructor),
-                      _detailRow(
-                        'Email:',
-                        email,
-                        color: const Color(0xFF3B82F6),
-                      ),
-                      _detailRow('Office:', location),
-                      _detailRow('Office Hours:', officeHours),
-                      _detailRow('Phone:', phone),
-                    ],
-                  ),
-                ],
+              Text(
+                'Course Details',
+                style: TextStyle(
+                  color: const Color(0xFF1F2937),
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              // Right Section: Class Information
               Column(
-                spacing: 16,
+                spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Class Information',
-                    style: TextStyle(
-                      color: const Color(0xFF1F2937),
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _detailRow('Schedule:', schedule),
-                      _detailRow('Location:', location),
-                      _detailRow('Semester:', semester),
-                      _detailRow('Duration:', semesterDuration),
-                    ],
-                  ),
-                  // Text(
-                  //   'Quick Links',
-                  //   style: TextStyle(
-                  //     color: const Color(0xFF1F2937),
-                  //     fontSize: 16.0,
-                  //     fontWeight: FontWeight.w500,
-                  //   ),
-                  // ),
-                  // Row(
-                  //   spacing: 16,
-                  //   children: [
-                  //     _linkText('Syllabus'),
-                  //     _linkText('Library Resources'),
-                  //     _linkText('Academic Calendar'),
-                  //   ],
-                  // ),
+                  _detailRow('Course:', courseName),
+                  _detailRow('Instructor:', instructor),
+                  _detailRow('Email:', email, color: const Color(0xFF3B82F6)),
+                  _detailRow('Office:', location),
+                  _detailRow('Office Hours:', officeHours),
+                  _detailRow('Phone:', phone),
                 ],
               ),
             ],
           ),
-        );
+          // Right Section: Class Information
+          Column(
+            spacing: 16,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Class Information',
+                style: TextStyle(
+                  color: const Color(0xFF1F2937),
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Column(
+                spacing: 8,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _detailRow('Schedule:', schedule),
+                  _detailRow('Location:', location),
+                  _detailRow('Semester:', semester),
+                  _detailRow('Duration:', semesterDuration),
+                ],
+              ),
+              // Text(
+              //   'Quick Links',
+              //   style: TextStyle(
+              //     color: const Color(0xFF1F2937),
+              //     fontSize: 16.0,
+              //     fontWeight: FontWeight.w500,
+              //   ),
+              // ),
+              // Row(
+              //   spacing: 16,
+              //   children: [
+              //     _linkText('Syllabus'),
+              //     _linkText('Library Resources'),
+              //     _linkText('Academic Calendar'),
+              //   ],
+              // ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   /// Helper widget for info row
@@ -172,25 +171,23 @@ class BoardPlainPopupOverview extends StatelessWidget {
   }
 
   Widget _courseOutline({required BoardEditVm vm}) {
+    List<CourseTimeline> courseOutlines = vm.board.courseTimeLines ?? [];
 
+    if (courseOutlines.isEmpty) {
+      return SizedBox.shrink();
+    }
 
-          List<CourseTimeline> courseOutlines = vm.board.courseTimeLines ?? [];
-
-        if (courseOutlines.isEmpty) {
-          return SizedBox.shrink();
-        }
-            
-        return _section(
-          color: AppTheme.white,
-          header: _sectionHeader(
-            title: 'Course Timeline',
-            subtitle: 'Key events and assignments throughout the semester',
-          ),
-          child: Column(
-            spacing: 25,
-            children: courseOutlines.map((e) => _outlineItem(e)).toList(),
-          ),
-        );
+    return _section(
+      color: AppTheme.white,
+      header: _sectionHeader(
+        title: 'Course Timeline',
+        subtitle: 'Key events and assignments throughout the semester',
+      ),
+      child: Column(
+        spacing: 25,
+        children: courseOutlines.map((e) => _outlineItem(e)).toList(),
+      ),
+    );
   }
 
   Widget _weekInfo({required String week, String? date}) {
@@ -237,21 +234,21 @@ class BoardPlainPopupOverview extends StatelessWidget {
           Text(
             description,
             style: TextStyle(fontSize: 14.0, color: Color(0xFF6B7280)),
-        ),
+          ),
 
         // Assignment Card
-       (assignment != null && assignment.isNotEmpty)?
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF8F9FA),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 12,
-            children: [
-               Text(
+        (assignment != null && assignment.isNotEmpty)
+            ? Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 12,
+                children: [
+                  Text(
                     "Assignment:",
                     style: TextStyle(
                       fontSize: 14,
@@ -260,49 +257,51 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     ),
                   ),
 
-              Row(
-                spacing: 15,
-                children: [
-                  Expanded(
-                    child: Text(
-                      assignment,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Color(0xFF6B7280),
+                  Row(
+                    spacing: 15,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          assignment,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Color(0xFF6B7280),
+                          ),
+                        ),
                       ),
-                    ),
+                      (dueDate != null)
+                          ? CustomTag(
+                            dueDate,
+                            color: const Color(0xFF3B82F6),
+                            textColor: Colors.white,
+                          )
+                          : SizedBox.shrink(),
+                    ],
                   ),
-                 (dueDate != null)? CustomTag(
-                    dueDate,
-                    color: const Color(0xFF3B82F6),
-                    textColor: Colors.white,
-                  ): SizedBox.shrink(),
+
+                  // Progress Bar
+                  // Container(
+                  //   height: 8,
+                  //   width: double.infinity,
+                  //   decoration: BoxDecoration(
+                  //     color: const Color(0xFFE5E7EB),
+                  //     borderRadius: BorderRadius.circular(9999),
+                  //   ),
+                  //   child: FractionallySizedBox(
+                  //     alignment: Alignment.centerLeft,
+                  //     widthFactor: 0.72,
+                  //     child: Container(
+                  //       decoration: BoxDecoration(
+                  //         color: const Color(0xFF3B82F6),
+                  //         borderRadius: BorderRadius.circular(9999),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
-
-              // Progress Bar
-              // Container(
-              //   height: 8,
-              //   width: double.infinity,
-              //   decoration: BoxDecoration(
-              //     color: const Color(0xFFE5E7EB),
-              //     borderRadius: BorderRadius.circular(9999),
-              //   ),
-              //   child: FractionallySizedBox(
-              //     alignment: Alignment.centerLeft,
-              //     widthFactor: 0.72,
-              //     child: Container(
-              //       decoration: BoxDecoration(
-              //         color: const Color(0xFF3B82F6),
-              //         borderRadius: BorderRadius.circular(9999),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
-        )
-: SizedBox.shrink(),
+            )
+            : SizedBox.shrink(),
         // Tags
         // Wrap(
         //   spacing: 8,
@@ -455,56 +454,61 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _syllabus({required BoardEditVm vm, required ApiServiceProvider apiServiceProvider, required BuildContext context}) {
+  Widget _syllabus({
+    required BoardEditVm vm,
+    required ApiServiceProvider apiServiceProvider,
+    required BuildContext context,
+  }) {
     var btnText = "Upload syllabus to get AI analysis";
     var desc =
-            "After uploading your syllabus, we\'ll automatically generate course details, a timeline of important dates, and assignments for your semester";
-        if (vm.board.courseTimeLines != null) {
-          btnText = "Change syllabus";
-          desc =
-              "Your timeline, assignments and course details are generated from the syllabus you uploaded.";
-        }
+        "After uploading your syllabus, we\'ll automatically generate course details, a timeline of important dates, and assignments for your semester";
+    if (vm.board.courseTimeLines != null) {
+      btnText = "Change syllabus";
+      desc =
+          "Your timeline, assignments and course details are generated from the syllabus you uploaded.";
+    }
 
-var syllabusContent =  vm.board.syllabusContent;
-        return _sectionCard(
-          header: 'Course Timeline',
-          color: AppTheme.lightAsh,
-          title: 'Your AI assisted analysis',
-          body: desc,
-          button: Row(
-            children: [
-              AppButton.secondary(
-                mainAxisSize: MainAxisSize.min,
-                loading: vm.uploadingSyllabus,
+    var syllabusContent = vm.board.syllabusContent;
+    return _sectionCard(
+      header: 'Course Timeline',
+      color: AppTheme.lightAsh,
+      title: 'Your AI assisted analysis',
+      body: desc,
+      button: Row(
+        children: [
+          AppButton.secondary(
+            mainAxisSize: MainAxisSize.min,
+            loading: vm.uploadingSyllabus,
+            onTap: () {
+              vm.uploadSyllabus(
+                context: context,
+                apiServiceProvider: apiServiceProvider,
+              );
+            },
+            color: AppTheme.strongBlue,
+            text: btnText,
+            style: const TextStyle(
+              color: Color(0xFF3B82F6),
+              fontSize: 16.0,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          SizedBox(width: 16),
+
+          (syllabusContent != null)
+              ? _buildMenuItem(
+                icon: Icons.open_in_new,
+                label: 'Open Syllabus',
                 onTap: () {
-                  vm.uploadSyllabus(
-                    context: context,
-                    apiServiceProvider: apiServiceProvider,
-                  );
+                  handleOpenFile(syllabusContent, context);
                 },
-                color: AppTheme.strongBlue,
-                text: btnText,
-                style: const TextStyle(
-                  color: Color(0xFF3B82F6),
-                  fontSize: 16.0,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              )
+              : SizedBox.shrink(),
 
-              SizedBox(width: 16),
-
-              (syllabusContent != null)?
-             _buildMenuItem(
-                                      icon: Icons.open_in_new,
-                                      label: 'Open Syllabus',
-                                      onTap: () {
-                                        handleOpenFile(syllabusContent, context);
-                                      },
-                                    ) : SizedBox.shrink(),
-
- SizedBox(width: 16),
-                                     (syllabusContent != null)
+          SizedBox(width: 16),
+          (syllabusContent != null)
               ? _buildMenuItem(
                 icon: Icons.download,
                 label: 'Download Syllabus',
@@ -512,12 +516,11 @@ var syllabusContent =  vm.board.syllabusContent;
                   handleFileDownload(syllabusContent, context);
                 },
               )
-              : SizedBox.shrink()
-            ],
-          ),
-        );
+              : SizedBox.shrink(),
+        ],
+      ),
+    );
   }
-
 
   Widget _buildMenuItem({
     required IconData icon,
@@ -529,7 +532,7 @@ var syllabusContent =  vm.board.syllabusContent;
       builder: (context) {
         return InkWell(
           onTap: () {
-            NavigationHelper.pop();
+            // NavigationHelper.pop();
             onTap();
           },
           child: Container(
@@ -559,7 +562,6 @@ var syllabusContent =  vm.board.syllabusContent;
       },
     );
   }
-
 
   Widget _templateCard({
     required String title,
@@ -646,7 +648,7 @@ var syllabusContent =  vm.board.syllabusContent;
     );
   }
 
-  Widget _fileUploads() {
+  Widget _fileUploads({required BoardEditVm vm}) {
     return _section(
       color: AppTheme.white,
       header: _sectionHeader(

@@ -248,6 +248,25 @@ class BoardEditVm extends ChangeNotifier {
             files: {'syllabus_file': file},
           );
 
+          /////
+          Content? content = await saveFileToDb(
+            pickedFile: result.files.first,
+            context: context,
+            boardId: board.id!,
+            title: "Syllabus",
+          );
+
+          print("content ID ${content?.id}");
+          print("content file ${content?.file}");
+
+          final updatedBoard = board.copyWith(
+            syllabusContentId: content?.id,
+          );
+          await dbHelper.updateBoard(updatedBoard);
+
+          return;
+          //////
+
           final response = await apiServiceProvider.apiService
               .sendFormDataRequest(imageBody);
 
