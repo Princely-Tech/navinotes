@@ -236,28 +236,6 @@ class NoteCreationMain extends StatelessWidget {
               showDefaultTools: true,
             ),
           ),
-          // Drawing tools overlay
-          Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton.small(
-                  heroTag: 'clear_drawing',
-                  onPressed: vm.clearDrawing,
-                  child: const Icon(Icons.delete_outline),
-                ),
-                const SizedBox(width: 16),
-                FloatingActionButton.small(
-                  heroTag: 'save_drawing',
-                  onPressed: vm.saveDrawing,
-                  child: const Icon(Icons.save),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
