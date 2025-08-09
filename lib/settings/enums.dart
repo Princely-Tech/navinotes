@@ -1,3 +1,12 @@
+var educationLevel = [
+  'High School',
+  'Vocational Training',
+  'Associate Degree',
+  'Undergraduate (Bachelor’s)',
+  'Graduate (Master’s)',
+  'Postgraduate / Doctorate (PhD)',
+];
+
 enum ImagePlaceHolderTypes {
   asset,
   network;

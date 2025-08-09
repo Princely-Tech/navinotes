@@ -99,10 +99,7 @@ class BoardCreateVm extends ChangeNotifier {
         NavigationHelper.navigateToBoard(
           newBoard,
           replace: true, //Removes the form route and proceed
-          // arguments: { //TODO show message using MessageDisplayService
-          //   'showSuccess': true,
-          //   'message': 'Board created successfully!',
-          // },
+          isNew: true, // Only show the edit page for the first time
         );
       }
     } catch (e) {
