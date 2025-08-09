@@ -1,27 +1,27 @@
-import 'package:navinotes/packages.dart';
 
 class CourseInfo {
   final String? title;
   final String? code;
   final String? instructor;
   final String? semester;
+  final String? semesterDuration;
   final String? schedule;
   final String? location;
 
-  // final String? officeHours; 
-  // final String? email; 
-  // final String? duration; 
-  // final String? officeLocation; 
-  // final String? phone; 
-  // final String? quickLinks; 
-
+  final String? officeHours; 
+  final String? email; 
+  final String? phone; 
   const CourseInfo({
     this.title,
     this.code,
     this.instructor,
     this.semester,
+    this.semesterDuration,
     this.schedule,
     this.location,
+    this.officeHours,
+    this.email,
+    this.phone,
   });
 
   // Convert a CourseInfo into a Map
@@ -31,10 +31,15 @@ class CourseInfo {
       'code': code,
       'instructor': instructor,
       'semester': semester,
+      'semester_duration': semesterDuration,
       'schedule': schedule,
       'location': location,
+      'office_hours': officeHours,
+      'email': email,
+      'phone': phone,
     };
   }
+
 
   // Create a CourseInfo from a Map
   factory CourseInfo.fromMap(Map<String, dynamic> map) {
@@ -43,15 +48,19 @@ class CourseInfo {
       code: map['code'],
       instructor: map['instructor'],
       semester: map['semester'],
+      semesterDuration: map['semester_duration'],
       schedule: map['schedule'],
       location: map['location'],
+      officeHours: map['office_hours'],
+      email: map['email'],
+      phone: map['phone'],
     );
   }
 
 
   @override
   String toString() {
-    return 'CourseInfo(title: $title, code: $code, instructor: $instructor, semester: $semester, schedule: $schedule, location: $location)';
+    return 'CourseInfo(title: $title, code: $code, instructor: $instructor, semester: $semester, schedule: $schedule, location: $location, officeHours: $officeHours, email: $email, phone: $phone)';
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:navinotes/packages.dart';
 
 class Content {
-  final int? id;
+   int? id;
   final String guid;
   final AppContentType type; // note, mindmap, syllabus, etc.
   final Map<String, dynamic> metaData; // JSON as Map

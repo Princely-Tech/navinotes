@@ -50,6 +50,12 @@ class BoardEditVm extends ChangeNotifier {
     }
   }
 
+  Future<void> loadSyllabusContent(Board board, {BuildContext? context}) async {
+    await board.getSyllabusContent();
+
+    notifyListeners();
+  }
+
   void openDrawer() {
     scaffoldKey?.currentState?.openDrawer();
   }
@@ -104,6 +110,7 @@ class BoardEditVm extends ChangeNotifier {
   Future<void> initialize() async {
     debugPrint('Initializing board with ID: ${board.id}');
     loadFiles(board.id!);
+    loadSyllabusContent(board);
   }
 
   Future<void> importPdfFile(BuildContext context) async {
@@ -121,21 +128,20 @@ class BoardEditVm extends ChangeNotifier {
         final pickedFile = result!.files.first;
 
         if (context.mounted) {
-          int? id = await saveFileToDb(
+          Content? content = await saveFileToDb(
             pickedFile: pickedFile,
             context: context,
             boardId: board.id!,
           );
 
-          if (isNotNull(id)) {
+          if (isNotNull(content?.id)) {
             if (context.mounted) {
               MessageDisplayService.showMessage(
                 context,
                 'Successfully imported PDF file',
               );
             }
-            await NavigationHelper.navigateToPdfView(id!);
-            loadFiles(id);
+            await NavigationHelper.navigateToPdfView(content!.id!);
           }
         }
         loadFiles(board.id!);
@@ -261,11 +267,22 @@ class BoardEditVm extends ChangeNotifier {
 
           // Update the board with the new syllabus
           if (isNotNull(board)) {
+            // save to db
+            Content? content = await saveFileToDb(
+              pickedFile: result.files.first,
+              context: context,
+              boardId: board.id!,
+              title: "Syllabus",
+            );
+
+            print("content $content");
+
             final updatedBoard = board.copyWith(
               courseTimeLines: timeLines,
               courseInfo: CourseInfo.fromMap(
                 response['response']['course_info'],
               ),
+              syllabusContentId: content?.id,
             );
             await dbHelper.updateBoard(updatedBoard);
 

@@ -7,7 +7,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 5; // Increment this number
+  static const int _databaseVersion = 6; // Increment this number
 
   DatabaseHelper._init();
 
@@ -46,6 +46,7 @@ class DatabaseHelper {
       cover_image TEXT,
       course_info TEXT,
       course_timelines TEXT,
+      syllabus_content_id INTEGER DEFAULT NULL,
       created_at INTEGER,
       updated_at INTEGER,
       synced_at INTEGER
@@ -125,6 +126,10 @@ class DatabaseHelper {
     if (oldVersion < 5) {
       await db.execute('ALTER TABLE boards ADD COLUMN course_info TEXT');
       await db.execute('ALTER TABLE boards ADD COLUMN course_timelines TEXT');
+    }
+
+    if (oldVersion < 6) {
+      await db.execute('ALTER TABLE boards ADD COLUMN syllabus_content_id INTEGER DEFAULT NULL');
     }
   }
 

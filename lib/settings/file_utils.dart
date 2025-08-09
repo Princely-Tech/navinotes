@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart' as path;
+import 'package:share_plus/share_plus.dart';
 
 String getFileSize(dynamic bytes) {
   if (bytes is int) {
@@ -137,53 +138,34 @@ Future<void> handleOpenFile(Content file, BuildContext context) async {
 
 //TODO test this
 Future<void> handleFileDownload(Content file, BuildContext context) async {
-  try {
-    final sourcePath = file.file;
-    if (sourcePath == null || sourcePath.isEmpty) {
-      MessageDisplayService.showErrorMessage(context, 'No file to download');
-      return;
-    }
-
-    final fileEntity = File(sourcePath);
-    if (!await fileEntity.exists()) {
-      if (context.mounted) {
-        MessageDisplayService.showErrorMessage(context, 'File not found');
-      }
-      return;
-    }
-
-    // Ask permission
-    if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        if (context.mounted) {
-          MessageDisplayService.showErrorMessage(
-            context,
-            'Storage permission denied',
-          );
-        }
-        return;
-      }
-    }
-
-    // Get Downloads path via plugin
-    final downloadsPath = await ExternalPath.getExternalStoragePublicDirectory(
-      'Download',
-    );
-
-    final fileName = path.basename(sourcePath);
-    final destPath = path.join(downloadsPath, fileName);
-
-    await fileEntity.copy(destPath);
-    if (context.mounted) {
-      MessageDisplayService.showMessage(context, 'File saved to: $destPath');
-    }
-  } catch (e) {
-    debugPrint(e.toString());
-    if (context.mounted) {
-      MessageDisplayService.showErrorMessage(context, 'Download failed');
-    }
+  final sourcePath = file.file;
+  if (sourcePath == null || sourcePath.isEmpty) {
+    MessageDisplayService.showErrorMessage(context, 'No file to download');
+    return;
   }
+
+  final fileEntity = File(sourcePath);
+  if (!await fileEntity.exists()) {
+    MessageDisplayService.showErrorMessage(context, 'File not found');
+    return;
+  }
+
+// ipad bug
+final box = context.findRenderObject() as RenderBox?;
+
+final params = ShareParams(
+    text: file.title,
+    files: [XFile(sourcePath)],
+    sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size, // fix ipad bug
+
+  );
+
+  final result = await SharePlus.instance.share(params);
+
+  if (result.status == ShareResultStatus.success) {
+    debugPrint('File shared successfully');
+  }
+
 }
 
 Future<void> handleContentDelete({
@@ -251,10 +233,11 @@ Future<Directory> getFilesDirectory() async {
   return filesDir;
 }
 
-Future<int?> saveFileToDb({
+Future<Content?> saveFileToDb({
   required PlatformFile pickedFile,
   required BuildContext context,
   required int boardId,
+  String? title,
 }) async {
   if (isNull(pickedFile.path)) return null;
 
@@ -270,7 +253,7 @@ Future<int?> saveFileToDb({
       final currentTimestamp = generateUnixTimestamp();
       // Create content entry for the file
 
-      final content = Content(
+      var content = Content(
         guid: generateGUID(currentUser!.id!),
         type: AppContentType.file,
         metaData: {
@@ -279,14 +262,16 @@ Future<int?> saveFileToDb({
           ContentMetadataKey.fileExtension: pickedFile.extension,
         },
         boardId: boardId,
-        title: pickedFile.name,
+        title: title ?? pickedFile.name,
         file: savedFile.path,
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
         fileNeedSync: true,
       );
 
-      return dbHelper.insertContent(content);
+      final id = await dbHelper.insertContent(content);
+      content.id = id;
+      return content;
     }
   } catch (e) {
     debugPrint('Error saving file ${pickedFile.name}: $e');

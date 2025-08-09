@@ -19,6 +19,7 @@ class Board {
   final int? syncedAt;
   final List<CourseTimeline>? courseTimeLines;
   final CourseInfo? courseInfo;
+  final int? syllabusContentId;
 
   final bool
   coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
@@ -42,6 +43,7 @@ class Board {
     required this.updatedAt,
     this.syncedAt,
     this.coverImageNeedSync = false,
+    this.syllabusContentId,
   });
 
   Board copyWith({
@@ -64,6 +66,7 @@ class Board {
     CourseInfo? courseInfo,
 
     bool? coverImageNeedSync,
+    int? syllabusContentId,
   }) {
     return Board(
       id: id ?? this.id,
@@ -85,6 +88,7 @@ class Board {
       courseTimeLines: courseTimeLines ?? this.courseTimeLines,
       courseInfo: courseInfo ?? this.courseInfo,
       coverImageNeedSync: coverImageNeedSync ?? this.coverImageNeedSync,
+      syllabusContentId: syllabusContentId ?? this.syllabusContentId,
     );
   }
 
@@ -129,7 +133,10 @@ class Board {
     'type': type,
     'name': name,
     'course_info': courseInfo == null ? null : jsonEncode(courseInfo?.toMap()),
-    'course_timelines': courseTimeLines == null ? null : jsonEncode(courseTimeLines?.map((e) => e.toMap()).toList()),
+    'course_timelines':
+        courseTimeLines == null
+            ? null
+            : jsonEncode(courseTimeLines?.map((e) => e.toMap()).toList()),
     'customization': jsonEncode(customization),
     'is_public': isPublic ? 1 : 0,
     'description': description,
@@ -141,7 +148,7 @@ class Board {
     'updated_at': updatedAt,
     'synced_at': syncedAt,
     'cover_image_need_sync': coverImageNeedSync ? 1 : 0,
-  
+    'syllabus_content_id': syllabusContentId,
   };
 
   factory Board.fromMap(Map<String, dynamic> map) {
@@ -204,6 +211,7 @@ class Board {
       updatedAt: map['updated_at'],
       syncedAt: map['synced_at'],
       coverImageNeedSync: map['cover_image_need_sync'] == 1,
+      syllabusContentId: map['syllabus_content_id'],
       courseInfo: courseInfo,
       courseTimeLines: courseTimeLines,
     );
@@ -212,6 +220,31 @@ class Board {
   // Cache for board contents
   List<Content>? _cachedContents;
   bool _hasFetchedContents = false;
+
+  Content? syllabusContent;
+
+  Future<Content?> getSyllabusContent({bool forceRefresh = false}) async {
+    print("getSyllabusContent");
+
+    if (syllabusContent != null && !forceRefresh) {
+      return syllabusContent;
+    }
+
+    if (syllabusContentId == null) {
+      return null;
+    }
+    print("syllabusContentId: $syllabusContentId");
+
+    final db = await DatabaseHelper.instance.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'contents',
+      where: 'id = ?',
+      whereArgs: [syllabusContentId],
+    );
+
+    syllabusContent = maps.isNotEmpty ? Content.fromMap(maps[0]) : null;
+    return syllabusContent;
+  }
 
   /// Gets all contents associated with this board with caching.
   /// Fetches from the database only if not already cached.
