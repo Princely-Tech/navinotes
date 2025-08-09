@@ -1,5 +1,5 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
+import '../vm.dart';
 
 class DottedNoteBackground extends StatelessWidget {
   const DottedNoteBackground({super.key});
