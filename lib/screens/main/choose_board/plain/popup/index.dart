@@ -7,6 +7,7 @@ class BoardPlainPopupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Board board = ModalRoute.of(context)?.settings.arguments as Board;
+
     return ChangeNotifierProvider(
       create: (context) {
         final vm = BoardEditVm(scaffoldKey: _scaffoldKey, board: board);

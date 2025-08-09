@@ -61,11 +61,7 @@ class _SplashScreenState extends State<SplashScreen>
     // Ensure session is loaded before checking login status
     await context.read<SessionManager>().init();
     if (mounted) {
-      //TODO UNCOMMENT
-      //  return _navigateToNextScreen();
-
-      //TODO DELETE
-      _navigateToDashboard();
+      return _navigateToNextScreen();
     }
   }
 

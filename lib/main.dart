@@ -23,7 +23,7 @@ void main() async {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),
         // initialRoute: Routes.boardLightAcademiaPopup,
-        initialRoute: Routes.splash, //TODO uncomment
+        initialRoute: Routes.splash,
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,
       ),

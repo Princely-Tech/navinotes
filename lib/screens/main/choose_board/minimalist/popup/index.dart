@@ -5,8 +5,9 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-       Board board = ModalRoute.of(context)?.settings.arguments as Board;
-    return  ChangeNotifierProvider(
+    Board board = ModalRoute.of(context)?.settings.arguments as Board;
+
+    return ChangeNotifierProvider(
       create: (context) {
         final vm = BoardEditVm(board: board);
         vm.initialize();
@@ -466,7 +467,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
   }
 
   Widget _header() {
-    return Container( 
+    return Container(
       decoration: ShapeDecoration(
         color: Colors.transparent,
         shape: RoundedRectangleBorder(

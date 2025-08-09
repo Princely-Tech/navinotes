@@ -14,12 +14,12 @@ class BoardPlainPopupOverview extends StatelessWidget {
         _studyTemplates(),
         _courseOutline(),
         Divider(height: 1, color: AppTheme.lightGray),
-        _courseDetals(),
+        _courseDetails(),
       ],
     );
   }
 
-  Widget _courseDetals() {
+  Widget _courseDetails() {
     return _section(
       color: AppTheme.white,
       child: CustomGrid(
