@@ -112,9 +112,9 @@ class AuthVM extends ChangeNotifier {
         );
       }
     } catch (e) {
-      // if (context.mounted) {
-      //   MessageDisplayService.showDefaultError(context);
-      // }
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(context, 'Google login failed!');
+      }
       debugPrint(e.toString());
     }
   }

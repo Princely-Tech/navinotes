@@ -16,7 +16,10 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
         builder: (_, vm, _) {
           return ScaffoldFrame(
             drawer: CustomDrawer(child: NavigationSideBar()),
-            backgroundColor: const Color(0xFFF7F3E9),
+            backgroundColor: vm.returnSelectedTabColor(
+              const Color(0xFFF7F3E9),
+              asignmentColor: const Color(0xFF2B1810),
+            ),
             body: Row(
               children: [
                 VisibleController(
@@ -37,7 +40,8 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                                 _heroSection(),
                                 _courseActions(),
                                 _fileUploadsSection(),
-                                _studyTemplatesSection(),
+
+                                // _studyTemplatesSection(),
                                 _courseTimeline(),
                                 _footer(),
                               ],
@@ -57,99 +61,113 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
   }
 
   Widget _footer() {
-    return Consumer<LayoutProviderVm>(
-      builder: (_, layoutVm, _) {
-        return Container(
-          color: const Color(0xFF4A3426),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Opacity(
-                    opacity: getDeviceResponsiveValue(
-                      deviceType: layoutVm.deviceType,
-                      mobile: 0.3,
-                      desktop: 1,
-                    ),
-                    child: ImagePlaceHolder(
-                      imagePath: Images.boardDarkAcadBook,
-                      borderRadius: BorderRadius.zero,
+    return Consumer<BoardEditVm>(
+      builder: (_, vm, _) {
+        final courseInfo = vm.board.courseInfo;
+
+        if (isNull(courseInfo)) {
+          return const SizedBox.shrink();
+        }
+
+        return Consumer<LayoutProviderVm>(
+          builder: (_, layoutVm, _) {
+            return Container(
+              color: const Color(0xFF4A3426),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Opacity(
+                        opacity: getDeviceResponsiveValue(
+                          deviceType: layoutVm.deviceType,
+                          mobile: 0.3,
+                          desktop: 1,
+                        ),
+                        child: ImagePlaceHolder(
+                          imagePath: Images.boardDarkAcadBook,
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 50),
-                child: ResponsiveHorizontalPadding(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        spacing: 15,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 50),
+                    child: ResponsiveHorizontalPadding(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'HISTORY 1302',
-                                  style: TextStyle(
-                                    color: const Color(0xFFF7F3E9),
-                                    fontSize: 24,
-                                    fontFamily: 'Playfair Display',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.33,
-                                  ),
+                          Row(
+                            spacing: 15,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      courseInfo?.title ??
+                                          'Course name not specified',
+                                      style: TextStyle(
+                                        color: const Color(0xFFF7F3E9),
+                                        fontSize: 24,
+                                        fontFamily: 'Playfair Display',
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.33,
+                                      ),
+                                    ),
+                                    Text(
+                                      // 'Modern American History - Semester 2',
+                                      courseInfo?.semester ?? '',
+                                      style: TextStyle(
+                                        color: const Color(0xB2F7F3E9),
+                                        fontSize: 16,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.50,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  'Modern American History - Semester 2',
+                              ),
+                              if (isNotNull(courseInfo?.phone))
+                                AppButton(
+                                  mainAxisSize: MainAxisSize.min,
+                                  onTap:
+                                      () => callPhoneNumber(courseInfo!.phone!),
+                                  text: 'Contact Professor',
+                                  color: const Color(0xFFC19B47),
+                                  minHeight: 40,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
                                   style: TextStyle(
-                                    color: const Color(0xB2F7F3E9),
+                                    color: const Color(0xFF2B1810),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.50,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                              ],
-                            ),
+                            ],
                           ),
-                          AppButton(
-                            mainAxisSize: MainAxisSize.min,
-                            onTap: () {},
-                            text: 'Contact Professor',
-                            color: const Color(0xFFC19B47),
-                            minHeight: 40,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                            style: TextStyle(
-                              color: const Color(0xFF2B1810),
-                              fontSize: 16,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
+                          // SizedBox(height: 40),
+                          // Divider(color: const Color(0x19F7F3E9), height: 1),
+                          // SizedBox(height: 33),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   spacing: 30,
+                          //   children: [_footerItem(), _footerItem()],
+                          // ),
                         ],
                       ),
-                      SizedBox(height: 40),
-                      Divider(color: const Color(0x19F7F3E9), height: 1),
-                      SizedBox(height: 33),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        spacing: 30,
-                        children: [_footerItem(), _footerItem()],
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -210,11 +228,17 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
 
   Widget _courseTimeline() {
     return Consumer<BoardEditVm>(
-      builder: (_, vm, _) {
+      builder: (context, vm, _) {
+        List<CourseTimeline> courseOutlines = vm.board.courseTimeLines ?? [];
+        if (courseOutlines.isEmpty) {
+          return SizedBox.shrink();
+        }
+        double maxHeight = screenHeight(context) / 2;
+
         return Container(
           key: vm.courseTimelineKey,
           color: const Color(0xFF2B1810),
-          padding: EdgeInsets.symmetric(vertical: 64),
+          padding: EdgeInsets.only(top: 64),
           child: ResponsiveHorizontalPadding(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,37 +265,20 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 40),
-                Column(
-                  children: [
-                    _buildTimelineItem(
-                      isFirst: true,
-                      week: 'Week 1-2',
-                      title: 'Civil War & Reconstruction',
-                      description:
-                          'Examine the causes, course, and consequences of the American Civil War and the challenges of Reconstruction.',
-                      assignment:
-                          'Primary source analysis of Lincoln\'s speeches and Confederate documents',
-                      dueDate: 'June 15, 2025',
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: maxHeight),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 60),
+                    child: Column(
+                      children: [
+                        for (int i = 0; i < courseOutlines.length; i++)
+                          BoardDarkAcadTimelineItem(
+                            courseOutlines[i],
+                            isFirst: i == 0,
+                          ),
+                      ],
                     ),
-                    _buildTimelineItem(
-                      week: 'Week 3-4',
-                      title: 'Industrialization Era',
-                      description:
-                          'Study the rapid industrial growth and its impact on American society, economy, and politics.',
-                      assignment:
-                          'Research paper on a major industrialist and their influence on America',
-                      dueDate: 'June 29, 2025',
-                    ),
-                    _buildTimelineItem(
-                      week: 'Week 5-6',
-                      title: 'Progressive Era',
-                      description:
-                          'Analyze the reform movements that addressed the problems created by industrialization and urbanization.',
-                      assignment:
-                          'Comparative analysis of progressive reforms and their effectiveness',
-                      dueDate: 'July 13, 2025',
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -346,109 +353,95 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
   Widget _fileUploadsSection() {
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
-        return Container(
-          color: const Color(0xFF2B1810),
-          width: double.infinity,
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                bottom: 40,
-                right: 0,
-                child: ImagePlaceHolder(
-                  imagePath: Images.boardDarkAcadFileUploadBg,
-                  borderRadius: BorderRadius.zero,
-                ),
-              ),
-              ResponsiveHorizontalPadding(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 64),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'File Uploads',
-                        style: TextStyle(
-                          color: const Color(0xFFF7F3E9),
-                          fontSize: 30,
-                          fontFamily: 'Playfair Display',
-                          fontWeight: FontWeight.w700,
-                          height: 1.20,
-                        ),
+        return Consumer<LayoutProviderVm>(
+          builder: (_, layoutVm, _) {
+            return Container(
+              color: const Color(0xFF2B1810),
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    bottom: 40,
+                    right: 0,
+                    child: Opacity(
+                      opacity: getDeviceResponsiveValue(
+                        deviceType: layoutVm.deviceType,
+                        mobile: 0.3,
+                        tablet: 1,
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Essential readings and resources for your studies',
-                        style: TextStyle(
-                          color: const Color(0xB2F7F3E9),
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                          height: 1.50,
-                        ),
+                      child: ImagePlaceHolder(
+                        imagePath: Images.boardDarkAcadFileUploadBg,
+                        borderRadius: BorderRadius.zero,
                       ),
-                      SizedBox(height: 40),
-                      if (vm.uploadedFiles.isEmpty)
-                        AppButton(
-                          mainAxisSize: MainAxisSize.min,
-                          onTap: () {
-                            vm.importFiles(context);
-                          },
-                          color: const Color(0xFFC19B47),
-                          text: 'Import Files',
-                          minHeight: 40,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          style: TextStyle(
-                            color: const Color(0xFF2B1810),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      else
-                        ScrollableController(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            spacing: 32,
-                            children:
-                                vm.uploadedFiles.map((file) {
-                                  return _buildFileCard(file);
-                                }).toList(),
-
-                            // children: [
-                            //   _buildFileCard(
-                            //     title: 'The Civil War Era',
-                            //     description:
-                            //         'Comprehensive analysis of the American Civil War and its aftermath.',
-                            //     fileType: 'PDF • 24 MB',
-                            //     icon: Icons.description,
-                            //   ),
-                            //   _buildFileCard(
-                            //     title: 'Industrial Revolution',
-                            //     description:
-                            //         'The transformation of America through industrialization and its social impact.',
-                            //     fileType: 'PDF • 18 MB',
-                            //     icon: Icons.description,
-                            //   ),
-
-                            //   // _buildFileCard(
-                            //   //   title: 'World War Lecture',
-                            //   //   description:
-                            //   //       'Video lecture covering American involvement in global conflicts.',
-                            //   //   fileType: 'Video • 102 MB',
-                            //   //   icon: Icons.video_library,
-                            //   // ),
-                            // ],
-                          ),
-                        ),
-                    ],
+                    ),
                   ),
-                ),
+                  ResponsiveHorizontalPadding(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 64),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'File Uploads',
+                            style: TextStyle(
+                              color: const Color(0xFFF7F3E9),
+                              fontSize: 30,
+                              fontFamily: 'Playfair Display',
+                              fontWeight: FontWeight.w700,
+                              height: 1.20,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Essential readings and resources for your studies',
+                            style: TextStyle(
+                              color: const Color(0xB2F7F3E9),
+                              fontSize: 16,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 1.50,
+                            ),
+                          ),
+                          SizedBox(height: 40),
+                          if (vm.uploadedFiles.isEmpty)
+                            AppButton(
+                              mainAxisSize: MainAxisSize.min,
+                              onTap: () {
+                                vm.importFiles(context);
+                              },
+                              color: const Color(0xFFC19B47),
+                              text: 'Import Files',
+                              minHeight: 40,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                              style: TextStyle(
+                                color: const Color(0xFF2B1810),
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                          else
+                            ScrollableController(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                spacing: 32,
+                                children:
+                                    vm.uploadedFiles.map((file) {
+                                      return _buildFileCard(file);
+                                    }).toList(),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -471,17 +464,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                 ),
               ),
             ),
-            // Positioned(
-            //   bottom: 0,
-            //   left: 0,
-            //   child: WidthLimiter(
-            //     mobile: 224,
-            //     child: ImagePlaceHolder(
-            //       borderRadius: BorderRadius.zero,
-            //       imagePath: Images.boardDarkAcadCourseActionsBg,
-            //     ),
-            //   ),
-            // ),
             VisibleController(
               mobile: false,
               desktop: true,
@@ -559,7 +541,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                               'Document your insights and research findings',
                           actionText: 'New Note',
                           imageUrl: Images.boardDarkAcadCreateNote,
-                          onTap: vm.goToNewNoteTemplate,
+                          onTap: vm.goToBoardNotes,
                         ),
                         _buildActionCard(
                           title: 'Import PDF',
@@ -780,47 +762,54 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
   }
 
   Widget _nextSession() {
-    return CustomCard(
-      width: null,
-      addCardShadow: true,
-      decoration: BoxDecoration(
-        color: const Color(0xFF4A3426),
-        borderRadius: BorderRadius.circular(2),
-      ),
-      padding: EdgeInsets.all(15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 8,
-        children: [
-          Text(
-            'Next session:',
-            style: TextStyle(
-              color: const Color(0xFFF7F3E9),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-            ),
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        CourseTimeline? nextSession = vm.getNextSession();
+        if (isNull(nextSession)) return SizedBox.shrink();
+        return CustomCard(
+          width: null,
+          addCardShadow: true,
+          decoration: BoxDecoration(
+            color: const Color(0xFF4A3426),
+            borderRadius: BorderRadius.circular(2),
           ),
-          Text(
-            'Civil Rights Movement',
-            style: TextStyle(
-              color: const Color(0xFFC19B47),
-              fontSize: 18,
-              fontFamily: 'Playfair Display',
-              fontWeight: FontWeight.w400,
-            ),
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
+              Text(
+                'Next session:',
+                style: TextStyle(
+                  color: const Color(0xFFF7F3E9),
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                nextSession!.title,
+                style: TextStyle(
+                  color: const Color(0xFFC19B47),
+                  fontSize: 18,
+                  fontFamily: 'Playfair Display',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                // 'June 5th, 2:00 PM',
+                formatSessionDate(nextSession),
+                style: TextStyle(
+                  color: const Color(0xB2F7F3E9),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ),
-          Text(
-            'June 5th, 2:00 PM',
-            style: TextStyle(
-              color: const Color(0xB2F7F3E9),
-              fontSize: 14,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -1012,77 +1001,87 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFileCard(
-    Content file,
+  Widget _buildFileCard(Content file) {
+    return Builder(
+      builder: (context) {
+        return InkWell(
+          onTap: () => handleOpenFile(file, context),
+          child: Container(
+            // constraints: BoxConstraints(maxWidth: 400),
 
-    //   {
-    //   required String title,
-    //   required String description,
-    //   required String fileType,
-    //   required IconData icon,
-    // }
-  ) {
-    return Container(
-      width: 384,
-      height: 228,
-      decoration: BoxDecoration(
-        color: const Color(0xFF4A3426),
-        borderRadius: BorderRadius.circular(2),
-      ),
-      padding: EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 48,
-            height: 48,
+            // width: 384,
+            // height: 228,
             decoration: BoxDecoration(
-              color: const Color(0x33C19B47),
+              color: const Color(0xFF4A3426),
               borderRadius: BorderRadius.circular(2),
             ),
-            child: Icon(getFileIcon(file.file), color: const Color(0xFFF7F3E9)),
-          ),
-          SizedBox(height: 16),
-          Text(
-            file.title,
-            style: TextStyle(
-              color: const Color(0xFFF7F3E9),
-              fontSize: 20,
-              fontFamily: 'Playfair Display',
-              fontWeight: FontWeight.w600,
-              height: 1.40,
+            padding: EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: const Color(0x33C19B47),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  child: Icon(
+                    getFileIcon(file.file),
+                    color: AppTheme.goldenSaffron,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  file.title,
+                  style: TextStyle(
+                    color: const Color(0xFFF7F3E9),
+                    fontSize: 20,
+                    fontFamily: 'Playfair Display',
+                    fontWeight: FontWeight.w600,
+                    height: 1.40,
+                  ),
+                ),
+                SizedBox(height: 8),
+                // Text(
+                //   description,
+                //   style: TextStyle(
+                //     color: const Color(0xB2F7F3E9),
+                //     fontSize: 14,
+                //     fontFamily: 'Inter',
+                //     fontWeight: FontWeight.w400,
+                //     height: 1.43,
+                //   ),
+                // ),
+                // Spacer(),
+                Row(
+                  spacing: 50,
+                  children: [
+                    Text(
+                      '${getFileType(file.file)} • ${getFileSize(file.metaData[ContentMetadataKey.fileSize])}',
+                      style: TextStyle(
+                        color: const Color(0x99F7F3E9),
+                        fontSize: 12,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        height: 1.33,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => handleFileDownload(file, context),
+                      child: SVGImagePlaceHolder(
+                        imagePath: Images.upload4,
+                        color: AppTheme.goldenSaffron,
+                        size: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 8),
-          // Text(
-          //   description,
-          //   style: TextStyle(
-          //     color: const Color(0xB2F7F3E9),
-          //     fontSize: 14,
-          //     fontFamily: 'Inter',
-          //     fontWeight: FontWeight.w400,
-          //     height: 1.43,
-          //   ),
-          // ),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${getFileType(file.file)} • ${getFileSize(file.metaData[ContentMetadataKey.fileSize])}',
-                style: TextStyle(
-                  color: const Color(0x99F7F3E9),
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  height: 1.33,
-                ),
-              ),
-              Icon(Icons.more_vert, color: const Color(0xB2F7F3E9)),
-            ],
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -1156,208 +1155,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _timelineLeft({
-    required String week,
-    required String title,
-    required String description,
-  }) {
-    return Consumer<LayoutProviderVm>(
-      builder: (_, layoutVm, _) {
-        final textAlign = getDeviceResponsiveValue(
-          deviceType: layoutVm.deviceType,
-          mobile: TextAlign.start,
-          laptop: TextAlign.end,
-        );
-        return Column(
-          crossAxisAlignment: getDeviceResponsiveValue(
-            deviceType: layoutVm.deviceType,
-            mobile: CrossAxisAlignment.start,
-            laptop: CrossAxisAlignment.end,
-          ),
-          children: [
-            Text(
-              week,
-              style: TextStyle(
-                color: const Color(0xFFC19B47),
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w500,
-                height: 1.50,
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              title,
-              textAlign: textAlign,
-              style: TextStyle(
-                color: const Color(0xFFF7F3E9),
-                fontSize: 24,
-                fontFamily: 'Playfair Display',
-                fontWeight: FontWeight.w600,
-                height: 1.33,
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              description,
-              textAlign: textAlign,
-              style: TextStyle(
-                color: const Color(0xB2F7F3E9),
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                height: 1.50,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _timeLineRight({required String assignment, required String dueDate}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFF4A3426),
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Assignment',
-                style: TextStyle(
-                  color: const Color(0xFFF7F3E9),
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 16),
-              Text(
-                assignment,
-                style: TextStyle(
-                  color: const Color(0xB2F7F3E9),
-                  fontSize: 14,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Due: $dueDate',
-                style: TextStyle(
-                  color: const Color(0xFFC19B47),
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _timelineDivider() {
-    return Stack(
-      children: [
-        Positioned(
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              VerticalDivider(width: 1, color: const Color(0x4CC19B47)),
-            ],
-          ),
-        ),
-        Center(
-          child: OutlinedChild(
-            size: 40,
-            decoration: BoxDecoration(
-              color: const Color(0xFFC19B47),
-              shape: BoxShape.circle,
-            ),
-            child: SVGImagePlaceHolder(
-              imagePath: Images.book,
-              color: const Color(0xFF2B1810),
-              size: 16,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTimelineItem({
-    required String week,
-    required String title,
-    required String description,
-    required String assignment,
-    required String dueDate,
-    bool isFirst = false,
-  }) {
-    final padding = EdgeInsets.only(top: isFirst ? 0 : 40);
-    return IntrinsicHeight(
-      child: ResponsiveSection(
-        mobile: Row(
-          spacing: 30,
-          children: [
-            _timelineDivider(),
-            Expanded(
-              child: Padding(
-                padding: padding,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 20,
-                  children: [
-                    _timelineLeft(
-                      description: description,
-                      title: title,
-                      week: week,
-                    ),
-                    _timeLineRight(assignment: assignment, dueDate: dueDate),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        laptop: Row(
-          spacing: 30,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: padding,
-                child: _timelineLeft(
-                  description: description,
-                  title: title,
-                  week: week,
-                ),
-              ),
-            ),
-            _timelineDivider(),
-            Expanded(
-              child: Padding(
-                padding: padding,
-                child: _timeLineRight(assignment: assignment, dueDate: dueDate),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

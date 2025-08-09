@@ -60,9 +60,7 @@ class BoardPlainEditOverview extends StatelessWidget {
                   btnText: 'Create note',
                   image: Images.edit,
                   title: 'Create Note',
-                  onTap: () {
-                    NavigationHelper.navigateToBoardNotes(board);
-                  },
+                  onTap: vm.goToBoardNotes,
                 ),
                 LoadingIndicator(
                   loading: vm.savingFiles,

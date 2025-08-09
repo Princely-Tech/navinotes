@@ -3,6 +3,7 @@ import 'package:navinotes/packages.dart';
 class BoardEditVm extends ChangeNotifier {
   BoardEditVm({this.scaffoldKey, required this.board});
   Board board;
+  // BoardNoteTemplate template;
   // bool _isLoading = true;
   String? _error;
   // bool _showSuccess = false;
@@ -65,13 +66,20 @@ class BoardEditVm extends ChangeNotifier {
     if (isNotNull(board) && isNotNull(board.courseTimeLines)) {
       for (var session in board.courseTimeLines!) {
         if (isNotNull(session.due)) {
-          final dueDate = DateTime.parse(session.due!);
-          // If the session's due date is today or in the future
-          if (dueDate.isAfter(now) ||
-              (dueDate.year == now.year &&
-                  dueDate.month == now.month &&
-                  dueDate.day == now.day)) {
-            return session;
+          try {
+            // Attach current year for parsing
+            final dueDate = DateFormat(
+              'MMMM d yyyy',
+            ).parse('${session.due} ${now.year}');
+            // If the session's due date is in the future or today
+            if (dueDate.isAfter(now) ||
+                (dueDate.year == now.year &&
+                    dueDate.month == now.month &&
+                    dueDate.day == now.day)) {
+              return session;
+            }
+          } catch (e) {
+            debugPrint('Date parsing failed for: ${session.due}');
           }
         }
       }
@@ -84,12 +92,12 @@ class BoardEditVm extends ChangeNotifier {
     loadFiles(board.id!);
   }
 
-  Future<void> goToNewNoteTemplate() async {
-    if (isNotNull(board)) {
-      await NavigationHelper.gotToNewNoteTemplate(board);
-      loadFiles(board.id!);
-    }
-  }
+  // Future<void> goToNewNoteTemplate() async {
+  //   if (isNotNull(board)) {
+  //     await NavigationHelper.gotToNewNoteTemplate(board);
+  //     loadFiles(board.id!);
+  //   }
+  // }
 
   bool importingPdf = false;
 
@@ -323,16 +331,43 @@ class BoardEditVm extends ChangeNotifier {
     switch (selectedTab) {
       case EditBoardTab.overview:
         return overviewTab;
-      case EditBoardTab.uploads:
-        return BoardEditUploads(this);
-      case EditBoardTab.assignments:
-        return BoardEditAssignment(this);
+      default:
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Builder(
+            builder: (context) {
+              switch (selectedTab) {
+                case EditBoardTab.uploads:
+                  return BoardEditUploads(this);
+                case EditBoardTab.assignments:
+                  return BoardEditAssignment(this);
+                default:
+                  return Container();
+              }
+            },
+          ),
+        );
     }
   }
 
-  @override
-  void dispose() {
-    // Clean up any resources if needed
-    super.dispose();
+  Color returnSelectedTabColor(
+    Color overviewColor, {
+    Color? uploadColor,
+    Color? asignmentColor,
+  }) {
+    switch (selectedTab) {
+      case EditBoardTab.overview:
+        return overviewColor;
+      case EditBoardTab.uploads:
+        return uploadColor ?? overviewColor;
+      case EditBoardTab.assignments:
+        return asignmentColor ?? overviewColor;
+    }
   }
+
+  // @override
+  // void dispose() {
+  //   // Clean up any resources if needed
+  //   super.dispose();
+  // }
 }

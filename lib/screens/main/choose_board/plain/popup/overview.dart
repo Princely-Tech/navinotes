@@ -11,7 +11,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // _headerSection(),
+                _headerSection(),
                 _courseActions(),
                 Divider(height: 1, color: AppTheme.lightGray),
                 _fileUploads(vm: vm, context: context),
@@ -38,15 +38,16 @@ class BoardPlainPopupOverview extends StatelessWidget {
     }
 
     final courseInfo = vm.board.courseInfo;
-    final courseName = courseInfo?.title ?? 'Not specified';
-    final instructor = courseInfo?.instructor ?? 'Not specified';
-    final email = courseInfo?.email ?? 'Not specified';
-    final schedule = courseInfo?.schedule ?? 'Not specified';
-    final location = courseInfo?.location ?? 'Not specified';
-    final semester = courseInfo?.semester ?? 'Not specified';
-    final semesterDuration = courseInfo?.semesterDuration ?? 'Not specified';
-    final officeHours = courseInfo?.officeHours ?? 'Not specified';
-    final phone = courseInfo?.phone ?? 'Not specified';
+
+    // final courseName = ;
+    // final instructor = courseInfo?.instructor;
+    // final email = courseInfo?.email;
+    // final schedule = courseInfo?.schedule;
+    // final location = courseInfo?.location;
+    // final semester = courseInfo?.semester;
+    // final semesterDuration = courseInfo?.semesterDuration;
+    // final officeHours = courseInfo?.officeHours;
+    // final phone = courseInfo?.phone;
 
     return _section(
       color: AppTheme.white,
@@ -70,12 +71,16 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _detailRow('Course:', courseName),
-                  _detailRow('Instructor:', instructor),
-                  _detailRow('Email:', email, color: const Color(0xFF3B82F6)),
-                  _detailRow('Office:', location),
-                  _detailRow('Office Hours:', officeHours),
-                  _detailRow('Phone:', phone),
+                  _detailRow('Course:', courseInfo?.title),
+                  _detailRow('Instructor:', courseInfo?.instructor),
+                  _detailRow(
+                    'Email:',
+                    courseInfo?.email,
+                    color: const Color(0xFF3B82F6),
+                  ),
+                  _detailRow('Office:', courseInfo?.location),
+                  _detailRow('Office Hours:', courseInfo?.officeHours),
+                  _detailRow('Phone:', courseInfo?.phone),
                 ],
               ),
             ],
@@ -97,10 +102,10 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _detailRow('Schedule:', schedule),
-                  _detailRow('Location:', location),
-                  _detailRow('Semester:', semester),
-                  _detailRow('Duration:', semesterDuration),
+                  _detailRow('Schedule:', courseInfo?.schedule),
+                  _detailRow('Location:', courseInfo?.location),
+                  _detailRow('Semester:', courseInfo?.semester),
+                  _detailRow('Duration:', courseInfo?.semesterDuration),
                 ],
               ),
               // Text(
@@ -129,7 +134,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
   /// Helper widget for info row
   Widget _detailRow(
     String label,
-    String value, {
+    String? value, {
     Color color = const Color(0xFF6B7280),
   }) {
     return Row(
@@ -146,7 +151,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            value,
+            stringOrNotSpecified(value),
             style: TextStyle(
               color: color,
               fontSize: 16.0,
@@ -178,6 +183,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     }
 
     return _section(
+      key: vm.courseTimelineKey,
       color: AppTheme.white,
       header: _sectionHeader(
         title: 'Course Timeline',
@@ -474,50 +480,53 @@ class BoardPlainPopupOverview extends StatelessWidget {
       color: AppTheme.lightAsh,
       title: 'Your AI assisted analysis',
       body: desc,
-      button: Row(
-        children: [
-          AppButton.secondary(
-            mainAxisSize: MainAxisSize.min,
-            loading: vm.uploadingSyllabus,
-            onTap: () {
-              vm.uploadSyllabus(
-                context: context,
-                apiServiceProvider: apiServiceProvider,
-              );
-            },
-            color: AppTheme.strongBlue,
-            text: btnText,
-            style: const TextStyle(
-              color: Color(0xFF3B82F6),
-              fontSize: 16.0,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
+      button: ScrollableController(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            AppButton.secondary(
+              mainAxisSize: MainAxisSize.min,
+              loading: vm.uploadingSyllabus,
+              onTap: () {
+                vm.uploadSyllabus(
+                  context: context,
+                  apiServiceProvider: apiServiceProvider,
+                );
+              },
+              color: AppTheme.strongBlue,
+              text: btnText,
+              style: const TextStyle(
+                color: Color(0xFF3B82F6),
+                fontSize: 16.0,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
 
-          SizedBox(width: 16),
+            SizedBox(width: 16),
 
-          (syllabusContent != null)
-              ? _buildMenuItem(
-                icon: Icons.open_in_new,
-                label: 'Open Syllabus',
-                onTap: () {
-                  handleOpenFile(syllabusContent, context);
-                },
-              )
-              : SizedBox.shrink(),
+            (syllabusContent != null)
+                ? _buildMenuItem(
+                  icon: Icons.open_in_new,
+                  label: 'Open Syllabus',
+                  onTap: () {
+                    handleOpenFile(syllabusContent, context);
+                  },
+                )
+                : SizedBox.shrink(),
 
-          SizedBox(width: 16),
-          (syllabusContent != null)
-              ? _buildMenuItem(
-                icon: Icons.download,
-                label: 'Download Syllabus',
-                onTap: () {
-                  handleFileDownload(syllabusContent, context);
-                },
-              )
-              : SizedBox.shrink(),
-        ],
+            SizedBox(width: 16),
+            (syllabusContent != null)
+                ? _buildMenuItem(
+                  icon: Icons.download,
+                  label: 'Download Syllabus',
+                  onTap: () {
+                    handleFileDownload(syllabusContent, context);
+                  },
+                )
+                : SizedBox.shrink(),
+          ],
+        ),
       ),
     );
   }
@@ -681,11 +690,10 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-
-
-
-
-  Widget _fileUploads({required BoardEditVm vm, required BuildContext context}) {
+  Widget _fileUploads({
+    required BoardEditVm vm,
+    required BuildContext context,
+  }) {
     if (vm.uploadedFiles.isEmpty) {
       return _section(
         color: AppTheme.white,
@@ -707,87 +715,87 @@ class BoardPlainPopupOverview extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           spacing: 16,
-          children: vm.uploadedFiles.map((file) {
-            final metaDataSize = file.metaData[ContentMetadataKey.fileSize];
-            final size = getFileSize(metaDataSize);
-            final name = file.title;
-            
-            return Container(
-              width: 200,
-              margin: const EdgeInsets.only(right: 16),
-              child: CustomCard(
-                addBorder: true,
-                addCardShadow: true,
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+          children:
+              vm.uploadedFiles.map((file) {
+                final metaDataSize = file.metaData[ContentMetadataKey.fileSize];
+                final size = getFileSize(metaDataSize);
+                final name = file.title;
+                //TODO return to this. Needs description
+                return Container(
+                  width: 200,
+                  margin: const EdgeInsets.only(right: 16),
+                  child: CustomCard(
+                    addBorder: true,
+                    addCardShadow: true,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            getFileIcon(file.file),
-                            size: 24,
-                            color: AppTheme.vividBlue,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14.0,
+                          Row(
+                            children: [
+                              Icon(
+                                getFileIcon(file.file),
+                                size: 24,
+                                color: AppTheme.vividBlue,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14.0,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            size,
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12.0,
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        size,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12.0,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.open_in_new, size: 20),
-                            onPressed: () {
-                              handleOpenFile(file, context);
-                            },
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            tooltip: 'Open',
-                          ),
-                          const SizedBox(width: 8),
-                          IconButton(
-                            icon: const Icon(Icons.download, size: 20),
-                            onPressed: () {
-                              handleFileDownload(file, context);
-                            },
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            tooltip: 'Download',
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.open_in_new, size: 20),
+                                onPressed: () {
+                                  handleOpenFile(file, context);
+                                },
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                tooltip: 'Open',
+                              ),
+                              const SizedBox(width: 8),
+                              IconButton(
+                                icon: const Icon(Icons.download, size: 20),
+                                onPressed: () {
+                                  handleFileDownload(file, context);
+                                },
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                tooltip: 'Download',
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          }).toList(),
+                );
+              }).toList(),
         ),
       ),
     );
   }
-
 
   Widget _fileCard({
     required String title,
@@ -910,7 +918,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 description: 'Document your insights and research findings',
                 buttonText: 'New Note',
                 imagePath: Images.boardPlainCreateNote,
-                onTap: vm.goToNewNoteTemplate,
+                onTap: vm.goToBoardNotes,
               ),
               buildActionCard(
                 title: 'Import PDF',
@@ -944,86 +952,95 @@ class BoardPlainPopupOverview extends StatelessWidget {
     required String imagePath,
     required VoidCallback onTap,
   }) {
-    return CustomCard(
-      addBorder: true,
-      addCardShadow: true,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          CustomCard(
-            height: 160,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8F9FA),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-            ),
-            alignment: Alignment.center,
-            child: WidthLimiter(
-              mobile: 96,
-              child: ImagePlaceHolder(
-                imagePath: imagePath,
-                borderRadius: BorderRadius.zero,
+    return InkWell(
+      onTap: onTap,
+      child: CustomCard(
+        addBorder: true,
+        addCardShadow: true,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+        padding: EdgeInsets.zero,
+        child: Column(
+          children: [
+            CustomCard(
+              height: 160,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+              ),
+              alignment: Alignment.center,
+              child: WidthLimiter(
+                mobile: 96,
+                child: ImagePlaceHolder(
+                  imagePath: imagePath,
+                  borderRadius: BorderRadius.zero,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: const Color(0xFF1F2937),
-                    fontSize: 16.0,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: const Color(0xFF1F2937),
+                      fontSize: 16.0,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      height: 1.5,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: const Color(0xFF6B7280),
-                    fontSize: 14.0,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    height: 1.43,
+                  const SizedBox(height: 8),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: const Color(0xFF6B7280),
+                      fontSize: 14.0,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      height: 1.43,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        buttonText,
-                        style: TextStyle(
-                          color: AppTheme.vividBlue,
-                          fontSize: 16.0,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                          height: 1.5,
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          buttonText,
+                          style: TextStyle(
+                            color: AppTheme.vividBlue,
+                            fontSize: 16.0,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            height: 1.5,
+                          ),
                         ),
                       ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 14,
-                      color: AppTheme.vividBlue,
-                    ),
-                  ],
-                ),
-              ],
+                      Icon(
+                        Icons.arrow_forward,
+                        size: 14,
+                        color: AppTheme.vividBlue,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _section({required Widget child, Widget? header, Color? color}) {
+  Widget _section({
+    required Widget child,
+    Widget? header,
+    Color? color,
+    Key? key,
+  }) {
     return Container(
+      key: key,
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
       decoration: BoxDecoration(color: color),
       width: double.infinity,
@@ -1093,17 +1110,15 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 Row(
                   spacing: 16,
                   children: [
-                    //TODO this breaks
                     AppButton(
-                      onTap: () => NavigationHelper.navigateToBoardNotes(board),
+                      onTap: vm.goToBoardNotes,
                       text: 'View All Notes',
                       mainAxisSize: MainAxisSize.min,
                       color: AppTheme.vividBlue,
                       wrapWithFlexible: true,
                     ),
-                    //TODO return to this
                     AppButton.secondary(
-                      onTap: () {},
+                      onTap: vm.scrollToCourseTimeline,
                       text: 'View Syllabus',
                       mainAxisSize: MainAxisSize.min,
                       color: Color(0xFFE5E7EB),
@@ -1128,7 +1143,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
   Widget _headerRight() {
     return Consumer<BoardEditVm>(
       builder: (_, vm, _) {
-        final board = vm.board!;
         CourseTimeline? nextSession = vm.getNextSession();
         //TODO return to this
         return CustomCard(
@@ -1156,8 +1170,9 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 15,
                   children: [
-                    const Text(
-                      'Monday, Sept 12 • 10:00-11:00 AM',
+                    Text(
+                      // 'Monday, Sept 12 • 10:00-11:00 AM',
+                      '${nextSession!.due}',
                       style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w400,
@@ -1177,7 +1192,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                             border: Border.all(color: const Color(0xFFE5E7EB)),
                           ),
                           child: const Icon(
-                            Icons.science_outlined,
+                            Icons.event_outlined,
                             size: 20,
                             color: Colors.grey,
                           ),
@@ -1186,9 +1201,9 @@ class BoardPlainPopupOverview extends StatelessWidget {
                           child: Column(
                             spacing: 4,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
-                                'Cell Structure Lab',
+                                nextSession.title,
                                 style: TextStyle(
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
@@ -1198,7 +1213,8 @@ class BoardPlainPopupOverview extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Science Building, Room 205',
+                                nextSession.week,
+                                // 'Science Building, Room 205',
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.w400,

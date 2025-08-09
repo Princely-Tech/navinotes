@@ -24,7 +24,7 @@ class BoardPlainPopupScreen extends StatelessWidget {
                 children: [
                   _header(),
                   Expanded(
-                    child: ScrollableController(child: _returnTabItem(vm)),
+                    child: ScrollableController(child: vm.returnSelectedTabItem(BoardPlainPopupOverview())),
                   ),
                 ],
               ),
@@ -35,16 +35,7 @@ class BoardPlainPopupScreen extends StatelessWidget {
     );
   }
 
-  Widget _returnTabItem(BoardEditVm vm) {
-    switch (vm.selectedTab) {
-      case EditBoardTab.overview:
-        return BoardPlainPopupOverview();
-      case EditBoardTab.uploads:
-        return BoardEditUploads(vm);
-      case EditBoardTab.assignments:
-        return const SizedBox.shrink();
-    }
-  }
+  
 
   Widget _selectRows({Color inActiveBorderColor = AppTheme.transparent}) {
     return Consumer<BoardEditVm>(
