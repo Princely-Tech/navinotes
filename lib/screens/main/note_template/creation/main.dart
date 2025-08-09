@@ -11,6 +11,9 @@ class NoteCreationMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inputWidth = MediaQuery.of(context).size.width;
+    final inputHeight = MediaQuery.of(context).size.height * 3;
+
     return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
         Color color = AppTheme.transparent;
@@ -18,14 +21,16 @@ class NoteCreationMain extends StatelessWidget {
           case Images.noteTemplateCornell:
             color = const Color(0xFFD1CDC4);
         }
-        
+
         return Column(
           children: [
             _header(vm),
             _modeSelector(vm, context),
-            if (vm.currentMode == NoteMode.text) ..._buildTextEditor(vm, color),
-            if (vm.currentMode == NoteMode.drawing) _buildDrawingBoard(vm, color),
-            if (vm.currentMode == NoteMode.voice) _buildVoiceRecorder(vm, color, context),
+            if (vm.currentMode == NoteMode.text ||
+                vm.currentMode == NoteMode.drawing)
+              _buildTextAndDrawing(vm, color, inputWidth, inputHeight),
+            if (vm.currentMode == NoteMode.voice)
+              _buildVoiceRecorder(vm, color, context),
           ],
         );
       },
@@ -129,12 +134,16 @@ class NoteCreationMain extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
+          color:
+              isActive ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           children: [
-            Icon(icon, color: isActive ? Theme.of(context).primaryColor : Colors.grey),
+            Icon(
+              icon,
+              color: isActive ? Theme.of(context).primaryColor : Colors.grey,
+            ),
             const SizedBox(width: 4),
             Text(
               label,
@@ -149,72 +158,12 @@ class NoteCreationMain extends StatelessWidget {
     );
   }
 
-  // Build text editor components
-  List<Widget> _buildTextEditor(NoteCreationVm vm, Color color) {
-   
-
-    return [
-      // Simple toolbar for text formatting
-      QuillSimpleToolbar(
-        controller: vm.richEditorController,
-        config: const QuillSimpleToolbarConfig(
-          showAlignmentButtons: true,
-          multiRowsDisplay: false,
-          customButtons: const [],
-          showFontFamily: false,
-          showFontSize: false,
-          showColorButton: false,
-          showBackgroundColorButton: false,
-          showClearFormat: false,
-          showBoldButton: true,
-          showItalicButton: true,
-          showUnderLineButton: true,
-          showStrikeThrough: true,
-          showCodeBlock: false,
-          showListNumbers: true,
-          showListBullets: true,
-          showListCheck: false,
-          showQuote: true,
-          showIndent: false,
-          showLink: false,
-          showSearchButton: false,
-          showDirection: false,
-          showHeaderStyle: false,
-          showUndo: true,
-          showRedo: true,
-          showSubscript: false,
-          showSuperscript: false,
-          showDividers: true,
-          showSmallButton: false,
-        ),
-      ),
-      // The editor itself
-      Expanded(
-        child: Stack(
-          children: [
-            // Background patterns
-            const SquaredNoteBackground(),
-            const LinedNoteBackground(),
-            const DottedNoteBackground(),
-            // Editor content
-            Container(
-              color: color,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: ResponsiveHorizontalPadding(
-                child: QuillEditor.basic(
-                  controller: vm.richEditorController,
-                  config: const QuillEditorConfig(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ];
-  }
-
-  // Build drawing board
-  Widget _buildDrawingBoard(NoteCreationVm vm, Color color) {
+  Widget _buildTextAndDrawing(
+    NoteCreationVm vm,
+    Color color,
+    double inputWidth,
+    double inputHeight,
+  ) {
     return Expanded(
       child: Stack(
         children: [
@@ -222,27 +171,137 @@ class NoteCreationMain extends StatelessWidget {
           const SquaredNoteBackground(),
           const LinedNoteBackground(),
           const DottedNoteBackground(),
-          // Drawing board
-          Container(
-            color: color,
-            child: DrawingBoard(
-              
-
-              controller: vm.drawingController,
-              background: Container(
-                color: color,
-              ),
-              showDefaultActions: true,
-              showDefaultTools: true,
-            ),
-          ),
+          // Editor content
+          _buildEditorArea(vm, color, inputWidth, inputHeight),
         ],
       ),
     );
   }
 
+  Widget _buildEditorArea(
+    NoteCreationVm vm,
+    Color color,
+    double inputWidth,
+    double inputHeight,
+  ) {
+    if (vm.currentMode == NoteMode.text) {
+      return Stack(
+        children: [
+          _buildDrawingBoard(vm, color, inputWidth, inputHeight),
+
+
+         
+
+          _buildEditorToolBar(vm),
+          _buildTextEditor(vm, color, inputWidth, inputHeight),
+        ],
+      );
+    } else if (vm.currentMode == NoteMode.drawing) {
+      return Stack(
+        children: [
+          _buildTextEditor(vm, color, inputWidth, inputHeight),
+
+          _buildDrawingBoard(vm, color, inputWidth, inputHeight),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildEditorToolBar(NoteCreationVm vm) {
+    return // Simple toolbar for text formatting
+    QuillSimpleToolbar(
+      controller: vm.richEditorController,
+      config: const QuillSimpleToolbarConfig(
+        showAlignmentButtons: true,
+        multiRowsDisplay: false,
+        customButtons: const [],
+        showFontFamily: false,
+        showFontSize: false,
+        showColorButton: false,
+        showBackgroundColorButton: false,
+        showClearFormat: false,
+        showBoldButton: true,
+        showItalicButton: true,
+        showUnderLineButton: true,
+        showStrikeThrough: true,
+        showCodeBlock: false,
+        showListNumbers: true,
+        showListBullets: true,
+        showListCheck: false,
+        showQuote: true,
+        showIndent: false,
+        showLink: false,
+        showSearchButton: false,
+        showDirection: false,
+        showHeaderStyle: false,
+        showUndo: true,
+        showRedo: true,
+        showSubscript: false,
+        showSuperscript: false,
+        showDividers: true,
+        showSmallButton: false,
+      ),
+    );
+  }
+
+  // Build text editor components
+  Widget _buildTextEditor(
+    NoteCreationVm vm,
+    Color color,
+    double inputWidth,
+    double inputHeight,
+  ) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 35),
+        child: Container(
+        width: inputWidth,
+        height: inputHeight,
+        color: color,
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        child: ResponsiveHorizontalPadding(
+          child: QuillEditor.basic(
+            controller: vm.richEditorController,
+            config: const QuillEditorConfig(),
+          ),
+        ),),
+      ),
+    );
+  }
+
+  // Build drawing board
+  Widget _buildDrawingBoard(
+    NoteCreationVm vm,
+    Color color,
+    double inputWidth,
+    double inputHeight,
+  ) {
+    return Container(
+      color: color,
+      child: DrawingBoard(
+        controller: vm.drawingController,
+        background: SingleChildScrollView(
+          child: Container(
+            color: color, // Paper color
+            width: inputWidth,
+            height: inputHeight,
+          ),
+        ),
+
+        showDefaultActions: true,
+        showDefaultTools: true,
+      ),
+    );
+  }
+
   // Build voice recorder
-  Widget _buildVoiceRecorder(NoteCreationVm vm, Color color, BuildContext context) {
+  Widget _buildVoiceRecorder(
+    NoteCreationVm vm,
+    Color color,
+    BuildContext context,
+  ) {
     return Expanded(
       child: Container(
         color: color,
@@ -280,8 +339,8 @@ class NoteCreationMain extends StatelessWidget {
               vm.isRecording
                   ? 'Recording...'
                   : vm.hasRecording
-                      ? 'Tap to play/pause'
-                      : 'Tap to record',
+                  ? 'Tap to play/pause'
+                  : 'Tap to record',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 24),
@@ -302,7 +361,10 @@ class NoteCreationMain extends StatelessWidget {
                 FloatingActionButton.large(
                   heroTag: 'record_button',
                   onPressed: vm.toggleRecording,
-                  backgroundColor: vm.isRecording ? Colors.red : Theme.of(context).primaryColor,
+                  backgroundColor:
+                      vm.isRecording
+                          ? Colors.red
+                          : Theme.of(context).primaryColor,
                   child: Icon(
                     vm.isRecording ? Icons.stop : Icons.mic,
                     size: 32,
