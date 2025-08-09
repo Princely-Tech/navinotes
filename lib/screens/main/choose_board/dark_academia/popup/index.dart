@@ -686,7 +686,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Explore',
+                          text: vm.board.name,
                           style: TextStyle(
                             color: const Color(0xFF4A3426),
                             fontSize: getDeviceResponsiveValue(
@@ -723,7 +723,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                 SizedBox(height: 24),
                 Text(
                   //TODO check this
-                  'Delve into the pivotal events and cultural shifts that shaped contemporary American society from the Civil War to present day.',
+                  '${vm.board.level}',
                   style: TextStyle(
                     color: const Color(0xFF4A3426),
                     fontSize: 18,

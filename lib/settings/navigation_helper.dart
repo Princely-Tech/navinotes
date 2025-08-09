@@ -102,8 +102,9 @@ class NavigationHelper {
     Board board, {
     // Object? arguments,
     bool replace = false,
+    bool isNew = false,
   }) {
-    if (isNotNull(board.courseTimeLines)) {
+    if (!isNew) {
       return navigateToBoardPopup(board, replace: replace);
     }
     final boardType = board.boardType ?? BoardTypeCodes.plain;
@@ -115,26 +116,6 @@ class NavigationHelper {
       BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaEdit,
       BoardTypeCodes.nature => Routes.boardNatureEdit,
     };
-
-    // // Create a new map with explicit types
-    // final Map<String, dynamic> mergedArguments = {
-    //   'boardId': board.id,
-    //   'board': board,
-    // };
-
-    // NOTE:  spread operator with a Map literal creates a Map<dynamic, dynamic>
-
-    // // Safely add existing arguments if they're a map
-    // if (arguments is Map<String, dynamic>) {
-    //   mergedArguments.addAll(arguments);
-    // } else if (arguments is Map) {
-    //   // If it's a Map but not Map<String, dynamic>, cast the values
-    //   mergedArguments.addAll(
-    //     Map<String, dynamic>.fromEntries(
-    //       arguments.entries.map((e) => MapEntry(e.key.toString(), e.value)),
-    //     ),
-    //   );
-    // }
     if (replace) {
       return NavigationHelper.pushReplacement(route, arguments: board);
     }

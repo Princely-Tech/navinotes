@@ -229,7 +229,7 @@ class DarkAcademiaScreen extends StatelessWidget {
                   hintText: 'E.g Undergraduate',
                   // controller: TextEditingController(text: 'Undergraduate'),
                   controller: vm.levelController,
-                  selectItems: ['Undergraduate', 'Postgraduate'],
+                  selectItems: educationLevel,
                   labelStyle: labelStyle,
                 ),
               ],
