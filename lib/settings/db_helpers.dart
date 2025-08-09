@@ -1,6 +1,7 @@
 import 'package:navinotes/models/tag.dart';
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:uuid/uuid.dart';
 
 class DatabaseHelper {
@@ -17,15 +18,39 @@ class DatabaseHelper {
     return _database!;
   }
 
+  // Future<Database> _initDB(String filePath) async {
+  //   final dbPath = await getDatabasesPath();
+  //   final path = join(dbPath, filePath);
+  //   return await openDatabase(
+  //     path,
+  //     version: _databaseVersion,
+  //     onCreate: _createDB,
+  //     onUpgrade: _onUpgrade,
+  //   );
+  // }
+
   Future<Database> _initDB(String filePath) async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, filePath);
-    return await openDatabase(
-      path,
-      version: _databaseVersion,
-      onCreate: _createDB,
-      onUpgrade: _onUpgrade,
-    );
+    if (kIsWeb) {
+      // Use WebAssembly-backed SQLite on web
+      databaseFactory = databaseFactoryFfiWeb;
+      return await databaseFactory.openDatabase(
+        filePath,
+        options: OpenDatabaseOptions(
+          version: _databaseVersion,
+          onCreate: _createDB,
+          onUpgrade: _onUpgrade,
+        ),
+      );
+    } else {
+      final dbPath = await getDatabasesPath();
+      final path = join(dbPath, filePath);
+      return await openDatabase(
+        path,
+        version: _databaseVersion,
+        onCreate: _createDB,
+        onUpgrade: _onUpgrade,
+      );
+    }
   }
 
   Future _createDB(Database db, int version) async {

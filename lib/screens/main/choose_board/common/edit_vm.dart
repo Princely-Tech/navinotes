@@ -248,25 +248,6 @@ class BoardEditVm extends ChangeNotifier {
             files: {'syllabus_file': file},
           );
 
-          /////
-          Content? content = await saveFileToDb(
-            pickedFile: result.files.first,
-            context: context,
-            boardId: board.id!,
-            title: "Syllabus",
-          );
-
-          print("content ID ${content?.id}");
-          print("content file ${content?.file}");
-
-          final updatedBoard = board.copyWith(
-            syllabusContentId: content?.id,
-          );
-          await dbHelper.updateBoard(updatedBoard);
-
-          return;
-          //////
-
           final response = await apiServiceProvider.apiService
               .sendFormDataRequest(imageBody);
 
@@ -287,21 +268,28 @@ class BoardEditVm extends ChangeNotifier {
           // Update the board with the new syllabus
           if (isNotNull(board)) {
             // save to db
-            Content? content = await saveFileToDb(
-              pickedFile: result.files.first,
-              context: context,
-              boardId: board.id!,
-              title: "Syllabus",
-            );
 
-            print("content $content");
+            int? contentID;
+            try {
+              Content? content = await saveFileToDb(
+                pickedFile: result.files.first,
+                context: context,
+                boardId: board.id!,
+                title: "Syllabus",
+              );
+
+              print("content $content");
+              contentID = content?.id;
+            } catch (e) {
+              debugPrint("Error saving file to db: $e");
+            }
 
             final updatedBoard = board.copyWith(
               courseTimeLines: timeLines,
               courseInfo: CourseInfo.fromMap(
                 response['response']['course_info'],
               ),
-              syllabusContentId: content?.id,
+              syllabusContentId: contentID,
             );
             await dbHelper.updateBoard(updatedBoard);
 

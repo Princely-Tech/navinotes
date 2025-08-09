@@ -14,7 +14,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 // _headerSection(),
                 _courseActions(),
                 Divider(height: 1, color: AppTheme.lightGray),
-                _fileUploads(vm: vm),
+                _fileUploads(vm: vm, context: context),
                 //  _studyTemplates(), // not completed
                 _syllabus(
                   vm: vm,
@@ -648,7 +648,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _fileUploads({required BoardEditVm vm}) {
+  Widget fileUploads1({required BoardEditVm vm}) {
     return _section(
       color: AppTheme.white,
       header: _sectionHeader(
@@ -680,6 +680,114 @@ class BoardPlainPopupOverview extends StatelessWidget {
       ),
     );
   }
+
+
+
+
+
+  Widget _fileUploads({required BoardEditVm vm, required BuildContext context}) {
+    if (vm.uploadedFiles.isEmpty) {
+      return _section(
+        color: AppTheme.white,
+        header: _sectionHeader(
+          title: 'File Uploads',
+          subtitle: 'No files uploaded yet',
+        ),
+        child: const SizedBox.shrink(),
+      );
+    }
+
+    return _section(
+      color: AppTheme.white,
+      header: _sectionHeader(
+        title: 'File Uploads',
+        subtitle: 'Essential readings and resources for your studies',
+      ),
+      child: ScrollableController(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          spacing: 16,
+          children: vm.uploadedFiles.map((file) {
+            final metaDataSize = file.metaData[ContentMetadataKey.fileSize];
+            final size = getFileSize(metaDataSize);
+            final name = file.title;
+            
+            return Container(
+              width: 200,
+              margin: const EdgeInsets.only(right: 16),
+              child: CustomCard(
+                addBorder: true,
+                addCardShadow: true,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            getFileIcon(file.file),
+                            size: 24,
+                            color: AppTheme.vividBlue,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14.0,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        size,
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.open_in_new, size: 20),
+                            onPressed: () {
+                              handleOpenFile(file, context);
+                            },
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            tooltip: 'Open',
+                          ),
+                          const SizedBox(width: 8),
+                          IconButton(
+                            icon: const Icon(Icons.download, size: 20),
+                            onPressed: () {
+                              handleFileDownload(file, context);
+                            },
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            tooltip: 'Download',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
 
   Widget _fileCard({
     required String title,
