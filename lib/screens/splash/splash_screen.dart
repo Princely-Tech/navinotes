@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
     await context.read<SessionManager>().init();
     if (mounted) {
       //TODO UNCOMMENT
-      //  return _navigateToNextScreen();
+       return _navigateToNextScreen();
 
       //TODO DELETE
       _navigateToDashboard();
