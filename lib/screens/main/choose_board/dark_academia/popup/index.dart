@@ -27,7 +27,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      // _header(),
+                      _header(),
                       Expanded(
                         child: ScrollableController(
                           child: vm.returnSelectedTabItem(

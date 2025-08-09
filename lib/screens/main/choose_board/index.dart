@@ -43,28 +43,7 @@ class ChooseBoardScreen extends StatelessWidget {
         ),
       ),
     );
-    return ChangeNotifierProvider(
-      create: (context) => ChooseBoardVm(scaffoldKey: _scaffoldKey),
-      child: ScaffoldFrame(
-        scaffoldKey: _scaffoldKey,
-        drawer: CustomDrawer(
-          child: NavigationSideBar(activeRoute: activeRoute),
-        ),
-        backgroundColor: AppTheme.whiteSmoke,
-        body: Row(
-          children: [
-            VisibleController(
-              mobile: false,
-              largeDesktop: true,
-              child: NavigationSideBar(
-                activeRoute: activeRoute,
-                shrinkWrap: true,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+   
   }
 
   Widget _footer() {

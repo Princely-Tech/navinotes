@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
 
 class BoardMinimalistPopupScreen extends StatelessWidget {
@@ -6,40 +5,48 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldFrame(
-      backgroundColor: AppTheme.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _header(),
-          _navigationSection(),
-          Expanded(
-            child: ScrollableController(
-              mobilePadding: EdgeInsets.symmetric(vertical: 15),
-              tabletPadding: EdgeInsets.symmetric(vertical: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 50,
-                children: [
-                  _widthLimiter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 50,
-                      children: [
-                        _courseTitle(),
-                        _courseActions(),
-                        _fileUploads(),
-                        _studyTemplates(),
-                        _courseTimeLine(),
-                      ],
+       Board board = ModalRoute.of(context)?.settings.arguments as Board;
+    return  ChangeNotifierProvider(
+      create: (context) {
+        final vm = BoardEditVm(board: board);
+        vm.initialize();
+        return vm;
+      },
+      child: ScaffoldFrame(
+        backgroundColor: AppTheme.white,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _header(),
+            _navigationSection(),
+            Expanded(
+              child: ScrollableController(
+                mobilePadding: EdgeInsets.symmetric(vertical: 15),
+                tabletPadding: EdgeInsets.symmetric(vertical: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 50,
+                  children: [
+                    _widthLimiter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 50,
+                        children: [
+                          _courseTitle(),
+                          _courseActions(),
+                          _fileUploads(),
+                          _studyTemplates(),
+                          _courseTimeLine(),
+                        ],
+                      ),
                     ),
-                  ),
-                  _footer(),
-                ],
+                    _footer(),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -459,7 +466,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
   }
 
   Widget _header() {
-    return Container(
+    return Container( 
       decoration: ShapeDecoration(
         color: Colors.transparent,
         shape: RoundedRectangleBorder(

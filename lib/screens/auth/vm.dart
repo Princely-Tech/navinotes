@@ -57,9 +57,9 @@ class AuthVM extends ChangeNotifier {
       );
       _completeSignIn(response);
     } catch (err) {
-      if (context.mounted) {
-        MessageDisplayService.showDefaultError(context);
-      }
+      // if (context.mounted) {
+      //   MessageDisplayService.showDefaultError(context);
+      // }
       debugPrint(err.toString());
     }
     updateIsLoading(false);
@@ -112,9 +112,9 @@ class AuthVM extends ChangeNotifier {
         );
       }
     } catch (e) {
-      if (context.mounted) {
-        MessageDisplayService.showDefaultError(context);
-      }
+      // if (context.mounted) {
+      //   MessageDisplayService.showDefaultError(context);
+      // }
       debugPrint(e.toString());
     }
   }
@@ -134,9 +134,9 @@ class AuthVM extends ChangeNotifier {
       );
       _completeSignIn(response);
     } catch (err) {
-      if (context.mounted) {
-        MessageDisplayService.showDefaultError(context);
-      }
+      // if (context.mounted) {
+      //   MessageDisplayService.showDefaultError(context);
+      // }
       debugPrint(err.toString());
     }
     updateIsLoading(false);
