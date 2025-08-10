@@ -36,14 +36,19 @@ class NoteCreationVm extends ChangeNotifier {
   bool get hasRecording => _recordingPath != null;
   NoteMode get currentMode => _currentMode;
 
+  Timer? _autoSaveTimer;
+  static const Duration _autoSaveInterval = Duration(seconds: 10);
+
   void initialize() {
     richEditorController.readOnly = false;
-    getContent();
+    getContent().then((_) {
+      _startAutoSave();
+    });
     notifyListeners();
 
     titleFocusNode.addListener(() {
       if (!titleFocusNode.hasFocus) {
-        updateContentInDb();
+        updateContentInDb(showSnackBar: false);
       }
     });
   }
@@ -221,7 +226,7 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getContent() async {
+  Future<void> getContent() async {
     try {
       updateFetchingContent(true);
       Content? response = await dbHelper.getContentById(
@@ -321,11 +326,26 @@ class NoteCreationVm extends ChangeNotifier {
     getContent();
   }
 
+  void _startAutoSave() {
+    _autoSaveTimer?.cancel();
+    _autoSaveTimer = Timer.periodic(_autoSaveInterval, (_) {
+      updateContentInDb(showSnackBar: false);
+    });
+  }
+
   @override
   void dispose() {
+
+    // Save one last time before disposing
+    updateContentInDb(showSnackBar: false);
+
+
+    _autoSaveTimer?.cancel();
+    titleFocusNode.dispose();
+    titleController.dispose();
     _drawingController.dispose();
-    _audioRecorder.dispose();
     _audioPlayer.dispose();
+    _audioRecorder.dispose();
     super.dispose();
   }
 }
