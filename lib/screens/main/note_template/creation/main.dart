@@ -21,7 +21,6 @@ class NoteCreationMain extends StatelessWidget {
           case Images.noteTemplateCornell:
             color = const Color(0xFFD1CDC4);
         }
-
         return Column(
           children: [
             _header(vm),

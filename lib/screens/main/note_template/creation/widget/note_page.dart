@@ -90,7 +90,7 @@ class NoteDrawingWrapperState extends State<NoteDrawingWrapper> {
     return (vm.currentMode == NoteMode.text)?  [
       // Text editor
       IgnorePointer(
-          ignoring: vm.currentMode != NoteMode.drawing,
+          ignoring: true,
           child: buildDrawingBoard(vm, widget.inputWidth, widget.inputHeight),
         ),
       // Drawing overlay
@@ -103,7 +103,7 @@ class NoteDrawingWrapperState extends State<NoteDrawingWrapper> {
       // Drawing overlay
       Positioned.fill(
         child: IgnorePointer(
-          ignoring: vm.currentMode != NoteMode.drawing,
+          ignoring: false,
           child: buildDrawingBoard(vm, widget.inputWidth, widget.inputHeight),
         ),
       ),

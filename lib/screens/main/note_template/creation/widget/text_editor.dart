@@ -57,7 +57,14 @@ Widget buildTextEditor(
     child: ResponsiveHorizontalPadding(
       child: QuillEditor.basic(
         controller: vm.richEditorController,
-        config: const QuillEditorConfig(),
+        config: QuillEditorConfig(
+          placeholder: '',
+          autoFocus: true,
+          showCursor: true,
+          padding: const EdgeInsets.all(12.0),  // Add some padding
+          expands: false,  // Set to false to allow proper cursor positioning
+          scrollable: true,
+        ),
       ),
     ),
   );

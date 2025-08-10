@@ -85,6 +85,7 @@ class NoteCreationVm extends ChangeNotifier {
   void setMode(NoteMode mode) {
     _currentMode = mode;
 
+    richEditorController.readOnly = true;
     // Handle mode-specific initialization
     if (mode == NoteMode.text) {
       richEditorController.readOnly = false;
