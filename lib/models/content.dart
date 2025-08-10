@@ -8,6 +8,7 @@ class Content {
   final int boardId;
   final String? tags; // Comma-separated tags
   final String? content; // Large text
+  final String? drawing; // Large text
   final String? file; // File name or path
   final int createdAt; // Unix timestamp
   final int updatedAt; // Unix timestamp
@@ -30,6 +31,7 @@ class Content {
     required this.boardId,
     this.tags,
     this.content,
+    this.drawing,
     this.file,
     required this.createdAt,
     required this.updatedAt,
@@ -48,6 +50,7 @@ class Content {
     'board_id': boardId,
     'tags': tags,
     'content': content,
+    'drawing': drawing,
     'file': file,
     'created_at': createdAt,
     'updated_at': updatedAt,
@@ -66,6 +69,7 @@ class Content {
     boardId: map['board_id'],
     tags: map['tags'],
     content: map['content'],
+    drawing: map['drawing'],
     file: map['file'],
     createdAt: map['created_at'],
     updatedAt: map['updated_at'],
@@ -78,6 +82,7 @@ class Content {
     String? title,
     String? coverImage,
     String? content,
+    String? drawing,
     String? file,
     int? updatedAt,
     int? syncedAt,
@@ -94,6 +99,7 @@ class Content {
       boardId: boardId,
       tags: tags,
       content: content ?? this.content,
+      drawing: drawing ?? this.drawing,
       file: file ?? this.file,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -159,6 +165,7 @@ class Content {
         'meta_data': metaData,
         'tags': tags,
         'content': content,
+        'drawing': drawing,
         'file': file,
         'synced_at': syncedAt,
       },

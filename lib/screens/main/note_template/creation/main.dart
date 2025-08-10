@@ -66,6 +66,13 @@ class NoteCreationMain extends StatelessWidget {
                       if (pomodorVm.isRunning) _timer(pomodorVm),
                       Row(
                         children: [
+                          IconButton(
+                            icon: const Icon(Icons.save, size: 24),
+                            onPressed: () {
+                              vm.updateContentInDb(showSnackBar: true);
+                            },
+                            tooltip: 'Save Note',
+                          ),
                           if (layoutVm.deviceType != DeviceType.mobile)
                             _shareAndAI(vm),
                           VisibleController(

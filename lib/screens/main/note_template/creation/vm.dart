@@ -1,3 +1,4 @@
+import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:navinotes/packages.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:record/record.dart';
@@ -36,7 +37,7 @@ class NoteCreationVm extends ChangeNotifier {
   NoteMode get currentMode => _currentMode;
 
   void initialize() {
-    richEditorController.readOnly = false; //TODO make false
+    richEditorController.readOnly = false;
     getContent();
     notifyListeners();
 
@@ -47,13 +48,28 @@ class NoteCreationVm extends ChangeNotifier {
     });
   }
 
-  void updateContentInDb() {
+  void updateContentInDb({bool showSnackBar = false}) {
     try {
       if (isNotNull(content)) {
+        
+        // get the content from the rich editor
+        final String richEditorContent = jsonEncode(richEditorController.document.toDelta().toJson());
+        final String drawingContent = JsonEncoder.withIndent('  ').convert(_drawingController.getJsonList());
+
         final newContent = content!.getUpdatedContent(
           title: titleController.text,
+          content: richEditorContent,
+          drawing: drawingContent,
         );
         dbHelper.updateContent(newContent);
+        if (showSnackBar) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Note saved successfully!'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       }
     } catch (err) {
       MessageDisplayService.showErrorMessage(
@@ -214,9 +230,60 @@ class NoteCreationVm extends ChangeNotifier {
       if (isNotNull(response)) {
         content = response;
         titleController.text = content!.title;
+
+        try {
+          if (isNotNull(content!.drawing) && content!.drawing!.isNotEmpty) {
+            final List<dynamic> drawingData = jsonDecode(content!.drawing!);
+            _drawingController.clear();
+            for (var item in drawingData) {
+              if (item is Map<String, dynamic>) {
+                final String type = item['type'] as String;
+                PaintContent? paintContent;
+                
+                // Handle different types of paint content
+                switch (type) {
+                  case 'SimpleLine':
+                    paintContent = SimpleLine.fromJson(item);
+                    break;
+                  case 'SmoothLine':
+                    paintContent = SmoothLine.fromJson(item);
+                    break;
+                  case 'StraightLine':
+                    paintContent = StraightLine.fromJson(item);
+                    break;
+                  case 'Rectangle':
+                    paintContent = Rectangle.fromJson(item);
+                    break;
+                  case 'Circle':
+                    paintContent = Circle.fromJson(item);
+                    break;
+                  case 'Eraser':
+                    paintContent = Eraser.fromJson(item);
+                    break;
+                  default:
+                    debugPrint('Unknown paint content type: $type');
+                }
+                
+                if (paintContent != null) {
+                  _drawingController.addContent(paintContent);
+                }
+              }
+            }
+          }
+        } catch (err) {
+          debugPrint('Error loading drawing: $err');
+        }
+
+        if (isNotNull(content!.content)) {
+          richEditorController.document = Document.fromJson(
+            jsonDecode(content!.content!),
+          );
+        }
+
         notifyListeners();
       }
     } catch (e) {
+      debugPrint('Error fetching content: $e');
       if (context.mounted) {
         MessageDisplayService.showErrorMessage(
           context,

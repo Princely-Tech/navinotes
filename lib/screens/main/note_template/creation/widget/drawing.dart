@@ -18,6 +18,7 @@ Widget buildDrawingBoard(
       child: DrawingBoard(
         controller: vm.drawingController,
         background: Container(
+          //padding: const EdgeInsets.only(top: 55, bottom: 24),
           color: Colors.transparent,
           width: inputWidth,
           height: inputHeight,
