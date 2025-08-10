@@ -9,6 +9,7 @@ import 'widget/lined_rule.dart';
 import 'widget/squared_rule.dart';
 import 'vm.dart';
 import 'widget/dotted.dart';
+import 'widget/note_page.dart';
 
 class NoteCreationMain extends StatelessWidget {
   const NoteCreationMain({super.key});
@@ -31,7 +32,12 @@ class NoteCreationMain extends StatelessWidget {
             _header(vm),
             _modeSelector(vm, context),
             if (vm.currentMode != NoteMode.voice)
-              _buildTextAndDrawing(vm, color, inputWidth, inputHeight),
+              NoteDrawingWrapper(
+                vm: vm,
+                color: color,
+                inputWidth: inputWidth,
+                inputHeight: inputHeight,
+              ),
             if (vm.currentMode == NoteMode.voice)
               buildVoiceRecorder(vm, color, context),
           ],

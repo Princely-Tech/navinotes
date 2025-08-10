@@ -6,13 +6,13 @@ import 'package:navinotes/screens/main/note_template/creation/widget/lined_rule.
 import 'package:navinotes/screens/main/note_template/creation/widget/squared_rule.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/text_editor.dart';
 
-class _NoteDrawingWrapper extends StatefulWidget {
+class NoteDrawingWrapper extends StatefulWidget {
   final NoteCreationVm vm;
   final Color color;
   final double inputWidth;
   final double inputHeight;
 
-  const _NoteDrawingWrapper({
+  const NoteDrawingWrapper({
     Key? key,
     required this.vm,
     required this.color,
@@ -21,10 +21,10 @@ class _NoteDrawingWrapper extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<_NoteDrawingWrapper> createState() => _NoteDrawingWrapperState();
+  State<NoteDrawingWrapper> createState() => NoteDrawingWrapperState();
 }
 
-class _NoteDrawingWrapperState extends State<_NoteDrawingWrapper> {
+class NoteDrawingWrapperState extends State<NoteDrawingWrapper> {
   int fingerCount = 0;
 
   @override
@@ -49,9 +49,18 @@ class _NoteDrawingWrapperState extends State<_NoteDrawingWrapper> {
                   // Background patterns
                   Column(
                     children: [
-                      const SquaredNoteBackground(),
-                      const LinedNoteBackground(),
-                      const DottedNoteBackground(),
+                      SizedBox(
+                        height: widget.inputHeight,
+                        child: const SquaredNoteBackground(),
+                      ),
+                      SizedBox(
+                        height: widget.inputHeight,
+                        child: const LinedNoteBackground(),
+                      ),
+                      SizedBox(
+                        height: widget.inputHeight,
+                        child: const DottedNoteBackground(),
+                      ),
                       Container(
                         width: widget.inputWidth,
                         height: widget.inputHeight,
