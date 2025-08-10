@@ -2,14 +2,14 @@ import 'package:navinotes/packages.dart';
 import 'overview.dart';
 
 class BoardNatureEditScreen extends StatelessWidget {
-  const BoardNatureEditScreen({super.key});
-
+  BoardNatureEditScreen({super.key});
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
       create: (context) {
-       final vm = BoardEditVm( board: board);
+        final vm = BoardEditVm(board: board, scaffoldKey: _scaffoldKey);
         vm.initialize();
         return vm;
       },
@@ -18,8 +18,8 @@ class BoardNatureEditScreen extends StatelessWidget {
           return ChooseBoardWrapper(
             //Essential; add loading until ready!!
             child: ScaffoldFrame(
-              // scaffoldKey: _scaffoldKey,
-              // drawer: CustomDrawer(child: NavigationSideBar()),
+              scaffoldKey: _scaffoldKey,
+              drawer: CustomDrawer(child: NavigationSideBar()),
               backgroundColor: AppTheme.white,
               body: ApiServiceComponent(child: _buildContent(vm)),
             ),
@@ -100,7 +100,7 @@ class BoardNatureEditScreen extends StatelessWidget {
                           //   'Assignments',
                           //   'Resources',
                           // ],
-                          //TODO add resources
+                          //TODO consider adding resources
                           items:
                               EditBoardTab.values
                                   .map((item) => item.toString())
@@ -137,7 +137,7 @@ class BoardNatureEditScreen extends StatelessWidget {
           builder: (_, apiServiceProvider, _) {
             return Consumer<BoardEditVm>(
               builder: (context, vm, _) {
-                final board = vm.board!;
+                final board = vm.board;
                 return Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(

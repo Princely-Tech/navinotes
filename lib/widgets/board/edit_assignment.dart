@@ -16,6 +16,13 @@ class BoardEditAssignment extends StatelessWidget {
                 BoardDarkAcadTimelineItem(courseOutlines[i], isFirst: i == 0),
             ],
           );
+        case BoardTypeCodes.nature:
+          return Column(
+            children: [
+              for (int i = 0; i < courseOutlines!.length; i++)
+                BoardNatureOutlineItem(i),
+            ],
+          );
         default:
       }
     }

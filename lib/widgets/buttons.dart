@@ -34,6 +34,7 @@ class AppButton extends StatelessWidget {
     this.textColor,
     this.gradient,
     this.spacing,
+
     // this.borderSide,
   }) : _type = type,
        assert(

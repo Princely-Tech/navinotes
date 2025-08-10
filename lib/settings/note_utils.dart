@@ -102,3 +102,8 @@ formatSessionDate(CourseTimeline timeline) {
   }
   return date;
 }
+
+String getBoardDescription(Board board) {
+  return board.description ??
+      'Explore foundational concepts and key principles in this subject area through a mix of theoretical learning and practical application. This course offers an engaging introduction designed to build a solid understanding for further study';
+}

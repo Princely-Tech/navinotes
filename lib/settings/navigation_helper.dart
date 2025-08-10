@@ -91,7 +91,7 @@ class NavigationHelper {
       _ => Routes.boardPlainNotePage,
     };
 
-   return push(route, arguments: board);
+    return push(route, arguments: board);
   }
 
   static void logOut() {
@@ -104,6 +104,7 @@ class NavigationHelper {
     bool replace = false,
     bool isNew = false,
   }) {
+    //TODO uncomment
     if (!isNew) {
       return navigateToBoardPopup(board, replace: replace);
     }

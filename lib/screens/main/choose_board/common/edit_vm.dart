@@ -307,7 +307,7 @@ class BoardEditVm extends ChangeNotifier {
                 'Syllabus uploaded successfully',
               );
             }
-            return NavigationHelper.navigateToBoardPopup(board, replace: true);
+            return NavigationHelper.navigateToBoardPopup(updatedBoard, replace: true);
           } else {
             throw Exception('Failed to process syllabus');
           }

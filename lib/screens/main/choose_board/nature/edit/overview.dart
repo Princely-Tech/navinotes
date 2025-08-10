@@ -26,7 +26,9 @@ class BoardNatureEditOverview extends StatelessWidget {
                         body:
                             'After uploading your syllabus, we\'ll automatically generate a timeline of important dates, assignments, and events for your semester',
                         button: AppButton.text(
+                          wrapWithFlexible: true,
                           loading: vm.uploadingSyllabus,
+
                           onTap:
                               () => vm.uploadSyllabus(
                                 context: context,
@@ -99,6 +101,7 @@ class BoardNatureEditOverview extends StatelessWidget {
                         body:
                             'We\'ll automatically identify and track all your assignments, quizzes, and exams after you upload your syllabus',
                         button: AppButton.text(
+                          wrapWithFlexible: true,
                           onTap:
                               () => vm.uploadSyllabus(
                                 context: context,
@@ -200,7 +203,7 @@ class BoardNatureEditOverview extends StatelessWidget {
   Widget _footer() {
     return Consumer<BoardEditVm>(
       builder: (_, vm, _) {
-        final board = vm.board!;
+        final board = vm.board;
         return Container(
           color: const Color(0x339CAF88),
           padding: EdgeInsets.all(15),
@@ -240,19 +243,30 @@ class BoardNatureEditOverview extends StatelessWidget {
   }
 
   Widget _courseItemHeader({required String title, String? img}) {
-    return Row(
-      spacing: 10,
-      children: [
-        if (isNotNull(img))
-          SVGImagePlaceHolder(imagePath: img!, size: 20)
-        else
-          Icon(Icons.calendar_month, size: 20, color: AppTheme.walnutBronze),
-        Text(
-          title,
-          style: AppTheme.text.copyWith(fontSize: 18.0, height: 1.56),
-        ),
-        _aiPowered(isExtracted: true),
-      ],
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return Row(
+          spacing: 10,
+          children: [
+            if (isNotNull(img))
+              SVGImagePlaceHolder(imagePath: img!, size: 20)
+            else
+              Icon(
+                Icons.calendar_month,
+                size: 20,
+                color: AppTheme.walnutBronze,
+              ),
+            Flexible(
+              child: Text(
+                title,
+                style: AppTheme.text.copyWith(fontSize: 18.0, height: 1.56),
+              ),
+            ),
+            if (layoutVm.deviceType != DeviceType.mobile)
+              _aiPowered(isExtracted: true),
+          ],
+        );
+      },
     );
   }
 
@@ -295,103 +309,111 @@ class BoardNatureEditOverview extends StatelessWidget {
   }
 
   Widget _courseInformation() {
-    return CustomCard(
-      decoration: BoxDecoration(color: AppTheme.walnutBronze.withAlpha(0x19)),
-      padding: EdgeInsets.all(15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 15,
-        children: [
-          Text(
-            'Course Information',
-            style: AppTheme.text.copyWith(
-              fontSize: 20.0,
-              fontWeight: getFontWeight(600),
-            ),
+    return Consumer<BoardEditVm>(
+      builder: (_, vm, _) {
+        return CustomCard(
+          decoration: BoxDecoration(
+            color: AppTheme.walnutBronze.withAlpha(0x19),
           ),
-          CustomGrid(
-            largeDesktop: 2,
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 15,
             children: [
-              _courseItem(
-                header: _courseItemHeader(
-                  title: 'Course Details',
-                  img: Images.pers,
+              Text(
+                'Course Information',
+                style: AppTheme.text.copyWith(
+                  fontSize: 20.0,
+                  fontWeight: getFontWeight(600),
                 ),
-                children: [
-                  _keyVal(
-                    title: 'Professor:',
-                    value: '[Will be extracted from syllabus]',
-                  ),
-                  _keyVal(
-                    title: 'Email:',
-                    value: '[Contact info will appear here]',
-                  ),
-                  _keyVal(
-                    title: 'Office Hours:',
-                    value: '[Schedule will be populated]',
-                  ),
-                  _keyVal(
-                    title: 'Office Location:',
-                    value: '[Location will be extracted]',
-                  ),
-                ],
               ),
-              _courseItem(
-                header: _courseItemHeader(title: 'Class Information'),
+              CustomGrid(
+                largeDesktop: 2,
                 children: [
-                  _keyVal(
-                    title: 'Schedule:',
-                    value: '[Class times from syllabus]',
+                  _courseItem(
+                    header: _courseItemHeader(
+                      title: 'Course Details',
+                      img: Images.pers,
+                    ),
+                    children: [
+                      _keyVal(
+                        title: 'Professor:',
+                        value: '[Will be extracted from syllabus]',
+                      ),
+                      _keyVal(
+                        title: 'Email:',
+                        value: '[Contact info will appear here]',
+                      ),
+                      _keyVal(
+                        title: 'Office Hours:',
+                        value: '[Schedule will be populated]',
+                      ),
+                      _keyVal(
+                        title: 'Office Location:',
+                        value: '[Location will be extracted]',
+                      ),
+                    ],
                   ),
-                  _keyVal(
-                    title: 'Location:',
-                    value: '[Classroom info will appear]',
-                  ),
-                  _keyVal(
-                    title: 'Duration:',
-                    value: '[Semester dates will populate]',
-                  ),
-                  _keyVal(
-                    title: 'Credits:',
-                    value: '[Credit hours will be extracted]',
+                  _courseItem(
+                    header: _courseItemHeader(title: 'Class Information'),
+                    children: [
+                      _keyVal(
+                        title: 'Schedule:',
+                        value: '[Class times from syllabus]',
+                      ),
+                      _keyVal(
+                        title: 'Location:',
+                        value: '[Classroom info will appear]',
+                      ),
+                      _keyVal(
+                        title: 'Duration:',
+                        value: '[Semester dates will populate]',
+                      ),
+                      _keyVal(
+                        title: 'Credits:',
+                        value: '[Credit hours will be extracted]',
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _aiSection({required String title, String? img, bool isAi = true}) {
-    return Row(
-      spacing: 10,
-      children: [
-        if (isNotNull(img))
-          SVGImagePlaceHolder(
-            imagePath: img!,
-            size: 20,
-            color: AppTheme.sageMist,
-          )
-        else
-          Icon(Icons.calendar_month, color: AppTheme.sageMist),
-        Flexible(
-          child: Text(
-            title,
-            style: AppTheme.text.copyWith(
-              fontSize: 20.0,
-              fontWeight: getFontWeight(600),
-              height: 1.40,
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return Row(
+          spacing: 10,
+          children: [
+            if (isNotNull(img))
+              SVGImagePlaceHolder(
+                imagePath: img!,
+                size: 20,
+                color: AppTheme.sageMist,
+              )
+            else
+              Icon(Icons.calendar_month, color: AppTheme.sageMist),
+            Flexible(
+              child: Text(
+                title,
+                style: AppTheme.text.copyWith(
+                  fontSize: 20.0,
+                  fontWeight: getFontWeight(600),
+                  height: 1.40,
+                ),
+              ),
             ),
-          ),
-        ),
-        if (isAi) _aiPowered(),
-      ],
+            if (isAi && layoutVm.deviceType != DeviceType.mobile) _aiPowered(),
+          ],
+        );
+      },
     );
   }
-
-
 
   Widget _gridChild({
     required String title,
@@ -540,7 +562,7 @@ class BoardNatureEditOverview extends StatelessWidget {
       builder: (_, apiServiceProvider, _) {
         return Consumer<BoardEditVm>(
           builder: (context, vm, _) {
-            final board = vm.board!;
+            final board = vm.board;
             return CustomCard(
               addShadow: true,
               child: Column(

@@ -134,15 +134,24 @@ String getNoteCountText(List<Content> contents) {
   return text;
 }
 
-String stringOrNotSpecified(String? data) {
-  return data ?? 'Not specified';
+String stringOrNotSpecified(String? data, {String? nullPrefix}) {
+  if (isNotNull(data)) {
+    return data!;
+  }
+  if (isNotNull(nullPrefix)) {
+    return '$nullPrefix not specified';
+  }
+  return 'Not specified';
 }
 
-Future<void> callPhoneNumber(String number) async {
+Future<bool?> callPhoneNumber(String number) async {
   final Uri callUri = Uri(scheme: 'tel', path: number);
   if (await canLaunchUrl(callUri)) {
-    await launchUrl(callUri);
-  } else {
-    throw 'Could not launch $number';
+    return launchUrl(callUri);
   }
+  return null;
+}
+
+bool isEven(int number) {
+  return number % 2 == 0;
 }

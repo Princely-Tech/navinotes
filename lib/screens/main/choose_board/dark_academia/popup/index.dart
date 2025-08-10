@@ -1,20 +1,21 @@
 import 'package:navinotes/packages.dart';
 
 class BoardDarkAcadPopupScreen extends StatelessWidget {
-  const BoardDarkAcadPopupScreen({super.key});
-
+  BoardDarkAcadPopupScreen({super.key});
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     Board board = ModalRoute.of(context)?.settings.arguments as Board;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = BoardEditVm(board: board);
+        final vm = BoardEditVm(board: board, scaffoldKey: _scaffoldKey);
         vm.initialize();
         return vm;
       },
       child: Consumer<BoardEditVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
+            scaffoldKey: _scaffoldKey,
             drawer: CustomDrawer(child: NavigationSideBar()),
             backgroundColor: vm.returnSelectedTabColor(
               const Color(0xFFF7F3E9),
@@ -1058,7 +1059,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                   spacing: 50,
                   children: [
                     Text(
-                      '${getFileType(file.file)} • ${getFileSize(file.metaData[ContentMetadataKey.fileSize])}',
+                      getFileDescription(file),
                       style: TextStyle(
                         color: const Color(0x99F7F3E9),
                         fontSize: 12,

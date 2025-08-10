@@ -50,6 +50,10 @@ IconData getFileIcon(String? filePath) {
   }
 }
 
+String getFileDescription(Content file) {
+  return '${getFileType(file.file)} • ${getFileSize(file.metaData[ContentMetadataKey.fileSize])}';
+}
+
 String getFileType(String? filePath) {
   if (filePath == null) return 'FILE';
   final ext = path.extension(filePath).toLowerCase();
@@ -175,6 +179,7 @@ Rect _safeShareOrigin(BuildContext context) {
     height: 1,
   );
 }
+
 Future<void> handleFileDownload(Content file, BuildContext context) async {
   final sourcePath = file.file;
   if (sourcePath == null || sourcePath.isEmpty) {

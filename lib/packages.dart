@@ -5,6 +5,7 @@ export 'settings/packages.dart';
 //Widgets
 export 'widgets/index.dart';
 export 'package:navinotes/screens/main/choose_board/dark_academia/popup/timeline_item.dart';
+export 'package:navinotes/screens/main/choose_board/nature/popup/outline_item.dart';
 
 //Screens
 export 'screens/packages.dart';
