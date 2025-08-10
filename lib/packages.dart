@@ -4,13 +4,14 @@ export 'settings/packages.dart';
 
 //Widgets
 export 'widgets/index.dart';
-export 'package:navinotes/screens/main/choose_board/dark_academia/popup/timeline_item.dart';
-export 'package:navinotes/screens/main/choose_board/nature/popup/outline_item.dart';
 
 //Screens
 export 'screens/packages.dart';
 export 'screens/main/choose_board/common/board_wrapper.dart';
 export 'package:navinotes/screens/main/choose_board/common/note_page_vm.dart';
+export 'package:navinotes/screens/main/choose_board/dark_academia/popup/timeline_item.dart';
+export 'package:navinotes/screens/main/choose_board/nature/popup/outline_item.dart';
+export 'package:navinotes/screens/main/choose_board/minimalist/popup/outline_item.dart';
 
 //View Models
 export 'screens/main/pdf_view/overlay/vm.dart';

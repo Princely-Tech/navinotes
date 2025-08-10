@@ -155,3 +155,37 @@ Future<bool?> callPhoneNumber(String number) async {
 bool isEven(int number) {
   return number % 2 == 0;
 }
+
+int? getSessionProgress(CourseTimeline session) {
+  final now = DateTime.now();
+
+  if (isNotNull(session.due)) {
+    try {
+      // Attach current year for parsing
+      final dueDate = DateFormat(
+        'MMMM d yyyy',
+      ).parse('${session.due} ${now.year}');
+
+      // If it's today
+      if (dueDate.year == now.year &&
+          dueDate.month == now.month &&
+          dueDate.day == now.day) {
+        return 100; // fully complete today
+      }
+
+      // If in the future
+      if (dueDate.isAfter(now)) {
+        final totalDays = dueDate.difference(now).inDays;
+        return (100 - (totalDays * 10)).clamp(0, 100);
+        // Example: 10% per day passed
+      }
+
+      // Past
+      return 0;
+    } catch (e) {
+      debugPrint('Date parsing failed for: ${session.due}');
+    }
+  }
+
+  return null;
+}

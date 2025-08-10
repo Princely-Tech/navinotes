@@ -109,8 +109,11 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      courseInfo?.title ??
-                                          'Course name not specified',
+                                      stringOrNotSpecified(
+                                        courseInfo?.title,
+                                        nullPrefix: 'Course name',
+                                      ),
+
                                       style: TextStyle(
                                         color: const Color(0xFFF7F3E9),
                                         fontSize: 24,
@@ -408,9 +411,8 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                           if (vm.uploadedFiles.isEmpty)
                             AppButton(
                               mainAxisSize: MainAxisSize.min,
-                              onTap: () {
-                                vm.importFiles(context);
-                              },
+                              onTap: () => vm.importFiles(context),
+                              loading: vm.savingFiles,
                               color: const Color(0xFFC19B47),
                               text: 'Import Files',
                               minHeight: 40,
@@ -551,6 +553,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                           actionText: 'Upload PDF',
                           imageUrl: Images.boardDarkAcadImportPdf,
                           isWhite: false,
+                          loading: vm.importingPdf,
                           onTap: () => vm.importPdfFile(context),
                         ),
                         _buildActionCard(
@@ -560,6 +563,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                           actionText: 'Add Files',
                           imageUrl: Images.boardDarkAcadFileImport,
                           onTap: () => vm.importFiles(context),
+                          loading: vm.savingFiles,
                         ),
                       ],
                     ),
@@ -766,7 +770,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
         CourseTimeline? nextSession = vm.getNextSession();
-        if (isNull(nextSession)) return SizedBox.shrink();
+        // if (isNull(nextSession)) return SizedBox.shrink();
         return CustomCard(
           width: null,
           addCardShadow: true,
@@ -788,25 +792,40 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              Text(
-                nextSession!.title,
-                style: TextStyle(
-                  color: const Color(0xFFC19B47),
-                  fontSize: 18,
-                  fontFamily: 'Playfair Display',
-                  fontWeight: FontWeight.w400,
+              if (isNull(nextSession))
+                Text(
+                  'No upcoming session',
+                  style: TextStyle(
+                    color: const Color(0xFFC19B47),
+                    fontSize: 18,
+                    fontFamily: 'Playfair Display',
+                    fontWeight: FontWeight.w400,
+                  ),
+                )
+              else
+                Column(
+                  children: [
+                    Text(
+                      nextSession!.title,
+                      style: TextStyle(
+                        color: const Color(0xFFC19B47),
+                        fontSize: 18,
+                        fontFamily: 'Playfair Display',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      // 'June 5th, 2:00 PM',
+                      formatSessionDate(nextSession),
+                      style: TextStyle(
+                        color: const Color(0xB2F7F3E9),
+                        fontSize: 14,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Text(
-                // 'June 5th, 2:00 PM',
-                formatSessionDate(nextSession),
-                style: TextStyle(
-                  color: const Color(0xB2F7F3E9),
-                  fontSize: 14,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
             ],
           ),
         );
@@ -917,86 +936,90 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     required String description,
     required String actionText,
     required String imageUrl,
-    required VoidCallback onTap,
     bool isWhite = true,
+    bool loading = false,
+    required VoidCallback onTap,
   }) {
     Color textColor =
         isWhite ? const Color(0xFF4A3426) : const Color(0xFFF7F3E9);
-    return InkWell(
-      onTap: onTap,
-      child: CustomCard(
-        width: null,
-        addCardShadow: true,
-        decoration: BoxDecoration(
-          color: isWhite ? AppTheme.white : const Color(0xFF4A3426),
-          borderRadius: BorderRadius.circular(2),
-        ),
-        padding: EdgeInsets.zero,
-        child: Column(
-          children: [
-            AspectRatio(
-              aspectRatio: 5 / 2,
-              child: ImagePlaceHolder(
-                imagePath: imageUrl,
-                isCardHeader: true,
-                borderRadius: BorderRadius.circular(0),
-                fit: BoxFit.fill,
+    return LoadingIndicator(
+      loading: loading,
+      child: InkWell(
+        onTap: onTap,
+        child: CustomCard(
+          width: null,
+          addCardShadow: true,
+          decoration: BoxDecoration(
+            color: isWhite ? AppTheme.white : const Color(0xFF4A3426),
+            borderRadius: BorderRadius.circular(2),
+          ),
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              AspectRatio(
+                aspectRatio: 5 / 2,
+                child: ImagePlaceHolder(
+                  imagePath: imageUrl,
+                  isCardHeader: true,
+                  borderRadius: BorderRadius.circular(0),
+                  fit: BoxFit.fill,
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 20,
-                      fontFamily: 'Playfair Display',
-                      fontWeight: FontWeight.w600,
-                      height: 1.40,
+              Container(
+                padding: EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 20,
+                        fontFamily: 'Playfair Display',
+                        fontWeight: FontWeight.w600,
+                        height: 1.40,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                      height: 1.50,
+                    SizedBox(height: 8),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        height: 1.50,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 24),
-                  Row(
-                    spacing: 8,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          actionText,
-                          style: TextStyle(
-                            color: const Color(0xFFC19B47),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w500,
-                            height: 1.50,
+                    SizedBox(height: 24),
+                    Row(
+                      spacing: 8,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            actionText,
+                            style: TextStyle(
+                              color: const Color(0xFFC19B47),
+                              fontSize: 16,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                              height: 1.50,
+                            ),
                           ),
                         ),
-                      ),
 
-                      Icon(
-                        Icons.arrow_forward,
-                        size: 16,
-                        color: const Color(0xFFC19B47),
-                      ),
-                    ],
-                  ),
-                ],
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 16,
+                          color: const Color(0xFFC19B47),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

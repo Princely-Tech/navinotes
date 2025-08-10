@@ -6,22 +6,28 @@ class BoardEditAssignment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BoardTypeCodes? boardType = vm.board.boardType;
-    final courseOutlines = vm.board.courseTimeLines;
+    final courseOutlines = vm.board.courseTimeLines??[];
     if (isNotNull(courseOutlines)) {
       switch (boardType) {
         case BoardTypeCodes.darkAcademia:
           return Column(
             children: [
-              for (int i = 0; i < courseOutlines!.length; i++)
+              for (int i = 0; i < courseOutlines.length; i++)
                 BoardDarkAcadTimelineItem(courseOutlines[i], isFirst: i == 0),
             ],
           );
         case BoardTypeCodes.nature:
           return Column(
             children: [
-              for (int i = 0; i < courseOutlines!.length; i++)
+              for (int i = 0; i < courseOutlines.length; i++)
                 BoardNatureOutlineItem(i),
             ],
+          );
+        case BoardTypeCodes.minimalist:
+          return Column(
+           children: courseOutlines
+                .map((item) => BoardMinimalistOutlineItem(item))
+                .toList(),
           );
         default:
       }

@@ -57,11 +57,7 @@ class BoardMinimalistEditOverview extends StatelessWidget {
                       btnText: 'Create note',
                       image: Images.edit,
                       title: 'Create Note',
-                      onTap: () {
-                        return NavigationHelper.push(
-                          Routes.boardMinimalistNotePage,
-                        );
-                      },
+                      onTap: vm.goToBoardNotes,
                     ),
                     _gridChild(
                       body: 'Add your course materials',
@@ -220,8 +216,6 @@ class BoardMinimalistEditOverview extends StatelessWidget {
       ],
     );
   }
-
- 
 
   Widget _gridChild({
     required String title,

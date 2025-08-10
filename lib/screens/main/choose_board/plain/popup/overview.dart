@@ -39,16 +39,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
 
     final courseInfo = vm.board.courseInfo;
 
-    // final courseName = ;
-    // final instructor = courseInfo?.instructor;
-    // final email = courseInfo?.email;
-    // final schedule = courseInfo?.schedule;
-    // final location = courseInfo?.location;
-    // final semester = courseInfo?.semester;
-    // final semesterDuration = courseInfo?.semesterDuration;
-    // final officeHours = courseInfo?.officeHours;
-    // final phone = courseInfo?.phone;
-
     return _section(
       color: AppTheme.white,
       child: CustomGrid(

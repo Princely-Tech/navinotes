@@ -104,10 +104,15 @@ class NavigationHelper {
     bool replace = false,
     bool isNew = false,
   }) {
-    //TODO uncomment
-    if (!isNew) {
+    //Go to popup only when board has syllabus
+
+    if (board.courseTimeLines?.isNotEmpty ?? false) {
       return navigateToBoardPopup(board, replace: replace);
     }
+
+    // if (!isNew) {
+    //   return navigateToBoardPopup(board, replace: replace);
+    // }
     final boardType = board.boardType ?? BoardTypeCodes.plain;
 
     final route = switch (boardType) {

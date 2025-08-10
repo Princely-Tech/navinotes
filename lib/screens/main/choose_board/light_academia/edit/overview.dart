@@ -63,11 +63,7 @@ class BoardLightAcademiaEditOverview extends StatelessWidget {
                           btnText: 'Create note',
                           image: Images.leaf2,
                           title: 'Create Note',
-                          onTap: () {
-                            return NavigationHelper.push(
-                              Routes.boardLightAcademiaNotePage,
-                            );
-                          },
+                          onTap: vm.goToBoardNotes,
                         ),
                         _gridChild(
                           body: 'Add your course materials',
@@ -270,7 +266,6 @@ class BoardLightAcademiaEditOverview extends StatelessWidget {
     );
   }
 
-
   Widget _gridChild({
     required String title,
     required String body,
@@ -284,7 +279,7 @@ class BoardLightAcademiaEditOverview extends StatelessWidget {
         return LoadingIndicator(
           loading: loading,
           child: InkWell(
-            onTap:onTap,
+            onTap: onTap,
             child: CustomCard(
               addCardShadow: true,
               decoration: BoxDecoration(
