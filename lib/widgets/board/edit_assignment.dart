@@ -5,26 +5,46 @@ class BoardEditAssignment extends StatelessWidget {
   final BoardEditVm vm;
   @override
   Widget build(BuildContext context) {
-    if (vm.uploadingSyllabus) {
-      return const Center(child: CircularProgressIndicator());
+    BoardTypeCodes? boardType = vm.board.boardType;
+    final courseOutlines = vm.board.courseTimeLines;
+    if (isNotNull(courseOutlines)) {
+      switch (boardType) {
+        case BoardTypeCodes.darkAcademia:
+          return Column(
+            children: [
+              for (int i = 0; i < courseOutlines!.length; i++)
+                BoardDarkAcadTimelineItem(courseOutlines[i], isFirst: i == 0),
+            ],
+          );
+        default:
+      }
     }
+    return _emptyBody();
+  }
+
+  Widget _emptyBody() {
     return Consumer<ApiServiceProvider>(
       builder: (_, apiServiceProvider, _) {
-        return EmptyState(
-          icon: Icons.folder_open,
-          title: 'No syllabus upload',
-          subtitle: 'Upload syllabus to get started',
-          footer: AppButton(
-            loading: vm.uploadingSyllabus,
-            onTap: () => vm.uploadSyllabus(
-                          context: context,
-                          apiServiceProvider: apiServiceProvider,
-                        ),
-            text: 'Upload syllabus',
-            mainAxisSize: MainAxisSize.min,
-          ),
+        return Builder(
+          builder: (context) {
+            return EmptyState(
+              icon: Icons.folder_open,
+              title: 'No syllabus upload',
+              subtitle: 'Upload syllabus to get started',
+              footer: AppButton(
+                loading: vm.uploadingSyllabus,
+                onTap:
+                    () => vm.uploadSyllabus(
+                      context: context,
+                      apiServiceProvider: apiServiceProvider,
+                    ),
+                text: 'Upload syllabus',
+                mainAxisSize: MainAxisSize.min,
+              ),
+            );
+          },
         );
-      }
+      },
     );
   }
 }

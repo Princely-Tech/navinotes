@@ -52,6 +52,7 @@ dependencies:
   flutter_drawing_board: ^0.9.8
   record: ^6.0.0
   just_audio: ^0.10.4
+  url_launcher: ^6.3.2
 
 
 dev_dependencies:

@@ -4,6 +4,7 @@ export 'settings/packages.dart';
 
 //Widgets
 export 'widgets/index.dart';
+export 'package:navinotes/screens/main/choose_board/dark_academia/popup/timeline_item.dart';
 
 //Screens
 export 'screens/packages.dart';
@@ -58,6 +59,7 @@ export 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 export 'package:navinotes/screens/main/market_place/widgets.dart';
 export 'package:fl_chart/fl_chart.dart';
 export 'dart:math';
+export 'package:url_launcher/url_launcher.dart';
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:flutter_quill/flutter_quill.dart';
 export 'package:data_table_2/data_table_2.dart';

@@ -13,7 +13,7 @@ class BoardPlainEditScreen extends StatelessWidget {
         vm.initialize();
         return vm;
       },
-      child: Consumer<BoardEditVm>(
+      child: Consumer<BoardEditVm>( 
         builder: (_, vm, __) {
           return ChooseBoardWrapper(
             //Essential; add loading until ready!!
@@ -44,7 +44,7 @@ class BoardPlainEditScreen extends StatelessWidget {
                     mobile: EdgeInsets.symmetric(horizontal: tabletPadding),
                     child: WidthLimiter(
                       mobile: largeDesktopSize,
-                      child: _returnTabItem(vm),
+                      child: vm.returnSelectedTabItem( BoardPlainEditOverview(vm))
                     ),
                   ),
                 ),
@@ -56,16 +56,7 @@ class BoardPlainEditScreen extends StatelessWidget {
     );
   }
 
-  Widget _returnTabItem(BoardEditVm vm) {
-    switch (vm.selectedTab) {
-      case EditBoardTab.overview:
-        return BoardPlainEditOverview(vm);
-      case EditBoardTab.uploads:
-        return BoardEditUploads(vm);
-      case EditBoardTab.assignments:
-        return const SizedBox.shrink();
-    }
-  }
+ 
 
   Widget _header(Board board) {
     return Builder(

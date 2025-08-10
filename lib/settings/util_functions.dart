@@ -133,3 +133,16 @@ String getNoteCountText(List<Content> contents) {
   }
   return text;
 }
+
+String stringOrNotSpecified(String? data) {
+  return data ?? 'Not specified';
+}
+
+Future<void> callPhoneNumber(String number) async {
+  final Uri callUri = Uri(scheme: 'tel', path: number);
+  if (await canLaunchUrl(callUri)) {
+    await launchUrl(callUri);
+  } else {
+    throw 'Could not launch $number';
+  }
+}

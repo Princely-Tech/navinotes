@@ -61,7 +61,8 @@ class _SplashScreenState extends State<SplashScreen>
     // Ensure session is loaded before checking login status
     await context.read<SessionManager>().init();
     if (mounted) {
-      return _navigateToNextScreen();
+      // return _navigateToNextScreen();
+      _navigateToDashboard() ;
     }
   }
 
@@ -77,17 +78,6 @@ class _SplashScreenState extends State<SplashScreen>
     //  List<Content> allFiles = await DatabaseHelper.instance.getAllFiles(
     //   board.id!,
     // );
-
-    // DatabaseHelper.instance.updateBoard(board.copyWith(
-    //   courseInfo: exampleCourseInfo,
-    //   courseTimeLines: exampleTimeline,
-    // ));
-    // // // DatabaseHelper.instance.deleteContent(2);
-
-    // print(board.courseTimeLines);
-    // NavigationHelper.navigateToPdfView(allFiles.last.id!);
-    // NavigationHelper.navigateToBoard(board);
-    // NavigationHelper.navigateToBoardNotes(board);
     NavigationHelper.navigateToBoardPopup(board);
     // NavigationHelper.pushReplacement(
     //   Routes.noteTemplate,

@@ -94,3 +94,11 @@ NoteSortType stringToNoteSortType(String sortType) {
 AppContentType stringToAppContentType(String sortType) {
   return stringToEnum<AppContentType>(sortType, AppContentType.values);
 }
+
+formatSessionDate(CourseTimeline timeline) {
+  String date = timeline.week;
+  if (isNotNull(timeline.due)) {
+    date += ', ${timeline.due}';
+  }
+  return date;
+}
