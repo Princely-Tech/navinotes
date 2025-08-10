@@ -1,14 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/note_template/creation/widget/drawing.dart';
-import 'package:navinotes/screens/main/note_template/creation/widget/text_editor.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/title.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/voice.dart';
-import 'widget/lined_rule.dart';
-import 'widget/squared_rule.dart';
 import 'vm.dart';
-import 'widget/dotted.dart';
 import 'widget/note_page.dart';
 
 class NoteCreationMain extends StatelessWidget {
@@ -166,46 +161,7 @@ class NoteCreationMain extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildTextAndDrawing(
-    NoteCreationVm vm,
-    Color color,
-    double inputWidth,
-    double inputHeight,
-  ) {
-    return Expanded(
-      child: Stack(
-        children: [
-          // Background patterns
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                const SquaredNoteBackground(),
-                const LinedNoteBackground(),
-                const DottedNoteBackground(),
-                Container(width: inputWidth, height: inputHeight, color: color),
-              ],
-            ),
-          ),
-          // Combined scrollable content
-          SingleChildScrollView(
-            child: Stack(
-              children: [
-                // Text editor content
-                buildTextEditor(vm, inputWidth, inputHeight),
-                // Drawing board (positioned absolutely over the same area)
-                buildDrawingBoard(vm, inputWidth, inputHeight),
-              ],
-            ),
-          ),
-          // Toolbar (fixed at the top)
-          if (vm.currentMode == NoteMode.text) buildEditorToolBar(vm),
-          if (vm.currentMode == NoteMode.drawing) buildDrawingToolbar(vm: vm),
-        ],
-      ),
-    );
-  }
- 
+  
   Widget _shareAndAI(NoteCreationVm vm) {
     return Row(
       spacing: 15,

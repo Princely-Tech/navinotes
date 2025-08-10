@@ -32,7 +32,7 @@ class BoardLightAcadEditScreen extends StatelessWidget {
   }
 
   Widget _buildContent(BoardEditVm vm) {
-    final board = vm.board!;
+    final board = vm.board;
     return Column(
       children: [
         _header(board),

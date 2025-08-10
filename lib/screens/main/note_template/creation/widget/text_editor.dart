@@ -52,6 +52,7 @@ Widget buildTextEditor(
 ) {
   return Container(
     width: inputWidth,
+    height: inputHeight,
     padding: const EdgeInsets.only(top: 55, bottom: 24),
     child: ResponsiveHorizontalPadding(
       child: QuillEditor.basic(

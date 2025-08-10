@@ -20,12 +20,6 @@ class ChooseBoardWrapper extends StatelessWidget {
           );
         }
 
-        if (vm.board == null) {
-          return const Scaffold(
-            body: Center(child: Text('No board data available')),
-          );
-        }
-
         // Main content
         return child;
       },
