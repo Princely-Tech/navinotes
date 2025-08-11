@@ -57,7 +57,7 @@ class BoardMinimalistEditOverview extends StatelessWidget {
                       btnText: 'Create note',
                       image: Images.edit,
                       title: 'Create Note',
-                      onTap: vm.goToBoardNotes,
+                      onTap: vm.createNoteHandler,
                     ),
                     _gridChild(
                       body: 'Add your course materials',

@@ -184,8 +184,6 @@ class BoardDarkAcademiaEditOverview extends StatelessWidget {
     );
   }
 
- 
-
   Widget _actionCard({
     required String title,
     required String body,
@@ -288,7 +286,7 @@ class BoardDarkAcademiaEditOverview extends StatelessWidget {
                         icon: Images.pen2,
                         title: 'Create Note',
                         body: 'Begin taking notes right away',
-                        onTap: vm.goToBoardNotes,
+                        onTap: vm.createNoteHandler,
                       ),
                       _actionCard(
                         icon: Images.folder,

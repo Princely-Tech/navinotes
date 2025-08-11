@@ -70,7 +70,7 @@ class BoardNatureEditOverview extends StatelessWidget {
                             color: AppTheme.walnutBronze,
                             image: Images.edit,
                             title: 'Create Note',
-                            onTap: vm.goToBoardNotes,
+                            onTap: vm.createNoteHandler,
                           ),
                           _gridChild(
                             body:

@@ -12,6 +12,7 @@ export 'package:navinotes/screens/main/choose_board/common/note_page_vm.dart';
 export 'package:navinotes/screens/main/choose_board/dark_academia/popup/timeline_item.dart';
 export 'package:navinotes/screens/main/choose_board/nature/popup/outline_item.dart';
 export 'package:navinotes/screens/main/choose_board/minimalist/popup/outline_item.dart';
+export 'package:navinotes/screens/main/choose_board/light_academia/popup/timeline_item.dart';
 
 //View Models
 export 'screens/main/pdf_view/overlay/vm.dart';

@@ -647,38 +647,38 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget fileUploads1({required BoardEditVm vm}) {
-    return _section(
-      color: AppTheme.white,
-      header: _sectionHeader(
-        title: 'File Uploads',
-        subtitle: 'Essential readings and resources for your studies',
-      ),
-      child: ScrollableController(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          spacing: 25,
-          children: [
-            _fileCard(
-              title: 'Cell Structure Guide',
-              subtitle: 'PDF • 2.4 MB • Uploaded Sept 5',
-              status: 'Required reading',
-            ),
-            _fileCard(
-              title: 'Genetics Research Paper',
-              subtitle: 'PDF • 3.7 MB • Uploaded Sept 7',
-              status: 'Supplemental reading',
-            ),
-            _fileCard(
-              title: 'Lab Procedures Video',
-              subtitle: 'MP4 • 45:12 • 112 MB',
-              status: 'Required viewing',
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget fileUploads1({required BoardEditVm vm}) {
+  //   return _section(
+  //     color: AppTheme.white,
+  //     header: _sectionHeader(
+  //       title: 'File Uploads',
+  //       subtitle: 'Essential readings and resources for your studies',
+  //     ),
+  //     child: ScrollableController(
+  //       scrollDirection: Axis.horizontal,
+  //       child: Row(
+  //         spacing: 25,
+  //         children: [
+  //           _fileCard(
+  //             title: 'Cell Structure Guide',
+  //             subtitle: 'PDF • 2.4 MB • Uploaded Sept 5',
+  //             status: 'Required reading',
+  //           ),
+  //           _fileCard(
+  //             title: 'Genetics Research Paper',
+  //             subtitle: 'PDF • 3.7 MB • Uploaded Sept 7',
+  //             status: 'Supplemental reading',
+  //           ),
+  //           _fileCard(
+  //             title: 'Lab Procedures Video',
+  //             subtitle: 'MP4 • 45:12 • 112 MB',
+  //             status: 'Required viewing',
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _fileUploads({
     required BoardEditVm vm,
@@ -915,18 +915,16 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 description: 'Add research papers and reference materials',
                 buttonText: 'Upload PDF',
                 imagePath: Images.boardPlainImportPdf,
-                // onTap: vm.importPdfFile,
                 onTap: () => vm.importPdfFile(context),
+                loading: vm.importingPdf,
               ),
-              LoadingIndicator(
+              buildActionCard(
+                title: 'Import Files',
+                description: 'Upload documents, images, and presentations',
+                buttonText: 'Add Files',
+                imagePath: Images.boardPlainImportFiles,
+                onTap: () => vm.importFiles(context),
                 loading: vm.savingFiles,
-                child: buildActionCard(
-                  title: 'Import Files',
-                  description: 'Upload documents, images, and presentations',
-                  buttonText: 'Add Files',
-                  imagePath: Images.boardPlainImportFiles,
-                  onTap: () => vm.importFiles(context),
-                ),
               ),
             ],
           ),
@@ -941,83 +939,87 @@ class BoardPlainPopupOverview extends StatelessWidget {
     required String buttonText,
     required String imagePath,
     required VoidCallback onTap,
+    bool loading = false,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: CustomCard(
-        addBorder: true,
-        addCardShadow: true,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-        padding: EdgeInsets.zero,
-        child: Column(
-          children: [
-            CustomCard(
-              height: 160,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF8F9FA),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-              ),
-              alignment: Alignment.center,
-              child: WidthLimiter(
-                mobile: 96,
-                child: ImagePlaceHolder(
-                  imagePath: imagePath,
-                  borderRadius: BorderRadius.zero,
+    return LoadingIndicator(
+      loading: loading,
+      child: InkWell(
+        onTap: onTap,
+        child: CustomCard(
+          addBorder: true,
+          addCardShadow: true,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              CustomCard(
+                height: 160,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8F9FA),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+                ),
+                alignment: Alignment.center,
+                child: WidthLimiter(
+                  mobile: 96,
+                  child: ImagePlaceHolder(
+                    imagePath: imagePath,
+                    borderRadius: BorderRadius.zero,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: const Color(0xFF1F2937),
-                      fontSize: 16.0,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                      height: 1.5,
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: const Color(0xFF1F2937),
+                        fontSize: 16.0,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                        height: 1.5,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      color: const Color(0xFF6B7280),
-                      fontSize: 14.0,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                      height: 1.43,
+                    const SizedBox(height: 8),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        color: const Color(0xFF6B7280),
+                        fontSize: 14.0,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        height: 1.43,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          buttonText,
-                          style: TextStyle(
-                            color: AppTheme.vividBlue,
-                            fontSize: 16.0,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w500,
-                            height: 1.5,
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            buttonText,
+                            style: TextStyle(
+                              color: AppTheme.vividBlue,
+                              fontSize: 16.0,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w500,
+                              height: 1.5,
+                            ),
                           ),
                         ),
-                      ),
-                      Icon(
-                        Icons.arrow_forward,
-                        size: 14,
-                        color: AppTheme.vividBlue,
-                      ),
-                    ],
-                  ),
-                ],
+                        Icon(
+                          Icons.arrow_forward,
+                          size: 14,
+                          color: AppTheme.vividBlue,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -1060,7 +1062,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
       builder: (_, layoutVm, _) {
         return Consumer<BoardEditVm>(
           builder: (_, vm, _) {
-            final board = vm.board!;
+            final board = vm.board;
             return Column(
               spacing: 24,
               children: [
@@ -1133,7 +1135,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     return Consumer<BoardEditVm>(
       builder: (_, vm, _) {
         CourseTimeline? nextSession = vm.getNextSession();
-        //TODO return to this
+
         return CustomCard(
           addCardShadow: true,
           padding: const EdgeInsets.all(17),

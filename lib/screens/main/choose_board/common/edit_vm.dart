@@ -23,6 +23,11 @@ class BoardEditVm extends ChangeNotifier {
     }
   }
 
+  Future<void> createNoteHandler() async {
+    await NavigationHelper.gotToNewNoteTemplate(board);
+    loadFiles(board.id!);
+  }
+
   EditBoardTab selectedTab = EditBoardTab.overview;
 
   bool fetchingFiles = false;
@@ -155,12 +160,9 @@ class BoardEditVm extends ChangeNotifier {
         loadFiles(board.id!);
       }
     } catch (e) {
-      debugPrint('Error importing files: $e');
+      debugPrint('Error importing pdf: $e');
       if (context.mounted) {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Error importing files',
-        );
+        MessageDisplayService.showErrorMessage(context, 'Error importing pdf');
       }
     } finally {
       importingPdf = false;
@@ -216,6 +218,13 @@ class BoardEditVm extends ChangeNotifier {
                 'No files were imported',
               );
             }
+          }
+        } else {
+          if (context.mounted) {
+            MessageDisplayService.showErrorMessage(
+              context,
+              'No files were imported',
+            );
           }
         }
       }
@@ -307,7 +316,10 @@ class BoardEditVm extends ChangeNotifier {
                 'Syllabus uploaded successfully',
               );
             }
-            return NavigationHelper.navigateToBoardPopup(updatedBoard, replace: true);
+            return NavigationHelper.navigateToBoardPopup(
+              updatedBoard,
+              replace: true,
+            );
           } else {
             throw Exception('Failed to process syllabus');
           }

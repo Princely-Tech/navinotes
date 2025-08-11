@@ -24,7 +24,11 @@ class NoteCreationMain extends StatelessWidget {
         return Column(
           children: [
             _header(vm),
-            _modeSelector(vm, context),
+            VisibleController(
+              mobile: true,
+              tablet: false,
+              child: _modeSelector(vm, context),
+            ),
             if (vm.currentMode != NoteMode.voice)
               NoteDrawingWrapper(
                 vm: vm,
@@ -43,7 +47,7 @@ class NoteCreationMain extends StatelessWidget {
   // Build the header with title and actions
   Widget _header(NoteCreationVm vm) {
     return Consumer<NoteCreationVm>(
-      builder: (_, vm, _) {
+      builder: (context, vm, _) {
         return Consumer<PomodoroTimer>(
           builder: (_, pomodorVm, _) {
             return Consumer<LayoutProviderVm>(
@@ -64,6 +68,11 @@ class NoteCreationMain extends StatelessWidget {
                     children: [
                       title(),
                       if (pomodorVm.isRunning) _timer(pomodorVm),
+                      VisibleController(
+                        mobile: false,
+                        tablet: true,
+                        child: _modeSelector(vm, context),
+                      ),
                       Row(
                         children: [
                           IconButton(
@@ -139,35 +148,45 @@ class NoteCreationMain extends StatelessWidget {
     required bool isActive,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color:
-              isActive ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isActive ? Theme.of(context).primaryColor : Colors.grey,
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        bool isMobile = layoutVm.deviceType == DeviceType.mobile;
+        return InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color:
+                  isActive
+                      ? Theme.of(context).primaryColor.withOpacity(0.1)
+                      : null,
+              borderRadius: BorderRadius.circular(20),
             ),
-            const SizedBox(width: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: isActive ? Theme.of(context).primaryColor : Colors.grey,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-              ),
+            child: Row(
+              children: [
+                if (isActive || isMobile)
+                  Icon(
+                    icon,
+                    color:
+                        isActive ? Theme.of(context).primaryColor : Colors.grey,
+                  ),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color:
+                        isActive ? Theme.of(context).primaryColor : Colors.grey,
+                    fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
-  
+
   Widget _shareAndAI(NoteCreationVm vm) {
     return Row(
       spacing: 15,

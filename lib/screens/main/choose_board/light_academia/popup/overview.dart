@@ -8,6 +8,8 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 20,
           children: [
             _widthLimiter(
               child: Column(
@@ -36,7 +38,10 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 25,
-                  children: [_studyTemplates(), _courseTimeline()],
+                  children: [
+                    // _studyTemplates(),
+                    _courseTimeline(),
+                  ],
                 ),
               ),
             ),
@@ -69,61 +74,72 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
   }
 
   Widget _courseDetails() {
-    return _footerItem(
-      title: 'Course Details',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildDetailItem('Instructor:', 'Dr. Eleanor Blackwood'),
-          _buildDetailItem('Email:', 'e.blackwood@academia.edu'),
-          _buildDetailItem('Office Hours:', 'Mon/Wed 2:00-4:00 PM'),
-          _buildDetailItem('Phone:', '(555) 123-4567'),
-        ],
-      ),
+    return Consumer<BoardEditVm>(
+      builder: (_, vm, _) {
+        return _footerItem(
+          title: 'Course Details',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailItem('Instructor:', vm.board.courseInfo?.instructor),
+              _buildDetailItem('Email:', vm.board.courseInfo?.email),
+              _buildDetailItem(
+                'Office Hours:',
+                vm.board.courseInfo?.officeHours,
+              ),
+              _buildDetailItem('Phone:', vm.board.courseInfo?.phone),
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _classInfo() {
-    return _footerItem(
-      title: 'Class Information',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildDetailItem('Schedule:', 'Tue/Thu 10:30 AM - 12:00 PM'),
-          _buildDetailItem('Location:', 'Science Hall, Room 305'),
-          _buildDetailItem('Semester:', 'Fall 2025'),
-          SizedBox(height: 16),
-          Text(
-            'Quick Links',
-            style: TextStyle(
-              color: const Color(0xFFFFB347),
-              fontSize: 16,
-              fontFamily: 'EB Garamond',
-              fontWeight: FontWeight.w400,
-              height: 1.50,
-            ),
+    return Consumer<BoardEditVm>(
+      builder: (_, vm, _) {
+        return _footerItem(
+          title: 'Class Information',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailItem('Schedule:', vm.board.courseInfo?.schedule),
+              _buildDetailItem('Location:', vm.board.courseInfo?.location),
+              _buildDetailItem('Semester:', vm.board.courseInfo?.semester),
+              // SizedBox(height: 16),
+              // Text(
+              //   'Quick Links',
+              //   style: TextStyle(
+              //     color: const Color(0xFFFFB347),
+              //     fontSize: 16,
+              //     fontFamily: 'EB Garamond',
+              //     fontWeight: FontWeight.w400,
+              //     height: 1.50,
+              //   ),
+              // ),
+              // SizedBox(height: 8),
+              // Wrap(
+              //   spacing: 16,
+              //   children:
+              //       ['Syllabus', 'Academic Calendar', 'Library Resources']
+              //           .map(
+              //             (str) => Text(
+              //               str,
+              //               style: TextStyle(
+              //                 color: const Color(0xFFFAF7F0),
+              //                 fontSize: 16,
+              //                 fontFamily: 'Open Sans',
+              //                 fontWeight: FontWeight.w400,
+              //                 height: 1.50,
+              //               ),
+              //             ),
+              //           )
+              //           .toList(),
+              // ),
+            ],
           ),
-          SizedBox(height: 8),
-          Wrap(
-            spacing: 16,
-            children:
-                ['Syllabus', 'Academic Calendar', 'Library Resources']
-                    .map(
-                      (str) => Text(
-                        str,
-                        style: TextStyle(
-                          color: const Color(0xFFFAF7F0),
-                          fontSize: 16,
-                          fontFamily: 'Open Sans',
-                          fontWeight: FontWeight.w400,
-                          height: 1.50,
-                        ),
-                      ),
-                    )
-                    .toList(),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -194,73 +210,151 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
   }
 
   Widget _courseTimeline() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xC99A8634),
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: const Color(0x4C8B4513)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              Text(
-                'Course Timeline',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontFamily: 'EB Garamond',
-                  fontWeight: FontWeight.w400,
-                  height: 1.33,
-                ),
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 24,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xC99A8634),
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: const Color(0x4C8B4513)),
               ),
-              Text(
-                'Weekly course progression and assignments',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: 'Open Sans',
-                  fontWeight: FontWeight.w400,
-                  height: 1.50,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 8,
+                children: [
+                  Text(
+                    'Course Timeline',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontFamily: 'EB Garamond',
+                      fontWeight: FontWeight.w400,
+                      height: 1.33,
+                    ),
+                  ),
+                  Text(
+                    'Weekly course progression and assignments',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Open Sans',
+                      fontWeight: FontWeight.w400,
+                      height: 1.50,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        SizedBox(height: 24),
-        // Timeline Items
-        _buildTimelineItem(
-          week: 'Week 1-2: Cell Structure & Function',
-          assignment: 'Cell Structure Lab Report',
-          status: 'In Progress',
-          progress: 0.65,
-          tags: ['Cell Membrane', 'Cytoplasm', 'Organelles', 'Microscopy'],
-        ),
-        SizedBox(height: 24),
-        _buildTimelineItem(
-          week: 'Week 3-4: Genetics & DNA',
-          assignment: 'Genetic Inheritance Quiz',
-          status: 'Due Oct 15',
-          tags: ['DNA Structure', 'Inheritance', 'Genes', 'Mutations'],
-        ),
-        SizedBox(height: 24),
-        _buildTimelineItem(
-          week: 'Week 5-6: Evolution & Natural Selection',
-          assignment: 'Evolution Case Study',
-          status: 'Not Started',
-          tags: [
-            'Natural Selection',
-            'Adaptation',
-            'Speciation',
-            'Fossil Record',
+            ),
+
+            Consumer<ApiServiceProvider>(
+              builder: (_, apiServiceProvider, _) {
+                List<CourseTimeline> courseOutlines =
+                    vm.board.courseTimeLines ?? [];
+                if (courseOutlines.isEmpty) {
+                  return AppButton(
+                    onTap:
+                        () => vm.uploadSyllabus(
+                          apiServiceProvider: apiServiceProvider,
+                          context: context,
+                        ),
+                    mainAxisSize: MainAxisSize.min,
+                    color: const Color(0xFFF0EBE0),
+                    text: 'Upload Syllabus',
+                    loading: vm.uploadingSyllabus,
+                    borderColor: const Color(0x338B4513),
+                    minHeight: 40,
+                    prefix: SVGImagePlaceHolder(
+                      imagePath: Images.upload,
+                      color: const Color(0xFF654321),
+                      size: 16,
+                    ),
+                    style: TextStyle(
+                      color: const Color(0xFF654321),
+                      fontSize: 16,
+                      fontFamily: 'EB Garamond',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  );
+                }
+                double maxHeight = screenHeight(context) / 2;
+                return ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: maxHeight),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: 60),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 24,
+                      children:
+                          courseOutlines
+                              .map((item) => BoardLightAcadTimelineItem(item))
+                              .toList(),
+                      // children: [
+                      //   _buildTimelineItem(
+                      //     week: 'Week 1-2: Cell Structure & Function',
+                      //     assignment: 'Cell Structure Lab Report',
+                      //     status: 'In Progress',
+                      //     progress: 0.65,
+                      //     tags: [
+                      //       'Cell Membrane',
+                      //       'Cytoplasm',
+                      //       'Organelles',
+                      //       'Microscopy',
+                      //     ],
+                      //   ),
+                      // ],
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            // Timeline Items
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   spacing: 24,
+            //   children: [
+            //     _buildTimelineItem(
+            //       week: 'Week 1-2: Cell Structure & Function',
+            //       assignment: 'Cell Structure Lab Report',
+            //       status: 'In Progress',
+            //       progress: 0.65,
+            //       tags: [
+            //         'Cell Membrane',
+            //         'Cytoplasm',
+            //         'Organelles',
+            //         'Microscopy',
+            //       ],
+            //     ),
+            //   ],
+            // ),
+            // SizedBox(height: 24),
+            // _buildTimelineItem(
+            //   week: 'Week 3-4: Genetics & DNA',
+            //   assignment: 'Genetic Inheritance Quiz',
+            //   status: 'Due Oct 15',
+            //   tags: ['DNA Structure', 'Inheritance', 'Genes', 'Mutations'],
+            // ),
+            // SizedBox(height: 24),
+            // _buildTimelineItem(
+            //   week: 'Week 5-6: Evolution & Natural Selection',
+            //   assignment: 'Evolution Case Study',
+            //   status: 'Not Started',
+            //   tags: [
+            //     'Natural Selection',
+            //     'Adaptation',
+            //     'Speciation',
+            //     'Fossil Record',
+            //   ],
+            // ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -301,28 +395,58 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
   }
 
   Widget _fileUploads() {
-    return _section(
-      title: 'File Uploads',
-      subTitle: 'Recently uploaded study materials',
-      child: ScrollableController(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          spacing: 24,
-          children: [
-            _buildFileCard('Cell_Membrane_Notes.pdf', '2.4 MB', 'Oct 8, 2023'),
-            _buildFileCard(
-              'DNA_Structure_Lecture.pptx',
-              '5.7 MB',
-              'Oct 5, 2023',
-            ),
-            _buildFileCard(
-              'Cell_Microscopy_Images.zip',
-              '18.2 MB',
-              'Oct 2, 2023',
-            ),
-          ],
-        ),
-      ),
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          title: 'File Uploads',
+          subTitle: 'Recently uploaded study materials',
+          child:
+              vm.uploadedFiles.isEmpty
+                  ? AppButton(
+                    onTap: () => vm.importFiles(context),
+                    mainAxisSize: MainAxisSize.min,
+                    color: const Color(0xFFF0EBE0),
+                    text: 'Upload files',
+                    loading: vm.savingFiles,
+                    borderColor: const Color(0x338B4513),
+                    minHeight: 40,
+                    prefix: SVGImagePlaceHolder(
+                      imagePath: Images.upload,
+                      color: const Color(0xFF654321),
+                      size: 16,
+                    ),
+                    style: TextStyle(
+                      color: const Color(0xFF654321),
+                      fontSize: 16,
+                      fontFamily: 'EB Garamond',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  )
+                  : ScrollableController(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 24,
+                      children:
+                          vm.uploadedFiles.map((file) {
+                            return _buildFileCard(file);
+                          }).toList(),
+                      // children: [
+                      //   _buildFileCard('Cell_Membrane_Notes.pdf', '2.4 MB', 'Oct 8, 2023'),
+                      //   _buildFileCard(
+                      //     'DNA_Structure_Lecture.pptx',
+                      //     '5.7 MB',
+                      //     'Oct 5, 2023',
+                      //   ),
+                      //   _buildFileCard(
+                      //     'Cell_Microscopy_Images.zip',
+                      //     '18.2 MB',
+                      //     'Oct 2, 2023',
+                      //   ),
+                      // ],
+                    ),
+                  ),
+        );
+      },
     );
   }
 
@@ -332,193 +456,229 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
     required Widget child,
     bool isWhite = false,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 20,
-      children: [
-        Column(
-          spacing: 4,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: isWhite ? AppTheme.white : const Color(0xFF654321),
-                fontSize: 24,
-                fontFamily: 'EB Garamond',
-                fontWeight: FontWeight.w400,
-                height: 1.33,
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 20,
+        children: [
+          Column(
+            spacing: 4,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: isWhite ? AppTheme.white : const Color(0xFF654321),
+                  fontSize: 24,
+                  fontFamily: 'EB Garamond',
+                  fontWeight: FontWeight.w400,
+                  height: 1.33,
+                ),
               ),
-            ),
-            Text(
-              subTitle,
-              style: TextStyle(
-                color: isWhite ? AppTheme.white : const Color(0xFF8B4513),
-                fontSize: 16,
-                fontFamily: 'Open Sans',
-                fontWeight: FontWeight.w400,
-                height: 1.50,
+              Text(
+                subTitle,
+                style: TextStyle(
+                  color: isWhite ? AppTheme.white : const Color(0xFF8B4513),
+                  fontSize: 16,
+                  fontFamily: 'Open Sans',
+                  fontWeight: FontWeight.w400,
+                  height: 1.50,
+                ),
               ),
-            ),
-          ],
-        ),
-        child,
-      ],
+            ],
+          ),
+          child,
+        ],
+      ),
     );
   }
 
   Widget _courseActions() {
-    return _section(
-      title: 'Course Actions',
-      subTitle: 'Create and manage your study materials',
-      child: CustomGrid(
-        spacing: 24,
-        children: [
-          _buildActionCard(
-            icon: Images.pen2,
-            title: 'Create Note',
-            description:
-                'Start a new study note with customizable templates and formatting options.',
-            actionText: 'Create a new note',
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          title: 'Course Actions',
+          subTitle: 'Create and manage your study materials',
+          child: CustomGrid(
+            spacing: 24,
+            children: [
+              _buildActionCard(
+                icon: Images.pen2,
+                title: 'Create Note',
+                description:
+                    'Start a new study note with customizable templates and formatting options.',
+                actionText: 'Create a new note',
+                onTap: vm.createNoteHandler,
+              ),
+              _buildActionCard(
+                icon: Images.pdf,
+                title: 'Import PDF',
+                description:
+                    'Upload and annotate PDF documents from your course materials or research.',
+                actionText: 'Import document',
+                onTap: () => vm.importPdfFile(context),
+                loading: vm.importingPdf,
+              ),
+              _buildActionCard(
+                icon: Images.folder,
+                title: 'Import Files',
+                description:
+                    'Upload multiple files including images, documents, and presentations.',
+                actionText: 'Upload files',
+                onTap: () => vm.importFiles(context),
+                loading: vm.savingFiles,
+              ),
+            ],
           ),
-          _buildActionCard(
-            icon: Images.pdf,
-            title: 'Import PDF',
-            description:
-                'Upload and annotate PDF documents from your course materials or research.',
-            actionText: 'Import document',
-          ),
-          _buildActionCard(
-            icon: Images.folder,
-            title: 'Import Files',
-            description:
-                'Upload multiple files including images, documents, and presentations.',
-            actionText: 'Upload files',
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _title() {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Explore Cell Biology & Genetics',
-              style: TextStyle(
-                color: const Color(0xFF654321),
-                fontSize: getDeviceResponsiveValue(
-                  deviceType: layoutVm.deviceType,
-                  mobile: 30,
-                  tablet: 36,
+        return Consumer<BoardEditVm>(
+          builder: (_, vm, _) {
+            final board = vm.board;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Explore ${board.name}',
+                  style: TextStyle(
+                    color: const Color(0xFF654321),
+                    fontSize: getDeviceResponsiveValue(
+                      deviceType: layoutVm.deviceType,
+                      mobile: 30,
+                      tablet: 36,
+                    ),
+                    fontFamily: 'EB Garamond',
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-                fontFamily: 'EB Garamond',
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Dive into the fascinating world of cellular structures and genetic mechanisms. This course explores the fundamental building blocks of life, from microscopic cell components to the intricate dance of DNA replication and genetic inheritance patterns.',
-              style: TextStyle(
-                color: const Color(0xFF8B4513),
-                fontSize: 16,
-                fontFamily: 'Open Sans',
-              ),
-            ),
-          ],
+                SizedBox(height: 16),
+                Text(
+                  getBoardDescription(board),
+                  style: TextStyle(
+                    color: const Color(0xFF8B4513),
+                    fontSize: 16,
+                    fontFamily: 'Open Sans',
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 
   Widget _nextSession() {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(top: 20),
-      decoration: BoxDecoration(
-        color: const Color(0x19FFB347),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x19000000),
-            blurRadius: 6,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: Color(0x19000000),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-            spreadRadius: 0,
-          ),
-        ],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0x4CFFB347)),
-      ),
-      padding: EdgeInsets.all(21),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Next Session',
-            style: TextStyle(
-              color: const Color(0xFF654321),
-              fontSize: 20,
-              fontFamily: 'EB Garamond',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'DNA Replication Mechanisms',
-            style: TextStyle(
-              color: const Color(0xFF2F2F2F),
-              fontSize: 16,
-              fontFamily: 'Open Sans',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Dr. Eleanor Blackwood',
-            style: TextStyle(
-              color: const Color(0xFF2F2F2F),
-              fontSize: 14,
-              fontFamily: 'Open Sans',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          SizedBox(height: 8),
-          Column(
-            spacing: 8,
-            children: [
-              _nextSessionRow(
-                icon: Images.calender,
-                text: 'Tuesday, October 12th',
+    return Consumer<BoardEditVm>(
+      builder: (_, vm, _) {
+        CourseTimeline? nextSession = vm.getNextSession();
+        return Container(
+          width: double.infinity,
+          margin: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(
+            color: const Color(0x19FFB347),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x19000000),
+                blurRadius: 6,
+                offset: Offset(0, 4),
+                spreadRadius: 0,
               ),
-              _nextSessionRow(icon: Images.clock, text: '10:30 AM - 12:00 PM'),
-              _nextSessionRow(
-                icon: Images.location,
-                text: 'Science Hall, Room 305',
+              BoxShadow(
+                color: Color(0x19000000),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+                spreadRadius: 0,
               ),
             ],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: const Color(0x4CFFB347)),
           ),
-          SizedBox(height: 24),
-          AppButton(
-            onTap: () {},
-            text: 'Prepare Materials',
-            color: const Color(0xFF8B4513),
-            style: TextStyle(
-              color: const Color(0xFFD4AF37),
-              fontSize: 16,
-              fontFamily: 'EB Garamond',
-              fontWeight: FontWeight.w400,
-            ),
+          padding: EdgeInsets.all(21),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Next Session',
+                style: TextStyle(
+                  color: const Color(0xFF654321),
+                  fontSize: 20,
+                  fontFamily: 'EB Garamond',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              SizedBox(height: 16),
+              if (isNull(nextSession))
+                Text('No upcoming sessions', style: AppTheme.text)
+              else
+                Builder(
+                  builder: (context) {
+                    final courseInfo = vm.board.courseInfo;
+                    return Column(
+                      spacing: 8,
+                      children: [
+                        Text(
+                          nextSession!.title,
+                          style: TextStyle(
+                            color: const Color(0xFF2F2F2F),
+                            fontSize: 16,
+                            fontFamily: 'Open Sans',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          stringOrNotSpecified(courseInfo?.instructor),
+                          style: TextStyle(
+                            color: const Color(0xFF2F2F2F),
+                            fontSize: 14,
+                            fontFamily: 'Open Sans',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Column(
+                          spacing: 8,
+                          children: [
+                            _nextSessionRow(
+                              icon: Images.calender,
+                              text: stringOrNotSpecified(nextSession.week),
+                            ),
+                            _nextSessionRow(
+                              icon: Images.clock,
+                              text: stringOrNotSpecified(nextSession.due),
+                            ),
+                            _nextSessionRow(
+                              icon: Images.location,
+                              text: stringOrNotSpecified(courseInfo?.location),
+                            ),
+                          ],
+                        ),
+                        // SizedBox(height: 16),
+                        // AppButton(
+                        //   onTap: () {},
+                        //   text: 'Prepare Materials',
+                        //   color: const Color(0xFF8B4513),
+                        //   style: TextStyle(
+                        //     color: const Color(0xFFD4AF37),
+                        //     fontSize: 16,
+                        //     fontFamily: 'EB Garamond',
+                        //     fontWeight: FontWeight.w400,
+                        //   ),
+                        // ),
+                      ],
+                    );
+                  },
+                ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -571,82 +731,90 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
     required String title,
     required String description,
     required String actionText,
+    required VoidCallback onTap,
+    bool loading = false,
   }) {
-    return CustomCard(
-      addShadow: true,
-      padding: EdgeInsets.all(21),
-      decoration: BoxDecoration(
-        color: const Color(0x33A67C52),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0x4C8B4513)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 16,
-        children: [
-          Row(
-            spacing: 12,
+    return LoadingIndicator(
+      loading: loading,
+      child: InkWell(
+        onTap: onTap,
+        child: CustomCard(
+          addShadow: true,
+          padding: EdgeInsets.all(21),
+          decoration: BoxDecoration(
+            color: const Color(0x33A67C52),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: const Color(0x4C8B4513)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
             children: [
-              OutlinedChild(
-                size: 48,
-                decoration: BoxDecoration(
-                  color: const Color(0x338B4513),
-                  shape: BoxShape.circle,
-                ),
-                child: SVGImagePlaceHolder(
-                  imagePath: icon,
-                  size: 20,
-                  color: const Color(0xFFD4AF37),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: const Color(0xFF654321),
-                    fontSize: 20,
+              Row(
+                spacing: 12,
+                children: [
+                  OutlinedChild(
+                    size: 48,
+                    decoration: BoxDecoration(
+                      color: const Color(0x338B4513),
+                      shape: BoxShape.circle,
+                    ),
+                    child: SVGImagePlaceHolder(
+                      imagePath: icon,
+                      size: 20,
+                      color: const Color(0xFFD4AF37),
+                    ),
                   ),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        color: const Color(0xFF654321),
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                description,
+                style: TextStyle(
+                  color: const Color(0xFF8B4513),
+                  fontSize: 16,
+                  fontFamily: 'Open Sans',
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-            ],
-          ),
-          Text(
-            description,
-            style: TextStyle(
-              color: const Color(0xFF8B4513),
-              fontSize: 16,
-              fontFamily: 'Open Sans',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          Row(
-            spacing: 4,
-            children: [
-              Flexible(
-                child: Text(
-                  actionText,
-                  style: TextStyle(
+              Row(
+                spacing: 4,
+                children: [
+                  Flexible(
+                    child: Text(
+                      actionText,
+                      style: TextStyle(
+                        color: const Color(0xFF948247),
+                        fontSize: 16,
+                        fontFamily: 'EB Garamond',
+                        fontWeight: FontWeight.w400,
+                        height: 1.50,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 16,
                     color: const Color(0xFF948247),
-                    fontSize: 16,
-                    fontFamily: 'EB Garamond',
-                    fontWeight: FontWeight.w400,
-                    height: 1.50,
                   ),
-                ),
-              ),
-              Icon(
-                Icons.arrow_forward,
-                size: 16,
-                color: const Color(0xFF948247),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildFileCard(String fileName, String size, String date) {
+  Widget _buildFileCard(Content file) {
     return ConstrainedBox(
       constraints: BoxConstraints(minWidth: 400),
       child: CustomCard(
@@ -676,7 +844,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      fileName,
+                      file.title,
                       style: TextStyle(
                         color: const Color(0xFF654321),
                         fontSize: 16,
@@ -686,10 +854,18 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 8),
-                    Row(
+                    Wrap(
                       spacing: 16,
+                      runSpacing: 10,
                       children:
-                          [size, date]
+                          [
+                                getFileSize(
+                                  file.metaData[ContentMetadataKey.fileSize],
+                                ),
+                                formatUnixTimestamp(file.createdAt),
+
+                                // date,
+                              ]
                               .map(
                                 (str) => Text(
                                   str,
@@ -812,167 +988,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _buildTimelineItem({
-    required String week,
-    required String assignment,
-    required String status,
-    double progress = 0,
-    List<String> tags = const [],
-  }) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          VisibleController(
-            mobile: false,
-            tablet: true,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    top: 0,
-                    child: Center(
-                      child: Container(
-                        width: 2,
-                        color: const Color(0x99FFB347),
-                      ),
-                    ),
-                  ),
-                  OutlinedChild(
-                    size: 32,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFD4AF37),
-                      shape: BoxShape.circle,
-                    ),
-                    child: SVGImagePlaceHolder(
-                      imagePath: Images.flask,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: CustomCard(
-              addCardShadow: true,
-              padding: EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFAF7F0),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0x338B4513)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 16,
-                children: [
-                  Text(
-                    week,
-                    style: TextStyle(
-                      color: const Color(0xFF654321),
-                      fontSize: 20,
-                      fontFamily: 'EB Garamond',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0x7FF0EBE0),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0x198B4513)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          spacing: 15,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                assignment,
-                                style: TextStyle(
-                                  color: const Color(0xFF654321),
-                                  fontSize: 16,
-                                  fontFamily: 'EB Garamond',
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.50,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color:
-                                    status == 'In Progress'
-                                        ? const Color(0x33FFB347)
-                                        : status == 'Due Oct 15'
-                                        ? const Color(0x33D4AF37)
-                                        : const Color(0xFFF5F2E8),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                status,
-                                style: TextStyle(
-                                  color: const Color(0xFF8B4513),
-                                  fontSize: 12,
-                                  fontFamily: 'Open Sans',
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        if (progress > 0) ...[
-                          SizedBox(height: 16),
-                          LinearProgressIndicator(
-                            value: progress,
-                            backgroundColor: const Color(0xFFF5F2E8),
-                            color: const Color(0xFFD4AF37),
-                          ),
-                        ],
-
-                        SizedBox(height: 16),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children:
-                              tags
-                                  .map(
-                                    (tag) => Text(
-                                      tag,
-                                      style: TextStyle(
-                                        color: const Color(0xFF8B4513),
-                                        fontSize: 12,
-                                        fontFamily: 'Open Sans',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailItem(String label, String value) {
+  Widget _buildDetailItem(String label, String? value) {
     return Padding(
       padding: EdgeInsets.only(bottom: 16),
       child: RichText(
@@ -987,7 +1003,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
               ),
             ),
             TextSpan(
-              text: ' $value',
+              text: ' ${stringOrNotSpecified(value)}',
               style: TextStyle(
                 color: const Color(0xFFFAF7F0),
                 fontSize: 16,

@@ -24,7 +24,11 @@ class BoardPlainPopupScreen extends StatelessWidget {
                 children: [
                   _header(),
                   Expanded(
-                    child: ScrollableController(child: vm.returnSelectedTabItem(BoardPlainPopupOverview())),
+                    child: ScrollableController(
+                      child: vm.returnSelectedTabItem(
+                        BoardPlainPopupOverview(),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -34,8 +38,6 @@ class BoardPlainPopupScreen extends StatelessWidget {
       ),
     );
   }
-
-  
 
   Widget _selectRows({Color inActiveBorderColor = AppTheme.transparent}) {
     return Consumer<BoardEditVm>(
@@ -109,7 +111,7 @@ class BoardPlainPopupScreen extends StatelessWidget {
                                 mobile: true,
                                 desktop: false,
                                 child: Text(
-                                  vm.board.name ?? '',
+                                  vm.board.name,
                                   style: TextStyle(
                                     color: const Color(0xFF1F2937),
                                     fontSize: getDeviceResponsiveValue(

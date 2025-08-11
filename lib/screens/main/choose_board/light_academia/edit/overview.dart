@@ -63,7 +63,7 @@ class BoardLightAcademiaEditOverview extends StatelessWidget {
                           btnText: 'Create note',
                           image: Images.leaf2,
                           title: 'Create Note',
-                          onTap: vm.goToBoardNotes,
+                          onTap: vm.createNoteHandler,
                         ),
                         _gridChild(
                           body: 'Add your course materials',
