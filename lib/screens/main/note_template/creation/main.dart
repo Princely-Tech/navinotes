@@ -16,6 +16,8 @@ class NoteCreationMain extends StatelessWidget {
 
     return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
+        debugPrint(vm.content?.toMap().toString());
+
         Color color = AppTheme.transparent;
         switch (vm.template.image) {
           case Images.noteTemplateCornell:
@@ -75,13 +77,13 @@ class NoteCreationMain extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.save, size: 24),
-                            onPressed: () {
-                              vm.updateContentInDb(showSnackBar: true);
-                            },
-                            tooltip: 'Save Note',
-                          ),
+                          // IconButton(
+                          //   icon: const Icon(Icons.save, size: 24),
+                          //   onPressed: () {
+                          //     vm.updateContentInDb(showSnackBar: true);
+                          //   },
+                          //   tooltip: 'Save Note',
+                          // ),
                           if (layoutVm.deviceType != DeviceType.mobile)
                             _shareAndAI(vm),
                           VisibleController(
@@ -107,37 +109,47 @@ class NoteCreationMain extends StatelessWidget {
 
   // Build the mode selector (Text, Drawing, Voice)
   Widget _modeSelector(NoteCreationVm vm, BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildModeButton(
-            context,
-            icon: Icons.text_fields,
-            label: 'Text',
-            isActive: vm.currentMode == NoteMode.text,
-            onTap: () => vm.setMode(NoteMode.text),
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: getDeviceResponsiveValue(
+                deviceType: layoutVm.deviceType,
+                tablet: BorderSide.none,
+                mobile: BorderSide(color: Colors.grey[200]!),
+              ),
+            ),
           ),
-          _buildModeButton(
-            context,
-            icon: Icons.brush,
-            label: 'Draw',
-            isActive: vm.currentMode == NoteMode.drawing,
-            onTap: () => vm.setMode(NoteMode.drawing),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildModeButton(
+                context,
+                icon: Icons.text_fields,
+                label: 'Text',
+                isActive: vm.currentMode == NoteMode.text,
+                onTap: () => vm.setMode(NoteMode.text),
+              ),
+              _buildModeButton(
+                context,
+                icon: Icons.brush,
+                label: 'Draw',
+                isActive: vm.currentMode == NoteMode.drawing,
+                onTap: () => vm.setMode(NoteMode.drawing),
+              ),
+              _buildModeButton(
+                context,
+                icon: Icons.mic,
+                label: 'Voice',
+                isActive: vm.currentMode == NoteMode.voice,
+                onTap: () => vm.setMode(NoteMode.voice),
+              ),
+            ],
           ),
-          _buildModeButton(
-            context,
-            icon: Icons.mic,
-            label: 'Voice',
-            isActive: vm.currentMode == NoteMode.voice,
-            onTap: () => vm.setMode(NoteMode.voice),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -163,22 +175,25 @@ class NoteCreationMain extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
+              spacing: 4,
               children: [
-                if (isActive || isMobile)
-                  Icon(
-                    icon,
-                    color:
-                        isActive ? Theme.of(context).primaryColor : Colors.grey,
-                  ),
-                const SizedBox(width: 4),
-                Text(
-                  label,
-                  style: TextStyle(
-                    color:
-                        isActive ? Theme.of(context).primaryColor : Colors.grey,
-                    fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                  ),
+                Icon(
+                  icon,
+                  color:
+                      isActive ? Theme.of(context).primaryColor : Colors.grey,
                 ),
+                if (isActive || isMobile)
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color:
+                          isActive
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey,
+                      fontWeight:
+                          isActive ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
               ],
             ),
           ),

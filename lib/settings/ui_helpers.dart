@@ -46,7 +46,6 @@ T getDeviceResponsiveValue<T>({
   T? laptop,
   T? desktop,
   T? largeDesktop,
-  T? fallback, // Optional fallback value if everything else is null
 }) {
   switch (deviceType) {
     case DeviceType.mobile:

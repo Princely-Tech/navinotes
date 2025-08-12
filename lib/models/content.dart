@@ -1,7 +1,7 @@
 import 'package:navinotes/packages.dart';
 
 class Content {
-   int? id;
+  int? id;
   final String guid;
   final AppContentType type; // note, mindmap, syllabus, etc.
   final Map<String, dynamic> metaData; // JSON as Map
@@ -15,6 +15,7 @@ class Content {
   final int? syncedAt; // Unix timestamp, nullable
   final String title;
   final String? coverImage;
+  final List<VoiceNote> voiceNotes;
 
   final bool
   coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
@@ -25,6 +26,7 @@ class Content {
     this.id,
     required this.guid,
     required this.title,
+    this.voiceNotes = const [],
     this.coverImage,
     required this.type,
     required this.metaData,
@@ -44,6 +46,7 @@ class Content {
     'id': id,
     'guid': guid,
     'title': title,
+    'voice_notes': jsonEncode(voiceNotes.map((x) => x.toMap()).toList()),
     'cover_image': coverImage,
     'type': type.toString(),
     'meta_data': jsonEncode(metaData),
@@ -59,24 +62,51 @@ class Content {
     'file_need_sync': getIntFromBool(fileNeedSync),
   };
 
-  factory Content.fromMap(Map<String, dynamic> map) => Content(
-    id: map['id'],
-    guid: map['guid'],
-    title: map['title'],
-    coverImage: map['cover_image'],
-    type: stringToAppContentType(map['type']),
-    metaData: jsonDecode(map['meta_data']),
-    boardId: map['board_id'],
-    tags: map['tags'],
-    content: map['content'],
-    drawing: map['drawing'],
-    file: map['file'],
-    createdAt: map['created_at'],
-    updatedAt: map['updated_at'],
-    syncedAt: map['synced_at'],
-    coverImageNeedSync: getBoolFromInt(map['cover_image_need_sync']),
-    fileNeedSync: getBoolFromInt(map['file_need_sync']),
-  );
+  factory Content.fromMap(Map<String, dynamic> map) {
+    List<VoiceNote> parseVoiceNotes(dynamic voiceNotesData) {
+      if (voiceNotesData == null) return [];
+
+      String jsonString;
+      if (voiceNotesData is Uint8List) {
+        // Convert Uint8List to String
+        jsonString = utf8.decode(voiceNotesData);
+      } else if (voiceNotesData is String) {
+        jsonString = voiceNotesData;
+      } else {
+        return [];
+      }
+
+      try {
+        final List<dynamic> decoded = jsonDecode(jsonString);
+        return decoded
+            .map((x) => VoiceNote.fromMap(Map<String, dynamic>.from(x)))
+            .toList();
+      } catch (e) {
+        debugPrint('Error parsing voice notes: $e');
+        return [];
+      }
+    }
+
+    return Content(
+      id: map['id'],
+      guid: map['guid'],
+      voiceNotes: parseVoiceNotes(map['voice_notes']),
+      title: map['title'],
+      coverImage: map['cover_image'],
+      type: stringToAppContentType(map['type']),
+      metaData: jsonDecode(map['meta_data']),
+      boardId: map['board_id'],
+      tags: map['tags'],
+      content: map['content'],
+      drawing: map['drawing'],
+      file: map['file'],
+      createdAt: map['created_at'],
+      updatedAt: map['updated_at'],
+      syncedAt: map['synced_at'],
+      coverImageNeedSync: getBoolFromInt(map['cover_image_need_sync']),
+      fileNeedSync: getBoolFromInt(map['file_need_sync']),
+    );
+  }
 
   Content getUpdatedContent({
     String? title,
@@ -84,6 +114,7 @@ class Content {
     String? content,
     String? drawing,
     String? file,
+    List<VoiceNote>? voiceNotes,
     int? updatedAt,
     int? syncedAt,
     bool? coverImageNeedSync,
@@ -101,6 +132,7 @@ class Content {
       content: content ?? this.content,
       drawing: drawing ?? this.drawing,
       file: file ?? this.file,
+      voiceNotes: voiceNotes ?? this.voiceNotes,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       syncedAt: syncedAt ?? this.syncedAt,
@@ -130,7 +162,10 @@ class Content {
     return File(file!);
   }
 
-  syncToBackend(ApiServiceProvider apiServiceProvider, {String? boardGuid}) async {
+  syncToBackend(
+    ApiServiceProvider apiServiceProvider, {
+    String? boardGuid,
+  }) async {
     Map<String, File> files = {};
 
     if (coverImageNeedSync) {
@@ -153,7 +188,7 @@ class Content {
       final board = await getBoard();
       boardGuid = board.guid;
     }
-
+    //TODO add synching voice notes
     final body = FormDataRequest.post(
       ApiEndpoints.contentSync,
       body: {

@@ -8,7 +8,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 7; // Increment this number
+  static const int _databaseVersion = 8; // Increment this number
 
   DatabaseHelper._init();
 
@@ -92,6 +92,7 @@ class DatabaseHelper {
       drawing TEXT,
       file TEXT,
       created_at INTEGER,
+      voice_notes TEXT,
 
       cover_image_need_sync INTEGER DEFAULT 0,
       file_need_sync INTEGER DEFAULT 0,
@@ -155,10 +156,15 @@ class DatabaseHelper {
     }
 
     if (oldVersion < 6) {
-      await db.execute('ALTER TABLE boards ADD COLUMN syllabus_content_id INTEGER DEFAULT NULL');
+      await db.execute(
+        'ALTER TABLE boards ADD COLUMN syllabus_content_id INTEGER DEFAULT NULL',
+      );
     }
     if (oldVersion < 7) {
       await db.execute('ALTER TABLE contents ADD COLUMN drawing TEXT');
+    }
+    if (oldVersion < 8) {
+      await db.execute('ALTER TABLE contents ADD COLUMN voice_notes TEXT');
     }
   }
 

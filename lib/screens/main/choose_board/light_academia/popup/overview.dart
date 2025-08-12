@@ -213,6 +213,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
         return Column(
+          key: vm.courseTimelineKey,
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 24,
           children: [
@@ -289,7 +290,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 60),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 24,
+                      // spacing: 24,
                       children:
                           courseOutlines
                               .map((item) => BoardLightAcadTimelineItem(item))
@@ -544,6 +545,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
             final board = vm.board;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 16,
               children: [
                 Text(
                   'Explore ${board.name}',
@@ -558,7 +560,6 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(height: 16),
                 Text(
                   getBoardDescription(board),
                   style: TextStyle(
@@ -566,6 +567,42 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                     fontSize: 16,
                     fontFamily: 'Open Sans',
                   ),
+                ),
+                Wrap(
+                  spacing: 16,
+                  children: [
+                    AppButton(
+                      mainAxisSize: MainAxisSize.min,
+                      onTap: vm.goToBoardNotes,
+                      text: 'View All Notes',
+                      color: const Color(0xFF8B4513),
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                    ),
+                    AppButton.secondary(
+                      mainAxisSize: MainAxisSize.min,
+                      onTap: vm.scrollToCourseTimeline,
+                      text: 'View Syllabus',
+                      color: const Color(0xFF8B4513),
+                    ),
+
+                    AppButton.secondary(
+                      padding: EdgeInsets.symmetric(horizontal: 24),
+                      mainAxisSize: MainAxisSize.min,
+                      onTap: vm.scrollToCourseTimeline,
+                      color: const Color(0x4CF7F3E9),
+                      text: 'View Syllabus',
+                      minHeight: 40,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      style: TextStyle(
+                        color: const Color(0xFFF7F3E9),
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             );

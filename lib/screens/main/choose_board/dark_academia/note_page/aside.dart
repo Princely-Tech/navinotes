@@ -29,7 +29,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
                     spacing: 30,
                     children: [
                       _boardDetails(),
-                      _tags(),
+                      // _tags(),
                       _recentlyViewed(),
                       Column(
                         children: [
@@ -112,7 +112,8 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
   }
 
   Widget _viewedItem({required String title, required String time}) {
-    return Row(spacing: 10,
+    return Row(
+      spacing: 10,
       children: [
         Expanded(
           child: Row(

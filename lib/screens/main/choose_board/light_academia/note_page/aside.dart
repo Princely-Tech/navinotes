@@ -1,12 +1,11 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
 
 class BoardLightAcadNotePageAside extends StatelessWidget {
   const BoardLightAcadNotePageAside({super.key});
   // final bool isFull;
   @override
   Widget build(BuildContext context) {
-    return Consumer<BoardLightAcadNotePageVm>(
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return Container(
           decoration: BoxDecoration(
@@ -26,7 +25,7 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
                     spacing: 30,
                     children: [
                       _boardDetails(),
-                      _tags(),
+                      // _tags(),
                       _recentlyViewed(),
                       Column(
                         children: [
@@ -175,29 +174,45 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
   }
 
   Widget _recentlyViewed() {
-    return EditHeaderSection(
-      theme: BoardTheme.lightAcademia,
-      title: 'Recently Viewed',
-      child: Column(
-        spacing: 15,
-        children: [
-          _viewedItem(
-            title: 'Wave Properties',
-            time: '2 hours ago',
-            icon: Images.boardNatureWaveLine,
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return EditHeaderSection(
+          theme: BoardTheme.lightAcademia,
+          title: 'Recently Viewed',
+          child: FutureBuilder(
+            future: vm.getRecentContents(3),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text(
+                  'Failed to load recent notes',
+                  style: AppTheme.text.copyWith(color: AppTheme.coralRed),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('No recent notes found', style: AppTheme.text);
+              }
+              final recentNotes = snapshot.data!;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  for (final note in recentNotes)
+                    _viewedItem(
+                      title: note.title,
+                      time: formatRelativeTime(note.updatedAt),
+                      icon: getRandomListElement([
+                        Images.boardNatureWaveLine,
+                        Images.boardNatureQuantumIcon,
+                        Images.flash,
+                      ]),
+                    ),
+                ],
+              );
+            },
           ),
-          _viewedItem(
-            title: 'Quantum Mechanics',
-            time: 'yesterday',
-            icon: Images.boardNatureQuantumIcon,
-          ),
-          _viewedItem(
-            title: 'Thermodynamics',
-            time: '2 days ago',
-            icon: Images.flash,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -288,17 +303,34 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
   }
 
   Widget _boardDetails() {
-    return EditHeaderSection(
-      theme: BoardTheme.lightAcademia,
-      title: 'Board Details',
-      child: Column(
-        spacing: 15,
-        children: [
-          _detailsItem(title: 'Created', value: 'Mar 15, 2025'),
-          _detailsItem(title: 'Pages', value: '8'),
-          _detailsItem(title: 'Owner', value: 'Professor Hawking'),
-        ],
-      ),
+    return Consumer<SessionManager>(
+      builder: (_, sessionVm, _) {
+        return Consumer<BoardNotePageVm>(
+          builder: (_, vm, _) {
+            return EditHeaderSection(
+              theme: BoardTheme.lightAcademia,
+              title: 'Board Details',
+              child: Column(
+                spacing: 15,
+                children: [
+                  _detailsItem(
+                    title: 'Created',
+                    value: formatUnixTimestamp(vm.board.createdAt),
+                  ),
+                  _detailsItem(
+                    title: 'Pages',
+                    value: vm.contents.length.toString(),
+                  ),
+                  _detailsItem(
+                    title: 'Owner',
+                    value: sessionVm.getName() ?? '',
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -23,6 +23,24 @@ enum PageDisplayFormat {
   bool get isList => this == list;
 }
 
+enum AiSummaryType {
+  textInput,
+  // upload,
+  fromNotes;
+
+  @override
+  toString() {
+    switch (this) {
+      case textInput:
+        return 'Text Input';
+      // case upload:
+      //   return 'Upload';
+      case fromNotes:
+        return 'From Notes';
+    }
+  }
+}
+
 enum MindMapFilterType {
   showPdf,
   showNotes,
@@ -68,6 +86,7 @@ enum KanbanTaskTag {
 enum AppContentType {
   note,
   mindmap,
+
   // syllabus,
   file;
 

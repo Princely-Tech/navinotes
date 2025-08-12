@@ -39,7 +39,7 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 spacing: 15,
-                                children: [ 
+                                children: [
                                   CustomCard(
                                     width: 56,
                                     height: 56,

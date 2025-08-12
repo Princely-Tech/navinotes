@@ -25,7 +25,14 @@ Future<void> createContentInDb({
   required BuildContext context,
   required int boardId,
   required Function(bool) setLoading,
+  String? title,
+  String? contentBody,
 }) async {
+  debugPrint('Creating content in DB');
+  debugPrint('Template: ${template.type.toString()}');
+  debugPrint('Board ID: $boardId');
+  debugPrint('Title: $title');
+  debugPrint('Content Body: $contentBody');
   setLoading(true);
   try {
     final currentUser = getCurrentUserFromSession(context);
@@ -37,10 +44,10 @@ Future<void> createContentInDb({
         type: AppContentType.note,
         metaData: {ContentMetadataKey.template: template.type.toString()},
         boardId: boardId,
-        content: '', // Empty by default
+        content: contentBody ?? '', // Empty by default
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
-        title: 'New Note - ${template.type.toString()}',
+        title: title ?? 'New Note - ${template.type.toString()}',
         coverImage: null,
       );
       // Insert into database

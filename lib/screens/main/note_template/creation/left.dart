@@ -35,7 +35,7 @@ class NoteCreationLeft extends StatelessWidget {
   }
 
   Widget _tags() {
-     //TODO ask about this
+    //TODO ask about this
     return _section(
       title: 'Tags',
       children: [
@@ -84,6 +84,7 @@ class NoteCreationLeft extends StatelessWidget {
       builder: (_, vm, _) {
         return FutureBuilder<List<Board>>(
           future: DatabaseHelper.instance.getAllBoards(),
+          // future: DatabaseHelper.instance.getAllBoards(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return _section(
@@ -160,7 +161,9 @@ class NoteCreationLeft extends StatelessWidget {
             leading: icon,
             selected: isActive,
             selectedTileColor: AppTheme.lightAsh,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
             trailing:
                 isNotNull(count)
                     ? Text(
@@ -189,7 +192,7 @@ class NoteCreationLeft extends StatelessWidget {
             },
           ),
         );
-      }
+      },
     );
   }
 

@@ -5,14 +5,12 @@ import 'right.dart';
 import 'main.dart';
 import 'vm.dart';
 
-
 class NoteCreationScreen extends StatelessWidget {
   NoteCreationScreen({super.key});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    
     NoteCreationProp? creationProp =
         ModalRoute.of(context)?.settings.arguments as NoteCreationProp?;
 
@@ -21,12 +19,12 @@ class NoteCreationScreen extends StatelessWidget {
         NoteCreationVm vm = NoteCreationVm(
           scaffoldKey: _scaffoldKey,
           creationProp: creationProp,
-          context: context
+          context: context,
         );
         vm.initialize();
         return vm;
       },
-      child: Consumer<NoteCreationVm>( 
+      child: Consumer<NoteCreationVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             backgroundColor: AppTheme.white,

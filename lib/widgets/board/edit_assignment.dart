@@ -32,7 +32,6 @@ class BoardEditAssignment extends StatelessWidget {
           );
         case BoardTypeCodes.lightAcademia:
           return Column(
-            spacing: 24,
             children:
                 courseOutlines
                     .map((item) => BoardLightAcadTimelineItem(item))
