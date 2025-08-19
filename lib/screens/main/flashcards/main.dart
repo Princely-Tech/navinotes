@@ -8,6 +8,13 @@ class FlashCardsMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<FlashCardsVm>(
       builder: (_, vm, _) {
+        List<Widget> inputFields = [
+          _inputfield(FlashCardsSide.front),
+          _inputfield(FlashCardsSide.back),
+        ];
+        if (vm.currentSide == FlashCardsSide.back) {
+          inputFields = inputFields.reversed.toList();
+        }
         return ScrollableController(
           mobilePadding: const EdgeInsets.only(top: 10),
           tabletPadding: const EdgeInsets.only(top: 20),
@@ -15,10 +22,11 @@ class FlashCardsMain extends StatelessWidget {
             child: Column(
               spacing: 20,
               children: [
-                _options(),
+                // _options(),
+                _toolbar(),
+
                 _sideIndicator(),
-                _firstInputField(),
-                _secondInputField(),
+                ...inputFields,
                 ScrollableController(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -32,15 +40,58 @@ class FlashCardsMain extends StatelessWidget {
                       _cardOption(
                         text: 'Add Image',
                         icon: Images.img,
-                        onTap: () {},
+                        onTap: vm.addImage,
                       ),
                       _cardOption(
                         text: 'Clear Card',
                         icon: Images.eraser,
-                        onTap: () {},
+                        onTap: vm.clearCard,
                       ),
                     ],
                   ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _toolbar() {
+    return Consumer<FlashCardsVm>(
+      builder: (_, vm, _) {
+        return CustomCard(
+          width: null,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+          addBorder: true,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+          child: QuillSimpleToolbar(
+            controller:
+                vm.currentSide == FlashCardsSide.front
+                    ? vm.frontController
+                    : vm.backController,
+            config: buildCustomToolbarConfig(
+              decoration: BoxDecoration(color: AppTheme.white),
+              multiRowsDisplay: false,
+              showAlignmentButtons: true,
+              showBoldButton: true,
+              showItalicButton: true,
+              showUnderLineButton: true,
+              showStrikeThrough: true,
+              showListBullets: true,
+              showListNumbers: true,
+              // showQuote: true,
+              showUndo: true,
+              showRedo: true,
+              customButtons: [
+                QuillToolbarCustomButtonOptions(
+                  icon: SVGImagePlaceHolder(
+                    imagePath: Images.img,
+                    size: 14,
+                    color: AppTheme.darkSlateGray,
+                  ),
+                  afterButtonPressed: vm.addImage,
                 ),
               ],
             ),
@@ -77,85 +128,111 @@ class FlashCardsMain extends StatelessWidget {
     );
   }
 
-  Widget _secondInputField() {
-    return Consumer<FlashCardsVm>(
+  Widget _padInactive({required Widget child, required bool isActive}) {
+    return Consumer<LayoutProviderVm>(
       builder: (_, vm, _) {
-        FlashCardsSide side =
-            vm.currentSide == FlashCardsSide.front
-                ? FlashCardsSide.back
-                : FlashCardsSide.front;
-        return ResponsiveHorizontalPadding(
-          child: Stack(
-            children: [
-              CustomInputField(
-                maxLines: 6,
-                fillColor: AppTheme.lightAsh,
-                hintText: 'Enter answer or definition...',
-                hintStyle: TextStyle(
-                  color: const Color(0xFFADAEBC),
-                  fontSize: 14.0,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  height: 1.43,
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: CustomTag(
-                  side.toString(),
-                  color: AppTheme.lightGray,
-                  textColor: AppTheme.stormGray,
-                ),
-              ),
-            ],
-          ),
+        double padding = getDeviceResponsiveValue(
+          deviceType: vm.deviceType,
+          mobile: mobileHorPadding,
+          laptop: laptopHorPadding,
+          desktop: desktopHorPadding,
+        );
+        if (isActive) {
+          padding = 0;
+        }
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: padding),
+          child: child,
         );
       },
     );
   }
 
-  Widget _firstInputField() {
+  Widget _inputfield(FlashCardsSide side) {
     return Consumer<FlashCardsVm>(
       builder: (_, vm, _) {
-        return CustomCard(
-          addShadow: true,
-          // height: 250,
-          child: Column(
-            spacing: 15,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              CustomInputField(
-                maxLines: 8,
-                hintText: 'Enter question or term...',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: AppTheme.transparent),
+        bool isActive = vm.currentSide == side;
+        bool isFront = side == FlashCardsSide.front;
+        Color color = isFront ? AppTheme.white : AppTheme.lightAsh;
+        return _padInactive(
+          isActive: isActive,
+          child: CustomCard(
+            addShadow: isActive,
+            padding: EdgeInsets.zero,
+            decoration: BoxDecoration(color: color),
+            child: Stack(
+              children: [
+                Column(
+                  spacing: 15,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    QuillEditor.basic(
+                      controller:
+                          isFront ? vm.frontController : vm.backController,
+                      focusNode: isFront ? vm.frontFocusNode : vm.backFocusNode,
+                      config: QuillEditorConfig(
+                        embedBuilders:
+                            FlutterQuillEmbeds.defaultEditorBuilders(),
+                        padding: EdgeInsets.all(20),
+                        minHeight: isActive ? 200 : 146,
+                        placeholder:
+                            isFront
+                                ? 'Enter question or term...'
+                                : 'Enter answer or definition...',
+                        customStyles: DefaultStyles(
+                          placeHolder: DefaultTextBlockStyle(
+                            TextStyle(
+                              color: const Color(0xFFADAEBC),
+                              fontSize: isActive ? 18.0 : 14.0,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 1.43,
+                            ),
+                            HorizontalSpacing.zero,
+                            VerticalSpacing.zero,
+                            VerticalSpacing.zero,
+                            BoxDecoration(),
+                          ),
+                        ),
+                        autoFocus: isActive,
+                        showCursor: true,
+                      ),
+                    ),
+
+                    if (isActive)
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: AppButton.text(
+                          onTap: vm.toggleSide,
+                          text: 'Flip',
+                          prefix: SVGImagePlaceHolder(
+                            imagePath: Images.refresh2,
+                            size: 14,
+                            color: AppTheme.lightBlue,
+                          ),
+                          style: TextStyle(
+                            color: AppTheme.lightBlue,
+                            fontSize: 12.0,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                hintStyle: TextStyle(
-                  color: const Color(0xFFADAEBC),
-                  fontSize: 18,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  height: 1.56,
-                ),
-              ),
-              AppButton.text(
-                onTap: vm.toggleSide,
-                text: 'Flip',
-                prefix: SVGImagePlaceHolder(
-                  imagePath: Images.refresh2,
-                  size: 14,
-                  color: AppTheme.lightBlue,
-                ),
-                style: TextStyle(
-                  color: AppTheme.lightBlue,
-                  fontSize: 12.0,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  height: 1,
-                ),
-              ),
-            ],
+                if (!isActive)
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: CustomTag(
+                      side.toString(),
+                      color: AppTheme.lightGray,
+                      textColor: AppTheme.stormGray,
+                    ),
+                  ),
+              ],
+            ),
           ),
         );
       },
@@ -173,7 +250,7 @@ class FlashCardsMain extends StatelessWidget {
           decoration: BoxDecoration(borderRadius: radius),
           child: ScrollableController(
             scrollDirection: Axis.horizontal,
-            mobilePadding: EdgeInsets.all(5),
+            mobilePadding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             child: Row(
               // spacing: 5,
               children:
@@ -187,7 +264,7 @@ class FlashCardsMain extends StatelessWidget {
                       color:
                           isActive ? AppTheme.vividRose : AppTheme.transparent,
                       text: side.toString(),
-                      onTap: vm.toggleSide,
+                      onTap: () => vm.updateSide(side),
                       mainAxisSize: MainAxisSize.min,
                       padding: EdgeInsets.symmetric(
                         vertical: 5,
@@ -207,101 +284,6 @@ class FlashCardsMain extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _options() {
-    return CustomCard(
-      width: null,
-      padding: EdgeInsets.zero,
-      addBorder: true,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-      child: ScrollableController(
-        mobilePadding: EdgeInsets.all(5),
-        scrollDirection: Axis.horizontal,
-        child: Padding(
-          padding: EdgeInsets.only(right: 10),
-          child: Row(
-            children: [
-              _optionItem(icon: Images.bold),
-              _optionItem(icon: Images.italic),
-              _optionItem(icon: Images.underline),
-              _divider(),
-              _optionItem(icon: Images.menu),
-              _optionItem(icon: Images.menu4),
-              _divider(),
-              _optionItem(icon: Images.img),
-              _optionItem(icon: Images.hook),
-              _optionItem(icon: Images.code),
-              _divider(),
-              _selectField(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _selectField() {
-    return Consumer<FlashCardsVm>(
-      builder: (_, vm, _) {
-        final controller = vm.textTypeController;
-        return Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: ValueListenableBuilder(
-            valueListenable: vm.textTypeController,
-            builder: (_, value, _) {
-              final style = TextStyle(
-                color: const Color(0xFF1F2937),
-                fontSize: 14.0,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-              );
-              final textWidth = calculateTextWidth(value.text, style) + 60;
-              return WidthLimiter(
-                mobile: textWidth,
-                child: CustomInputField(
-                  controller: controller,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: BorderSide(color: AppTheme.lightGray),
-                  ),
-                  selectItems: flashCardsTextTypes,
-                  style: style,
-                  constraints: BoxConstraints(maxHeight: 30),
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: 5,
-                    horizontal: 10,
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _divider() {
-    return Text(
-      '|',
-      style: TextStyle(
-        color: const Color(0xFFD1D5DB),
-        fontSize: 16.0,
-        fontFamily: 'Inter',
-        fontWeight: FontWeight.w400,
-      ),
-    );
-  }
-
-  Widget _optionItem({required String icon}) {
-    return IconButton(
-      onPressed: () {},
-      icon: SVGImagePlaceHolder(
-        imagePath: icon,
-        size: 14,
-        color: AppTheme.stormGray,
-      ),
     );
   }
 }

@@ -79,17 +79,22 @@ class FlashCardsAppBar extends StatelessWidget {
     return Row(
       children: [
         Row(
-          spacing: 10,
           children: [
-            SVGImagePlaceHolder(
-              imagePath: Images.settings,
-              color: AppTheme.stormGray,
-              size: 16,
+            AppIconButton(
+              onPressed: NavigationHelper.navigateToSettings,
+              icon: SVGImagePlaceHolder(
+                imagePath: Images.settings,
+                color: AppTheme.stormGray,
+                size: 16,
+              ),
             ),
-            SVGImagePlaceHolder(
-              imagePath: Images.ques,
-              color: AppTheme.stormGray,
-              size: 16,
+            AppIconButton(
+              onPressed: NavigationHelper.navigateToTutorial,
+              icon: SVGImagePlaceHolder(
+                imagePath: Images.ques,
+                color: AppTheme.stormGray,
+                size: 16,
+              ),
             ),
           ],
         ),
@@ -97,9 +102,13 @@ class FlashCardsAppBar extends StatelessWidget {
           mobile: true,
           laptop: false,
           child: Padding(
-            padding: const EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 5),
             child: MenuButton(onPressed: vm.openEndDrawer),
           ),
+          // child: Padding(
+          //   padding: const EdgeInsets.only(left: 10),
+          //   child: MenuButton(onPressed: vm.openEndDrawer),
+          // ),
         ),
       ],
     );

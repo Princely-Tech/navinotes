@@ -11,7 +11,6 @@ class NoteAiSection extends StatelessWidget {
     return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
         return VisibleController(
-          // mobile: true, //TODO change
           mobile: vm.showAiSection,
           child: Positioned(
             top: 0,
@@ -80,8 +79,6 @@ class NoteAiSection extends StatelessWidget {
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    // if (vm.selectedAiSummaryType ==
-                                    //     AiSummaryType.textInput)
                                     Builder(
                                       builder: (context) {
                                         switch (vm.selectedAiSummaryType) {
@@ -94,8 +91,8 @@ class NoteAiSection extends StatelessWidget {
                                                 // color: AppTheme.gray,
                                               ),
                                             );
-                                          // case AiSummaryType.upload:
-                                          //   return AiSummaryFileUpload();
+                                          case AiSummaryType.upload:
+                                            return AiSummaryFileUpload();
                                           case AiSummaryType.textInput:
                                             return CustomInputField(
                                               hintText:

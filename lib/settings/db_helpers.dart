@@ -75,6 +75,19 @@ class DatabaseHelper {
       created_at INTEGER,
       updated_at INTEGER,
       synced_at INTEGER
+    );
+    ''');
+
+    await db.execute('''
+   CREATE TABLE flashcards (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  guid TEXT,
+  user_id INTEGER NOT NULL,
+  front TEXT,
+  back TEXT,
+  tags TEXT,            -- optional
+  created_at INTEGER,
+  updated_at INTEGER
     )
     ''');
 
@@ -288,6 +301,56 @@ class DatabaseHelper {
     final db = await instance.database;
     final result = await db.query('tags');
     return result.map((json) => Tag.fromMap(json)).toList();
+  }
+
+  // Insert flashcard
+  Future<int> insertFlashcard(Flashcard flashcard) async {
+    final db = await instance.database;
+    return await db.insert('flashcards', flashcard.toMap());
+  }
+
+  // Get all flashcards for a user
+  Future<List<Flashcard>> getUserFlashcards(
+    int userId, {
+    NoteSortType sortType = NoteSortType.updatedAt,
+  }) async {
+    final db = await instance.database;
+
+    String sortOrder = 'DESC';
+    if (sortType == NoteSortType.createdAt) {
+      sortOrder = 'ASC';
+    }
+    final sortBy = sortType.toString();
+    debugPrint('Getting flashcards of $userId sorted by $sortBy $sortOrder');
+
+    final result = await db.query(
+      'flashcards',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      orderBy: '$sortBy $sortOrder',
+    );
+    return result.map((json) => Flashcard.fromMap(json)).toList();
+  }
+
+  // Update a flashcard
+  Future<int> updateFlashcard(Flashcard flashcard) async {
+    final db = await instance.database;
+    final updatedFlashcard = flashcard.getUpdatedFlashcard(
+      updatedAt: generateUnixTimestamp(),
+    );
+    debugPrint('Updating flashcard ${flashcard.id}');
+    return await db.update(
+      'flashcards',
+      updatedFlashcard.toMap(),
+      where: 'id = ?',
+      whereArgs: [flashcard.id],
+    );
+  }
+
+  // Delete a flashcard
+  Future<int> deleteFlashcard(int id) async {
+    final db = await instance.database;
+    return await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
   }
 
   Future close() async {

@@ -38,7 +38,7 @@ dependencies:
   path: ^1.9.1
   flutter_carousel_widget: ^3.1.0
   fl_chart: ^1.0.0
-  flutter_quill: ^11.4.1
+  flutter_quill: ^11.4.2
   uuid: ^4.5.1
   data_table_2: ^2.6.0
   flutter_typeahead: ^5.2.0
@@ -53,6 +53,8 @@ dependencies:
   record: ^6.0.0
   just_audio: ^0.10.4
   url_launcher: ^6.3.2
+  flutter_flip_card: ^0.0.6
+  flutter_quill_extensions: ^11.0.0
 
 
 dev_dependencies:

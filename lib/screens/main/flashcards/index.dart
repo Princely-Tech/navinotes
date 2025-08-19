@@ -15,38 +15,48 @@ class FlashCardsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = FlashCardsVm(scaffoldKey: _scaffoldKey);
+        final vm = FlashCardsVm(scaffoldKey: _scaffoldKey, context: context);
         vm.initialize();
         return vm;
       },
-      child: ScaffoldFrame(
-        scaffoldKey: _scaffoldKey,
-        drawer: CustomDrawer(child: FlashCardsLeft()),
-        endDrawer: CustomDrawer(child: FlashcardsRight()),
-        backgroundColor: AppTheme.whiteSmoke,
-        body: Column(
-          children: [
-            FlashCardsAppBar(),
-            Expanded(
-              child: ResponsiveSection(
-                mobile: FlashCardsMain(),
-                laptop: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    VisibleController(
-                      mobile: false,
-                      desktop: true,
-                      child: WidthLimiter(mobile: 256, child: FlashCardsLeft()),
+      child: Consumer<FlashCardsVm>(
+        builder: (_, vm, _) {
+          return ScaffoldFrame(
+            scaffoldKey: _scaffoldKey,
+            drawer: CustomDrawer(child: FlashCardsLeft()),
+            endDrawer: CustomDrawer(child: FlashcardsRight()),
+            backgroundColor: AppTheme.whiteSmoke,
+            body: LoadingIndicator(
+              loading: vm.loading,
+              child: Column(
+                children: [
+                  FlashCardsAppBar(),
+                  Expanded(
+                    child: ResponsiveSection(
+                      mobile: FlashCardsMain(),
+                      laptop: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          VisibleController(
+                            mobile: false,
+                            desktop: true,
+                            child: WidthLimiter(
+                              mobile: 256,
+                              child: FlashCardsLeft(),
+                            ),
+                          ),
+                          Expanded(child: FlashCardsMain()),
+                          WidthLimiter(mobile: 256, child: FlashcardsRight()),
+                        ],
+                      ),
                     ),
-                    Expanded(child: FlashCardsMain()),
-                    WidthLimiter(mobile: 256, child: FlashcardsRight()),
-                  ],
-                ),
+                  ),
+                  FlashCardsFooter(),
+                ],
               ),
             ),
-            FlashCardsFooter(),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

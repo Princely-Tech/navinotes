@@ -51,6 +51,9 @@ class NavigationHelper {
     // push(Routes.noteTemplate, arguments: board);
   }
 
+  static void navigateToTutorial() {
+    // push(Routes.noteTemplate, arguments: board);
+  }
   static Future<void> gotToNewNoteTemplate(Board board) {
     return push(Routes.noteTemplate, arguments: board);
   }

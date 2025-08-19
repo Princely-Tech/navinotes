@@ -66,9 +66,19 @@ QuillSimpleToolbarConfig buildCustomToolbarConfig({
   bool showClipboardCut = false,
   bool showClipboardCopy = false,
   bool showClipboardPaste = false,
+  bool showDividers = false,
+  List<Widget Function(BuildContext, EmbedButtonContext)>? embedButtons,
+  List<QuillToolbarCustomButtonOptions> customButtons = const [],
+  bool multiRowsDisplay = true,
+  Decoration? decoration,
 }) {
   return QuillSimpleToolbarConfig(
+    decoration: decoration,
+    customButtons: customButtons,
     showBoldButton: showBoldButton,
+    embedButtons: embedButtons,
+    showDividers: showDividers,
+    multiRowsDisplay: multiRowsDisplay,
     showItalicButton: showItalicButton,
     showLink: showLink,
     showListBullets: showListBullets,
@@ -189,3 +199,5 @@ int? getSessionProgress(CourseTimeline session) {
 
   return null;
 }
+
+

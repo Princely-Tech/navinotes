@@ -16,8 +16,6 @@ class NoteCreationMain extends StatelessWidget {
 
     return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
-        debugPrint(vm.content?.toMap().toString());
-
         Color color = AppTheme.transparent;
         switch (vm.template.image) {
           case Images.noteTemplateCornell:

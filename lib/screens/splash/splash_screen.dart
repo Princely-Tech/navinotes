@@ -63,13 +63,14 @@ class _SplashScreenState extends State<SplashScreen>
     if (mounted) {
       //TODO uncomment
       return _navigateToNextScreen();
-      _navigateToDashboard() ;
+      _navigateToDashboard();
     }
   }
 
   Future<void> _navigateToDashboard() async {
     //TODO delete this
-    // NavigationHelper.pushReplacement(Routes.chooseBoard);
+    // await DatabaseHelper.instance.deleteFlashcard(1);
+    return NavigationHelper.pushReplacement(Routes.flashCards);
     List<Board> boards = await DatabaseHelper.instance.getAllBoards();
     // Board board = boards[3];
     Board board = boards.first;

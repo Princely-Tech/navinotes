@@ -21,3 +21,4 @@ export 'time_helpers.dart';
 export 'note_utils.dart';
 export 'file_utils.dart';
 export 'data.dart';
+export 'flashcard_utils.dart';

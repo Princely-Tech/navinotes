@@ -132,7 +132,9 @@ User? getCurrentUserFromSession(BuildContext context) {
   final sessionManager =
       NavigationHelper.navigatorKey.currentContext!.read<SessionManager>();
   final currentUser = sessionManager.user;
+
   if (isNull(currentUser)) {
+   
     if (context.mounted) {
       MessageDisplayService.showErrorMessage(context, 'User not logged in');
     }

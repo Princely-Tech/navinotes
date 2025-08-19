@@ -43,6 +43,13 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  PlatformFile? aiSummaryFile;
+
+  void updateAiSummaryFile(PlatformFile file) {
+    aiSummaryFile = file;
+    notifyListeners();
+  }
+
   // Add these fields to the class
   int? _currentlyPlayingIndex;
   int? get currentlyPlayingIndex => _currentlyPlayingIndex;
@@ -397,6 +404,7 @@ class NoteCreationVm extends ChangeNotifier {
       Content? response = await dbHelper.getContentById(
         creationProp!.contentId,
       );
+
       if (response != null) {
         content = response;
         titleController.text = content!.title;
@@ -536,20 +544,53 @@ class NoteCreationVm extends ChangeNotifier {
     BuildContext context,
     GlobalKey<FormState> formKey,
   ) async {
-    // debugPrint(c.toString());
-    // return;
     switch (selectedAiSummaryType) {
       case AiSummaryType.textInput:
         if (formKey.currentState!.validate()) {
           _processSummary(context, summaryController.text);
         }
         break;
-      // case AiSummaryType.upload:
-      //   break;
+      case AiSummaryType.upload:
+        summarizeFile(context);
+        break;
       case AiSummaryType.fromNotes:
         summarizeNote(context);
         break;
     }
+  }
+
+  Future<void> summarizeFile(BuildContext context) async {
+    updateProcessingSummary(true);
+    try {
+      if (aiSummaryFile == null) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Upload a file to summarize',
+        );
+      } else {
+        final apiServiceProvider = context.read<ApiServiceProvider>();
+        int? length = int.tryParse(summaryLengthController.text);
+        final body = {"length": length, "focus": focusAreaController.text};
+        final request = FormDataRequest.post(
+          ApiEndpoints.profileImage,
+          files: {'file': File(aiSummaryFile!.path!)},
+          body: body,
+        );
+        final response = await apiServiceProvider.apiService
+            .sendFormDataRequest(request);
+        final data = response['response'];
+        updateSummary(data['summary']);
+      }
+    } catch (err) {
+      debugPrint('Error summarizing content: $err');
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Error summarizing content',
+        );
+      }
+    }
+    updateProcessingSummary(false);
   }
 
   Future<void> summarizeNote(BuildContext context) async {

@@ -25,7 +25,7 @@ enum PageDisplayFormat {
 
 enum AiSummaryType {
   textInput,
-  // upload,
+  upload,
   fromNotes;
 
   @override
@@ -33,8 +33,8 @@ enum AiSummaryType {
     switch (this) {
       case textInput:
         return 'Text Input';
-      // case upload:
-      //   return 'Upload';
+      case upload:
+        return 'Upload';
       case fromNotes:
         return 'From Notes';
     }
