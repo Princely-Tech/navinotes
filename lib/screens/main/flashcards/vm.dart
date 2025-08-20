@@ -32,10 +32,10 @@ List<String> flashCardsTextTypes = [
   'Underlined Text',
 ];
 
-class FlashCardsVm extends ChangeNotifier {
+class FlashCardsMobileCreationVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   BuildContext context;
-  FlashCardsVm({required this.scaffoldKey, required this.context});
+  FlashCardsMobileCreationVm({required this.scaffoldKey, required this.context});
 
   FlashCard? currentFlashCard; // the flashcard tied to this session
   Timer? _debounce;

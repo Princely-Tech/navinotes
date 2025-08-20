@@ -7,6 +7,12 @@ class FlashCardStudyVm extends ChangeNotifier {
   QuillController frontController = QuillController.basic();
   QuillController backController = QuillController.basic();
 
+  final flipCardController = FlipCardController();
+
+  void flipCard() {
+    flipCardController.flipcard();
+  }
+
   void initialize() {
     frontController.readOnly = true;
     backController.readOnly = true;

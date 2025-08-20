@@ -1,12 +1,12 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/flashcards/vm.dart';
 
-class FlashCardsRight extends StatelessWidget {
-  const FlashCardsRight({super.key});
+class FlashCardsMobileCreationRight extends StatelessWidget {
+  const FlashCardsMobileCreationRight({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FlashCardsVm>(
+    return Consumer<FlashCardsMobileCreationVm>(
       builder: (_, vm, __) {
         final flashcards = vm.userFlashCards;
         return Container(
@@ -66,7 +66,7 @@ class FlashCardsRight extends StatelessWidget {
   }
 
   Widget _cardItem(int index) {
-    return Consumer<FlashCardsVm>(
+    return Consumer<FlashCardsMobileCreationVm>(
       builder: (_, vm, _) {
         final flashcards = vm.userFlashCards;
         final card = flashcards[index];

@@ -6,8 +6,8 @@ import 'left.dart';
 import 'right.dart';
 import 'vm.dart';
 
-class FlashCardsScreen extends StatelessWidget {
-  FlashCardsScreen({super.key});
+class FlashCardsMobileCreationScreen extends StatelessWidget {
+  FlashCardsMobileCreationScreen({super.key});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -15,25 +15,25 @@ class FlashCardsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = FlashCardsVm(scaffoldKey: _scaffoldKey, context: context);
+        final vm = FlashCardsMobileCreationVm(scaffoldKey: _scaffoldKey, context: context);
         vm.initialize();
         return vm;
       },
-      child: Consumer<FlashCardsVm>(
+      child: Consumer<FlashCardsMobileCreationVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
-            drawer: CustomDrawer(child: FlashCardsLeft()),
-            endDrawer: CustomDrawer(child: FlashCardsRight()),
+            drawer: CustomDrawer(child: FlashCardsMobileCreationLeft()),
+            endDrawer: CustomDrawer(child: FlashCardsMobileCreationRight()),
             backgroundColor: AppTheme.whiteSmoke,
             body: LoadingIndicator(
               loading: vm.loading,
               child: Column(
                 children: [
-                  FlashCardsAppBar(),
+                  FlashCardsMobileCreationAppBar(),
                   Expanded(
                     child: ResponsiveSection(
-                      mobile: FlashCardsMain(),
+                      mobile: FlashCardsMobileCreationMain(),
                       laptop: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -42,16 +42,16 @@ class FlashCardsScreen extends StatelessWidget {
                             desktop: true,
                             child: WidthLimiter(
                               mobile: 256,
-                              child: FlashCardsLeft(),
+                              child: FlashCardsMobileCreationLeft(),
                             ),
                           ),
-                          Expanded(child: FlashCardsMain()),
-                          WidthLimiter(mobile: 256, child: FlashCardsRight()),
+                          Expanded(child: FlashCardsMobileCreationMain()),
+                          WidthLimiter(mobile: 256, child: FlashCardsMobileCreationRight()),
                         ],
                       ),
                     ),
                   ),
-                  FlashCardsFooter(),
+                  FlashCardsMobileCreationFooter(),
                 ],
               ),
             ),

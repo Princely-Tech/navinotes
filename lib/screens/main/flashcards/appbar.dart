@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-class FlashCardsAppBar extends StatelessWidget {
-  const FlashCardsAppBar({super.key});
+class FlashCardsMobileCreationAppBar extends StatelessWidget {
+  const FlashCardsMobileCreationAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class FlashCardsAppBar extends StatelessWidget {
               mobile: largeDesktopSize,
               child: LayoutBuilder(
                 builder: (_, constraints) {
-                  return Consumer<FlashCardsVm>(
+                  return Consumer<FlashCardsMobileCreationVm>(
                     builder: (_, vm, _) {
                       return ScrollableController(
                         scrollDirection: Axis.horizontal,
@@ -75,7 +75,7 @@ class FlashCardsAppBar extends StatelessWidget {
     );
   }
 
-  Widget _trailing(FlashCardsVm vm) {
+  Widget _trailing(FlashCardsMobileCreationVm vm) {
     return Row(
       children: [
         Row(

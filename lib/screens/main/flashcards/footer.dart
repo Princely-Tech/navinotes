@@ -1,7 +1,7 @@
 import 'package:navinotes/packages.dart';
 
-class FlashCardsFooter extends StatelessWidget {
-  const FlashCardsFooter({super.key});
+class FlashCardsMobileCreationFooter extends StatelessWidget {
+  const FlashCardsMobileCreationFooter({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,12 +1,12 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-class FlashCardsMain extends StatelessWidget {
-  const FlashCardsMain({super.key});
+class FlashCardsMobileCreationMain extends StatelessWidget {
+  const FlashCardsMobileCreationMain({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FlashCardsVm>(
+    return Consumer<FlashCardsMobileCreationVm>(
       builder: (_, vm, _) {
         List<Widget> inputFields = [
           _inputfield(FlashCardsSide.front),
@@ -59,7 +59,7 @@ class FlashCardsMain extends StatelessWidget {
   }
 
   Widget _toolbar() {
-    return Consumer<FlashCardsVm>(
+    return Consumer<FlashCardsMobileCreationVm>(
       builder: (_, vm, _) {
         return CustomCard(
           width: null,
@@ -149,7 +149,7 @@ class FlashCardsMain extends StatelessWidget {
   }
 
   Widget _inputfield(FlashCardsSide side) {
-    return Consumer<FlashCardsVm>(
+    return Consumer<FlashCardsMobileCreationVm>(
       builder: (_, vm, _) {
         bool isActive = vm.currentSide == side;
         bool isFront = side == FlashCardsSide.front;
@@ -241,7 +241,7 @@ class FlashCardsMain extends StatelessWidget {
 
   Widget _sideIndicator() {
     final radius = BorderRadius.circular(999);
-    return Consumer<FlashCardsVm>(
+    return Consumer<FlashCardsMobileCreationVm>(
       builder: (_, vm, _) {
         return CustomCard(
           width: null,

@@ -48,36 +48,128 @@ class FlashCardStudyScreen extends StatelessWidget {
   }
 
   Widget _main() {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Align(
-        alignment: Alignment.center,
-        child: Builder(
-          builder: (context) {
-            double width = screenWidth(context);
-            return WidthLimiter(
-              mobile: width * 0.9,
-              tablet: width * 0.8,
-              desktop: width * 0.7,
-              largeDesktop: width * 0.6,
-              child: Column(
-                spacing: 30,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _progressIndicator(),
-                  Flexible(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 48,
-                      children: [Flexible(child: _mainCard()), _actions()],
-                    ),
+    return Consumer<FlashCardStudyVm>(
+      builder: (_, vm, _) {
+        return Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Align(
+            alignment: Alignment.center,
+            child: Builder(
+              builder: (context) {
+                double width = screenWidth(context);
+                return WidthLimiter(
+                  mobile: width * 0.9,
+                  tablet: width * 0.8,
+                  desktop: width * 0.7,
+                  largeDesktop: width * 0.6,
+                  child: Column(
+                    spacing: 30,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _progressIndicator(),
+                      Flexible(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 48,
+                          children: [
+                            Flexible(
+                              child: FlipCard(
+                                controller: vm.flipCardController,
+                                rotateSide: RotateSide.right,
+                                onTapFlipping: true,
+                                axis: FlipAxis.vertical,
+                                frontWidget: _inputCard(isFront: true),
+                                backWidget: _inputCard(isFront: false),
+                              ),
+                            ),
+                            _actions(),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _inputCard({required bool isFront}) {
+    return Consumer<FlashCardStudyVm>(
+      builder: (_, vm, _) {
+        return AbsorbPointer(
+          child: CustomCard(
+            addShadow: true,
+            addBorder: true,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  spacing: 4,
+                  children: [
+                    const SVGImagePlaceHolder(
+                      imagePath: Images.refresh2,
+                      size: 14,
+                      color: Color(0xFF60A5FA),
+                    ),
+                    Flexible(
+                      child: Text(
+                        'Tap to flip',
+                        style: TextStyle(
+                          color: const Color(0xFF60A5FA),
+                          fontSize: 12,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Flexible(
+                  child: QuillEditor.basic(
+                    controller:
+                        isFront ? vm.frontController : vm.backController,
+                    config: QuillEditorConfig(minHeight: 300),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 4,
+                  children: [
+                    const SVGImagePlaceHolder(
+                      imagePath: Images.refresh2,
+                      size: 14,
+                      color: Color(0xFF00555A),
+                    ),
+                    Flexible(
+                      child: Text(
+                        'Tap card to see ${isFront ? 'answer' : 'question'}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: const Color(0xFF00555A),
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -120,195 +212,100 @@ class FlashCardStudyScreen extends StatelessWidget {
   }
 
   Widget _actions() {
-    return Wrap(
-      spacing: 12,
-      runSpacing: 15,
-      alignment: WrapAlignment.center,
-      children: [
-        AppButton(
-          onTap: () {},
-          text: 'Again',
-          mainAxisSize: MainAxisSize.min,
-          color: const Color(0xFFFEE2E2),
-          textColor: const Color(0xFFDC2626),
-          minHeight: 40,
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          prefix: SVGImagePlaceHolder(
-            imagePath: Images.refresh,
-            size: 16,
-            color: const Color(0xFFDC2626),
-          ),
-        ),
-        AppButton(
-          onTap: () {},
-          text: 'Hard',
-          mainAxisSize: MainAxisSize.min,
-          color: const Color(0xFFFFEDD5),
-          textColor: const Color(0xFFEA580C),
-          minHeight: 40,
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          prefix: Icon(Icons.error, color: const Color(0xFFEA580C), size: 18),
-        ),
-        AppButton(
-          onTap: () {},
-          text: 'Good',
-          mainAxisSize: MainAxisSize.min,
-          color: const Color(0xFFD1FAE5),
-          textColor: const Color(0xFF059669),
-          minHeight: 40,
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          prefix: Icon(Icons.check, color: const Color(0xFF059669), size: 18),
-        ),
-        AppButton(
-          onTap: () {},
-          text: 'Easy',
-          mainAxisSize: MainAxisSize.min,
-          color: const Color(0xFFD1FAE5),
-          textColor: const Color(0xFF059669),
-          minHeight: 40,
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          prefix: SVGImagePlaceHolder(
-            imagePath: Images.flash,
-            size: 16,
-            color: const Color(0xFF059669),
-          ),
-        ),
-        AppButton(
-          onTap: () {},
-          text: 'Flip Card',
-          mainAxisSize: MainAxisSize.min,
-          color: const Color(0xFFEFF6FF),
-          textColor: const Color(0xFF00555A),
-          minHeight: 40,
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          prefix: SVGImagePlaceHolder(
-            imagePath: Images.refresh2,
-            size: 16,
-            color: const Color(0xFF00555A),
-          ),
-        ),
-        AppButton(
-          onTap: () {},
-          text: 'Skip',
-          mainAxisSize: MainAxisSize.min,
-          color: const Color(0xFFF3F4F6),
-          textColor: const Color(0xFF4B5563),
-          minHeight: 40,
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          prefix: SVGImagePlaceHolder(
-            imagePath: Images.skip,
-            size: 16,
-            color: const Color(0xFF4B5563),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _mainCard() {
     return Consumer<FlashCardStudyVm>(
       builder: (_, vm, _) {
-        return CustomCard(
-          addShadow: true,
-          addBorder: true,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 15,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                spacing: 4,
-                children: [
-                  const SVGImagePlaceHolder(
-                    imagePath: Images.refresh2,
-                    size: 14,
-                    color: Color(0xFF60A5FA),
-                  ),
-                  Flexible(
-                    child: Text(
-                      'Tap to flip',
-                      style: TextStyle(
-                        color: const Color(0xFF60A5FA),
-                        fontSize: 12,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                ],
+        return Wrap(
+          spacing: 12,
+          runSpacing: 15,
+          alignment: WrapAlignment.center,
+          children: [
+            AppButton(
+              onTap: () {},
+              text: 'Again',
+              mainAxisSize: MainAxisSize.min,
+              color: const Color(0xFFFEE2E2),
+              textColor: const Color(0xFFDC2626),
+              minHeight: 40,
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              prefix: SVGImagePlaceHolder(
+                imagePath: Images.refresh,
+                size: 16,
+                color: const Color(0xFFDC2626),
               ),
-              Flexible(
-                child: QuillEditor.basic(
-                  controller: vm.frontController,
-                  config: QuillEditorConfig(minHeight: 300),
-                ),
+            ),
+            AppButton(
+              onTap: () {},
+              text: 'Hard',
+              mainAxisSize: MainAxisSize.min,
+              color: const Color(0xFFFFEDD5),
+              textColor: const Color(0xFFEA580C),
+              minHeight: 40,
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              prefix: Icon(
+                Icons.error,
+                color: const Color(0xFFEA580C),
+                size: 18,
               ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 4,
-                children: [
-                  const SVGImagePlaceHolder(
-                    imagePath: Images.refresh2,
-                    size: 14,
-                    color: Color(0xFF00555A),
-                  ),
-                  Flexible(
-                    child: Text(
-                      'Tap card to see answer',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: const Color(0xFF00555A),
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                ],
+            ),
+            AppButton(
+              onTap: () {},
+              text: 'Good',
+              mainAxisSize: MainAxisSize.min,
+              color: const Color(0xFFD1FAE5),
+              textColor: const Color(0xFF059669),
+              minHeight: 40,
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              prefix: Icon(
+                Icons.check,
+                color: const Color(0xFF059669),
+                size: 18,
               ),
-            ],
-          ),
+            ),
+            AppButton(
+              onTap: () {},
+              text: 'Easy',
+              mainAxisSize: MainAxisSize.min,
+              color: const Color(0xFFD1FAE5),
+              textColor: const Color(0xFF059669),
+              minHeight: 40,
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              prefix: SVGImagePlaceHolder(
+                imagePath: Images.flash,
+                size: 16,
+                color: const Color(0xFF059669),
+              ),
+            ),
+            AppButton(
+              onTap: vm.flipCard,
+              text: 'Flip Card',
+              mainAxisSize: MainAxisSize.min,
+              color: const Color(0xFFEFF6FF),
+              textColor: const Color(0xFF00555A),
+              minHeight: 40,
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              prefix: SVGImagePlaceHolder(
+                imagePath: Images.refresh2,
+                size: 16,
+                color: const Color(0xFF00555A),
+              ),
+            ),
+            AppButton(
+              onTap: () {},
+              text: 'Skip',
+              mainAxisSize: MainAxisSize.min,
+              color: const Color(0xFFF3F4F6),
+              textColor: const Color(0xFF4B5563),
+              minHeight: 40,
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              prefix: SVGImagePlaceHolder(
+                imagePath: Images.skip,
+                size: 16,
+                color: const Color(0xFF4B5563),
+              ),
+            ),
+          ],
         );
       },
-    );
-  }
-
-  Widget _buildRatingButton(
-    String text,
-    Color bgColor,
-    Color textColor,
-    IconData icon,
-  ) {
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 8,
-        children: [
-          Icon(icon, size: 16, color: textColor),
-          Text(
-            text,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

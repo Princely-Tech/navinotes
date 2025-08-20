@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/flashcards/ai/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -42,7 +43,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.sellerSelectContent: (context) => SellerSelectContentScreen(),
   Routes.sellerUpload: (context) => SellerUploadScreen(),
   Routes.myPurchases: (context) => MyPurchasesScreen(),
-  Routes.flashCards: (context) => FlashCardsScreen(),
+  Routes.flashCardsMobileCreation: (context) => FlashCardsMobileCreationScreen(),
   Routes.noteCreation: (context) => NoteCreationScreen(),
   Routes.noteCompareContrast: (context) => NoteCompareContrastScreen(),
   Routes.noteTimeline: (context) => NoteTimelineScreen(),
@@ -54,6 +55,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardMinimalistPopup: (context) => BoardMinimalistPopupScreen(),
   Routes.boardLightAcademiaPopup: (context) => BoardLightAcadPopupScreen(),
   Routes.flashcardStudy: (context) => FlashCardStudyScreen(),
+  Routes.flashCardAiCreation: (context) => FlashCardAiCreationScreen(),
 };
 
 class Routes {
@@ -100,7 +102,7 @@ class Routes {
 
   static const sellerUpload = 'sellerUpload';
   static const sellerSelectContent = 'sellerSelectContent';
-  static const flashCards = 'flashCards';
+  static const flashCardsMobileCreation = 'flashCardsMobileCreation';
   static const noteCreation = 'noteCreation';
   static const noteCompareContrast = 'noteCompareContrast';
   static const noteTimeline = 'noteTimeline';
@@ -113,6 +115,10 @@ class Routes {
   static const boardLightAcademiaPopup = 'boardLightAcademiaPopup';
   static const boardNaturePopup = 'boardNaturePopup';
   static const flashcardStudy = 'flashcardStudy';
+  static const flashCardAiCreation = 'flashCardAiCreation';
+  static const flashCards = 'flashCards';
+  // static const flashCards = 'flashCards';
+  // static const flashCards = 'flashCards';
 }
 //Documentation
 //https://documenter.getpostman.com/view/45960961/2sB2x8GXet
