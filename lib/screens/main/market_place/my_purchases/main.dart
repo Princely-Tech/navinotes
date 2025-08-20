@@ -44,13 +44,13 @@ class MyPurchasesMain extends StatelessWidget {
         final isImported = Random().nextBool();
         String tagText = getRandomListElement([
           'Mind Map',
-          'Flashcards',
+          'FlashCards',
           'Study Guide',
         ]);
         Color tagColor = AppTheme.vividRose;
         String tagIcon = Images.connection2;
         switch (tagText) {
-          case 'Flashcards':
+          case 'FlashCards':
             tagColor = AppTheme.electricPurple;
             tagIcon = Images.stack;
             break;

@@ -22,8 +22,8 @@ void main() async {
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: AppTheme.fontFamily),
-        // initialRoute: Routes.boardLightAcademiaPopup,
-        initialRoute: Routes.splash,
+        initialRoute: Routes.flashcardStudy,
+        // initialRoute: Routes.splash,//TODO UNcomment
         routes: routes,
         navigatorKey: NavigationHelper.navigatorKey,
       ),

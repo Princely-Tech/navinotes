@@ -1,7 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/packages.dart';
 
-class Flashcard {
+class FlashCard {
   int? id;
   String guid;
   int userId;
@@ -11,7 +11,7 @@ class Flashcard {
   int createdAt;
   int updatedAt;
 
-  Flashcard({
+  FlashCard({
     this.id,
     required this.guid,
     required this.userId,
@@ -33,14 +33,14 @@ class Flashcard {
     'updated_at': updatedAt,
   };
 
-  factory Flashcard.fromMap(Map<String, dynamic> map) {
+  factory FlashCard.fromMap(Map<String, dynamic> map) {
     final frontJson = jsonDecode(map['front']);
     final backJson = jsonDecode(map['back']);
     List<Map<String, dynamic>> front =
         (frontJson as List).map((e) => Map<String, dynamic>.from(e)).toList();
     List<Map<String, dynamic>> back =
         (backJson as List).map((e) => Map<String, dynamic>.from(e)).toList();
-    return Flashcard(
+    return FlashCard(
       id: map['id'],
       guid: map['guid'],
       userId: map['user_id'],
@@ -52,12 +52,12 @@ class Flashcard {
     );
   }
 
-  Flashcard getUpdatedFlashcard({
+  FlashCard getUpdatedFlashCard({
     List<Map<String, dynamic>>? front,
     List<Map<String, dynamic>>? back,
     int? updatedAt,
   }) {
-    return Flashcard(
+    return FlashCard(
       id: id,
       guid: guid,
       userId: userId,
@@ -78,8 +78,8 @@ class Flashcard {
     required List<Map<String, dynamic>> back,
   }) {
     try {
-      Flashcard updated = getUpdatedFlashcard(front: front, back: back);
-      return DatabaseHelper.instance.updateFlashcard(updated);
+      FlashCard updated = getUpdatedFlashCard(front: front, back: back);
+      return DatabaseHelper.instance.updateFlashCard(updated);
     } catch (err) {
       debugPrint('Error updating flashcard: $err');
       return null;

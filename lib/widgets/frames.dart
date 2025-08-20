@@ -20,21 +20,19 @@ class ScaffoldFrame extends StatelessWidget {
   final Widget? bottomNavigationBar;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Scaffold(
-          key: scaffoldKey,
-          bottomNavigationBar: bottomNavigationBar,
-          body: ApiServiceComponent(child: body),
-          drawer: drawer,
-          endDrawer: endDrawer,
-          backgroundColor: backgroundColor ?? AppTheme.lightGray,
-          floatingActionButton: floatingActionButton,
-        ),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        bottomNavigationBar: bottomNavigationBar,
+        body: SafeArea(child: ApiServiceComponent(child: body)),
+        drawer: drawer,
+        endDrawer: endDrawer,
+        backgroundColor: backgroundColor ?? AppTheme.lightGray,
+        floatingActionButton: floatingActionButton,
       ),
     );
   }

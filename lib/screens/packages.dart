@@ -53,3 +53,9 @@ export 'main/note_template/creation/index.dart';
 export 'main/note_template/kanban/index.dart';
 export 'main/note_template/lab_report/index.dart';
 export 'main/note_template/timeline/index.dart';
+
+export 'main/choose_board/dark_academia/popup/index.dart';
+export 'main/choose_board/light_academia/popup/index.dart';
+export 'main/choose_board/minimalist/popup/index.dart';
+export 'main/choose_board/nature/popup/index.dart';
+export 'main/flashcards/study/index.dart';

@@ -172,7 +172,9 @@ class Images {
   static const String grid2 = '$iconPath/grid2.svg';
   static const String eye2 = '$iconPath/eye2.svg';
   static const String location = '$iconPath/location.svg';
-  // static const String bulb = '$iconPath/bulb.svg';
+  static const String shuffle = '$iconPath/shuffle.svg';
+  static const String skip = '$iconPath/skip.svg';
+  static const String refresh3 = '$iconPath/refresh3.svg';
   // static const String bulb = '$iconPath/bulb.svg';
   // static const String bulb = '$iconPath/bulb.svg';
 
@@ -197,7 +199,7 @@ class Images {
   static const String marketPlacePmpCertification =
       '$marketPlacePath/pmp_certification.png';
   static const String marketPlaceMandarin = '$marketPlacePath/mandarin.png';
-  static const String marketPlaceFlashcards =
+  static const String marketPlaceFlashCards =
       '$marketPlacePath/lsat_flashcards.png';
   static const String marketPlaceNeuroanatomy =
       '$marketPlacePath/neuroanatomy.png';
@@ -252,8 +254,10 @@ class Images {
       '$boardsLightAcademiaPath/science.png';
   static const String boardLightAcadPopupFooterBg =
       '$boardsLightAcademiaPath/popup_footer_bg.png';
-  static const String boardLightAcadFooterImg = '$boardsLightAcademiaPath/footer_img.png';
-  static const String boardLightAcadPopupImg  = '$boardsLightAcademiaPath/popup_img.png';
+  static const String boardLightAcadFooterImg =
+      '$boardsLightAcademiaPath/footer_img.png';
+  static const String boardLightAcadPopupImg =
+      '$boardsLightAcademiaPath/popup_img.png';
   // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
   // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
   // static const String boardLightAcad = '$boardsLightAcademiaPath/.png';
@@ -347,7 +351,7 @@ class Images {
   static const String noteTemplateLined = '$noteTemplatePath/lined.png';
   static const String noteTemplateTimeline = '$noteTemplatePath/timeline.png';
   static const String noteTemplateThesis = '$noteTemplatePath/thesis.png';
-  static const String noteTemplateFlashcards =
+  static const String noteTemplateFlashCards =
       '$noteTemplatePath/flashcards.png';
   static const String noteTemplateCritical = '$noteTemplatePath/critical.png';
   static const String noteTemplateComparative =

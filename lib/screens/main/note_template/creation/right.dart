@@ -138,9 +138,9 @@ class NoteCreationRight extends StatelessWidget {
   }
 
   Widget _flashcards() {
-    bool hasFlashcard = false;
+    bool hasFlashCard = false;
     return _section(
-      title: 'Flashcards',
+      title: 'FlashCards',
       button: AppButton.text(
         onTap: () => NavigationHelper.push(Routes.flashCards),
         text: 'Create',
@@ -152,7 +152,7 @@ class NoteCreationRight extends StatelessWidget {
         ),
         padding: EdgeInsets.all(15),
         child:
-            hasFlashcard
+            hasFlashCard
                 ? Column(
                   spacing: 10,
                   children: [

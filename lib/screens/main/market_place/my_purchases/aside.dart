@@ -183,7 +183,7 @@ class MyPurchasesAside extends StatelessWidget {
                       color: AppTheme.jungleGreen,
                     ),
                   ),
-                  title: 'Chemistry Flashcards',
+                  title: 'Chemistry FlashCards',
                   useCount: 18,
                 ),
               ],

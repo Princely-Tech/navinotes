@@ -205,7 +205,7 @@ class SellerUploadMain extends StatelessWidget {
             ),
             AppButton(
               onTap: () {
-                 if (vm.validateForm()) {
+                if (vm.validateForm()) {
                   // TODO: Navigate to Pricing & Terms screen
                   debugPrint('Form is valid, proceed to next step');
                 }
@@ -247,7 +247,7 @@ class SellerUploadMain extends StatelessWidget {
               GestureDetector(
                 onTap: () => vm.pickCoverImage(),
                 child: _imagePlusContainer(
-                  height: 150, 
+                  height: 150,
                   isExpandable: false,
                   image: vm.coverImage,
                 ),
@@ -283,7 +283,7 @@ class SellerUploadMain extends StatelessWidget {
   }
 
   Widget _imagePlusContainer({
-    double? height, 
+    double? height,
     bool isExpandable = true,
     File? image,
   }) {
@@ -299,20 +299,22 @@ class SellerUploadMain extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppTheme.lightAsh,
             borderRadius: BorderRadius.circular(8),
-            image: image != null
-                ? DecorationImage(
-                    image: FileImage(image),
-                    fit: BoxFit.cover,
-                  )
-                : null,
+            image:
+                image != null
+                    ? DecorationImage(
+                      image: FileImage(image),
+                      fit: BoxFit.cover,
+                    )
+                    : null,
           ),
           height: height,
           width: double.infinity,
-          child: image == null
-              ? Center(
-                  child: Icon(Icons.add, color: AppTheme.blueGray, size: 30),
-                )
-              : null,
+          child:
+              image == null
+                  ? Center(
+                    child: Icon(Icons.add, color: AppTheme.blueGray, size: 30),
+                  )
+                  : null,
         ),
       ),
     );
@@ -336,7 +338,10 @@ class SellerUploadMain extends StatelessWidget {
                   for (int i = 0; i < 3; i++)
                     _previewImageItem(
                       index: i,
-                      image: i < vm.previewImages.length ? vm.previewImages[i] : null,
+                      image:
+                          i < vm.previewImages.length
+                              ? vm.previewImages[i]
+                              : null,
                     ),
                 ],
               ),
@@ -371,18 +376,20 @@ class SellerUploadMain extends StatelessWidget {
           decoration: BoxDecoration(
             color: image == null ? AppTheme.lightAsh : null,
             borderRadius: BorderRadius.circular(8),
-            image: image != null
-                ? DecorationImage(
-                    image: FileImage(image),
-                    fit: BoxFit.cover,
-                  )
-                : null,
+            image:
+                image != null
+                    ? DecorationImage(
+                      image: FileImage(image),
+                      fit: BoxFit.cover,
+                    )
+                    : null,
           ),
-          child: image == null
-              ? Center(
-                  child: Icon(Icons.add, color: AppTheme.blueGray, size: 30),
-                )
-              : null,
+          child:
+              image == null
+                  ? Center(
+                    child: Icon(Icons.add, color: AppTheme.blueGray, size: 30),
+                  )
+                  : null,
         ),
         if (image != null)
           Positioned(
@@ -396,11 +403,7 @@ class SellerUploadMain extends StatelessWidget {
                   color: Colors.black54,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 16,
-                ),
+                child: Icon(Icons.close, color: Colors.white, size: 16),
               ),
             ),
           ),
@@ -427,11 +430,13 @@ class SellerUploadMain extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppTheme.lightAsh,
                     borderRadius: BorderRadius.circular(8),
-                    image: vm.coverImage != null
-                        ? DecorationImage(
-                            image: FileImage(vm.coverImage!),
-                            fit: BoxFit.cover)
-                        : null,
+                    image:
+                        vm.coverImage != null
+                            ? DecorationImage(
+                              image: FileImage(vm.coverImage!),
+                              fit: BoxFit.cover,
+                            )
+                            : null,
                   ),
                 ),
                 Expanded(
@@ -468,7 +473,8 @@ class SellerUploadMain extends StatelessWidget {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: ' ${SessionManager().getName()??'Your Name'}',
+                                  text:
+                                      ' ${SessionManager().getName() ?? 'Your Name'}',
                                   style: AppTheme.text.copyWith(
                                     color: AppTheme.vividRose,
                                     height: 1.0,
@@ -570,7 +576,7 @@ class SellerUploadMain extends StatelessWidget {
             required: true,
             selectItems: vm.getCategories(),
             labelStyle: labelStyle,
-          ),          
+          ),
           CustomInputField(
             controller: vm.subCategoryController,
             label: 'Sub-Category',
@@ -588,40 +594,43 @@ class SellerUploadMain extends StatelessWidget {
               hintText: 'Add tags. Enter to add.',
               labelStyle: labelStyle,
             ),
-            footerWidget: (vm.tags.isEmpty)? Row(
-              spacing: 10,
-              children: [
-                Text(
-                  'Suggested:',
-                  style: AppTheme.text.copyWith(
-                    color: AppTheme.stormGray,
-                    fontSize: 12.0,
-                    height: 1.0,
-                  ),
-                ),
-                Expanded(
-                  child: ScrollableController(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      spacing: 12,
-                      children:
-                          ['mind map', 'visual learning', 'exam prep']
-                              .map(
-                                (str) => CustomTag(
-                                  str,
-                                  color: AppTheme.lightAsh,
-                                  textColor: AppTheme.darkSlateGray,
-                                  onTap: () {
-                                    vm.addTag(str);
-                                  },
-                                ),
-                              )
-                              .toList(),
-                    ),
-                  ),
-                ),
-              ],
-            ) : Row(
+            footerWidget:
+                (vm.tags.isEmpty)
+                    ? Row(
+                      spacing: 10,
+                      children: [
+                        Text(
+                          'Suggested:',
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.stormGray,
+                            fontSize: 12.0,
+                            height: 1.0,
+                          ),
+                        ),
+                        Expanded(
+                          child: ScrollableController(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              spacing: 12,
+                              children:
+                                  ['mind map', 'visual learning', 'exam prep']
+                                      .map(
+                                        (str) => CustomTag(
+                                          str,
+                                          color: AppTheme.lightAsh,
+                                          textColor: AppTheme.darkSlateGray,
+                                          onTap: () {
+                                            vm.addTag(str);
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                    : Row(
                       spacing: 10,
                       children: [
                         Text(
@@ -638,14 +647,16 @@ class SellerUploadMain extends StatelessWidget {
                             child: Row(
                               spacing: 12,
                               children:
-                                  vm.tags.map(
+                                  vm.tags
+                                      .map(
                                         (str) => CustomTag(
                                           str,
                                           color: AppTheme.abyssTeal,
                                           textColor: AppTheme.lightAsh,
-                                          prefix: Icon(Icons.close,
-                                          size: 12,
-                                          color: AppTheme.lightAsh,
+                                          prefix: Icon(
+                                            Icons.close,
+                                            size: 12,
+                                            color: AppTheme.lightAsh,
                                           ),
                                           onTap: () {
                                             vm.removeTag(str);
@@ -678,7 +689,7 @@ class SellerUploadMain extends StatelessWidget {
                 title: 'What\'s Included',
                 items: [
                   'Mind Maps',
-                  'Flashcards',
+                  'FlashCards',
                   'Practice Questions',
                   'Study Guides',
                   'Other',
@@ -694,7 +705,6 @@ class SellerUploadMain extends StatelessWidget {
               ),
             ],
           ),
-
         ],
       ),
     );
@@ -707,8 +717,6 @@ class SellerUploadMain extends StatelessWidget {
     bool isCircle = false,
     Function(String, bool)? onChanged,
   }) {
-
-    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 5,
@@ -729,7 +737,7 @@ class SellerUploadMain extends StatelessWidget {
     );
   }
 
-Widget _radioSelectSection({
+  Widget _radioSelectSection({
     required String title,
     required List<String> items,
   }) {
@@ -749,7 +757,8 @@ Widget _radioSelectSection({
       ],
     );
   }
-Widget _radio({
+
+  Widget _radio({
     required String title,
     required String groupValue,
     required Function(String?) onChanged,
@@ -770,7 +779,6 @@ Widget _radio({
       ],
     );
   }
-
 
   Widget _alertIWidget({
     required String title,

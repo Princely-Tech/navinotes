@@ -69,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigateToDashboard() async {
     //TODO delete this
-    // await DatabaseHelper.instance.deleteFlashcard(1);
+    // await DatabaseHelper.instance.deleteFlashCard(1);
     return NavigationHelper.pushReplacement(Routes.flashCards);
     List<Board> boards = await DatabaseHelper.instance.getAllBoards();
     // Board board = boards[3];

@@ -66,7 +66,7 @@ class NoteCreationLeft extends StatelessWidget {
         ),
         _listTile(
           icon: _tileIcon(icon: Images.stack, color: AppTheme.teal),
-          title: 'Flashcards',
+          title: 'FlashCards',
           route: Routes.flashCards,
         ),
         //TODO ask about this

@@ -36,7 +36,7 @@ class NoteTemplateMain extends StatelessWidget {
                   icon: Images.book2,
                   title: 'Study Templates',
                   children: [
-                    _template(noteTemplateFlashcards),
+                    _template(noteTemplateFlashCards),
                     _template(noteTemplateAi),
                     _template(noteTemplateCompareContrast),
                     _template(noteTemplateTimeline),

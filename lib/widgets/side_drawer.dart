@@ -68,7 +68,7 @@ class NavigationSideBar extends StatelessWidget {
                         route: Routes.recentNotes,
                       ),
                       _item(
-                        title: 'Flashcards',
+                        title: 'FlashCards',
                         icon: Images.flashCards,
                         route: Routes.flashCards,
                       ),

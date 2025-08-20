@@ -24,7 +24,7 @@ class FlashCardsScreen extends StatelessWidget {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
             drawer: CustomDrawer(child: FlashCardsLeft()),
-            endDrawer: CustomDrawer(child: FlashcardsRight()),
+            endDrawer: CustomDrawer(child: FlashCardsRight()),
             backgroundColor: AppTheme.whiteSmoke,
             body: LoadingIndicator(
               loading: vm.loading,
@@ -46,7 +46,7 @@ class FlashCardsScreen extends StatelessWidget {
                             ),
                           ),
                           Expanded(child: FlashCardsMain()),
-                          WidthLimiter(mobile: 256, child: FlashcardsRight()),
+                          WidthLimiter(mobile: 256, child: FlashCardsRight()),
                         ],
                       ),
                     ),

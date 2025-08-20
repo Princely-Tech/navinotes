@@ -232,7 +232,7 @@ class NoteAiSection extends StatelessWidget {
             ),
             AppButton(
               onTap: () {},
-              text: 'Create Flashcards',
+              text: 'Create FlashCards',
               color: AppTheme.lightAsh,
               prefix: SVGImagePlaceHolder(
                 imagePath: Images.stack,
@@ -378,7 +378,7 @@ class NoteAiSection extends StatelessWidget {
   Widget _selectRow() {
     List<String> selectItems = [
       '📝 Summarize',
-      '🗃️ Generate Flashcards',
+      '🗃️ Generate FlashCards',
       '🔍 Extract Key Concepts',
     ];
     return Container(

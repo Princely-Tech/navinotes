@@ -132,7 +132,7 @@ enum NoteTemplateType {
   kanban,
   timeline,
   compareContrast,
-  aiFlashcards,
+  aiFlashCards,
   flashcards,
   labReport,
   apaFormat,
@@ -160,10 +160,10 @@ enum NoteTemplateType {
         return 'Timeline';
       case compareContrast:
         return 'Compare & Contrast';
-      case aiFlashcards:
-        return 'AI-Generated Flashcards';
+      case aiFlashCards:
+        return 'AI-Generated FlashCards';
       case flashcards:
-        return 'Flashcards';
+        return 'FlashCards';
       case labReport:
         return 'Lab Report Format';
       case apaFormat:

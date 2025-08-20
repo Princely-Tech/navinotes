@@ -304,13 +304,13 @@ class DatabaseHelper {
   }
 
   // Insert flashcard
-  Future<int> insertFlashcard(Flashcard flashcard) async {
+  Future<int> insertFlashCard(FlashCard flashcard) async {
     final db = await instance.database;
     return await db.insert('flashcards', flashcard.toMap());
   }
 
   // Get all flashcards for a user
-  Future<List<Flashcard>> getUserFlashcards(
+  Future<List<FlashCard>> getUserFlashCards(
     int userId, {
     NoteSortType sortType = NoteSortType.updatedAt,
   }) async {
@@ -329,26 +329,26 @@ class DatabaseHelper {
       whereArgs: [userId],
       orderBy: '$sortBy $sortOrder',
     );
-    return result.map((json) => Flashcard.fromMap(json)).toList();
+    return result.map((json) => FlashCard.fromMap(json)).toList();
   }
 
   // Update a flashcard
-  Future<int> updateFlashcard(Flashcard flashcard) async {
+  Future<int> updateFlashCard(FlashCard flashcard) async {
     final db = await instance.database;
-    final updatedFlashcard = flashcard.getUpdatedFlashcard(
+    final updatedFlashCard = flashcard.getUpdatedFlashCard(
       updatedAt: generateUnixTimestamp(),
     );
     debugPrint('Updating flashcard ${flashcard.id}');
     return await db.update(
       'flashcards',
-      updatedFlashcard.toMap(),
+      updatedFlashCard.toMap(),
       where: 'id = ?',
       whereArgs: [flashcard.id],
     );
   }
 
   // Delete a flashcard
-  Future<int> deleteFlashcard(int id) async {
+  Future<int> deleteFlashCard(int id) async {
     final db = await instance.database;
     return await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
   }

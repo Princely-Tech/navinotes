@@ -1,14 +1,14 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/flashcards/vm.dart';
 
-class FlashcardsRight extends StatelessWidget {
-  const FlashcardsRight({super.key});
+class FlashCardsRight extends StatelessWidget {
+  const FlashCardsRight({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<FlashCardsVm>(
       builder: (_, vm, __) {
-        final flashcards = vm.userFlashcards;
+        final flashcards = vm.userFlashCards;
         return Container(
           decoration: BoxDecoration(
             color: AppTheme.white,
@@ -68,11 +68,11 @@ class FlashcardsRight extends StatelessWidget {
   Widget _cardItem(int index) {
     return Consumer<FlashCardsVm>(
       builder: (_, vm, _) {
-        final flashcards = vm.userFlashcards;
+        final flashcards = vm.userFlashCards;
         final card = flashcards[index];
-        final isActive = card.id == vm.currentFlashcard?.id;
+        final isActive = card.id == vm.currentFlashCard?.id;
         return GestureDetector(
-          onTap: () => vm.selectFlashcard(card),
+          onTap: () => vm.selectFlashCard(card),
           child: CustomCard(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(

@@ -221,7 +221,7 @@ class PdfViewAside extends StatelessWidget {
         ),
         _highlightCard(
           title: 'Phospholipid bilayer',
-          body: 'Flashcard created',
+          body: 'FlashCard created',
           color: AppTheme.primaryColor,
         ),
         _highlightCard(

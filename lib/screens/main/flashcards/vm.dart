@@ -37,7 +37,7 @@ class FlashCardsVm extends ChangeNotifier {
   BuildContext context;
   FlashCardsVm({required this.scaffoldKey, required this.context});
 
-  Flashcard? currentFlashcard; // the flashcard tied to this session
+  FlashCard? currentFlashCard; // the flashcard tied to this session
   Timer? _debounce;
 
   List<TagField> tagFields = [TagField('#neuroscience'), TagField('#biology')];
@@ -54,7 +54,7 @@ class FlashCardsVm extends ChangeNotifier {
   FlashCardsSide currentSide = FlashCardsSide.front;
 
   // list of flashcards for current user
-  List<Flashcard> userFlashcards = [];
+  List<FlashCard> userFlashCards = [];
 
   final ImagePicker _picker = ImagePicker();
 
@@ -70,11 +70,11 @@ class FlashCardsVm extends ChangeNotifier {
     backController.addListener(_scheduleAutoSave);
   }
 
-  Future<void> loadUserFlashcards() async {
+  Future<void> loadUserFlashCards() async {
     try {
       final currentUser = getCurrentUserFromSession(context);
       if (isNotNull(currentUser)) {
-        userFlashcards = await DatabaseHelper.instance.getUserFlashcards(
+        userFlashCards = await DatabaseHelper.instance.getUserFlashCards(
           currentUser!.id!,
         );
         notifyListeners();
@@ -90,7 +90,7 @@ class FlashCardsVm extends ChangeNotifier {
     }
   }
 
-  void selectFlashcard(Flashcard card) {
+  void selectFlashCard(FlashCard card) {
     try {
       frontController = QuillController(
         document: safeDocFromJson(card.front),
@@ -101,7 +101,7 @@ class FlashCardsVm extends ChangeNotifier {
         document: safeDocFromJson(card.back),
         selection: const TextSelection.collapsed(offset: 0),
       );
-      currentFlashcard = card;
+      currentFlashCard = card;
       _attachListeners();
       notifyListeners();
     } catch (err) {
@@ -115,14 +115,14 @@ class FlashCardsVm extends ChangeNotifier {
     }
   }
 
-  Future<void> initFlashcard() async {
+  Future<void> initFlashCard() async {
     try {
       final currentUser = getCurrentUserFromSession(context);
       List<Map<String, dynamic>> defaultContent = [];
       if (isNotNull(currentUser)) {
         final currentTimestamp = generateUnixTimestamp();
         // Create a new flashcard immediately
-        Flashcard card = Flashcard(
+        FlashCard card = FlashCard(
           guid: generateGUID(currentUser!.id!),
           userId: currentUser.id!,
           front: defaultContent,
@@ -131,9 +131,9 @@ class FlashCardsVm extends ChangeNotifier {
           updatedAt: currentTimestamp,
         );
         // Save to database
-        int id = await DatabaseHelper.instance.insertFlashcard(card);
+        int id = await DatabaseHelper.instance.insertFlashCard(card);
         card.setIDAfterCreate(id);
-        currentFlashcard = card;
+        currentFlashCard = card;
       }
       _attachListeners();
     } catch (err) {
@@ -151,22 +151,19 @@ class FlashCardsVm extends ChangeNotifier {
   void _scheduleAutoSave() {
     // debounce so we don't save on every keystroke
     _debounce?.cancel();
-    _debounce = Timer(const Duration(seconds: 1), _autoSaveFlashcard);
+    _debounce = Timer(const Duration(seconds: 1), _autoSaveFlashCard);
   }
 
-  Future<void> _autoSaveFlashcard() async {
-    if (currentFlashcard == null) return;
-    // await currentFlashcard!.update(
-    //   front: frontController.document.toPlainText(),
-    //   back: backController.document.toPlainText(),
-    // );
+  Future<void> _autoSaveFlashCard() async {
+    if (currentFlashCard == null) return;
+   
 
-    await currentFlashcard!.update(
+    await currentFlashCard!.update(
       front: frontController.document.toDelta().toJson(),
       back: backController.document.toDelta().toJson(),
     );
 
-    loadUserFlashcards();
+    loadUserFlashCards();
   }
 
   Future<void> addImage() async {
@@ -259,8 +256,8 @@ class FlashCardsVm extends ChangeNotifier {
 
   //For development purposes, will be removed in production
   void initialize() {
-    initFlashcard();
-    loadUserFlashcards();
+    initFlashCard();
+    loadUserFlashCards();
     for (var field in tagFields) {
       field.focusNode.addListener(() {
         if (!field.focusNode.hasFocus && field.controller.text.trim().isEmpty) {

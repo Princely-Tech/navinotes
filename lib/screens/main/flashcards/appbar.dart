@@ -53,7 +53,7 @@ class FlashCardsAppBar extends StatelessWidget {
                                       ),
                                     ),
                                     RichTextHeader(
-                                      title: 'Create Flashcards',
+                                      title: 'Create FlashCards',
                                       showLogo: true,
                                     ),
                                   ],

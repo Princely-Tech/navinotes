@@ -1,8 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/choose_board/dark_academia/popup/index.dart';
-import 'package:navinotes/screens/main/choose_board/light_academia/popup/index.dart';
-import 'package:navinotes/screens/main/choose_board/minimalist/popup/index.dart';
-import 'package:navinotes/screens/main/choose_board/nature/popup/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -57,6 +53,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardNaturePopup: (context) => BoardNaturePopupScreen(),
   Routes.boardMinimalistPopup: (context) => BoardMinimalistPopupScreen(),
   Routes.boardLightAcademiaPopup: (context) => BoardLightAcadPopupScreen(),
+  Routes.flashcardStudy: (context) => FlashCardStudyScreen(),
 };
 
 class Routes {
@@ -115,9 +112,7 @@ class Routes {
   static const boardDarkAcademiaPopup = 'boardDarkAcademiaPopup';
   static const boardLightAcademiaPopup = 'boardLightAcademiaPopup';
   static const boardNaturePopup = 'boardNaturePopup';
-  // static const boardNaturePopup = 'boardNaturePopup';
-  // static const boardNaturePopup = 'boardNaturePopup';
-  // static const boardNaturePopup = 'boardNaturePopup';
+  static const flashcardStudy = 'flashcardStudy';
 }
 //Documentation
 //https://documenter.getpostman.com/view/45960961/2sB2x8GXet

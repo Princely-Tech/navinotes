@@ -52,10 +52,10 @@ BoardNoteTemplate getNoteTemplateFromString(String input) {
       return noteTemplateTimeline;
     case NoteTemplateType.compareContrast:
       return noteTemplateCompareContrast;
-    case NoteTemplateType.aiFlashcards:
+    case NoteTemplateType.aiFlashCards:
       return noteTemplateAi;
     case NoteTemplateType.flashcards:
-      return noteTemplateFlashcards;
+      return noteTemplateFlashCards;
     case NoteTemplateType.labReport:
       return noteTemplateLapReport;
     case NoteTemplateType.apaFormat:
@@ -127,16 +127,16 @@ BoardNoteTemplate noteTemplateCompareContrast = BoardNoteTemplate(
 );
 
 BoardNoteTemplate noteTemplateAi = BoardNoteTemplate(
-  type: NoteTemplateType.aiFlashcards,
+  type: NoteTemplateType.aiFlashCards,
   body: 'AI-generated study cards',
   image: Images.noteTemplateAi,
   route: '',
 );
 
-BoardNoteTemplate noteTemplateFlashcards = BoardNoteTemplate(
+BoardNoteTemplate noteTemplateFlashCards = BoardNoteTemplate(
   type: NoteTemplateType.flashcards,
   body: 'Question and answer cards',
-  image: Images.noteTemplateFlashcards,
+  image: Images.noteTemplateFlashCards,
   route: Routes.flashCards,
   isPopular: true,
 );

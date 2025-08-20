@@ -84,7 +84,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                                 ),
                               ),
                               _guideCard(
-                                title: 'Create Flashcard',
+                                title: 'Create FlashCard',
                                 body:
                                     'Transform highlights into flashcards for effective memorization and review',
                                 icon: _outlinedChild(

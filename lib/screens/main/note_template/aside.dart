@@ -130,7 +130,7 @@ class NoteTemplateAside extends StatelessWidget {
         ),
         _recentCard(title: 'Legal Pad'),
         _recentCard(title: 'Cornell Notes', imagePath: Images.copy3),
-        _recentCard(title: 'AI Flashcards', imagePath: Images.flash),
+        _recentCard(title: 'AI FlashCards', imagePath: Images.flash),
       ],
     );
   }
