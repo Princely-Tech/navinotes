@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
 
-class FlashcardStudyFooter extends StatelessWidget {
-  const FlashcardStudyFooter({super.key});
+class FlashCardStudyFooter extends StatelessWidget {
+  const FlashCardStudyFooter({super.key});
 
   @override
   Widget build(BuildContext context) {

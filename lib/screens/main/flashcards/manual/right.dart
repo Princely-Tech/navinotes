@@ -1,12 +1,12 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/flashcards/vm.dart';
+import 'package:navinotes/screens/main/flashcards/manual/vm.dart';
 
-class FlashCardsMobileCreationRight extends StatelessWidget {
-  const FlashCardsMobileCreationRight({super.key});
+class FlashCardsManualCreationRight extends StatelessWidget {
+  const FlashCardsManualCreationRight({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FlashCardsMobileCreationVm>(
+    return Consumer<FlashCardsManualCreationVm>(
       builder: (_, vm, __) {
         final flashcards = vm.userFlashCards;
         return Container(
@@ -56,7 +56,7 @@ class FlashCardsMobileCreationRight extends StatelessWidget {
                     ),
                   ),
                 ),
-                AppButton.text(onTap: () {}, text: 'Show all cards'),
+                // AppButton.text(onTap: () {}, text: 'Show all cards'),
               ],
             ),
           ),
@@ -66,11 +66,21 @@ class FlashCardsMobileCreationRight extends StatelessWidget {
   }
 
   Widget _cardItem(int index) {
-    return Consumer<FlashCardsMobileCreationVm>(
+    return Consumer<FlashCardsManualCreationVm>(
       builder: (_, vm, _) {
         final flashcards = vm.userFlashCards;
         final card = flashcards[index];
         final isActive = card.id == vm.currentFlashCard?.id;
+        QuillController frontController = QuillController(
+          document: safeDocFromJson(card.front),
+          selection: const TextSelection.collapsed(offset: 0),
+        );
+        QuillController backController = QuillController(
+          document: safeDocFromJson(card.back),
+          selection: const TextSelection.collapsed(offset: 0),
+        );
+        final frontText = frontController.document.toPlainText().trim();
+        final backText = backController.document.toPlainText().trim();
         return GestureDetector(
           onTap: () => vm.selectFlashCard(card),
           child: CustomCard(
@@ -108,34 +118,65 @@ class FlashCardsMobileCreationRight extends StatelessWidget {
                     Row(
                       spacing: 5,
                       children: [
-                        _cardItemAction(icon: Images.pencil),
-                        _cardItemAction(icon: Images.trash2),
+                        LoadingIndicator(
+                          loading: vm.deletingCardId == card.id,
+                          child: InkWell(
+                            onTap: () => vm.handleDeleteFlashCard(card),
+                            child: SVGImagePlaceHolder(
+                              imagePath: Images.trash2,
+                              color: AppTheme.blueGray,
+                              size: 12,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
-                Text(
-                  jsonToPlainText(card.front),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: TextStyle(
-                    color: const Color(0xFF1F2937),
-                    fontSize: 14.0,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
+                // ValueListenableBuilder<FlashCard?>(
+                //   valueListenable: vm.currentFlashCardNotifier,
+                //   builder: (context, value, child) {
+                //     return Transform.scale(
+                //       scale: 0.5, // 60% of original size
+                //       alignment: Alignment.topLeft,
+                //       child: QuillEditor.basic(
+                //         controller: frontController,
+                //         config: QuillEditorConfig(
+                //           embedBuilders:
+                //               FlutterQuillEmbeds.defaultEditorBuilders(),
+                //           padding: EdgeInsets.all(10),
+                //           minHeight: 100,
+                //           maxHeight: 100,
+                //         ),
+                //       ),
+                //     );
+                //   },
+                // ),
+                if (frontText.isNotEmpty)
+                  Text(
+                    frontText,
+                    // jsonToPlainText(card.front),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: TextStyle(
+                      color: const Color(0xFF1F2937),
+                      fontSize: 14.0,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                Text(
-                  jsonToPlainText(card.back),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12.0,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
+                if (backText.isNotEmpty)
+                  Text(
+                    backText,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12.0,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
               ],
             ),
           ),
@@ -144,11 +185,11 @@ class FlashCardsMobileCreationRight extends StatelessWidget {
     );
   }
 
-  Widget _cardItemAction({required String icon}) {
-    return SVGImagePlaceHolder(
-      imagePath: icon,
-      color: AppTheme.blueGray,
-      size: 12,
-    );
-  }
+  // Widget _cardItemAction({required String icon}) {
+  //   return SVGImagePlaceHolder(
+  //     imagePath: icon,
+  //     color: AppTheme.blueGray,
+  //     size: 12,
+  //   );
+  // }
 }

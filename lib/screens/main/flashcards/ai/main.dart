@@ -8,90 +8,78 @@ class FlashCardAiCreationMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-      ),
-      child: ScrollableController(
-        child: const Column(children: [_StatusPanel(), _CardViewPanel()]),
-      ),
+    return ScrollableController(
+      child: Column(children: [_statusPanel(), _CardViewPanel()]),
     );
   }
-}
 
-/* ----------------------------------------------------------
-   2. Top “AI Generation Status” panel
----------------------------------------------------------- */
-class _StatusPanel extends StatelessWidget {
-  const _StatusPanel();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _statusPanel() {
     return Container(
-      width: 832,
-      height: 199,
       padding: const EdgeInsets.all(16),
-      decoration: const ShapeDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: Color(0xFFE5E7EB)),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFE5E7EB))),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'AI Generation Status',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1F2937),
-                ),
-              ),
-              Row(
-                children: [
-                  const Text(
-                    'Generation complete',
-                    style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
-                  ),
-                  const SizedBox(width: 6),
-                  Container(
-                    width: 16,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF22C55E),
-                      borderRadius: BorderRadius.circular(9999),
+
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 15,
+          children: [
+            // Title row
+            Row(
+              spacing: 15,
+              children: [
+                Expanded(
+                  child: const Text(
+                    'AI Generation Status',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1F2937),
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          // Stats card
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(17),
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Column(
-              children: [
-                _StatRow(text: 'Generated 12 flashcards from your notes'),
-                _StatRow(text: 'Difficulty: 3 Easy, 6 Medium, 3 Hard'),
-                _StatRow(text: 'Coverage: 85% of key concepts included'),
+                ),
+                Row(
+                  spacing: 6,
+                  children: [
+                    const Text(
+                      'Generation complete',
+                      style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+                    ),
+
+                    Icon(
+                      Icons.check_circle,
+                      color: Color(0xFF22C55E),
+                      size: 16,
+                    ),
+                  ],
+                ),
               ],
             ),
-          ),
-        ],
+
+            // Stats card
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(17),
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(width: 1, color: Color(0xFFE5E7EB)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Column(
+                children: [
+                  _StatRow(text: 'Generated 12 flashcards from your notes'),
+                  _StatRow(text: 'Difficulty: 3 Easy, 6 Medium, 3 Hard'),
+                  _StatRow(text: 'Coverage: 85% of key concepts included'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -135,7 +123,7 @@ class _CardViewPanel extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Row 2: flashcard (Front / Back tabs)
-          _FlashcardWidget(),
+          _FlashCardWidget(),
           const SizedBox(height: 16),
 
           // Row 3: per-card actions
@@ -197,7 +185,7 @@ class _iconButton extends StatelessWidget {
   }
 }
 
-class _FlashcardWidget extends StatelessWidget {
+class _FlashCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

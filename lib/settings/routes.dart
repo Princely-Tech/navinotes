@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/flashcards/ai/index.dart';
+import 'package:navinotes/screens/main/flashcards/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -43,7 +44,8 @@ Map<String, WidgetBuilder> routes = {
   Routes.sellerSelectContent: (context) => SellerSelectContentScreen(),
   Routes.sellerUpload: (context) => SellerUploadScreen(),
   Routes.myPurchases: (context) => MyPurchasesScreen(),
-  Routes.flashCardsMobileCreation: (context) => FlashCardsMobileCreationScreen(),
+  Routes.flashCardsManualCreation:
+      (context) => FlashCardsManualCreationScreen(),
   Routes.noteCreation: (context) => NoteCreationScreen(),
   Routes.noteCompareContrast: (context) => NoteCompareContrastScreen(),
   Routes.noteTimeline: (context) => NoteTimelineScreen(),
@@ -56,6 +58,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardLightAcademiaPopup: (context) => BoardLightAcadPopupScreen(),
   Routes.flashcardStudy: (context) => FlashCardStudyScreen(),
   Routes.flashCardAiCreation: (context) => FlashCardAiCreationScreen(),
+  Routes.flashCards: (context) => FlashCardScreen(),
 };
 
 class Routes {
@@ -102,7 +105,7 @@ class Routes {
 
   static const sellerUpload = 'sellerUpload';
   static const sellerSelectContent = 'sellerSelectContent';
-  static const flashCardsMobileCreation = 'flashCardsMobileCreation';
+  static const flashCardsManualCreation = 'flashCardsManualCreation';
   static const noteCreation = 'noteCreation';
   static const noteCompareContrast = 'noteCompareContrast';
   static const noteTimeline = 'noteTimeline';

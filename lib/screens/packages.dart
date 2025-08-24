@@ -41,7 +41,7 @@ export 'main/choose_board/plain/edit/index.dart';
 export 'main/choose_board/plain/index.dart';
 export 'main/choose_board/plain/mind_map/index.dart';
 export 'main/choose_board/plain/popup/index.dart';
-export 'main/flashcards/index.dart';
+export 'main/flashcards/manual/index.dart';
 export 'main/market_place/index.dart';
 export 'main/market_place/my_purchases/index.dart';
 export 'main/market_place/my_store/index.dart';

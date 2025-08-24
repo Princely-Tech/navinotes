@@ -1,8 +1,8 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-class FlashCardsMobileCreationAppBar extends StatelessWidget {
-  const FlashCardsMobileCreationAppBar({super.key});
+class FlashCardsAppBar extends StatelessWidget {
+  const FlashCardsAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class FlashCardsMobileCreationAppBar extends StatelessWidget {
               mobile: largeDesktopSize,
               child: LayoutBuilder(
                 builder: (_, constraints) {
-                  return Consumer<FlashCardsMobileCreationVm>(
+                  return Consumer<FlashCardVm>(
                     builder: (_, vm, _) {
                       return ScrollableController(
                         scrollDirection: Axis.horizontal,
@@ -40,20 +40,8 @@ class FlashCardsMobileCreationAppBar extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    VisibleController(
-                                      mobile: true,
-                                      desktop: false,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 5,
-                                        ),
-                                        child: MenuButton(
-                                          onPressed: vm.openDrawer,
-                                        ),
-                                      ),
-                                    ),
                                     RichTextHeader(
-                                      title: 'Create FlashCards',
+                                      title: 'FlashCards',
                                       showLogo: true,
                                     ),
                                   ],
@@ -75,7 +63,7 @@ class FlashCardsMobileCreationAppBar extends StatelessWidget {
     );
   }
 
-  Widget _trailing(FlashCardsMobileCreationVm vm) {
+  Widget _trailing(FlashCardVm vm) {
     return Row(
       children: [
         Row(
@@ -98,18 +86,14 @@ class FlashCardsMobileCreationAppBar extends StatelessWidget {
             ),
           ],
         ),
-        VisibleController(
-          mobile: true,
-          laptop: false,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 5),
-            child: MenuButton(onPressed: vm.openEndDrawer),
-          ),
-          // child: Padding(
-          //   padding: const EdgeInsets.only(left: 10),
-          //   child: MenuButton(onPressed: vm.openEndDrawer),
-          // ),
-        ),
+        // VisibleController(
+        //   mobile: true,
+        //   laptop: false,
+        //   child: Padding(
+        //     padding: const EdgeInsets.only(left: 5),
+        //     child: MenuButton(onPressed: vm.openEndDrawer),
+        //   ),
+        // ),
       ],
     );
   }

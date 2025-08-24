@@ -80,6 +80,10 @@ class NavigationHelper {
     );
   }
 
+  static void navigateToFlashCardStudy(FlashCardDeck deck) {
+    push(Routes.flashcardStudy, arguments: deck);
+  }
+
   static void navigateToNoteTemplateRoute(String route, int contentId) {
     push(route, arguments: contentId);
   }
@@ -123,6 +127,10 @@ class NavigationHelper {
       return NavigationHelper.pushReplacement(route, arguments: board);
     }
     return NavigationHelper.push(route, arguments: board);
+  }
+
+  static navigateToManualFlashCard(FlashCardDeck deck) {
+    push(Routes.flashCardsManualCreation, arguments: deck);
   }
 
   static Future navigateToBoardPopup(Board board, {bool replace = false}) {

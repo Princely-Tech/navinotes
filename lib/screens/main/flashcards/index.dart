@@ -1,63 +1,61 @@
 import 'package:navinotes/packages.dart';
-import 'footer.dart';
-import 'main.dart';
-import 'appbar.dart';
-import 'left.dart';
-import 'right.dart';
+import 'package:navinotes/screens/main/flashcards/header.dart';
 import 'vm.dart';
 
-class FlashCardsMobileCreationScreen extends StatelessWidget {
-  FlashCardsMobileCreationScreen({super.key});
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class FlashCardScreen extends StatelessWidget {
+  const FlashCardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        final vm = FlashCardsMobileCreationVm(scaffoldKey: _scaffoldKey, context: context);
-        vm.initialize();
-        return vm;
-      },
-      child: Consumer<FlashCardsMobileCreationVm>(
-        builder: (_, vm, _) {
-          return ScaffoldFrame(
-            scaffoldKey: _scaffoldKey,
-            drawer: CustomDrawer(child: FlashCardsMobileCreationLeft()),
-            endDrawer: CustomDrawer(child: FlashCardsMobileCreationRight()),
-            backgroundColor: AppTheme.whiteSmoke,
-            body: LoadingIndicator(
-              loading: vm.loading,
-              child: Column(
-                children: [
-                  FlashCardsMobileCreationAppBar(),
-                  Expanded(
-                    child: ResponsiveSection(
-                      mobile: FlashCardsMobileCreationMain(),
-                      laptop: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          VisibleController(
-                            mobile: false,
-                            desktop: true,
-                            child: WidthLimiter(
-                              mobile: 256,
-                              child: FlashCardsMobileCreationLeft(),
+    return Consumer<SessionManager>(
+      builder: (_, sessionVm, _) {
+        final boards = sessionVm.userBoards;
+        return ChangeNotifierProvider(
+          create:
+              (context) => FlashCardVm(sessionVm: sessionVm, context: context),
+          child: Consumer<FlashCardVm>(
+            builder: (_, vm, _) {
+              return ScaffoldFrame(
+                body: LoadingIndicator(
+                  loading: vm.creatingDeck,
+                  child: Column(
+                    spacing: 15,
+                    children: [
+                      FlashCardsAppBar(),
+                      Expanded(
+                        child: ScrollableController(
+                          child: ResponsivePadding(
+                            mobile: EdgeInsets.all(10),
+                            tablet: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
+                            child: CustomGrid(
+                              children: [
+                                ...boards.map(
+                                  (board) => BoardCard(
+                                    board: board,
+                                    onTap: () => vm.showBoardDecks(board),
+                                  ),
+                                ),
+                                CreateCard(
+                                  onTap: vm.goToCreateBoard,
+                                  text: 'Create New Board',
+                                  width: double.infinity,
+                                ),
+                              ],
                             ),
                           ),
-                          Expanded(child: FlashCardsMobileCreationMain()),
-                          WidthLimiter(mobile: 256, child: FlashCardsMobileCreationRight()),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  FlashCardsMobileCreationFooter(),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

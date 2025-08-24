@@ -8,7 +8,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 8; // Increment this number
+  static const int _databaseVersion = 9; // Increment this number
 
   DatabaseHelper._init();
 
@@ -82,7 +82,7 @@ class DatabaseHelper {
    CREATE TABLE flashcards (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   guid TEXT,
-  user_id INTEGER NOT NULL,
+  deck_id INTEGER,
   front TEXT,
   back TEXT,
   tags TEXT,            -- optional
@@ -123,6 +123,26 @@ class DatabaseHelper {
       created_at INTEGER,
       updated_at INTEGER,
       synced_at INTEGER
+    )
+    ''');
+
+    await db.execute('''
+    CREATE TABLE decks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      guid TEXT NOT NULL,
+      board_id INTEGER,
+      name TEXT NOT NULL,
+      description TEXT,
+      cards_per_day INTEGER DEFAULT 20,
+      steps TEXT DEFAULT '[1, 10]',
+      again_interval INTEGER DEFAULT 1,
+      hard_interval INTEGER DEFAULT 3,
+      good_interval INTEGER DEFAULT 5,
+      easy_interval INTEGER DEFAULT 7,
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      synced_at INTEGER,
+      FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE SET NULL
     )
     ''');
   }
@@ -178,6 +198,28 @@ class DatabaseHelper {
     }
     if (oldVersion < 8) {
       await db.execute('ALTER TABLE contents ADD COLUMN voice_notes TEXT');
+    }
+    if (oldVersion < 9) {
+      await db.execute('''
+      CREATE TABLE IF NOT EXISTS decks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        guid TEXT NOT NULL,
+        user_id INTEGER NOT NULL,
+        board_id INTEGER,
+        name TEXT NOT NULL,
+        description TEXT,
+        cards_per_day INTEGER DEFAULT 20,
+        steps TEXT DEFAULT '[1, 10]',
+        again_interval INTEGER DEFAULT 1,
+        hard_interval INTEGER DEFAULT 3,
+        good_interval INTEGER DEFAULT 5,
+        easy_interval INTEGER DEFAULT 7,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        synced_at INTEGER,
+        FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE SET NULL
+      )
+      ''');
     }
   }
 
@@ -306,42 +348,37 @@ class DatabaseHelper {
   // Insert flashcard
   Future<int> insertFlashCard(FlashCard flashcard) async {
     final db = await instance.database;
-    return await db.insert('flashcards', flashcard.toMap());
+    final id = await db.insert('flashcards', flashcard.toMap());
+    flashcard.setIDAfterCreate(id);
+    return id;
   }
 
-  // Get all flashcards for a user
-  Future<List<FlashCard>> getUserFlashCards(
-    int userId, {
+  // Get all flashcards for a deck
+  Future<List<FlashCard>> getDeckFlashCards(
+    int deckId, {
     NoteSortType sortType = NoteSortType.updatedAt,
   }) async {
     final db = await instance.database;
+    String sortOrder = sortType == NoteSortType.createdAt ? 'ASC' : 'DESC';
+    final sortBy =
+        sortType == NoteSortType.createdAt ? 'created_at' : 'updated_at';
 
-    String sortOrder = 'DESC';
-    if (sortType == NoteSortType.createdAt) {
-      sortOrder = 'ASC';
-    }
-    final sortBy = sortType.toString();
-    debugPrint('Getting flashcards of $userId sorted by $sortBy $sortOrder');
-
-    final result = await db.query(
+    final List<Map<String, dynamic>> maps = await db.query(
       'flashcards',
-      where: 'user_id = ?',
-      whereArgs: [userId],
+      where: 'deck_id = ?',
+      whereArgs: [deckId],
       orderBy: '$sortBy $sortOrder',
     );
-    return result.map((json) => FlashCard.fromMap(json)).toList();
+
+    return List.generate(maps.length, (i) => FlashCard.fromMap(maps[i]));
   }
 
   // Update a flashcard
   Future<int> updateFlashCard(FlashCard flashcard) async {
     final db = await instance.database;
-    final updatedFlashCard = flashcard.getUpdatedFlashCard(
-      updatedAt: generateUnixTimestamp(),
-    );
-    debugPrint('Updating flashcard ${flashcard.id}');
     return await db.update(
       'flashcards',
-      updatedFlashCard.toMap(),
+      flashcard.toMap(),
       where: 'id = ?',
       whereArgs: [flashcard.id],
     );
@@ -351,6 +388,60 @@ class DatabaseHelper {
   Future<int> deleteFlashCard(int id) async {
     final db = await instance.database;
     return await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // FlashCardDeck methods
+  Future<int> insertDeck(FlashCardDeck deck) async {
+    final db = await instance.database;
+    final id = await db.insert('decks', deck.toMap());
+    deck.setIDAfterCreate(id);
+    return id;
+  }
+
+  Future<List<FlashCardDeck>> getBoardDecks(int boardId) async {
+    final db = await instance.database;
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      'decks',
+      where: 'board_id = ?',
+      whereArgs: [boardId],
+      orderBy: 'name ASC',
+    );
+
+    return List.generate(maps.length, (i) {
+      return FlashCardDeck.fromMap(maps[i]);
+    });
+  }
+
+  Future<FlashCardDeck?> getDeck(int id) async {
+    final db = await instance.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'decks',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return FlashCardDeck.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  Future<int> updateDeck(FlashCardDeck deck) async {
+    final db = await instance.database;
+    return await db.update(
+      'decks',
+      deck
+          .copyWith(updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000)
+          .toMap(),
+      where: 'id = ?',
+      whereArgs: [deck.id],
+    );
+  }
+
+  Future<int> deleteDeck(int id) async {
+    final db = await instance.database;
+    return await db.delete('decks', where: 'id = ?', whereArgs: [id]);
   }
 
   Future close() async {

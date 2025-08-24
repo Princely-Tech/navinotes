@@ -40,7 +40,7 @@ class FlashCardStudyScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const FlashcardStudyFooter(),
+            const FlashCardStudyFooter(),
           ],
         ),
       ),

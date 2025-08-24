@@ -1,12 +1,12 @@
 import 'package:navinotes/packages.dart';
 import 'vm.dart';
 
-class FlashCardsMobileCreationMain extends StatelessWidget {
-  const FlashCardsMobileCreationMain({super.key});
+class FlashCardsManualCreationMain extends StatelessWidget {
+  const FlashCardsManualCreationMain({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FlashCardsMobileCreationVm>(
+    return Consumer<FlashCardsManualCreationVm>(
       builder: (_, vm, _) {
         List<Widget> inputFields = [
           _inputfield(FlashCardsSide.front),
@@ -59,7 +59,7 @@ class FlashCardsMobileCreationMain extends StatelessWidget {
   }
 
   Widget _toolbar() {
-    return Consumer<FlashCardsMobileCreationVm>(
+    return Consumer<FlashCardsManualCreationVm>(
       builder: (_, vm, _) {
         return CustomCard(
           width: null,
@@ -149,7 +149,7 @@ class FlashCardsMobileCreationMain extends StatelessWidget {
   }
 
   Widget _inputfield(FlashCardsSide side) {
-    return Consumer<FlashCardsMobileCreationVm>(
+    return Consumer<FlashCardsManualCreationVm>(
       builder: (_, vm, _) {
         bool isActive = vm.currentSide == side;
         bool isFront = side == FlashCardsSide.front;
@@ -175,6 +175,8 @@ class FlashCardsMobileCreationMain extends StatelessWidget {
                             FlutterQuillEmbeds.defaultEditorBuilders(),
                         padding: EdgeInsets.all(20),
                         minHeight: isActive ? 200 : 146,
+                        // scrollable: false,
+                        maxHeight: 300,
                         placeholder:
                             isFront
                                 ? 'Enter question or term...'
@@ -241,7 +243,7 @@ class FlashCardsMobileCreationMain extends StatelessWidget {
 
   Widget _sideIndicator() {
     final radius = BorderRadius.circular(999);
-    return Consumer<FlashCardsMobileCreationVm>(
+    return Consumer<FlashCardsManualCreationVm>(
       builder: (_, vm, _) {
         return CustomCard(
           width: null,

@@ -57,7 +57,7 @@ class FlashCardAiCreationScreen extends StatelessWidget {
             color: Colors.white,
             border: Border.all(color: const Color(0xFFE5E7EB)),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
           child: Row(
             spacing: 15,
             children: [
@@ -95,7 +95,7 @@ class FlashCardAiCreationScreen extends StatelessWidget {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: " | Create Flashcards",
+                                  text: " | Create FlashCards",
                                   style: TextStyle(
                                     color: Color(0xFF1F2937),
                                     fontSize: 18,
