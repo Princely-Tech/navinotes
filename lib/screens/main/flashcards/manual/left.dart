@@ -155,22 +155,37 @@ class FlashCardsManualCreationLeft extends StatelessWidget {
   }
 
   Widget _creationMode() {
-    return _sections(
-      title: 'Creation Mode',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 10,
-        children: [
-          _creationModeItem(title: 'Manual Creation', isActive: true),
-          // _creationModeItem(title: 'AI-Assisted'),
-          // _creationModeItem(title: 'Import from Notes'),
-          // _creationModeItem(title: 'Batch Creation'),
-        ],
-      ),
+    return Consumer<FlashCardsManualCreationVm>(
+      builder: (_, vm, _) {
+        return _sections(
+          title: 'Creation Mode',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10,
+            children: [
+              _creationModeItem(title: 'Manual Creation', isActive: true),
+              _creationModeItem(
+                title: 'AI-Assisted',
+                onTap:
+                    () => NavigationHelper.navigateToAiFlashCard(
+                      vm.deck,
+                      replace: true,
+                    ),
+              ),
+              // _creationModeItem(title: 'Import from Notes'),
+              // _creationModeItem(title: 'Batch Creation'),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _creationModeItem({required String title, bool isActive = false}) {
+  Widget _creationModeItem({
+    required String title,
+    bool isActive = false,
+    VoidCallback? onTap,
+  }) {
     return Material(
       color: Colors.transparent,
       child: ListTile(
@@ -199,7 +214,7 @@ class FlashCardsManualCreationLeft extends StatelessWidget {
             fontWeight: isActive ? getFontWeight(500) : null,
           ),
         ),
-        onTap: () {},
+        onTap: onTap,
       ),
     );
   }

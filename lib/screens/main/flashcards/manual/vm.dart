@@ -35,12 +35,14 @@ List<String> flashCardsTextTypes = [
 class FlashCardsManualCreationVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   BuildContext context;
+  ManualFlashCardProps props;
   FlashCardDeck deck;
   FlashCardsManualCreationVm({
     required this.scaffoldKey,
     required this.context,
-    required this.deck,
-  }) : deckNameController = TextEditingController(text: deck.name);
+    required this.props,
+  }) : deckNameController = TextEditingController(text: props.deck.name),
+       deck = props.deck;
 
   TextEditingController deckNameController;
 
@@ -102,7 +104,11 @@ class FlashCardsManualCreationVm extends ChangeNotifier {
       await initFlashCard();
     } else {
       if (currentFlashCard == null) {
-        selectFlashCard(userFlashCards.first);
+        try {
+          selectFlashCard(userFlashCards[props.targetIndex!]);
+        } catch (err) {
+          selectFlashCard(userFlashCards.first);
+        }
       }
     }
     notifyListeners();
@@ -147,6 +153,7 @@ class FlashCardsManualCreationVm extends ChangeNotifier {
           deckId: deck.id!,
           front: defaultContent,
           back: defaultContent,
+          difficulty: FlashcardDifficulty.easy,
           createdAt: currentTimestamp,
           updatedAt: currentTimestamp,
         );
@@ -198,16 +205,16 @@ class FlashCardsManualCreationVm extends ChangeNotifier {
       final isFrontActive =
           frontFocusNode.hasFocus || currentSide == FlashCardsSide.front;
       final controller = isFrontActive ? frontController : backController;
-
+      final resizedPath = await compressImage(pickedFile.path, width: 400);
       // Insert image into editor
       final index = controller.selection.baseOffset;
+
       controller.replaceText(
         index,
         0,
-        BlockEmbed.image(pickedFile.path),
+        BlockEmbed.image(resizedPath),
         TextSelection.collapsed(offset: index + 1),
       );
-      // controller.insertEmbed(index, 'image', pickedFile.path);
 
       notifyListeners();
     } catch (e) {

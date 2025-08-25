@@ -200,4 +200,20 @@ int? getSessionProgress(CourseTimeline session) {
   return null;
 }
 
+Future<String> compressImage(String path, {int width = 400}) async {
+  final targetPath =
+      '${Directory.systemTemp.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+  final result = await FlutterImageCompress.compressAndGetFile(
+    path,
+    targetPath,
+    minWidth: width,
+    quality: 85,
+  );
+  return result?.path ?? path;
+}
 
+double getAverage(List<int> values) {
+  if (values.isEmpty) return 0;
+  double avg = values.reduce((a, b) => a + b) / values.length;
+  return double.parse(avg.toStringAsFixed(1));
+}

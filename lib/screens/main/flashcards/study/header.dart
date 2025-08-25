@@ -42,7 +42,7 @@ class FlashCardStudyHeader extends StatelessWidget {
                   child: Flexible(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         spacing: 10,
                         children: [
@@ -68,7 +68,7 @@ class FlashCardStudyHeader extends StatelessWidget {
                                     ),
                                   ),
                                   TextSpan(
-                                    text: 'Physics 101 FlashCards',
+                                    text: vm.deck.name,
                                     style: TextStyle(
                                       color: Color(0xFF374151),
                                       fontSize: 18,

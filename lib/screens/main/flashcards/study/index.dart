@@ -11,9 +11,14 @@ class FlashCardStudyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deck = ModalRoute.of(context)?.settings.arguments as FlashCardDeck;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = FlashCardStudyVm(scaffoldKey: _scaffoldKey);
+        final vm = FlashCardStudyVm(
+          scaffoldKey: _scaffoldKey,
+          context: context,
+          deck: deck,
+        );
         vm.initialize();
         return vm;
       },
@@ -110,6 +115,7 @@ class FlashCardStudyScreen extends StatelessWidget {
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              spacing: 15,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -138,7 +144,11 @@ class FlashCardStudyScreen extends StatelessWidget {
                   child: QuillEditor.basic(
                     controller:
                         isFront ? vm.frontController : vm.backController,
-                    config: QuillEditorConfig(minHeight: 300),
+                    config: QuillEditorConfig(
+                      minHeight: 300,
+                      maxHeight: 400,
+                      embedBuilders: FlutterQuillEmbeds.defaultEditorBuilders(),
+                    ),
                   ),
                 ),
                 Row(
@@ -177,35 +187,45 @@ class FlashCardStudyScreen extends StatelessWidget {
     return LayoutBuilder(
       builder: (_, constraints) {
         double width = constraints.maxWidth;
-        return Align(
-          alignment: Alignment.center,
-          child: WidthLimiter(
-            mobile: width * 0.8,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 16,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: LinearProgressIndicator(
-                    value: 4 / 12,
-                    backgroundColor: const Color(0xFFDBEAFE),
-                    valueColor: const AlwaysStoppedAnimation(Color(0xFF00555A)),
-                    borderRadius: BorderRadius.circular(4),
-                    minHeight: 4,
-                  ),
+        return Consumer<FlashCardStudyVm>(
+          builder: (_, vm, _) {
+            int reviewedCount = vm.reviewedCards.length;
+            int cardCount = vm.flashCards.length;
+            //TODO this errors when zero
+            double value = reviewedCount / cardCount;
+            return Align(
+              alignment: Alignment.center,
+              child: WidthLimiter(
+                mobile: width * 0.8,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 16,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: LinearProgressIndicator(
+                        value: value,
+                        backgroundColor: const Color(0xFFDBEAFE),
+                        valueColor: const AlwaysStoppedAnimation(
+                          Color(0xFF00555A),
+                        ),
+                        borderRadius: BorderRadius.circular(4),
+                        minHeight: 4,
+                      ),
+                    ),
+                    Text(
+                      'Card $reviewedCount of $cardCount',
+                      style: TextStyle(
+                        color: Color(0xFF4B5563),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
-                const Text(
-                  'Card 4 of 12',
-                  style: TextStyle(
-                    color: Color(0xFF4B5563),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -219,62 +239,56 @@ class FlashCardStudyScreen extends StatelessWidget {
           runSpacing: 15,
           alignment: WrapAlignment.center,
           children: [
-            AppButton(
-              onTap: () {},
-              text: 'Again',
-              mainAxisSize: MainAxisSize.min,
-              color: const Color(0xFFFEE2E2),
-              textColor: const Color(0xFFDC2626),
-              minHeight: 40,
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              prefix: SVGImagePlaceHolder(
-                imagePath: Images.refresh,
-                size: 16,
-                color: const Color(0xFFDC2626),
-              ),
-            ),
-            AppButton(
-              onTap: () {},
-              text: 'Hard',
-              mainAxisSize: MainAxisSize.min,
-              color: const Color(0xFFFFEDD5),
-              textColor: const Color(0xFFEA580C),
-              minHeight: 40,
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              prefix: Icon(
-                Icons.error,
-                color: const Color(0xFFEA580C),
-                size: 18,
-              ),
-            ),
-            AppButton(
-              onTap: () {},
-              text: 'Good',
-              mainAxisSize: MainAxisSize.min,
-              color: const Color(0xFFD1FAE5),
-              textColor: const Color(0xFF059669),
-              minHeight: 40,
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              prefix: Icon(
-                Icons.check,
-                color: const Color(0xFF059669),
-                size: 18,
-              ),
-            ),
-            AppButton(
-              onTap: () {},
-              text: 'Easy',
-              mainAxisSize: MainAxisSize.min,
-              color: const Color(0xFFD1FAE5),
-              textColor: const Color(0xFF059669),
-              minHeight: 40,
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              prefix: SVGImagePlaceHolder(
-                imagePath: Images.flash,
-                size: 16,
-                color: const Color(0xFF059669),
-              ),
-            ),
+            ...FlashcardDifficulty.values.map((difficulty) {
+              Color textColor = difficulty.textColor;
+              IconData? icon;
+              String? img;
+              switch (difficulty) {
+                case FlashcardDifficulty.again:
+                  img = Images.refresh;
+                  break;
+                case FlashcardDifficulty.easy:
+                  img = Images.flash;
+                  break;
+                case FlashcardDifficulty.medium:
+                  icon = Icons.check;
+                case FlashcardDifficulty.hard:
+                  icon = Icons.error;
+                  break;
+              }
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  AppButton(
+                    onTap: () => vm.updateCurrentCardDifficulty(difficulty),
+                    text: difficulty.toString(),
+                    mainAxisSize: MainAxisSize.min,
+                    color: difficulty.color,
+                    textColor: textColor,
+                    minHeight: 40,
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    prefix:
+                        img != null
+                            ? SVGImagePlaceHolder(
+                              imagePath: img,
+                              size: 16,
+                              color: textColor,
+                            )
+                            : Icon(icon, color: textColor, size: 18),
+                  ),
+                  if (vm.currentCard?.difficulty == difficulty)
+                    Positioned(
+                      right: 0,
+                      top: -5,
+                      child: Icon(
+                        Icons.check_circle,
+                        color: textColor,
+                        size: 18,
+                      ),
+                    ),
+                ],
+              );
+            }),
             AppButton(
               onTap: vm.flipCard,
               text: 'Flip Card',
@@ -290,7 +304,7 @@ class FlashCardStudyScreen extends StatelessWidget {
               ),
             ),
             AppButton(
-              onTap: () {},
+              onTap: vm.nextCardIndex,
               text: 'Skip',
               mainAxisSize: MainAxisSize.min,
               color: const Color(0xFFF3F4F6),

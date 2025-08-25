@@ -154,6 +154,7 @@ class FlashCardsManualCreationMain extends StatelessWidget {
         bool isActive = vm.currentSide == side;
         bool isFront = side == FlashCardsSide.front;
         Color color = isFront ? AppTheme.white : AppTheme.lightAsh;
+        double height = isActive ? 300 : 146;
         return _padInactive(
           isActive: isActive,
           child: CustomCard(
@@ -162,49 +163,49 @@ class FlashCardsManualCreationMain extends StatelessWidget {
             decoration: BoxDecoration(color: color),
             child: Stack(
               children: [
-                Column(
-                  spacing: 15,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    QuillEditor.basic(
-                      controller:
-                          isFront ? vm.frontController : vm.backController,
-                      focusNode: isFront ? vm.frontFocusNode : vm.backFocusNode,
-                      config: QuillEditorConfig(
-                        embedBuilders:
-                            FlutterQuillEmbeds.defaultEditorBuilders(),
-                        padding: EdgeInsets.all(20),
-                        minHeight: isActive ? 200 : 146,
-                        // scrollable: false,
-                        maxHeight: 300,
-                        placeholder:
-                            isFront
-                                ? 'Enter question or term...'
-                                : 'Enter answer or definition...',
-                        customStyles: DefaultStyles(
-                          placeHolder: DefaultTextBlockStyle(
-                            TextStyle(
-                              color: const Color(0xFFADAEBC),
-                              fontSize: isActive ? 18.0 : 14.0,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 1.43,
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    // spacing: 15,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      QuillEditor.basic(
+                        controller:
+                            isFront ? vm.frontController : vm.backController,
+                        focusNode:
+                            isFront ? vm.frontFocusNode : vm.backFocusNode,
+                        config: QuillEditorConfig(
+                          embedBuilders:
+                              FlutterQuillEmbeds.defaultEditorBuilders(),
+                          // padding: EdgeInsets.all(20),
+                          minHeight: height,
+                          maxHeight: height,
+                          placeholder:
+                              isFront
+                                  ? 'Enter question or term...'
+                                  : 'Enter answer or definition...',
+                          customStyles: DefaultStyles(
+                            placeHolder: DefaultTextBlockStyle(
+                              TextStyle(
+                                color: const Color(0xFFADAEBC),
+                                fontSize: isActive ? 18.0 : 14.0,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 1.43,
+                              ),
+                              HorizontalSpacing.zero,
+                              VerticalSpacing.zero,
+                              VerticalSpacing.zero,
+                              BoxDecoration(),
                             ),
-                            HorizontalSpacing.zero,
-                            VerticalSpacing.zero,
-                            VerticalSpacing.zero,
-                            BoxDecoration(),
                           ),
+                          autoFocus: isActive,
+                          showCursor: true,
                         ),
-                        autoFocus: isActive,
-                        showCursor: true,
                       ),
-                    ),
 
-                    if (isActive)
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: AppButton.text(
+                      if (isActive)
+                        AppButton.text(
                           onTap: vm.toggleSide,
                           text: 'Flip',
                           prefix: SVGImagePlaceHolder(
@@ -220,8 +221,8 @@ class FlashCardsManualCreationMain extends StatelessWidget {
                             height: 1,
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
                 if (!isActive)
                   Positioned(

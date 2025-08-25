@@ -1,3 +1,5 @@
+import 'package:navinotes/packages.dart';
+
 var educationLevel = [
   'High School',
   'Vocational Training',
@@ -193,6 +195,67 @@ enum NoteSortType {
         return 'updated_at';
       case createdAt:
         return 'created_at';
+    }
+  }
+}
+
+enum AIContentSource {
+  fromNotes,
+  upload,
+  textInput;
+
+  @override
+  String toString() {
+    switch (this) {
+      case fromNotes:
+        return '🗒️ From My Notes';
+      case upload:
+        return '📄 Upload Document';
+      case textInput:
+        return '✏️ Text Input';
+    }
+  }
+}
+
+enum FlashcardDifficulty {
+  again,
+  easy,
+  medium,
+  hard;
+
+  @override
+  String toString() {
+    switch (this) {
+      case easy:
+        return 'Easy';
+      case again:
+        return 'Again';
+      case medium:
+        return 'Good';
+      case hard:
+        return 'Hard';
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case again:
+        return const Color(0xFFFEE2E2);
+      case hard:
+        return const Color(0xFFFFEDD5);
+      default:
+        return const Color(0xFFD1FAE5);
+    }
+  }
+
+  Color get textColor {
+    switch (this) {
+      case again:
+        return const Color(0xFFDC2626);
+      case hard:
+        return const Color(0xFFEA580C);
+      default:
+        return const Color(0xFF059669);
     }
   }
 }

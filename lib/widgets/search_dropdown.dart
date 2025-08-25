@@ -6,14 +6,17 @@ class SearchDropdownField<T> extends StatelessWidget {
     required this.input,
     required this.suggestionsCallback,
     required this.itemBuilder,
+    this.controller,
   });
   final CustomInputField input;
   final FutureOr<List<T>?> Function(String) suggestionsCallback;
   final Widget Function(BuildContext, T) itemBuilder;
+  final TextEditingController? controller;
   @override
   Widget build(BuildContext context) {
     return TypeAheadField<T>(
       suggestionsCallback: suggestionsCallback,
+      controller: controller,
       builder: (_, controller, focusNode) {
         return CustomInputField(
           controller: controller,

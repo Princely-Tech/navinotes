@@ -18,11 +18,13 @@ class FlashCardDeck {
   final int createdAt;
   final int updatedAt;
   final int? syncedAt;
+  final int? lastStudied;
 
   FlashCardDeck({
     this.id,
     required this.guid,
     this.boardId,
+    this.lastStudied,
     required this.name,
     this.description,
     this.cardsPerDay = 20,
@@ -53,6 +55,7 @@ class FlashCardDeck {
     int? syncedAt,
   }) {
     return FlashCardDeck(
+      lastStudied: lastStudied,
       id: id ?? this.id,
       guid: guid ?? this.guid,
       boardId: boardId ?? this.boardId,
@@ -89,6 +92,7 @@ class FlashCardDeck {
     'created_at': createdAt,
     'updated_at': updatedAt,
     'synced_at': syncedAt,
+    'last_studied': lastStudied,
   };
 
   factory FlashCardDeck.fromMap(Map<String, dynamic> map) {
@@ -103,6 +107,7 @@ class FlashCardDeck {
 
     return FlashCardDeck(
       id: map['id'],
+      lastStudied: map['last_studied'],
       guid: map['guid'],
       boardId: map['board_id'],
       name: map['name'],
@@ -127,21 +132,5 @@ class FlashCardDeck {
       debugPrint('Error updating deck: $err');
       return null;
     }
-  }
-
-  factory FlashCardDeck.createNew({
-    required int boardId,
-    required String name,
-    String? description,
-  }) {
-    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    return FlashCardDeck(
-      guid: 'deck_${DateTime.now().millisecondsSinceEpoch}',
-      boardId: boardId,
-      name: name,
-      description: description,
-      createdAt: now,
-      updatedAt: now,
-    );
   }
 }

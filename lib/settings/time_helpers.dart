@@ -21,7 +21,7 @@ int generateUnixTimestamp() {
   return DateTime.now().millisecondsSinceEpoch ~/ 1000;
 }
 
-String formatPomodoroTime(int totalSeconds) {
+String formatTime(int totalSeconds) {
   final minutes = (totalSeconds ~/ 60).toString().padLeft(2, '0');
   final seconds = (totalSeconds % 60).toString().padLeft(2, '0');
   return '$minutes:$seconds';

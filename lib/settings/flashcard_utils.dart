@@ -74,3 +74,10 @@ Future<List<FlashCard>> fetchDeckFlashCards({
     return [];
   }
 }
+
+int countDifficultyFlashCards({
+  required List<FlashCard> cards,
+  required FlashcardDifficulty difficulty,
+}) {
+  return cards.where((card) => card.difficulty == difficulty).length;
+}

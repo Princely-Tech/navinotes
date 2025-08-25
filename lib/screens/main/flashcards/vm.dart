@@ -49,12 +49,29 @@ class FlashCardVm extends ChangeNotifier {
                         ),
                       ),
                       // Title
-                      Text(
-                        '${board.name} Decks',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        spacing: 15,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${board.name} Decks',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          AppButton(
+                            mainAxisSize: MainAxisSize.min,
+                            onTap: () => createNewDeck(board),
+                            loading: creatingDeck,
+                            text: 'Create New Deck',
+                            prefix: const Icon(
+                              Icons.add,
+                              color: AppTheme.white,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
                       // Decks list
@@ -109,7 +126,9 @@ class FlashCardVm extends ChangeNotifier {
   }
 
   Future<void> goToManualFlashCard(FlashCardDeck deck) async {
-    await NavigationHelper.navigateToManualFlashCard(deck);
+    await NavigationHelper.navigateToManualFlashCard(
+      ManualFlashCardProps(deck: deck),
+    );
     sessionVm.getAllBoard();
   }
 

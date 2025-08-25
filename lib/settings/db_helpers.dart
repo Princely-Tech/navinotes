@@ -82,6 +82,7 @@ class DatabaseHelper {
    CREATE TABLE flashcards (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   guid TEXT,
+  difficulty TEXT,
   deck_id INTEGER,
   front TEXT,
   back TEXT,
@@ -131,6 +132,7 @@ class DatabaseHelper {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       guid TEXT NOT NULL,
       board_id INTEGER,
+      last_studied INTEGER,
       name TEXT NOT NULL,
       description TEXT,
       cards_per_day INTEGER DEFAULT 20,

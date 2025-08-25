@@ -77,3 +77,4 @@ export 'package:external_path/external_path.dart';
 export 'package:permission_handler/permission_handler.dart';
 export 'package:flutter_flip_card/flutter_flip_card.dart';
 export 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
+export 'package:flutter_image_compress/flutter_image_compress.dart';

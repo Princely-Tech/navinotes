@@ -255,7 +255,7 @@ class NoteCreationRight extends StatelessWidget {
               spacing: 10,
               children: [
                 Text(
-                  formatPomodoroTime(pomodoroVm.elapsedSeconds),
+                  formatTime(pomodoroVm.elapsedSeconds),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: const Color(0xFF1F2937),

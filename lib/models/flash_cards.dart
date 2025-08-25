@@ -8,6 +8,7 @@ class FlashCard {
   List<Map<String, dynamic>> front;
   List<Map<String, dynamic>> back;
   String? tags;
+  FlashcardDifficulty difficulty;
   int createdAt;
   int updatedAt;
 
@@ -17,6 +18,7 @@ class FlashCard {
     required this.deckId,
     required this.front,
     required this.back,
+    required this.difficulty,
     this.tags,
     required this.createdAt,
     required this.updatedAt,
@@ -29,6 +31,7 @@ class FlashCard {
     'front': jsonEncode(front),
     'back': jsonEncode(back),
     'tags': tags,
+    'difficulty': difficulty.toString(),
     'created_at': createdAt,
     'updated_at': updatedAt,
   };
@@ -44,6 +47,7 @@ class FlashCard {
             : <Map<String, dynamic>>[];
 
     return FlashCard(
+      difficulty: stringToEnum(map['difficulty'], FlashcardDifficulty.values),
       id: map['id'],
       guid: map['guid'],
       deckId: map['deck_id'],
@@ -63,8 +67,10 @@ class FlashCard {
     List<Map<String, dynamic>>? back,
     String? tags,
     int? updatedAt,
+    FlashcardDifficulty? difficulty,
   }) {
     return FlashCard(
+      difficulty: difficulty ?? this.difficulty,
       id: id ?? this.id,
       guid: guid ?? this.guid,
       deckId: deckId ?? this.deckId,
@@ -76,36 +82,38 @@ class FlashCard {
     );
   }
 
-  FlashCard getUpdatedFlashCard({
-    List<Map<String, dynamic>>? front,
-    List<Map<String, dynamic>>? back,
-    String? tags,
-    int? updatedAt,
-    int? deckId,
-  }) {
-    return copyWith(
-      front: front,
-      back: back,
-      tags: tags,
-      updatedAt: updatedAt ?? DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      deckId: deckId,
-    );
-  }
+  // FlashCard getUpdatedFlashCard({
+  //   List<Map<String, dynamic>>? front,
+  //   List<Map<String, dynamic>>? back,
+  //   String? tags,
+  //   int? updatedAt,
+  //   int? deckId,
+  // }) {
+  //   return copyWith(
+  //     front: front,
+  //     back: back,
+  //     tags: tags,
+  //     updatedAt: updatedAt ?? DateTime.now().millisecondsSinceEpoch ~/ 1000,
+  //     deckId: deckId,
+  //   );
+  // }
 
   void setIDAfterCreate(int id) {
     this.id = id;
   }
 
   Future<int>? update({
-    required List<Map<String, dynamic>> front,
-    required List<Map<String, dynamic>> back,
+    List<Map<String, dynamic>>? front,
+    List<Map<String, dynamic>>? back,
     int? deckId,
+    FlashcardDifficulty? difficulty,
   }) {
     try {
-      FlashCard updated = getUpdatedFlashCard(
+      FlashCard updated = copyWith(
         front: front,
         back: back,
         deckId: deckId,
+        difficulty: difficulty,
       );
       return DatabaseHelper.instance.updateFlashCard(updated);
     } catch (err) {
@@ -122,6 +130,7 @@ class FlashCard {
   }) {
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     return FlashCard(
+      difficulty: FlashcardDifficulty.easy,
       guid: 'flashcard_${DateTime.now().millisecondsSinceEpoch}',
       deckId: deckId,
       front: front,

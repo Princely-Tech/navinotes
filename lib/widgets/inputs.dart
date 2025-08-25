@@ -11,6 +11,7 @@ class CustomInputField extends StatefulWidget {
     this.validator,
     // this.footer,
     this.required = false,
+    this.readOnly = false,
     this.optional = false,
     this.prefixIcon,
     this.suffixIcon,
@@ -53,6 +54,7 @@ class CustomInputField extends StatefulWidget {
   final List<String>? selectItems;
   final Color? fillColor;
   final TextStyle? style;
+  final bool readOnly;
   final TextStyle? hintStyle;
   final TextStyle? labelStyle;
   final BoxConstraints? constraints;

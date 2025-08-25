@@ -8,16 +8,98 @@ class FlashCardStudyVm extends ChangeNotifier {
     required this.scaffoldKey,
     required this.context,
     required this.deck,
-  });
+  }) : lastStudied = deck.lastStudied ?? generateUnixTimestamp();
+
+  int lastStudied;
+  Timer? lastStudiedTimer;
+
+  // int elapsedSeconds = 0;
+  ValueNotifier<int> elapsedSeconds = ValueNotifier<int>(0);
+  int cardResponseSeconds = 0;
+  Timer? sessionTimer;
+  Timer? cardResponseTimer;
+
+  List<int> cardResponseSecondsList = [];
+
+  void resetCardResponseTimer() {
+    if (cardResponseSeconds != 0) {
+      cardResponseSecondsList.add(cardResponseSeconds);
+      notifyListeners();
+    }
+    cardResponseSeconds = 0;
+    cardResponseTimer?.cancel();
+    cardResponseTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      cardResponseSeconds++;
+      notifyListeners();
+    });
+    notifyListeners();
+  }
+
+  void startSessionTimer() {
+    sessionTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      int updatedTime = elapsedSeconds.value += 1;
+      elapsedSeconds.value = updatedTime;
+    });
+  }
 
   QuillController frontController = QuillController.basic();
   QuillController backController = QuillController.basic();
 
   final flipCardController = FlipCardController();
+  int currentCardIndex = 0;
   List<FlashCard> reviewedCards = [];
   List<FlashCard> flashCards = [];
+  FlashCard? currentCard;
+
+  nextCardIndex() {
+    if (flashCards.isEmpty) return 0;
+    currentCardIndex = (currentCardIndex + 1) % flashCards.length;
+    FlashCard current = flashCards[currentCardIndex];
+    selectFlashCard(current);
+  }
 
   bool loading = true;
+
+  void updateCurrentCardDifficulty(FlashcardDifficulty difficulty) async {
+    if (currentCard != null) {
+      currentCard!.update(difficulty: difficulty);
+      loadDeckFlashCards();
+      nextCardIndex();
+    }
+  }
+
+  void selectFlashCard(FlashCard card) {
+    try {
+      currentCard = card;
+      frontController = QuillController(
+        document: safeDocFromJson(card.front),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+
+      backController = QuillController(
+        document: safeDocFromJson(card.back),
+        selection: const TextSelection.collapsed(offset: 0),
+      );
+      updateReviewedCard(card);
+      resetCardResponseTimer();
+    } catch (err) {
+      debugPrint('Error loading flashcard: $err');
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Failed to load flashcard',
+        );
+      }
+    }
+    notifyListeners();
+  }
+
+  void updateReviewedCard(FlashCard card) {
+    final exists = reviewedCards.any((c) => c.id == card.id);
+    if (!exists) {
+      reviewedCards.add(card);
+    }
+  }
 
   void updateLoading(bool value) {
     loading = value;
@@ -32,19 +114,19 @@ class FlashCardStudyVm extends ChangeNotifier {
     frontController.readOnly = true;
     backController.readOnly = true;
     notifyListeners();
-    loadDeckFlashCards();
+    loadDeckFlashCards(initialize: true);
   }
 
-  Future<void> loadDeckFlashCards() async {
+  void updateDeckLastStudied() {}
+
+  Future<void> loadDeckFlashCards({bool initialize = false}) async {
     flashCards = await fetchDeckFlashCards(context: context, deck: deck);
-    
-    // if (userFlashCards.isEmpty) {
-    //   await initFlashCard();
-    // } else {
-    //   if (currentFlashCard == null) {
-    //     selectFlashCard(userFlashCards.first);
-    //   }
-    // }
+    if (initialize) {
+      if (flashCards.isNotEmpty) {
+        selectFlashCard(flashCards[0]);
+      }
+      startSessionTimer();
+    }
     notifyListeners();
     updateLoading(false);
   }
@@ -57,6 +139,9 @@ class FlashCardStudyVm extends ChangeNotifier {
   void dispose() {
     frontController.dispose();
     backController.dispose();
+    lastStudiedTimer?.cancel();
+    sessionTimer?.cancel();
+    cardResponseTimer?.cancel();
     super.dispose();
   }
 }

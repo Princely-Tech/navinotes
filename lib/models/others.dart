@@ -21,3 +21,12 @@ class NoteCreationProp {
     required this.template,
   });
 }
+
+class ManualFlashCardProps {
+  final FlashCardDeck deck;
+  final int? targetIndex;
+  ManualFlashCardProps({
+    required this.deck,
+    this.targetIndex,
+  });
+}

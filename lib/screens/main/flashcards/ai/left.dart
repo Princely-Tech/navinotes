@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/flashcards/ai/vm.dart';
 
 class FlashCardAiCreationLeft extends StatelessWidget {
   const FlashCardAiCreationLeft({super.key});
@@ -6,7 +7,10 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(right: BorderSide(color: AppTheme.lightGray)),
+      ),
       child: Column(
         children: [
           Expanded(
@@ -15,28 +19,27 @@ class FlashCardAiCreationLeft extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16),
-
                   // CREATION MODE
                   _sectionTitle('CREATION MODE'),
                   _smallVGap(),
                   _buildModeOptions(),
 
+                  // _divider(),
                   const SizedBox(height: 24),
 
                   // AI CONTENT SOURCE
                   _sectionTitle('AI CONTENT SOURCE'),
                   _smallVGap(),
-                  _buildContentSources(),
+                  Column(
+                    children:
+                        AIContentSource.values
+                            .map((item) => _contentSourceRow(item))
+                            .toList(),
+                  ),
 
                   const SizedBox(height: 24),
 
-                  // SELECT NOTES
-                  _sectionTitle('SELECT NOTES'),
-                  _smallVGap(),
-                  _buildNotebookSelector(),
-                  _buildNoteList(),
-
+                  _returnCreationModeSection(),
                   const SizedBox(height: 24),
 
                   // GENERATION SETTINGS
@@ -59,6 +62,87 @@ class FlashCardAiCreationLeft extends StatelessWidget {
     );
   }
 
+  Widget _uploadSection() {
+    return Column();
+  }
+
+  Widget _textInputSection() {
+    return Column();
+  }
+
+  Widget _returnCreationModeSection() {
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (_, vm, _) {
+        switch (vm.selectedAISource) {
+          case AIContentSource.fromNotes:
+            return _notesSection();
+          case AIContentSource.upload:
+            return _uploadSection();
+          case AIContentSource.textInput:
+            return _textInputSection();
+        }
+      },
+    );
+  }
+
+  Widget _notesSection() {
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (_, vm, _) {
+        return FutureBuilder(
+          future: DatabaseHelper.instance.getAllBoards(),
+          builder: (_, asyncSnapshot) {
+            if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (asyncSnapshot.hasError) {
+              return Text(
+                'Could not fetch notebooks',
+                style: AppTheme.text.copyWith(color: AppTheme.coralRed),
+              );
+            }
+            if (asyncSnapshot.data != null) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _sectionTitle('SELECT NOTES'),
+                  _smallVGap(),
+                  // _buildNotebookSelector(),
+                  SearchDropdownField<Board>(
+                    controller: vm.noteBookController,
+                    suggestionsCallback: (search) {
+                      return asyncSnapshot.data!
+                          .where((item) => checkStringMatch(item.name, search))
+                          .toList();
+                    },
+                    itemBuilder: (_, item) {
+                      return CustomListTile(
+                        onTap: () {
+                          vm.updateNoteBookControllerText(item.name);
+                        },
+                        title: item.name,
+                        color: AppTheme.steelMist,
+                        activeColor: AppTheme.strongBlue,
+                      );
+                    },
+                    input: CustomInputField(
+                      suffixIcon: Icon(Icons.keyboard_arrow_down),
+                      label: 'Notebook',
+                    ),
+                  ),
+                  _buildNoteList(),
+                ],
+              );
+            }
+            return const Center();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _divider() =>
+      const Divider(color: Color(0xFFE5E7EB), thickness: 1, height: 48);
+
   /* ──────────  Helpers  ────────── */
 
   Widget _sectionTitle(String text) => Text(
@@ -76,26 +160,35 @@ class FlashCardAiCreationLeft extends StatelessWidget {
 
   /* ──────────  CREATION MODE  ────────── */
   Widget _buildModeOptions() {
-    return Column(
-      children: [
-        _selectableRow(text: 'Manual Creation', selected: false),
-        _selectableRow(text: 'AI-Assisted', selected: true),
-        _selectableRow(text: 'Import from Notes', selected: false),
-        _selectableRow(text: 'Batch Creation', selected: false),
-      ],
-    );
-  }
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (_, vm, _) {
+        return Column(
+          spacing: 8,
+          children: [
+            InkWell(
+              onTap:
+                  () => NavigationHelper.navigateToManualFlashCard(
+                    ManualFlashCardProps(deck: vm.deck),
+                    replace: true,
+                  ),
+              child: _selectableRow(
+                text: 'Manual Creation',
+                selected: false,
+                icon: Images.edit,
+              ),
+            ),
 
-  /* ──────────  AI CONTENT SOURCE  ────────── */
-  Widget _buildContentSources() {
-    return Column(
-      children: [
-        _radioRow(text: '🗒️ From My Notes', selected: true),
-        _radioRow(text: '📄 Upload Document'),
-        _radioRow(text: '✏️ Text Input'),
-        _radioRow(text: '🔗 From URL'),
-        _radioRow(text: '🎤 Audio Transcript'),
-      ],
+            _selectableRow(
+              text: 'AI-Assisted',
+              selected: true,
+              icon: Images.aiBot,
+            ),
+
+            // _selectableRow(text: 'Import from Notes', selected: false),
+            // _selectableRow(text: 'Batch Creation', selected: false),
+          ],
+        );
+      },
     );
   }
 
@@ -310,89 +403,102 @@ class FlashCardAiCreationLeft extends StatelessWidget {
 
   /* ──────────  Re-usable UI bits  ────────── */
 
-  Widget _selectableRow({required String text, bool selected = false}) {
+  Widget _selectableRow({
+    required String text,
+    required String icon,
+    bool selected = false,
+  }) {
+    Color color = selected ? const Color(0xFF0F766E) : const Color(0xFF374151);
     return Container(
-      height: 40,
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: ShapeDecoration(
-        color: selected ? const Color(0xFFF0FDFA) : Colors.transparent,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(color: Color(0xFFE5E7EB)),
-          borderRadius: BorderRadius.circular(6),
+      // height: 40,
+      // margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      color: selected ? const Color(0xFFF0FDFA) : Colors.transparent,
+      // decoration: ShapeDecoration(
+
+      //   shape: RoundedRectangleBorder(
+      //     side: const BorderSide(color: Color(0xFFE5E7EB)),
+      //     borderRadius: BorderRadius.circular(6),
+      //   ),
+      // ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          spacing: 8,
+          children: [
+            SVGImagePlaceHolder(imagePath: icon, size: 16, color: color),
+
+            Text(
+              text,
+              style: TextStyle(
+                color: color,
+                fontSize: 16,
+                fontWeight: selected ? FontWeight.w500 : FontWeight.w400,
+                fontFamily: 'Inter',
+              ),
+            ),
+          ],
         ),
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 12),
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFE5E7EB)),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(
-              color:
-                  selected ? const Color(0xFF0F766E) : const Color(0xFF374151),
-              fontSize: 16,
-              fontWeight: selected ? FontWeight.w500 : FontWeight.w400,
-              fontFamily: 'Inter',
-            ),
-          ),
-        ],
       ),
     );
   }
 
-  Widget _radioRow({required String text, bool selected = false}) {
-    return Container(
-      height: 40,
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(color: Color(0xFFE5E7EB)),
-          borderRadius: BorderRadius.circular(6),
-        ),
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 8),
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: selected ? const Color(0xFF0075FF) : Colors.black54,
-                width: 0.5,
-              ),
+  Widget _contentSourceRow(AIContentSource source) {
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (_, vm, _) {
+        bool selected = source == vm.selectedAISource;
+        return InkWell(
+          onTap: () => vm.updateSelectedAiSource(source),
+          child: Container(
+            // height: 40,
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            // decoration: ShapeDecoration(
+            //   shape: RoundedRectangleBorder(
+            //     side: const BorderSide(color: Color(0xFFE5E7EB)),
+            //     borderRadius: BorderRadius.circular(6),
+            //   ),
+            // ),
+            child: Row(
+              spacing: 8,
+              children: [
+                Container(
+                  width: 16,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color:
+                          selected ? const Color(0xFF0075FF) : Colors.black54,
+                      width: 0.5,
+                    ),
+                  ),
+                  child:
+                      selected
+                          ? const Center(
+                            child: Icon(
+                              Icons.circle,
+                              size: 10,
+                              color: Color(0xFF0075FF),
+                            ),
+                          )
+                          : null,
+                ),
+
+                Expanded(
+                  child: Text(
+                    source.toString(),
+                    style: const TextStyle(
+                      color: Color(0xFF1F2937),
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                ),
+              ],
             ),
-            child:
-                selected
-                    ? const Center(
-                      child: Icon(
-                        Icons.circle,
-                        size: 10,
-                        color: Color(0xFF0075FF),
-                      ),
-                    )
-                    : null,
           ),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: const TextStyle(
-              color: Color(0xFF1F2937),
-              fontSize: 16,
-              fontFamily: 'Inter',
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

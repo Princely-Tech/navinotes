@@ -13,13 +13,13 @@ class FlashCardsManualCreationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deck = ModalRoute.of(context)?.settings.arguments as FlashCardDeck;
+    final props = ModalRoute.of(context)?.settings.arguments as ManualFlashCardProps;
     return ChangeNotifierProvider(
       create: (context) {
         final vm = FlashCardsManualCreationVm(
           scaffoldKey: _scaffoldKey,
           context: context,
-          deck: deck,
+          props: props,
         );
         vm.initialize();
         return vm;

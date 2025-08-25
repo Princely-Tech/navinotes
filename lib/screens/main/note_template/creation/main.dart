@@ -227,7 +227,7 @@ class NoteCreationMain extends StatelessWidget {
           color: AppTheme.stormGray,
         ),
         Text(
-          formatPomodoroTime(pomodorVm.elapsedSeconds),
+          formatTime(pomodorVm.elapsedSeconds),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: const Color(0xFF4B5563),

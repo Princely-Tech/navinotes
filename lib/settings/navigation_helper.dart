@@ -129,8 +129,30 @@ class NavigationHelper {
     return NavigationHelper.push(route, arguments: board);
   }
 
-  static navigateToManualFlashCard(FlashCardDeck deck) {
-    push(Routes.flashCardsManualCreation, arguments: deck);
+  static navigateToManualFlashCard(
+    ManualFlashCardProps props, {
+    bool replace = false,
+  }) {
+    if (replace) {
+      return NavigationHelper.pushReplacement(
+        Routes.flashCardsManualCreation,
+        arguments: props,
+      );
+    }
+    return NavigationHelper.push(
+      Routes.flashCardsManualCreation,
+      arguments: props,
+    );
+  }
+
+  static navigateToAiFlashCard(FlashCardDeck deck, {bool replace = false}) {
+    if (replace) {
+      return NavigationHelper.pushReplacement(
+        Routes.flashCardAiCreation,
+        arguments: deck,
+      );
+    }
+    return push(Routes.flashCardAiCreation, arguments: deck);
   }
 
   static Future navigateToBoardPopup(Board board, {bool replace = false}) {
