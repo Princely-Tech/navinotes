@@ -1,74 +1,52 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/flashcards/ai/vm.dart';
 
 class FlashCardAiCreationRight extends StatelessWidget {
   const FlashCardAiCreationRight({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const teal = Color(0xFF0D9488);
-    const gray100 = Color(0xFFF3F4F6);
-    const gray300 = Color(0xFFE5E7EB);
-    const gray500 = Color(0xFF6B7280);
-    const gray700 = Color(0xFF1F2937);
-
     return Container(
-      color: Colors.white,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(left: BorderSide(color: AppTheme.lightGray)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _sectionHeader(title: 'Cards in Deck', trailing: '12 cards'),
 
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ── Cards in Deck section ------------------------------------------
-                  _sectionHeader(title: 'Cards in Deck', trailing: '12 cards'),
-                  const SizedBox(height: 16),
-                  _flashCard(
-                    title1: 'What is the function of',
-                    title2: 'neurons in the brain?',
-                    progress: '95%',
-                    source: 'Memory Formation notes',
-                  ),
-                  const SizedBox(height: 12),
-                  _flashCard(
-                    title1: 'Define neurotransmitters and',
-                    title2: 'their role',
-                    progress: '78%',
-                    source: 'Neural Networks notes',
-                  ),
-                  const SizedBox(height: 12),
-                  _flashCard(
-                    title1: 'Explain the concept of',
-                    title2: 'neuroplasticity',
-                    progress: '92%',
-                    source: 'Memory Formation notes',
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      'Show all 12 cards',
-                      style: const TextStyle(color: teal, fontSize: 14),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _flashCard(
+                      title1: 'What is the function of',
+                      title2: 'neurons in the brain?',
+                      progress: '95%',
+                      source: 'Memory Formation notes',
                     ),
-                  ),
 
-                  const SizedBox(height: 40),
+                    // const SizedBox(height: 40),
 
-                  // ── Generation Analytics section -----------------------------------
-                  _sectionHeader(title: 'Generation Analytics'),
-                  const SizedBox(height: 16),
-                  _analyticsCard(),
+                    // // ── Generation Analytics section -----------------------------------
+                    // _sectionHeader(title: 'Generation Analytics'),
+                    // const SizedBox(height: 16),
+                    // _analyticsCard(),
 
-                  const SizedBox(height: 40),
+                    // const SizedBox(height: 40),
 
-                  // ── Action buttons -------------------------------------------------
-                  _actionButtons(),
-                ],
+                    // ── Action buttons -------------------------------------------------
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+            _actionButtons(),
+          ],
+        ),
       ),
     );
   }
@@ -309,43 +287,24 @@ class FlashCardAiCreationRight extends StatelessWidget {
   }
 
   Widget _actionButtons() {
-    const teal = Color(0xFF0D9488);
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (_, vm, _) {
+        bool hasCards = vm.generatedFlashCards.isNotEmpty;
+        return Column(
+          spacing: 12,
+          children: [
+            AppButton(
+              onTap: () {},
+              text: hasCards ? 'Generate more cards' : 'Generate cards',
+            ),
 
-    return Column(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: 40,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: teal,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-            ),
-            onPressed: () {},
-            child: const Text('Generate more cards'),
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          width: double.infinity,
-          height: 40,
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: teal),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-            ),
-            onPressed: () {},
-            child: const Text(
-              'Improve low confidence cards',
-              style: TextStyle(color: teal),
-            ),
-          ),
-        ),
-      ],
+            // AppButton.secondary(
+            //   onTap: () {},
+            //   text: 'Improve low confidence cards',
+            // ),
+          ],
+        );
+      },
     );
   }
 }

@@ -11,6 +11,7 @@ class CustomInputField extends StatefulWidget {
     this.validator,
     // this.footer,
     this.required = false,
+    this.isMultipleSelect = false,
     this.readOnly = false,
     this.optional = false,
     this.prefixIcon,
@@ -34,7 +35,7 @@ class CustomInputField extends StatefulWidget {
 
   final String? label;
   final Widget? labelRight;
-  // final bool isTextArea;
+  final bool isMultipleSelect;
   // final bool isRectangle;
   final String? hintText;
   final bool optional;
@@ -67,6 +68,25 @@ class CustomInputField extends StatefulWidget {
 }
 
 class _CustomInputFieldState extends State<CustomInputField> {
+  List<String> selectedItems = [];
+
+  void updateSelectedItem(String item) {
+    setState(() {
+      if (widget.isMultipleSelect) {
+        if (selectedItems.contains(item)) {
+          selectedItems.remove(item);
+        } else {
+          selectedItems.add(item);
+        }
+      } else {
+        selectedItems = [item];
+      }
+
+      widget.controller.text = selectedItems.join(",");
+      widget.onChanged?.call(selectedItems.join(","));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.wrapWithExpanded ? Expanded(child: _body()) : _body();
@@ -239,16 +259,24 @@ class _CustomInputFieldState extends State<CustomInputField> {
             width: double.maxFinite,
             child: ListView(
               shrinkWrap: true,
+              //TODO active one doesnt update realtime
               children:
                   widget.selectItems!
                       .map(
-                        (item) => ListTile(
-                          title: Text(item),
-                          onTap: () {
-                            widget.controller.text = item;
-                            widget.onChanged?.call(item);
-                            Navigator.pop(context);
-                          },
+                        (item) => Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: CustomListTile(
+                            title: item,
+                            color: AppTheme.steelMist,
+                            activeColor: AppTheme.strongBlue,
+                            isActive: selectedItems.contains(item),
+                            onTap: () {
+                              updateSelectedItem(item);
+                              if (!widget.isMultipleSelect) {
+                                Navigator.pop(context);
+                              }
+                            },
+                          ),
                         ),
                       )
                       .toList(),

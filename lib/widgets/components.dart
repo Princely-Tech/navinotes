@@ -127,7 +127,7 @@ class ImagePlaceHolder extends StatelessWidget {
       // prefix the path with env('FILE_URL') if the path is not a full url
       if (!imagePath.startsWith('http')) {
         imageURL = '${EnvironmentConfig.fileUrl}/$imagePath';
-      } 
+      }
 
       return Image.network(
         height: size,
@@ -308,7 +308,10 @@ class OutlinedChild extends StatelessWidget {
         borderRadius: decoration.shape == BoxShape.circle ? null : borderRadius,
         // border: decoration.border,
       ),
-      child: onTap != null ? InkWell(onTap: onTap, child: Center(child: child)) : Center(child: child),
+      child:
+          onTap != null
+              ? InkWell(onTap: onTap, child: Center(child: child))
+              : Center(child: child),
     );
   }
 }

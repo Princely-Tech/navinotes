@@ -11,9 +11,15 @@ class FlashCardAiCreationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final deck = ModalRoute.of(context)?.settings.arguments as FlashCardDeck;
     return ChangeNotifierProvider(
-      create:
-          (context) =>
-              FlashCardAiCreationVm(scaffoldKey: _scaffoldKey, deck: deck),
+      create: (context) {
+        final vm = FlashCardAiCreationVm(
+          scaffoldKey: _scaffoldKey,
+          deck: deck,
+          context: context,
+        );
+        vm.initialize();
+        return vm;
+      },
       child: ScaffoldFrame(
         backgroundColor: const Color(0xFFF9FAFB),
         scaffoldKey: _scaffoldKey,

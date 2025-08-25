@@ -41,18 +41,15 @@ class FlashCardAiCreationLeft extends StatelessWidget {
 
                   _returnCreationModeSection(),
                   const SizedBox(height: 24),
-
-                  // GENERATION SETTINGS
                   _sectionTitle('GENERATION SETTINGS'),
                   _smallVGap(),
                   _buildSettings(),
+                  // const SizedBox(height: 24),
 
-                  const SizedBox(height: 24),
-
-                  // DECK MANAGEMENT
-                  _sectionTitle('DECK MANAGEMENT'),
-                  _smallVGap(),
-                  _buildDeckManagement(),
+                  // // DECK MANAGEMENT
+                  // _sectionTitle('DECK MANAGEMENT'),
+                  // _smallVGap(),
+                  // _buildDeckManagement(),
                 ],
               ),
             ),
@@ -88,53 +85,39 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   Widget _notesSection() {
     return Consumer<FlashCardAiCreationVm>(
       builder: (_, vm, _) {
-        return FutureBuilder(
-          future: DatabaseHelper.instance.getAllBoards(),
-          builder: (_, asyncSnapshot) {
-            if (asyncSnapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (asyncSnapshot.hasError) {
-              return Text(
-                'Could not fetch notebooks',
-                style: AppTheme.text.copyWith(color: AppTheme.coralRed),
-              );
-            }
-            if (asyncSnapshot.data != null) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _sectionTitle('SELECT NOTES'),
-                  _smallVGap(),
-                  // _buildNotebookSelector(),
-                  SearchDropdownField<Board>(
-                    controller: vm.noteBookController,
-                    suggestionsCallback: (search) {
-                      return asyncSnapshot.data!
-                          .where((item) => checkStringMatch(item.name, search))
-                          .toList();
-                    },
-                    itemBuilder: (_, item) {
-                      return CustomListTile(
-                        onTap: () {
-                          vm.updateNoteBookControllerText(item.name);
-                        },
-                        title: item.name,
-                        color: AppTheme.steelMist,
-                        activeColor: AppTheme.strongBlue,
-                      );
-                    },
-                    input: CustomInputField(
-                      suffixIcon: Icon(Icons.keyboard_arrow_down),
-                      label: 'Notebook',
-                    ),
-                  ),
-                  _buildNoteList(),
-                ],
-              );
-            }
-            return const Center();
-          },
+        if (vm.gettingAllBoards) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _sectionTitle('SELECT NOTES'),
+            _smallVGap(),
+            // _buildNotebookSelector(),
+            SearchDropdownField<Board>(
+              controller: TextEditingController(text: vm.selectedBoard?.name),
+              suggestionsCallback: (search) {
+                return vm.allBoards
+                    .where((item) => checkStringMatch(item.name, search))
+                    .toList();
+              },
+              itemBuilder: (_, item) {
+                return CustomListTile(
+                  onTap: () {
+                    vm.updateNoteBookControllerText(item);
+                  },
+                  title: item.name,
+                  color: AppTheme.steelMist,
+                  activeColor: AppTheme.strongBlue,
+                );
+              },
+              input: CustomInputField(
+                suffixIcon: Icon(Icons.keyboard_arrow_down),
+                label: 'Notebook',
+              ),
+            ),
+            if (vm.selectedBoard != null) _buildNoteList(),
+          ],
         );
       },
     );
@@ -219,98 +202,128 @@ class FlashCardAiCreationLeft extends StatelessWidget {
       'Cognitive Functions',
     ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 12),
-        const Text(
-          'Available notes',
-          style: TextStyle(
-            color: Color(0xFF4B5563),
-            fontSize: 14,
-            fontFamily: 'Inter',
-          ),
-        ),
-        const SizedBox(height: 4),
-        SizedBox(
-          height: 156,
-          child: ListView.separated(
-            itemCount: notes.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 4),
-            itemBuilder:
-                (_, i) => _checkableRow(text: notes[i], selected: i < 2),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Text(
-              'Select All',
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (_, vm, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 12),
+            const Text(
+              'Available notes',
               style: TextStyle(
-                color: Color(0xFF0D9488),
-                fontSize: 12,
+                color: Color(0xFF4B5563),
+                fontSize: 14,
                 fontFamily: 'Inter',
               ),
             ),
-            Text(
-              'Deselect All',
-              style: TextStyle(
-                color: Color(0xFF0D9488),
-                fontSize: 12,
-                fontFamily: 'Inter',
+            const SizedBox(height: 4),
+            Container(
+              constraints: BoxConstraints(maxHeight: 300),
+              child: SingleChildScrollView(
+                child: Column(
+                  children:
+                      vm.allContent.map((item) {
+                        return _checkableRow(
+                          text: item.title,
+                          onTap: () => vm.updateSelectedContents(item),
+                          selected: vm.selectedContent.contains(item),
+                        );
+                      }).toList(),
+                ),
               ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              spacing: 15,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppButton.text(
+                  onTap: vm.selectAllContents,
+                  text: 'Select All',
+                  style: TextStyle(
+                    color: Color(0xFF0D9488),
+                    fontSize: 12,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+                AppButton.text(
+                  onTap: vm.deselectAllContents,
+                  text: 'Deselect All',
+                  style: TextStyle(
+                    color: Color(0xFF0D9488),
+                    fontSize: 12,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
   /* ──────────  GENERATION SETTINGS  ────────── */
   Widget _buildSettings() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _sliderField('Number of cards', 12),
-        const SizedBox(height: 16),
-        _dropdownField('Difficulty level'),
-        const SizedBox(height: 16),
-        const Text(
-          'Card types',
-          style: TextStyle(
-            color: Color(0xFF4B5563),
-            fontSize: 14,
-            fontFamily: 'Inter',
-          ),
-        ),
-        const SizedBox(height: 4),
-        _buildCardTypes(),
-        const SizedBox(height: 16),
-        const Text(
-          'Focus on',
-          style: TextStyle(
-            color: Color(0xFF4B5563),
-            fontSize: 14,
-            fontFamily: 'Inter',
-          ),
-        ),
-        const SizedBox(height: 4),
-        _buildFocusTags(),
-      ],
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (_, vm, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _sliderField(),
+            const SizedBox(height: 16),
+            CustomInputField(
+              controller: vm.difficultyController,
+              selectItems:
+                  FlashcardDifficulty.values.map((e) => e.toString()).toList(),
+              label: 'Difficulty level',
+              isMultipleSelect: true,
+            ),
+
+            const SizedBox(height: 16),
+            const Text(
+              'Card types',
+              style: TextStyle(
+                color: Color(0xFF4B5563),
+                fontSize: 14,
+                fontFamily: 'Inter',
+              ),
+            ),
+            const SizedBox(height: 4),
+            _buildCardTypes(),
+            // const SizedBox(height: 16),
+            // const Text(
+            //   'Focus on',
+            //   style: TextStyle(
+            //     color: Color(0xFF4B5563),
+            //     fontSize: 14,
+            //     fontFamily: 'Inter',
+            //   ),
+            // ),
+            // const SizedBox(height: 4),
+            // _buildFocusTags(),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildCardTypes() {
-    final types = [
-      ('Question & Answer', true),
-      ('Definition & Term', true),
-      ('Multiple Choice', false),
-      ('True/False', false),
-    ];
-    return Column(
-      children:
-          types.map((e) => _checkableRow(text: e.$1, selected: e.$2)).toList(),
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (_, vm, _) {
+        return Column(
+          children:
+              vm.cardTypes
+                  .map(
+                    (e) => _checkableRow(
+                      text: e,
+                      selected: vm.selectedCardTypes.contains(e),
+                      onTap: () => vm.updateSelectedCardTypes(e),
+                    ),
+                  )
+                  .toList(),
+        );
+      },
     );
   }
 
@@ -502,54 +515,63 @@ class FlashCardAiCreationLeft extends StatelessWidget {
     );
   }
 
-  Widget _checkableRow({required String text, bool selected = false}) {
-    return Container(
-      height: 36,
-      decoration: ShapeDecoration(
+  Widget _checkableRow({
+    required String text,
+    bool selected = false,
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
         color: const Color(0xFFF9FAFB),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(color: Color(0xFFE5E7EB)),
-          borderRadius: BorderRadius.circular(6),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        margin: EdgeInsets.only(bottom: 10),
+        // decoration: ShapeDecoration(
+        //   color: const Color(0xFFF9FAFB),
+        //   shape: RoundedRectangleBorder(
+        //     side: const BorderSide(color: Color(0xFFE5E7EB)),
+        //     borderRadius: BorderRadius.circular(6),
+        //   ),
+        // ),
+        child: Row(
+          children: [
+            const SizedBox(width: 8),
+            Container(
+              width: 16,
+              height: 16,
+              decoration: BoxDecoration(
+                color: selected ? const Color(0xFF0075FF) : Colors.white,
+                border: Border.all(width: 0.5),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child:
+                  selected
+                      ? const Icon(Icons.check, size: 12, color: Colors.white)
+                      : null,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              text,
+              style: const TextStyle(
+                color: Color(0xFF1F2937),
+                fontSize: 14,
+                fontFamily: 'Inter',
+              ),
+            ),
+          ],
         ),
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 8),
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: selected ? const Color(0xFF0075FF) : Colors.white,
-              border: Border.all(width: 0.5),
-              borderRadius: BorderRadius.circular(2),
-            ),
-            child:
-                selected
-                    ? const Icon(Icons.check, size: 12, color: Colors.white)
-                    : null,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: const TextStyle(
-              color: Color(0xFF1F2937),
-              fontSize: 14,
-              fontFamily: 'Inter',
-            ),
-          ),
-        ],
       ),
     );
   }
 
-  Widget _sliderField(String label, int value) {
-    return Builder(
-      builder: (context) {
+  Widget _sliderField() {
+    return Consumer<FlashCardAiCreationVm>(
+      builder: (context, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              label,
+              'Number of cards',
               style: const TextStyle(
                 color: Color(0xFF4B5563),
                 fontSize: 14,
@@ -558,6 +580,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Row(
+              spacing: 8,
               children: [
                 Expanded(
                   child: SliderTheme(
@@ -569,19 +592,20 @@ class FlashCardAiCreationLeft extends StatelessWidget {
                       overlayShape: SliderComponentShape.noOverlay,
                     ),
                     child: Slider(
-                      value: value.toDouble(),
+                      value: vm.numberOfCards.toDouble(),
                       min: 0,
                       max: 30,
                       divisions: 30,
                       activeColor: const Color(0xFF0075FF),
                       inactiveColor: const Color(0xFFE5E5E5),
-                      onChanged: (_) {},
+                      onChanged:
+                          (value) => vm.updateNumberOfCards(value.toInt()),
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+
                 Text(
-                  '$value',
+                  vm.numberOfCards.toString(),
                   style: const TextStyle(
                     color: Color(0xFF1F2937),
                     fontSize: 14,
