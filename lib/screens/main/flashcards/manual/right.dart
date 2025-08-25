@@ -71,16 +71,14 @@ class FlashCardsManualCreationRight extends StatelessWidget {
         final flashcards = vm.userFlashCards;
         final card = flashcards[index];
         final isActive = card.id == vm.currentFlashCard?.id;
-        QuillController frontController = QuillController(
-          document: safeDocFromJson(card.front),
-          selection: const TextSelection.collapsed(offset: 0),
-        );
-        QuillController backController = QuillController(
-          document: safeDocFromJson(card.back),
-          selection: const TextSelection.collapsed(offset: 0),
-        );
-        final frontText = frontController.document.toPlainText().trim();
-        final backText = backController.document.toPlainText().trim();
+
+        // QuillController backController = QuillController(
+        //   document: safeDocFromJson(card.back),
+        //   selection: const TextSelection.collapsed(offset: 0),
+        // );
+        // final frontText = frontController.document.toPlainText().trim();
+        final frontText = plainTextFromQuillJson(card.front);
+        final backText = plainTextFromQuillJson(card.back);
         return GestureDetector(
           onTap: () => vm.selectFlashCard(card),
           child: CustomCard(

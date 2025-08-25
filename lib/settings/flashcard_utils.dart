@@ -1,4 +1,6 @@
+import 'package:flutter_quill/quill_delta.dart';
 import 'package:navinotes/packages.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 
 Document safeDocFromJson(List<Map<String, dynamic>> json) {
   try {
@@ -80,4 +82,50 @@ int countDifficultyFlashCards({
   required FlashcardDifficulty difficulty,
 }) {
   return cards.where((card) => card.difficulty == difficulty).length;
+}
+
+String plainTextFromQuillJson(List<Map<String, dynamic>> json) {
+  QuillController controller = QuillController(
+    document: safeDocFromJson(json),
+    selection: const TextSelection.collapsed(offset: 0),
+  );
+  return controller.document.toPlainText().trim();
+}
+
+String getPlainTextFromDelta(String jsonContent) {
+  try {
+    final List<dynamic> deltaJson = jsonDecode(jsonContent);
+    final Delta delta = Delta.fromJson(deltaJson);
+    final Document doc = Document.fromDelta(delta);
+    return doc.toPlainText().trim();
+  } catch (e) {
+    debugPrint('Error getting plain text from delta: $e');
+    return '';
+  }
+}
+List<FlashCard> parseFlashCards(Map<String, dynamic> response, int deckId) {
+  final cards = response['cards'] as List<dynamic>;
+
+  // return cards.map((c) {
+  //   final question = c['question'] as String? ?? '';
+  //   final answer = c['answer'] as String? ?? '';
+  //   final difficultyString = c['difficulty'] as String? ?? 'Easy';
+
+  //   // Convert HTML/plaintext -> Quill Delta
+  //   final frontDelta = quill.Document()..insert(question.replaceAll(RegExp(r'<[^>]*>'), '') + '\n');
+  //   final backDelta  = quill.Document()..insert(answer.replaceAll(RegExp(r'<[^>]*>'), '') + '\n');
+
+  //   return FlashCard.createNew(
+  //     deckId: deckId,
+  //     front: frontDelta.toDelta().toJson(),
+  //     back: backDelta.toDelta().toJson(),
+  //     tags: null,
+  //   ).copyWith(
+  //     difficulty: stringToEnum(difficultyString, FlashcardDifficulty.values),
+  //   );
+  // }).toList();
+}
+List<Map<String, dynamic>> htmlToDelta(String html) {
+  final delta = DeltaFromHtmlCodec().decode(html);
+  return delta.toJson();
 }

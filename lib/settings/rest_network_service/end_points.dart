@@ -12,6 +12,8 @@ class ApiEndpoints {
   static const String passwordVerifyOtp = '/auth/password/verify-otp';
   static const String passwordChange = '/auth/password/reset';
 
+  static const String flashcardAiContent = '/ai/generate-flashcards-from-content';
+
   // boards
   static const String boardSync = '/board/sync';
   static const String boardSyllabus = '/ai/analyze-syllabus';

@@ -20,40 +20,47 @@ class FlashCardAiCreationScreen extends StatelessWidget {
         vm.initialize();
         return vm;
       },
-      child: ScaffoldFrame(
-        backgroundColor: const Color(0xFFF9FAFB),
-        scaffoldKey: _scaffoldKey,
-        endDrawer: CustomDrawer(child: FlashCardAiCreationRight()),
-        drawer: CustomDrawer(child: FlashCardAiCreationLeft()),
-        body: Column(
-          children: [
-            _header(),
-            Expanded(
-              child: Row(
+      child: Consumer<FlashCardAiCreationVm>(
+        builder: (_, vm, _) {
+          return LoadingIndicator(
+            loading: vm.loading,
+            child: ScaffoldFrame(
+              backgroundColor: const Color(0xFFF9FAFB),
+              scaffoldKey: _scaffoldKey,
+              endDrawer: CustomDrawer(child: FlashCardAiCreationRight()),
+              drawer: CustomDrawer(child: FlashCardAiCreationLeft()),
+              body: Column(
                 children: [
-                  VisibleController(
-                    mobile: false,
-                    largeDesktop: true,
-                    child: WidthLimiter(
-                      mobile: 288,
-                      child: FlashCardAiCreationLeft(),
-                    ),
-                  ),
-                  Expanded(child: FlashCardAiCreationMain()),
-                  VisibleController(
-                    mobile: false,
-                    desktop: true,
-                    child: WidthLimiter(
-                      largeDesktop: 320,
-                      mobile: 288,
-                      child: FlashCardAiCreationRight(),
+                  _header(),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        VisibleController(
+                          mobile: false,
+                          largeDesktop: true,
+                          child: WidthLimiter(
+                            mobile: 288,
+                            child: FlashCardAiCreationLeft(),
+                          ),
+                        ),
+                        Expanded(child: FlashCardAiCreationMain()),
+                        VisibleController(
+                          mobile: false,
+                          desktop: true,
+                          child: WidthLimiter(
+                            largeDesktop: 320,
+                            mobile: 288,
+                            child: FlashCardAiCreationRight(),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

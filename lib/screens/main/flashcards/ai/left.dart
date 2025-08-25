@@ -195,68 +195,68 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _buildNoteList() {
-    final notes = [
-      'Memory Formation',
-      'Neural Networks',
-      'Brain Development',
-      'Cognitive Functions',
-    ];
-
     return Consumer<FlashCardAiCreationVm>(
       builder: (_, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            const Text(
-              'Available notes',
-              style: TextStyle(
-                color: Color(0xFF4B5563),
-                fontSize: 14,
-                fontFamily: 'Inter',
-              ),
-            ),
-            const SizedBox(height: 4),
-            Container(
-              constraints: BoxConstraints(maxHeight: 300),
-              child: SingleChildScrollView(
-                child: Column(
-                  children:
-                      vm.allContent.map((item) {
-                        return _checkableRow(
-                          text: item.title,
-                          onTap: () => vm.updateSelectedContents(item),
-                          selected: vm.selectedContent.contains(item),
-                        );
-                      }).toList(),
+
+            if (vm.allContent.isNotEmpty) ...[
+              const Text(
+                'Available notes',
+                style: TextStyle(
+                  color: Color(0xFF4B5563),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              spacing: 15,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AppButton.text(
-                  onTap: vm.selectAllContents,
-                  text: 'Select All',
-                  style: TextStyle(
-                    color: Color(0xFF0D9488),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
+              const SizedBox(height: 8),
+              Container(
+                constraints: BoxConstraints(maxHeight: 300),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children:
+                        vm.allContent.map((item) {
+                          return _checkableRow(
+                            text: item.title,
+                            onTap: () => vm.updateSelectedContents(item),
+                            selected: vm.selectedContent.contains(item),
+                          );
+                        }).toList(),
                   ),
                 ),
-                AppButton.text(
-                  onTap: vm.deselectAllContents,
-                  text: 'Deselect All',
-                  style: TextStyle(
-                    color: Color(0xFF0D9488),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
+              ),
+              const SizedBox(height: 8),
+              Row(
+                spacing: 15,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppButton.text(
+                    onTap: vm.selectAllContents,
+                    text: 'Select All',
+                    style: TextStyle(
+                      color: Color(0xFF0D9488),
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  AppButton.text(
+                    onTap: vm.deselectAllContents,
+                    text: 'Deselect All',
+                    style: TextStyle(
+                      color: Color(0xFF0D9488),
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                ],
+              ),
+            ] else if (vm.selectedBoard != null)
+              AppButton(
+                onTap: vm.goToCreateNote,
+                text: 'Create ${vm.selectedBoard?.name} Note',
+              ),
           ],
         );
       },
