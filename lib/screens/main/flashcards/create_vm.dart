@@ -13,7 +13,8 @@ enum FlashCardsSide {
         return 'Back Side';
     }
   }
-   String shortString() {
+
+  String shortString() {
     switch (this) {
       case front:
         return 'Front';
@@ -53,7 +54,7 @@ class FlashCardCreationVm extends ChangeNotifier {
        deck = props.deck;
 
   TextEditingController deckNameController;
-  Map<String, dynamic>? generationInfo ;
+  Map<String, dynamic>? generationInfo;
 
   void updateGenerationInfo(Map<String, dynamic> info) {
     generationInfo = info;
@@ -428,6 +429,9 @@ class FlashCardCreationVm extends ChangeNotifier {
 
       if (content.isNotEmpty) {
         final body = initializeBodyValues();
+
+        print(body);
+
         body['content'] = content;
 
         final requestBody = FormDataRequest.post(
@@ -514,8 +518,10 @@ class FlashCardCreationVm extends ChangeNotifier {
   Map<String, dynamic> initializeBodyValues() {
     return {
       'length': numberOfCards,
-      'difficulties': selectedDifficulties.map((e) => e.toString()).toList(),
-      'types': selectedCardTypes,
+      'difficulties': jsonEncode(
+        selectedDifficulties.map((e) => e.name).toList(),
+      ), // serialize
+      'types': jsonEncode(selectedCardTypes.map((e) => e).toList()), //
     };
   }
 

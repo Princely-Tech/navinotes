@@ -15,22 +15,22 @@ Widget buildDrawingBoard(
     child: Container(
       width: inputWidth,
       height: inputHeight,
-      child: DrawingBoard(
+      child: DrawingBoardWithCursor(
         controller: vm.drawingController,
-        background: Container(
-          //padding: const EdgeInsets.only(top: 55, bottom: 24),
-          color: Colors.transparent,
-          width: inputWidth,
-          height: inputHeight,
-        ),
-        showDefaultActions: false,
-        showDefaultTools: false,
+        // background: Container(
+        //   //padding: const EdgeInsets.only(top: 55, bottom: 24),
+        //   color: Colors.transparent,
+        //   width: inputWidth,
+        //   height: inputHeight,
+        // ),
+        // showDefaultActions: false,
+        // showDefaultTools: false,
+        width: inputWidth,
+        height: inputHeight,
       ),
     ),
   );
 }
-
-
 
 Widget buildDrawingToolbar({required NoteCreationVm vm}) {
   // Define default tool items
@@ -142,4 +142,70 @@ Widget buildDrawingToolbar({required NoteCreationVm vm}) {
       ),
     ),
   );
+}
+
+class DrawingBoardWithCursor extends StatefulWidget {
+  final DrawingController controller;
+  final double width;
+  final double height;
+
+  const DrawingBoardWithCursor({
+    required this.controller,
+    required this.width,
+    required this.height,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<DrawingBoardWithCursor> createState() => _DrawingBoardWithCursorState();
+}
+
+class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
+  Offset? _cursorPos;
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerHover: (e) => setState(() => _cursorPos = e.localPosition),
+      onPointerMove: (e) => setState(() => _cursorPos = e.localPosition),
+      onPointerDown: (e) => setState(() => _cursorPos = e.localPosition),
+
+      // onPointerUp: (e) => setState(() => _cursorPos = null),
+      // onPointerExit: (e) => setState(() => _cursorPos = null),
+      child: Stack(
+        children: [
+          DrawingBoard(
+            controller: widget.controller,
+            background: Container(
+              width: widget.width,
+              height: widget.height,
+              color: Colors.transparent,
+            ),
+            showDefaultActions: false,
+            showDefaultTools: false,
+          ),
+          if (_cursorPos != null)
+            ValueListenableBuilder<DrawConfig>(
+              valueListenable: widget.controller.drawConfig,
+              builder: (_, drawConfig, __) {
+                return Positioned(
+                  left: _cursorPos!.dx - drawConfig.strokeWidth / 2,
+                  top: _cursorPos!.dy - drawConfig.strokeWidth / 2,
+                  child: IgnorePointer(
+                    child: Container(
+                      width: drawConfig.strokeWidth,
+                      height: drawConfig.strokeWidth,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black26, width: 1),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
 }

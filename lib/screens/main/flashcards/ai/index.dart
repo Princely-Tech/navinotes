@@ -41,7 +41,7 @@ class FlashCardAiCreationScreen extends StatelessWidget {
                       children: [
                         VisibleController(
                           mobile: false,
-                          largeDesktop: true,
+                          desktop: true,
                           child: WidthLimiter(
                             mobile: 288,
                             child: FlashCardAiCreationLeft(),

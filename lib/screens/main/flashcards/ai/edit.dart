@@ -30,7 +30,6 @@ class _AiGenerationInputViewState extends State<AiGenerationInputView> {
                 children: [
                   const Text(
                     'Cards 1 of 12',
-                    // 'AI Generated Card 1 of 12',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,

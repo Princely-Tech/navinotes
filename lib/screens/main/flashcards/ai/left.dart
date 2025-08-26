@@ -274,8 +274,20 @@ class FlashCardAiCreationLeft extends StatelessWidget {
             const SizedBox(height: 16),
             CustomInputField(
               controller: vm.difficultyController,
+              onChanged:
+                  (value) => vm.updateSelectedDifficulties(
+                    stringToEnum<FlashcardDifficulty>(
+                      value,
+                      FlashcardDifficulty.values,
+                    ),
+                  ),
               selectItems:
-                  FlashcardDifficulty.values.map((e) => e.toString()).toList(),
+                  FlashcardDifficulty.values
+                      .where(
+                        (e) => e != FlashcardDifficulty.again,
+                      ) // remove hard
+                      .map((e) => e.toString())
+                      .toList(),
               label: 'Difficulty level',
               isMultipleSelect: true,
             ),
@@ -291,6 +303,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             _buildCardTypes(),
+
             // const SizedBox(height: 16),
             // const Text(
             //   'Focus on',
@@ -302,7 +315,36 @@ class FlashCardAiCreationLeft extends StatelessWidget {
             // ),
             // const SizedBox(height: 4),
             // _buildFocusTags(),
+
+            // Add button
+            _actionButtons(),
           ],
+        );
+      },
+    );
+  }
+
+  Widget _actionButtons() {
+    return Consumer<FlashCardCreationVm>(
+      builder: (_, vm, _) {
+        bool hasCards = vm.userFlashCards.isNotEmpty;
+        return Consumer<ApiServiceProvider>(
+          builder: (_, apiServiceProvider, _) {
+            return Column(
+              spacing: 12,
+              children: [
+                AppButton(
+                  onTap: () => vm.generateCardsHandler(apiServiceProvider),
+                  text: hasCards ? 'Generate more cards' : 'Generate cards',
+                ),
+
+                // AppButton.secondary(
+                //   onTap: () {},
+                //   text: 'Improve low confidence cards',
+                // ),
+              ],
+            );
+          },
         );
       },
     );

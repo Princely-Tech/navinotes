@@ -56,39 +56,9 @@ class FlashCardsManualCreationRight extends StatelessWidget {
                     ),
                   ),
                 ),
-                _actionButtons(),
               ],
             ),
           ),
-        );
-      },
-    );
-  }
-
-  Widget _actionButtons() {
-    return Consumer<FlashCardCreationVm>(
-      builder: (_, vm, _) {
-        bool hasCards = vm.generatedFlashCards.isNotEmpty;
-        return Consumer<ApiServiceProvider>(
-          builder: (_, apiServiceProvider, _) {
-            return Column(
-              spacing: 12,
-              children: [
-                AppButton(
-                  onTap:
-                      hasCards
-                          ? vm.regenerateCardsHandler
-                          : () => vm.generateCardsHandler(apiServiceProvider),
-                  text: hasCards ? 'Generate more cards' : 'Generate cards',
-                ),
-
-                // AppButton.secondary(
-                //   onTap: () {},
-                //   text: 'Improve low confidence cards',
-                // ),
-              ],
-            );
-          },
         );
       },
     );
