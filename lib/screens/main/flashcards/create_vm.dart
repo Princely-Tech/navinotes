@@ -147,6 +147,7 @@ class FlashCardCreationVm extends ChangeNotifier {
       );
       currentFlashCard = card;
       currentFlashCardIndex = index;
+      updateSide(FlashCardsSide.front);
       _attachListeners();
       notifyListeners();
     } catch (err) {
@@ -180,10 +181,7 @@ class FlashCardCreationVm extends ChangeNotifier {
         int id = await DatabaseHelper.instance.insertFlashCard(card);
         card.setIDAfterCreate(id);
         // currentFlashCard = card;
-        selectFlashCard(
-          card,
-          1,
-        );
+        selectFlashCard(card, 1);
         loadDeckFlashCards();
       }
     } catch (err) {
@@ -336,6 +334,7 @@ class FlashCardCreationVm extends ChangeNotifier {
   }
 
   TextEditingController difficultyController = TextEditingController();
+  TextEditingController contentController = TextEditingController();
 
   void selectAllContents() {
     selectedContent = [];
@@ -416,12 +415,10 @@ class FlashCardCreationVm extends ChangeNotifier {
   }) async {
     try {
       final body = initializeBodyValues();
+      var isValidContent = false;
 
-      if (getSelectedDifficulties().isEmpty) {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Select at least one difficulties',
-        );
+      if (body.isEmpty) {
+        return;
       }
       print(body);
 
@@ -433,9 +430,27 @@ class FlashCardCreationVm extends ChangeNotifier {
             return;
           }
           body['content'] = content;
+          isValidContent = true;
+          break;
+
+        case AIContentSource.textInput:
+          content = contentController.text;
+          if (content.isEmpty) {
+            MessageDisplayService.showErrorMessage(
+              context,
+              'Enter for the flash cards',
+            );
+            return;
+          }
+          body['content'] = content;
+          isValidContent = true;
           break;
         default:
           return;
+      }
+
+      if (!isValidContent) {
+        return;
       }
 
       // remove this
@@ -542,6 +557,16 @@ class FlashCardCreationVm extends ChangeNotifier {
 
   Map<String, dynamic> initializeBodyValues() {
     getSelectedDifficulties();
+
+    if (selectedDifficulties.isEmpty) {
+      MessageDisplayService.showErrorMessage(
+        context,
+        'Select at least one difficulties',
+      );
+
+      Map<String, dynamic> body = {};
+      return body; // empty body
+    }
     final Map<String, dynamic> body = {'length': numberOfCards.toString()};
 
     for (int i = 0; i < selectedDifficulties.length; i++) {

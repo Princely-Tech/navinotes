@@ -63,8 +63,14 @@ class FlashCardAiCreationLeft extends StatelessWidget {
     return Column();
   }
 
-  Widget _textInputSection() {
-    return Column();
+  Widget _textInputSection(FlashCardCreationVm vm) {
+    return CustomInputField(
+      controller: vm.contentController,
+      hintText: 'Content for Flash Cards',
+      label: 'Content',
+      minLines: 5,
+      maxLines: 10,
+    );
   }
 
   Widget _returnCreationModeSection() {
@@ -76,7 +82,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
           case AIContentSource.upload:
             return _uploadSection();
           case AIContentSource.textInput:
-            return _textInputSection();
+            return _textInputSection(vm);
         }
       },
     );

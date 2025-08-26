@@ -18,6 +18,7 @@ class CustomInputField extends StatefulWidget {
     this.suffixIcon,
     this.border,
     this.maxLines = 1,
+    this.minLines = 1,
     this.wrapWithExpanded = false,
     // this.isSearch = false,
     this.selectItems,
@@ -52,6 +53,7 @@ class CustomInputField extends StatefulWidget {
   final bool required;
   final OutlineInputBorder? border;
   final int maxLines;
+  final int minLines;
   final List<String>? selectItems;
   final Color? fillColor;
   final TextStyle? style;
@@ -178,7 +180,11 @@ class _CustomInputFieldState extends State<CustomInputField> {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: widget.validator,
           controller: widget.controller,
-          maxLines: widget.maxLines,
+          maxLines:
+              (widget.minLines > widget.maxLines)
+                  ? widget.minLines
+                  : widget.maxLines,
+          minLines: widget.minLines,
           onTap: isSelect ? _showCenterDialog : null,
           focusNode: widget.focusNode,
           decoration: _inputDecoration(
