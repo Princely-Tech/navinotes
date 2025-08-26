@@ -133,4 +133,13 @@ class FlashCardDeck {
       return null;
     }
   }
+
+  Future<int>? getCardsCount() {
+    try {
+      return DatabaseHelper.instance.getDeckCardsCount(id!);
+    } catch (err) {
+      debugPrint('Error getting deck cards count: $err');
+      return null;
+    }
+  }
 }

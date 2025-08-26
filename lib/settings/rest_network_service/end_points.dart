@@ -13,11 +13,13 @@ class ApiEndpoints {
   static const String passwordChange = '/auth/password/reset';
 
   static const String flashcardAiContent = '/ai/generate-flashcards-from-content';
+  static const String flashcardAiFile = '/ai/generate-flashcards-from-file';
 
   // boards
   static const String boardSync = '/board/sync';
   static const String boardSyllabus = '/ai/analyze-syllabus';
   static const String contentSummarize = '/ai/summarize-content';
+  static const String fileSummarize = '/ai/summarize-file';
 
   // content
   static const String contentSync = '/content/sync';

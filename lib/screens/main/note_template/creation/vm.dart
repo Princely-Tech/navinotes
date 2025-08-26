@@ -572,7 +572,7 @@ class NoteCreationVm extends ChangeNotifier {
         int? length = int.tryParse(summaryLengthController.text);
         final body = {"length": length, "focus": focusAreaController.text};
         final request = FormDataRequest.post(
-          ApiEndpoints.profileImage,
+          ApiEndpoints.fileSummarize,
           files: {'file': File(aiSummaryFile!.path!)},
           body: body,
         );

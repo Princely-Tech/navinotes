@@ -375,6 +375,18 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => FlashCard.fromMap(maps[i]));
   }
 
+  // Get all flashcards for a deck
+  Future<int> getDeckCardsCount(int deckId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'flashcards',
+      where: 'deck_id = ?',
+      whereArgs: [deckId],
+    );
+    return result.length;
+  }
+
+
   // Update a flashcard
   Future<int> updateFlashCard(FlashCard flashcard) async {
     final db = await instance.database;

@@ -101,14 +101,23 @@ class FlashCardDecks extends StatelessWidget {
               ),
             },
             const SizedBox(height: 12.0),
-            Row(
-              children: [
-                _buildStatItem(
-                  Icons.credit_card_outlined,
-                  '${deck.cardsPerDay} cards/day',
-                ),
-                const SizedBox(width: 16.0),
-              ],
+            FutureBuilder<int?>(
+              future: deck.getCardsCount(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Row(
+                    children: [
+                      _buildStatItem(
+                        Icons.credit_card_outlined,
+                        '${snapshot.data} cards',
+                      ),
+                      const SizedBox(width: 16.0),
+                    ],
+                  );
+                } else {
+                  return const SizedBox(height: 0);
+                }
+              },
             ),
           ],
         ),

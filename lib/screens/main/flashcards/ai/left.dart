@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/flashcards/ai/file_upload.dart';
 import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 
 class FlashCardAiCreationLeft extends StatelessWidget {
@@ -60,7 +61,8 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _uploadSection() {
-    return Column();
+                                                return ContentFileUpload();
+
   }
 
   Widget _textInputSection(FlashCardCreationVm vm) {

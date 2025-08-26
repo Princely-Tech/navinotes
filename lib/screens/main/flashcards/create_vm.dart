@@ -336,6 +336,13 @@ class FlashCardCreationVm extends ChangeNotifier {
   TextEditingController difficultyController = TextEditingController();
   TextEditingController contentController = TextEditingController();
 
+  PlatformFile? contentFile;
+
+  void updateContentFile(PlatformFile file) {
+    contentFile = file;
+    notifyListeners();
+  }
+
   void selectAllContents() {
     selectedContent = [];
     for (var content in allContent) {
@@ -414,7 +421,10 @@ class FlashCardCreationVm extends ChangeNotifier {
     bool replace = false,
   }) async {
     try {
+
+      var endPoint = ApiEndpoints.flashcardAiContent;
       final body = initializeBodyValues();
+      Map<String, File> files = {};
       var isValidContent = false;
 
       if (body.isEmpty) {
@@ -445,8 +455,21 @@ class FlashCardCreationVm extends ChangeNotifier {
           body['content'] = content;
           isValidContent = true;
           break;
-        default:
-          return;
+
+        case AIContentSource.upload:
+        endPoint = ApiEndpoints.flashcardAiFile;
+         
+         if (contentFile == null) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Upload a file to generate flash cards',
+        );
+        return;
+        }
+
+        files = {'file': File(contentFile!.path!)};
+          isValidContent = true;
+          break;
       }
 
       if (!isValidContent) {
@@ -459,8 +482,9 @@ class FlashCardCreationVm extends ChangeNotifier {
       updateLoading(true);
 
       final requestBody = FormDataRequest.post(
-        ApiEndpoints.flashcardAiContent,
+       endPoint,
         body: body,
+        files: files,
       );
       final response = await apiServiceProvider.apiService.sendFormDataRequest(
         requestBody,
