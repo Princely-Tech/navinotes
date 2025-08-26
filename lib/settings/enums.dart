@@ -231,7 +231,7 @@ enum FlashcardDifficulty {
       case again:
         return 'Again';
       case medium:
-        return 'Good';
+        return 'Medium';
       case hard:
         return 'Hard';
     }

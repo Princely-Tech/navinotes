@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
+
 
 class FlashCardsManualCreationAppBar extends StatelessWidget {
   const FlashCardsManualCreationAppBar({super.key});
@@ -20,7 +21,7 @@ class FlashCardsManualCreationAppBar extends StatelessWidget {
               mobile: largeDesktopSize,
               child: LayoutBuilder(
                 builder: (_, constraints) {
-                  return Consumer<FlashCardsManualCreationVm>(
+                  return Consumer<FlashCardCreationVm>(
                     builder: (_, vm, _) {
                       return ScrollableController(
                         scrollDirection: Axis.horizontal,
@@ -75,7 +76,7 @@ class FlashCardsManualCreationAppBar extends StatelessWidget {
     );
   }
 
-  Widget _trailing(FlashCardsManualCreationVm vm) {
+  Widget _trailing(FlashCardCreationVm vm) {
     return Row(
       children: [
         Row(

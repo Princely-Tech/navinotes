@@ -1,12 +1,12 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 
 class FlashCardsManualCreationLeft extends StatelessWidget {
   const FlashCardsManualCreationLeft({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FlashCardsManualCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return Container(
           decoration: BoxDecoration(
@@ -32,7 +32,7 @@ class FlashCardsManualCreationLeft extends StatelessWidget {
     );
   }
 
-  Widget _deckManagement(FlashCardsManualCreationVm vm) {
+  Widget _deckManagement(FlashCardCreationVm vm) {
     final labelStyle = AppTheme.text.copyWith(
       color: AppTheme.steelMist,
       fontSize: 12.0,
@@ -155,7 +155,7 @@ class FlashCardsManualCreationLeft extends StatelessWidget {
   }
 
   Widget _creationMode() {
-    return Consumer<FlashCardsManualCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return _sections(
           title: 'Creation Mode',

@@ -1,12 +1,12 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/flashcards/manual/vm.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 
 class FlashCardsManualCreationRight extends StatelessWidget {
-  const FlashCardsManualCreationRight({super.key});
-
+  const FlashCardsManualCreationRight({super.key, this.isAi = false});
+  final bool isAi;
   @override
   Widget build(BuildContext context) {
-    return Consumer<FlashCardsManualCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, __) {
         final flashcards = vm.userFlashCards;
         return Container(
@@ -18,7 +18,7 @@ class FlashCardsManualCreationRight extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 15),
             child: Column(
               children: [
-                Expanded(
+                Flexible(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(15),
                     child: Column(
@@ -56,7 +56,7 @@ class FlashCardsManualCreationRight extends StatelessWidget {
                     ),
                   ),
                 ),
-                // AppButton.text(onTap: () {}, text: 'Show all cards'),
+                _actionButtons(),
               ],
             ),
           ),
@@ -65,8 +65,37 @@ class FlashCardsManualCreationRight extends StatelessWidget {
     );
   }
 
+  Widget _actionButtons() {
+    return Consumer<FlashCardCreationVm>(
+      builder: (_, vm, _) {
+        bool hasCards = vm.generatedFlashCards.isNotEmpty;
+        return Consumer<ApiServiceProvider>(
+          builder: (_, apiServiceProvider, _) {
+            return Column(
+              spacing: 12,
+              children: [
+                AppButton(
+                  onTap:
+                      hasCards
+                          ? vm.regenerateCardsHandler
+                          : () => vm.generateCardsHandler(apiServiceProvider),
+                  text: hasCards ? 'Generate more cards' : 'Generate cards',
+                ),
+
+                // AppButton.secondary(
+                //   onTap: () {},
+                //   text: 'Improve low confidence cards',
+                // ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _cardItem(int index) {
-    return Consumer<FlashCardsManualCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         final flashcards = vm.userFlashCards;
         final card = flashcards[index];

@@ -103,29 +103,59 @@ String getPlainTextFromDelta(String jsonContent) {
     return '';
   }
 }
-List<FlashCard> parseFlashCards(Map<String, dynamic> response, int deckId) {
+
+Future<List<FlashCard>> parseResponseFlashCards({
+  required Map<String, dynamic> response,
+  required BuildContext context,
+  required int deckId,
+}) async {
+  final List<FlashCard> flashCards = [];
   final cards = response['cards'] as List<dynamic>;
 
-  // return cards.map((c) {
-  //   final question = c['question'] as String? ?? '';
-  //   final answer = c['answer'] as String? ?? '';
-  //   final difficultyString = c['difficulty'] as String? ?? 'Easy';
-
-  //   // Convert HTML/plaintext -> Quill Delta
-  //   final frontDelta = quill.Document()..insert(question.replaceAll(RegExp(r'<[^>]*>'), '') + '\n');
-  //   final backDelta  = quill.Document()..insert(answer.replaceAll(RegExp(r'<[^>]*>'), '') + '\n');
-
-  //   return FlashCard.createNew(
-  //     deckId: deckId,
-  //     front: frontDelta.toDelta().toJson(),
-  //     back: backDelta.toDelta().toJson(),
-  //     tags: null,
-  //   ).copyWith(
-  //     difficulty: stringToEnum(difficultyString, FlashcardDifficulty.values),
-  //   );
-  // }).toList();
+  for (Map<String, dynamic> card in cards) {
+    final frontJson = htmlToDelta(card['question']);
+    final backJson = htmlToDelta(card['answer']);
+    final result = await  createFlashcard(
+      context: context,
+      deckId: deckId,
+      front: frontJson,
+      back: backJson,
+      difficulty: stringToEnum(card['difficulty'], FlashcardDifficulty.values),
+    );
+    flashCards.add(result);
+  }
+  return flashCards;
 }
+
 List<Map<String, dynamic>> htmlToDelta(String html) {
-  final delta = DeltaFromHtmlCodec().decode(html);
+  var delta = HtmlToDelta().convert(html, transformTableAsEmbed: false);
   return delta.toJson();
+}
+
+Future<FlashCard> createFlashcard({
+  required BuildContext context,
+  required int deckId,
+  required List<Map<String, dynamic>> front,
+  required List<Map<String, dynamic>> back,
+  required FlashcardDifficulty difficulty,
+}) async {
+  final currentUser = getCurrentUserFromSession(context);
+
+  if (isNotNull(currentUser)) {
+    final currentTimestamp = generateUnixTimestamp();
+    FlashCard card = FlashCard(
+      guid: generateGUID(currentUser!.id!),
+      deckId: deckId,
+      front: front,
+      back: back,
+      difficulty: difficulty,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
+    );
+    int id = await DatabaseHelper.instance.insertFlashCard(card);
+    card.setIDAfterCreate(id);
+    return card;
+  } else {
+    throw 'User not found';
+  }
 }

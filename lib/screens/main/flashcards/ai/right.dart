@@ -1,5 +1,5 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/flashcards/ai/vm.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 
 class FlashCardAiCreationRight extends StatelessWidget {
   const FlashCardAiCreationRight({super.key});
@@ -287,7 +287,7 @@ class FlashCardAiCreationRight extends StatelessWidget {
   }
 
   Widget _actionButtons() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         bool hasCards = vm.generatedFlashCards.isNotEmpty;
         return Consumer<ApiServiceProvider>(

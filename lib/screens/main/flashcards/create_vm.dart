@@ -13,6 +13,14 @@ enum FlashCardsSide {
         return 'Back Side';
     }
   }
+   String shortString() {
+    switch (this) {
+      case front:
+        return 'Front';
+      case back:
+        return 'Back';
+    }
+  }
 }
 
 final cardFlipController = FlipCardController();
@@ -32,12 +40,12 @@ List<String> flashCardsTextTypes = [
   'Underlined Text',
 ];
 
-class FlashCardsManualCreationVm extends ChangeNotifier {
+class FlashCardCreationVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   BuildContext context;
   ManualFlashCardProps props;
   FlashCardDeck deck;
-  FlashCardsManualCreationVm({
+  FlashCardCreationVm({
     required this.scaffoldKey,
     required this.context,
     required this.props,
@@ -45,6 +53,12 @@ class FlashCardsManualCreationVm extends ChangeNotifier {
        deck = props.deck;
 
   TextEditingController deckNameController;
+  Map<String, dynamic>? generationInfo ;
+
+  void updateGenerationInfo(Map<String, dynamic> info) {
+    generationInfo = info;
+    notifyListeners();
+  }
 
   FlashCard? currentFlashCard; // the flashcard tied to this session
   ValueNotifier<FlashCard?> currentFlashCardNotifier = ValueNotifier(null);
@@ -147,7 +161,6 @@ class FlashCardsManualCreationVm extends ChangeNotifier {
       List<Map<String, dynamic>> defaultContent = [];
       if (isNotNull(currentUser)) {
         final currentTimestamp = generateUnixTimestamp();
-        // Create a new flashcard immediately
         FlashCard card = FlashCard(
           guid: generateGUID(currentUser!.id!),
           deckId: deck.id!,
@@ -283,6 +296,76 @@ class FlashCardsManualCreationVm extends ChangeNotifier {
 
   final FocusNode deckNameFocusNode = FocusNode();
 
+  List<Board> allBoards = [];
+  Board? selectedBoard;
+  List<Content> allContent = [];
+  List<Content> selectedContent = [];
+  bool gettingAllBoards = false;
+  int numberOfCards = 12;
+
+  void updateNumberOfCards(int value) {
+    numberOfCards = value;
+    notifyListeners();
+  }
+
+  List<String> cardTypes = [
+    'Question & Answer',
+    'Definition & Term',
+    'Multiple Choice',
+    'True/False',
+  ];
+
+  List<String> selectedCardTypes = [];
+
+  void updateSelectedCardTypes(String type) {
+    if (selectedCardTypes.contains(type)) {
+      selectedCardTypes.remove(type);
+    } else {
+      selectedCardTypes.add(type);
+    }
+    notifyListeners();
+  }
+
+  TextEditingController difficultyController = TextEditingController();
+
+  List<FlashcardDifficulty> selectedDifficulties = [];
+
+  void updateSelectedDifficulties(FlashcardDifficulty difficulty) {
+    if (selectedDifficulties.contains(difficulty)) {
+      selectedDifficulties.remove(difficulty);
+    } else {
+      selectedDifficulties.add(difficulty);
+    }
+    notifyListeners();
+  }
+
+  void selectAllContents() {
+    selectedContent = [];
+    for (var content in allContent) {
+      selectedContent.add(content);
+    }
+    notifyListeners();
+  }
+
+  void deselectAllContents() {
+    selectedContent = [];
+    notifyListeners();
+  }
+
+  void updateSelectedContents(Content content) {
+    if (selectedContent.contains(content)) {
+      selectedContent.remove(content);
+    } else {
+      selectedContent.add(content);
+    }
+    notifyListeners();
+  }
+
+  void updateGettingAllBoards(bool value) {
+    gettingAllBoards = value;
+    notifyListeners();
+  }
+
   //For development purposes, will be removed in production
   void initialize() async {
     for (var field in tagFields) {
@@ -298,7 +381,7 @@ class FlashCardsManualCreationVm extends ChangeNotifier {
         deck.update(name: deckNameController.text);
       }
     });
-
+    getBoards();
     loadDeckFlashCards();
   }
 
@@ -321,5 +404,152 @@ class FlashCardsManualCreationVm extends ChangeNotifier {
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  AIContentSource selectedAISource = AIContentSource.fromNotes;
+  void updateSelectedAiSource(AIContentSource source) {
+    selectedAISource = source;
+    notifyListeners();
+  }
+
+  void generateCardsHandler(
+    ApiServiceProvider apiServiceProvider, {
+    bool replace = false,
+  }) async {
+    try {
+      updateLoading(true);
+      String content = '';
+      switch (selectedAISource) {
+        case AIContentSource.fromNotes:
+          content = getContentFromNotes();
+          break;
+        default:
+      }
+
+      if (content.isNotEmpty) {
+        final body = initializeBodyValues();
+        body['content'] = content;
+
+        final requestBody = FormDataRequest.post(
+          ApiEndpoints.flashcardAiContent,
+          body: body,
+        );
+        final response = await apiServiceProvider.apiService
+            .sendFormDataRequest(requestBody);
+        updateGenerationInfo(response['response']);
+        if (context.mounted) {
+          final flashCards = await parseResponseFlashCards(
+            response: response['response'],
+            context: context,
+            deckId: deck.id!,
+          );
+
+          updateGeneratedFlashCards(flashCards, replace: replace);
+          if (context.mounted) {
+            MessageDisplayService.showMessage(
+              context,
+              'Cards generated successfully',
+            );
+          }
+        }
+      }
+    } catch (err) {
+      print('Error generating cards: $err');
+    }
+    updateLoading(false);
+  }
+
+  void regenerateCardsHandler() {
+    //
+  }
+
+  List<FlashCard> generatedFlashCards = [];
+
+  void updateGeneratedFlashCards(
+    List<FlashCard> cards, {
+    bool replace = false,
+  }) {
+    if (replace) {
+      generatedFlashCards = cards;
+    } else {
+      generatedFlashCards.addAll(cards);
+    }
+    notifyListeners();
+    loadDeckFlashCards();
+  }
+
+  void getBoardContents() async {
+    try {
+      if (selectedBoard != null) {
+        allContent = await DatabaseHelper.instance.getAllContents(
+          selectedBoard!.id!,
+        );
+        notifyListeners();
+      }
+    } catch (err) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Could not fetch notes',
+        );
+      }
+    }
+  }
+
+  void getBoards() async {
+    try {
+      updateGettingAllBoards(true);
+      allBoards = await DatabaseHelper.instance.getAllBoards();
+      updateGettingAllBoards(false);
+    } catch (err) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Could not fetch boards',
+        );
+      }
+    }
+  }
+
+  Map<String, dynamic> initializeBodyValues() {
+    return {
+      'length': numberOfCards,
+      'difficulties': selectedDifficulties.map((e) => e.toString()).toList(),
+      'types': selectedCardTypes,
+    };
+  }
+
+  void goToCreateNote() async {
+    await NavigationHelper.gotToNewNoteTemplate(selectedBoard!);
+    getBoardContents();
+  }
+
+  void updateNoteBookControllerText(Board board) {
+    selectedContent = [];
+    selectedBoard = board;
+    getBoardContents();
+    notifyListeners();
+  }
+
+  String getContentFromNotes() {
+    if (selectedContent.isEmpty) {
+      MessageDisplayService.showErrorMessage(
+        context,
+        'Select at least one note',
+      );
+      return '';
+    }
+
+    final texts = <String>[];
+
+    for (var item in selectedContent) {
+      if (item.content != null && item.content!.isNotEmpty) {
+        final plainText = getPlainTextFromDelta(item.content!);
+        if (plainText.isNotEmpty) {
+          texts.add(plainText);
+        }
+      }
+    }
+    return texts.join('. ') + (texts.isNotEmpty ? '.' : '');
   }
 }

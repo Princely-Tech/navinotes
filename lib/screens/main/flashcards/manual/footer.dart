@@ -1,5 +1,5 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/flashcards/manual/vm.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 
 class FlashCardsManualCreationFooter extends StatelessWidget {
   const FlashCardsManualCreationFooter({super.key});
@@ -15,7 +15,7 @@ class FlashCardsManualCreationFooter extends StatelessWidget {
 
       child: LayoutBuilder(
         builder: (_, constraints) {
-          return Consumer<FlashCardsManualCreationVm>(
+          return Consumer<FlashCardCreationVm>(
             builder: (_, vm, _) {
               return ScrollableController(
                 scrollDirection: Axis.horizontal,

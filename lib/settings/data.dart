@@ -47,3 +47,45 @@ List<CourseTimeline> exampleTimeline = [
     due: "2025-08-31",
   ),
 ];
+
+final Map<String, dynamic> aiFlashcardContent = {
+  "response": {
+    "distribution": "2 Easy, 2 Medium, 1 Hard",
+    "coverage": ">=85% of key concepts",
+    "confidence_level": "90%",
+    "cards": [
+      {
+        "question": "<p>What is the primary function of a computer?</p>",
+        "answer":
+            "<p>To automatically carry out sequences of arithmetic or logical operations.</p>",
+        "difficulty": "Easy",
+      },
+      {
+        "question":
+            "<p>What is the term for a group of computers linked and functioning together?</p>",
+        "answer": "<p>A computer network or computer cluster.</p>",
+        "difficulty": "Medium",
+      },
+      {
+        "question":
+            "<p>Who were often hired as human computers in the latter part of the 20th century?</p>",
+        "answer":
+            "<p>Women, as they could be paid less than their male counterparts.</p>",
+        "difficulty": "Medium",
+      },
+      {
+        "question":
+            "<p>What is the name of the law that notes the rapid pace of transistor counts in computers?</p>",
+        "answer": "<p>Moore's law.</p>",
+        "difficulty": "Easy",
+      },
+      {
+        "question":
+            "<p>What are the primary components of a modern computer?</p>",
+        "answer":
+            "<p>A processing element, computer memory, and peripheral devices.</p>",
+        "difficulty": "Hard",
+      },
+    ],
+  },
+};

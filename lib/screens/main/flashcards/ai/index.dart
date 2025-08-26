@@ -1,8 +1,9 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
+import 'package:navinotes/screens/main/flashcards/manual/right.dart';
 import 'left.dart';
 import 'main.dart';
-import 'right.dart';
-import 'vm.dart';
+// import 'right.dart';
 
 class FlashCardAiCreationScreen extends StatelessWidget {
   FlashCardAiCreationScreen({super.key});
@@ -12,28 +13,31 @@ class FlashCardAiCreationScreen extends StatelessWidget {
     final deck = ModalRoute.of(context)?.settings.arguments as FlashCardDeck;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = FlashCardAiCreationVm(
+        final vm = FlashCardCreationVm(
           scaffoldKey: _scaffoldKey,
-          deck: deck,
+          // deck: deck,
           context: context,
+          props: ManualFlashCardProps(deck: deck),
         );
         vm.initialize();
         return vm;
       },
-      child: Consumer<FlashCardAiCreationVm>(
+      child: Consumer<FlashCardCreationVm>(
         builder: (_, vm, _) {
           return LoadingIndicator(
             loading: vm.loading,
             child: ScaffoldFrame(
               backgroundColor: const Color(0xFFF9FAFB),
               scaffoldKey: _scaffoldKey,
-              endDrawer: CustomDrawer(child: FlashCardAiCreationRight()),
+              endDrawer: CustomDrawer(child: FlashCardsManualCreationRight()),
               drawer: CustomDrawer(child: FlashCardAiCreationLeft()),
               body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _header(),
                   Expanded(
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         VisibleController(
                           mobile: false,
@@ -50,7 +54,7 @@ class FlashCardAiCreationScreen extends StatelessWidget {
                           child: WidthLimiter(
                             largeDesktop: 320,
                             mobile: 288,
-                            child: FlashCardAiCreationRight(),
+                            child: FlashCardsManualCreationRight(),
                           ),
                         ),
                       ],
@@ -66,7 +70,7 @@ class FlashCardAiCreationScreen extends StatelessWidget {
   }
 
   Widget _header() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return Container(
           decoration: BoxDecoration(

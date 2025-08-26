@@ -1,12 +1,12 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 
 class FlashCardsManualCreationMain extends StatelessWidget {
   const FlashCardsManualCreationMain({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FlashCardsManualCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         List<Widget> inputFields = [
           _inputfield(FlashCardsSide.front),
@@ -59,7 +59,7 @@ class FlashCardsManualCreationMain extends StatelessWidget {
   }
 
   Widget _toolbar() {
-    return Consumer<FlashCardsManualCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return CustomCard(
           width: null,
@@ -149,7 +149,7 @@ class FlashCardsManualCreationMain extends StatelessWidget {
   }
 
   Widget _inputfield(FlashCardsSide side) {
-    return Consumer<FlashCardsManualCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         bool isActive = vm.currentSide == side;
         bool isFront = side == FlashCardsSide.front;
@@ -244,7 +244,7 @@ class FlashCardsManualCreationMain extends StatelessWidget {
 
   Widget _sideIndicator() {
     final radius = BorderRadius.circular(999);
-    return Consumer<FlashCardsManualCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return CustomCard(
           width: null,

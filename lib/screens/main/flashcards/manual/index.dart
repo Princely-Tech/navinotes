@@ -1,10 +1,10 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 import 'footer.dart';
 import 'main.dart';
 import 'appbar.dart';
 import 'left.dart';
 import 'right.dart';
-import 'vm.dart';
 
 class FlashCardsManualCreationScreen extends StatelessWidget {
   FlashCardsManualCreationScreen({super.key});
@@ -16,7 +16,7 @@ class FlashCardsManualCreationScreen extends StatelessWidget {
     final props = ModalRoute.of(context)?.settings.arguments as ManualFlashCardProps;
     return ChangeNotifierProvider(
       create: (context) {
-        final vm = FlashCardsManualCreationVm(
+        final vm = FlashCardCreationVm(
           scaffoldKey: _scaffoldKey,
           context: context,
           props: props,
@@ -24,7 +24,7 @@ class FlashCardsManualCreationScreen extends StatelessWidget {
         vm.initialize();
         return vm;
       },
-      child: Consumer<FlashCardsManualCreationVm>(
+      child: Consumer<FlashCardCreationVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,

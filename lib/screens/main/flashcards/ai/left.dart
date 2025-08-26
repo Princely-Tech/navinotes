@@ -1,5 +1,5 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/flashcards/ai/vm.dart';
+import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 
 class FlashCardAiCreationLeft extends StatelessWidget {
   const FlashCardAiCreationLeft({super.key});
@@ -68,7 +68,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _returnCreationModeSection() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         switch (vm.selectedAISource) {
           case AIContentSource.fromNotes:
@@ -83,7 +83,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _notesSection() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         if (vm.gettingAllBoards) {
           return const Center(child: CircularProgressIndicator());
@@ -143,7 +143,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
 
   /* ──────────  CREATION MODE  ────────── */
   Widget _buildModeOptions() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return Column(
           spacing: 8,
@@ -195,7 +195,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _buildNoteList() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +265,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
 
   /* ──────────  GENERATION SETTINGS  ────────── */
   Widget _buildSettings() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +309,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _buildCardTypes() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         return Column(
           children:
@@ -457,7 +457,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _contentSourceRow(AIContentSource source) {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
         bool selected = source == vm.selectedAISource;
         return InkWell(
@@ -565,7 +565,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _sliderField() {
-    return Consumer<FlashCardAiCreationVm>(
+    return Consumer<FlashCardCreationVm>(
       builder: (context, vm, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
