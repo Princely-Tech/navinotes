@@ -358,10 +358,10 @@ class DatabaseHelper {
   // Get all flashcards for a deck
   Future<List<FlashCard>> getDeckFlashCards(
     int deckId, {
-    NoteSortType sortType = NoteSortType.updatedAt,
+    NoteSortType sortType = NoteSortType.createdAt,
   }) async {
     final db = await instance.database;
-    String sortOrder = sortType == NoteSortType.createdAt ? 'ASC' : 'DESC';
+    String sortOrder = 'ASC';
     final sortBy =
         sortType == NoteSortType.createdAt ? 'created_at' : 'updated_at';
 

@@ -79,7 +79,7 @@ class FlashCardsManualCreationRight extends StatelessWidget {
         final frontText = plainTextFromQuillJson(card.front);
         final backText = plainTextFromQuillJson(card.back);
         return GestureDetector(
-          onTap: () => vm.selectFlashCard(card),
+          onTap: () => vm.selectFlashCard(card, index + 1),
           child: CustomCard(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(

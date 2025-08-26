@@ -62,6 +62,7 @@ class FlashCardCreationVm extends ChangeNotifier {
   }
 
   FlashCard? currentFlashCard; // the flashcard tied to this session
+  int? currentFlashCardIndex;
   ValueNotifier<FlashCard?> currentFlashCardNotifier = ValueNotifier(null);
   Timer? _debounce;
 
@@ -120,9 +121,12 @@ class FlashCardCreationVm extends ChangeNotifier {
     } else {
       if (currentFlashCard == null) {
         try {
-          selectFlashCard(userFlashCards[props.targetIndex!]);
+          selectFlashCard(
+            userFlashCards[props.targetIndex!],
+            props.targetIndex,
+          );
         } catch (err) {
-          selectFlashCard(userFlashCards.first);
+          selectFlashCard(userFlashCards.first, 1);
         }
       }
     }
@@ -130,7 +134,7 @@ class FlashCardCreationVm extends ChangeNotifier {
     updateLoading(false);
   }
 
-  void selectFlashCard(FlashCard card) {
+  void selectFlashCard(FlashCard card, int? index) {
     try {
       frontController = QuillController(
         document: safeDocFromJson(card.front),
@@ -142,6 +146,7 @@ class FlashCardCreationVm extends ChangeNotifier {
         selection: const TextSelection.collapsed(offset: 0),
       );
       currentFlashCard = card;
+      currentFlashCardIndex = index;
       _attachListeners();
       notifyListeners();
     } catch (err) {
@@ -175,7 +180,10 @@ class FlashCardCreationVm extends ChangeNotifier {
         int id = await DatabaseHelper.instance.insertFlashCard(card);
         card.setIDAfterCreate(id);
         // currentFlashCard = card;
-        selectFlashCard(card);
+        selectFlashCard(
+          card,
+          1,
+        );
         loadDeckFlashCards();
       }
     } catch (err) {
@@ -329,17 +337,6 @@ class FlashCardCreationVm extends ChangeNotifier {
 
   TextEditingController difficultyController = TextEditingController();
 
-  List<FlashcardDifficulty> selectedDifficulties = [];
-
-  void updateSelectedDifficulties(FlashcardDifficulty difficulty) {
-    if (selectedDifficulties.contains(difficulty)) {
-      selectedDifficulties.remove(difficulty);
-    } else {
-      selectedDifficulties.add(difficulty);
-    }
-    notifyListeners();
-  }
-
   void selectAllContents() {
     selectedContent = [];
     for (var content in allContent) {
@@ -418,43 +415,55 @@ class FlashCardCreationVm extends ChangeNotifier {
     bool replace = false,
   }) async {
     try {
-      updateLoading(true);
+      final body = initializeBodyValues();
+
+      if (getSelectedDifficulties().isEmpty) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Select at least one difficulties',
+        );
+      }
+      print(body);
+
       String content = '';
       switch (selectedAISource) {
         case AIContentSource.fromNotes:
           content = getContentFromNotes();
+          if (content.isEmpty) {
+            return;
+          }
+          body['content'] = content;
           break;
         default:
+          return;
       }
 
-      if (content.isNotEmpty) {
-        final body = initializeBodyValues();
+      // remove this
+      //return;
 
-        print(body);
+      updateLoading(true);
 
-        body['content'] = content;
-
-        final requestBody = FormDataRequest.post(
-          ApiEndpoints.flashcardAiContent,
-          body: body,
+      final requestBody = FormDataRequest.post(
+        ApiEndpoints.flashcardAiContent,
+        body: body,
+      );
+      final response = await apiServiceProvider.apiService.sendFormDataRequest(
+        requestBody,
+      );
+      updateGenerationInfo(response['response']);
+      if (context.mounted) {
+        final flashCards = await parseResponseFlashCards(
+          response: response['response'],
+          context: context,
+          deckId: deck.id!,
         );
-        final response = await apiServiceProvider.apiService
-            .sendFormDataRequest(requestBody);
-        updateGenerationInfo(response['response']);
-        if (context.mounted) {
-          final flashCards = await parseResponseFlashCards(
-            response: response['response'],
-            context: context,
-            deckId: deck.id!,
-          );
 
-          updateGeneratedFlashCards(flashCards, replace: replace);
-          if (context.mounted) {
-            MessageDisplayService.showMessage(
-              context,
-              'Cards generated successfully',
-            );
-          }
+        updateGeneratedFlashCards(flashCards, replace: replace);
+        if (context.mounted) {
+          MessageDisplayService.showMessage(
+            context,
+            'Cards generated successfully',
+          );
         }
       }
     } catch (err) {
@@ -515,14 +524,41 @@ class FlashCardCreationVm extends ChangeNotifier {
     }
   }
 
+  var selectedDifficulties = <FlashcardDifficulty>[];
+  List<FlashcardDifficulty> getSelectedDifficulties() {
+    selectedDifficulties.clear();
+    for (var item in difficultyController.text.split(',')) {
+      try {
+        var en = stringToEnum(item, FlashcardDifficulty.values);
+
+        selectedDifficulties.add(en);
+      } catch (e) {
+        debugPrint('Error parsing difficulty: $e');
+      }
+    }
+
+    return selectedDifficulties;
+  }
+
   Map<String, dynamic> initializeBodyValues() {
-    return {
-      'length': numberOfCards,
-      'difficulties': jsonEncode(
-        selectedDifficulties.map((e) => e.name).toList(),
-      ), // serialize
-      'types': jsonEncode(selectedCardTypes.map((e) => e).toList()), //
-    };
+    getSelectedDifficulties();
+    final Map<String, dynamic> body = {'length': numberOfCards.toString()};
+
+    for (int i = 0; i < selectedDifficulties.length; i++) {
+      body['difficulties[$i]'] = selectedDifficulties[i].name;
+    }
+
+    for (int i = 0; i < selectedCardTypes.length; i++) {
+      body['types[$i]'] = selectedCardTypes[i].toString();
+    }
+
+    // get all the cards questions:
+    for (var card in userFlashCards) {
+      final text = getPlainTextFromDelta(jsonEncode(card.front));
+      body['exclude_questions[${userFlashCards.indexOf(card)}]'] = text;
+    }
+
+    return body;
   }
 
   void goToCreateNote() async {

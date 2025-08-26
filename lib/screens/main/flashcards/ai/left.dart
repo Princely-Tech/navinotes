@@ -274,13 +274,6 @@ class FlashCardAiCreationLeft extends StatelessWidget {
             const SizedBox(height: 16),
             CustomInputField(
               controller: vm.difficultyController,
-              onChanged:
-                  (value) => vm.updateSelectedDifficulties(
-                    stringToEnum<FlashcardDifficulty>(
-                      value,
-                      FlashcardDifficulty.values,
-                    ),
-                  ),
               selectItems:
                   FlashcardDifficulty.values
                       .where(

@@ -1,7 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'boards.dart';
 import 'empty_dashboard.dart';
-import 'recent_activity.dart';
 import 'vm.dart';
 
 class DashboardMain extends StatelessWidget {

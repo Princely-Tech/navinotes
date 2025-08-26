@@ -28,8 +28,10 @@ class _AiGenerationInputViewState extends State<AiGenerationInputView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Cards 1 of 12',
+                  Text(
+                    (vm.currentFlashCardIndex == null)
+                        ? 'Cards 1 of ${vm.userFlashCards.length}'
+                        : 'Cards ${vm.currentFlashCardIndex} of ${vm.userFlashCards.length}',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
