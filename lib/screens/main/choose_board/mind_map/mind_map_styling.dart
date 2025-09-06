@@ -847,67 +847,68 @@ class _LineTypeSelectState extends State<LineTypeSelect> {
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        child: const SizedBox(width: 48, height: 24, child: _LineTypePreview()),
+        child: SizedBox(
+          width: 48,
+          height: 24,
+          child: _LineTypePreview(type: type),
+        ),
       ),
     );
   }
 }
 
 class _LineTypePreview extends StatelessWidget {
-  const _LineTypePreview({super.key});
+  final EdgeLineType type;
+  const _LineTypePreview({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: _GenericLinePreviewPainter());
+    return CustomPaint(painter: _LineTypePreviewPainter(type));
   }
 }
 
-class _GenericLinePreviewPainter extends CustomPainter {
+class _LineTypePreviewPainter extends CustomPainter {
+  final EdgeLineType type;
+  _LineTypePreviewPainter(this.type);
+
   @override
   void paint(Canvas canvas, Size size) {
+    final a = Offset(4, size.height / 2);
+    final b = Offset(size.width - 4, size.height / 2);
     final paint =
         Paint()
           ..color = AppTheme.wetAsphalt
           ..strokeWidth = 2
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round;
-    final a = Offset(4, size.height / 2);
-    final b = Offset(size.width - 4, size.height / 2);
-    canvas.drawLine(a, b, paint);
 
-    final dashPaint =
-        Paint()
-          ..color = AppTheme.coolGray
-          ..strokeWidth = 2
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round;
-    _drawDashed(
-      canvas,
-      dashPaint,
-      Offset(4, size.height / 2 + 6),
-      Offset(size.width - 4, size.height / 2 + 6),
-      6,
-      4,
-    );
-
-    final curvePaint =
-        Paint()
-          ..color = AppTheme.coolGray
-          ..strokeWidth = 2
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round;
-    final mid = Offset(size.width / 2, size.height / 2 - 6);
-    final control = mid + const Offset(0, -6);
-    final path =
-        Path()
-          ..moveTo(4, size.height / 2 - 6)
-          ..quadraticBezierTo(
-            control.dx,
-            control.dy,
-            size.width - 4,
-            size.height / 2 - 6,
-          );
-    canvas.drawPath(path, curvePaint);
+    switch (type) {
+      case EdgeLineType.straight:
+        canvas.drawLine(a, b, paint);
+        break;
+      case EdgeLineType.dashed:
+        _drawDashed(canvas, paint, a, b, 8, 4);
+        break;
+      case EdgeLineType.dotted:
+        _drawDashed(canvas, paint, a, b, 2, 6);
+        break;
+      case EdgeLineType.curved:
+        final mid = (a + b) / 2;
+        final control = mid + const Offset(0, -8);
+        final path =
+            Path()
+              ..moveTo(a.dx, a.dy)
+              ..quadraticBezierTo(control.dx, control.dy, b.dx, b.dy);
+        canvas.drawPath(path, paint);
+        break;
+      case EdgeLineType.elbow:
+        // For preview, offset the target Y so the elbow is visible
+        final b2 = Offset(b.dx, size.height / 2 + 6);
+        final corner = Offset(a.dx, b2.dy);
+        canvas.drawLine(a, corner, paint); // vertical
+        canvas.drawLine(corner, b2, paint); // horizontal
+        break;
+    }
   }
 
   void _drawDashed(
@@ -931,5 +932,6 @@ class _GenericLinePreviewPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _LineTypePreviewPainter oldDelegate) =>
+      oldDelegate.type != type;
 }
