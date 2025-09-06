@@ -24,6 +24,8 @@ class MindMapVm extends ChangeNotifier {
   String? selectedEdgeId;
   String? connectingFromNodeId;
   String? draggingNodeId;
+  // When not null, the next document/deck tapped in the sidebar will attach to this node
+  String? attachingNodeId;
 
   /// Persistence state
   final int boardId;
@@ -142,6 +144,10 @@ class MindMapVm extends ChangeNotifier {
     selectedNodeId = nodeId;
     if (nodeId != null) {
       selectedEdgeId = null; // deselect edges when node is selected
+    }
+    // if switching selection, exit attach mode
+    if (attachingNodeId != null && attachingNodeId != nodeId) {
+      attachingNodeId = null;
     }
     notifyListeners();
   }
@@ -473,11 +479,27 @@ class MindMapVm extends ChangeNotifier {
   }
 
   // ---------- Attachments (Content <-> Node) ----------
+  // ---- Attach mode control ----
+  void startAttachToNode(String nodeId) {
+    attachingNodeId = nodeId;
+    notifyListeners();
+  }
+
+  void cancelAttachMode() {
+    if (attachingNodeId != null) {
+      attachingNodeId = null;
+      notifyListeners();
+    }
+  }
+
+  bool isAttachModeFor(String nodeId) => attachingNodeId == nodeId;
+
   void attachContentToNodeById(String nodeId, int contentId) {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    // Store as typed attachment for clarity
     node.contentID = 'content:$contentId';
+    // exit attach mode after attaching
+    attachingNodeId = null;
     notifyListeners();
   }
 
@@ -485,6 +507,15 @@ class MindMapVm extends ChangeNotifier {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
     node.contentID = 'deck:$deckId';
+    // exit attach mode after attaching
+    attachingNodeId = null;
+    notifyListeners();
+  }
+
+  void removeAttachmentFromNode(String nodeId) {
+    final node = mindMap.findNode(nodeId);
+    if (node == null) return;
+    node.contentID = null;
     notifyListeners();
   }
 

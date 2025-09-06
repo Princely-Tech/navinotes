@@ -15,6 +15,7 @@ class MindMapNodeWidget extends StatelessWidget {
     final vm = Provider.of<MindMapVm>(context);
     final isSelected = vm.selectedNodeId == node.id;
     final isConnectingFrom = vm.connectingFromNodeId == node.id;
+    final isAttaching = vm.attachingNodeId == node.id;
     final hasAttachment = node.contentID != null && node.contentID!.isNotEmpty;
 
     final toneColor = _applyTone(
@@ -41,197 +42,330 @@ class MindMapNodeWidget extends StatelessWidget {
             ]
             : null;
 
-    return Stack(
-      clipBehavior: Clip.none, // Allow children to overflow
-      children: [
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onDoubleTap: () async {
-            // edit label dialog
-            final textController = TextEditingController(text: node.text);
-            final newText = await showDialog<String>(
-              context: context,
-              builder:
-                  (dialogContext) => AlertDialog(
-                    title: const Text('Edit node text'),
-                    content: TextField(
-                      controller: textController,
-                      autofocus: true,
-                      minLines: 1,
-                      maxLines: 4,
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(dialogContext).pop(),
-                        child: const Text('Cancel'),
+    // Expand hit-test area to include space below the node for the toolbar
+    return SizedBox(
+      width: math.max(node.width, 160),
+      height: node.height + 56, // extra space for toolbar + margin
+      child: SizedBox(
+        width: math.max(node.width, 160),
+        height: node.height + 56,
+        child: Stack(
+          clipBehavior: Clip.none, // Allow children to overflow
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onDoubleTap: () async {
+                // edit label dialog
+                final textController = TextEditingController(text: node.text);
+                final newText = await showDialog<String>(
+                  context: context,
+                  builder:
+                      (dialogContext) => AlertDialog(
+                        title: const Text('Edit node text'),
+                        content: TextField(
+                          controller: textController,
+                          autofocus: true,
+                          minLines: 1,
+                          maxLines: 4,
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(),
+                            child: const Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed:
+                                () => Navigator.of(
+                                  dialogContext,
+                                ).pop(textController.text),
+                            child: const Text('Save'),
+                          ),
+                        ],
                       ),
-                      ElevatedButton(
-                        onPressed:
-                            () => Navigator.of(
-                              dialogContext,
-                            ).pop(textController.text),
-                        child: const Text('Save'),
-                      ),
-                    ],
-                  ),
-            );
-            // debugPrint('newText: $newText');
-            // if (!context.mounted) return; // avoid using a deactivated context
-            // debugPrint('context mounted');
-            if (newText != null && newText.trim().isNotEmpty) {
-              vm.updateNodeText(node.id, newText.trim());
-            }
-          },
-          onTap: () {
-            if (vm.connectingFromNodeId != null) {
-              // If we're in connection mode, finish the connection
-              vm.finishConnecting(node.id);
-            } else {
-              // Otherwise, just select the node
-              vm.selectNode(node.id);
-            }
-          },
-          onLongPressStart: (details) {
-            // Start connection on long press
-            vm.startConnectingFrom(node.id);
-          },
-          onPanStart: (_) {
-            // Only start dragging if not in connection mode
-            if (vm.connectingFromNodeId == null) {
-              vm.startDraggingNode(node.id);
-            }
-          },
-          onPanUpdate: (details) {
-            // If in connection mode, update pointer position
-            if (vm.connectingFromNodeId != null) {
-              // Convert the local position to canvas coordinates
-              final box = context.findRenderObject() as RenderBox;
-              final localPosition = box.globalToLocal(details.globalPosition);
-              vm.updatePointerFromVisual(localPosition);
-            } else if (vm.draggingNodeId == node.id) {
-              // Only handle node dragging if we're the dragging node
-              vm.dragNodeBy(node.id, details.delta);
-            }
-          },
-
-          onPanEnd: (_) {
-            if (vm.connectingFromNodeId == node.id) {
-              // If we were connecting and didn't connect to another node, cancel
-              vm.cancelConnecting();
-            } else if (vm.draggingNodeId == node.id) {
-              vm.stopDraggingNode();
-            }
-          },
-          child: _buildShapedNode(
-            node: node,
-            isConnectingFrom: isConnectingFrom,
-            elevation: elevation,
-            toneColor: toneColor,
-            borderRadius: borderRadius,
-            showBorder: showBorder,
-            glowShadow: glowShadow,
-          ),
-        ),
-
-        // Attachment indicator/button
-        if (hasAttachment)
-          Positioned(
-            left: -16,
-            top: node.height / 2 - 12,
-            child: Tooltip(
-              message: 'Open attached document',
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () async {
-                  await vm.openAttachedContent(node.id);
-                },
-                child: SizedBox(
-                  width: 36,
-                  height: 36,
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[800],
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 1.5),
-                      ),
-                      child: const Icon(
-                        Icons.attach_file,
-                        size: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-        if (isConnectingFrom)
-          Positioned(
-            left: 0,
-            right: 0,
-            top: node.height + 4, // Position below the node
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text(
-                  'Connecting...',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-        if (isSelected)
-          Positioned(
-            right: -16,
-            top: node.height / 2 - 12,
-            child: GestureDetector(
-              behavior:
-                  HitTestBehavior.translucent, // ensures taps hit here first
-              onTap: () {
-                if (isConnectingFrom) {
-                  vm.cancelConnecting();
-                } else {
-                  vm.startConnectingFrom(node.id);
+                );
+                // debugPrint('newText: $newText');
+                // if (!context.mounted) return; // avoid using a deactivated context
+                // debugPrint('context mounted');
+                if (newText != null && newText.trim().isNotEmpty) {
+                  vm.updateNodeText(node.id, newText.trim());
                 }
               },
-              child: SizedBox(
-                width: 36,
-                height: 36,
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color:
-                          isConnectingFrom
-                              ? Colors.blueAccent
-                              : Colors.grey[800],
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 1.5),
-                    ),
-                    child: Icon(
-                      Icons.link,
-                      size: 16,
-                      color:
-                          isConnectingFrom ? Colors.white : Colors.blueAccent,
+              onTap: () {
+                if (vm.connectingFromNodeId != null) {
+                  // If we're in connection mode, finish the connection
+                  vm.finishConnecting(node.id);
+                } else {
+                  // Otherwise, just select the node
+                  vm.selectNode(node.id);
+                }
+              },
+              onLongPressStart: (details) {
+                // Start connection on long press
+                vm.startConnectingFrom(node.id);
+              },
+              onPanStart: (_) {
+                // Only start dragging if not in connection mode
+                if (vm.connectingFromNodeId == null) {
+                  vm.startDraggingNode(node.id);
+                }
+              },
+              onPanUpdate: (details) {
+                // If in connection mode, update pointer position
+                if (vm.connectingFromNodeId != null) {
+                  // Convert the local position to canvas coordinates
+                  final box = context.findRenderObject() as RenderBox;
+                  final localPosition = box.globalToLocal(
+                    details.globalPosition,
+                  );
+                  vm.updatePointerFromVisual(localPosition);
+                } else if (vm.draggingNodeId == node.id) {
+                  // Only handle node dragging if we're the dragging node
+                  vm.dragNodeBy(node.id, details.delta);
+                }
+              },
+
+              onPanEnd: (_) {
+                if (vm.connectingFromNodeId == node.id) {
+                  // If we were connecting and didn't connect to another node, cancel
+                  vm.cancelConnecting();
+                } else if (vm.draggingNodeId == node.id) {
+                  vm.stopDraggingNode();
+                }
+              },
+              child: _buildShapedNode(
+                node: node,
+                isConnectingFrom: isConnectingFrom,
+                elevation: elevation,
+                toneColor: toneColor,
+                borderRadius: borderRadius,
+                showBorder: showBorder,
+                glowShadow: glowShadow,
+              ),
+            ),
+
+            // Attachment indicator/button
+            if (hasAttachment)
+              Positioned(
+                left: -16,
+                top: node.height / 2 - 12,
+                child: Tooltip(
+                  message: 'Open attached document',
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () async {
+                      await vm.openAttachedContent(node.id);
+                    },
+                    child: SizedBox(
+                      width: 36,
+                      height: 36,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[800],
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 1.5),
+                          ),
+                          child: const Icon(
+                            Icons.attach_file,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-      ],
+
+            if (isConnectingFrom)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: node.height + 4, // Position below the node
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      'Connecting...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+            if (isAttaching)
+              Positioned(
+                left: 0,
+                right: 0,
+                top:
+                    node.height + 26, // Slightly below the 'Connecting...' pill
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Text(
+                      'Attaching...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+            // Selected toolbar under node: Attach, Link, Edit
+            if (isSelected)
+              Positioned(
+                left: 0,
+                right: 0,
+                top: node.height / 2 - 6,
+                child: Center(
+                  child: SizedBox(
+                    width: math.max(node.width, 160),
+                    // Use a Stack so a transparent absorber sits under the toolbar while buttons remain on top
+                    child: Stack(
+                      children: [
+                        // Background absorber to prevent clicks passing through to nodes behind
+                        Positioned.fill(
+                          child: Container(color: Colors.transparent),
+                        ),
+                        // Toolbar content on top
+                        Center(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              alignment: WrapAlignment.center,
+                              children: [
+                                _actionCircle(
+                                  tooltip:
+                                      hasAttachment
+                                          ? 'Remove attachment'
+                                          : 'Attach document',
+                                  color:
+                                      hasAttachment
+                                          ? Colors.redAccent
+                                          : Colors.grey[800]!,
+                                  icon:
+                                      hasAttachment
+                                          ? Icons.link_off
+                                          : Icons.attach_file,
+                                  iconColor: Colors.white,
+                                  onTap: () {
+                                    if (hasAttachment) {
+                                      vm.removeAttachmentFromNode(node.id);
+                                    } else {
+                                      vm.startAttachToNode(node.id);
+                                      vm.openDrawer();
+                                    }
+                                  },
+                                ),
+                                _actionCircle(
+                                  tooltip:
+                                      isConnectingFrom
+                                          ? 'Cancel link'
+                                          : 'Link to another node',
+                                  color:
+                                      isConnectingFrom
+                                          ? Colors.blueAccent
+                                          : Colors.grey[800]!,
+                                  icon: Icons.link,
+                                  iconColor: Colors.white,
+                                  onTap: () {
+                                    if (isConnectingFrom) {
+                                      vm.cancelConnecting();
+                                    } else {
+                                      vm.startConnectingFrom(node.id);
+                                    }
+                                  },
+                                ),
+                                _actionCircle(
+                                  tooltip: 'Edit text',
+                                  color: Colors.grey[800]!,
+                                  icon: Icons.edit,
+                                  iconColor: Colors.white,
+                                  onTap: () async {
+                                    final textController =
+                                        TextEditingController(text: node.text);
+                                    final newText = await showDialog<String>(
+                                      context: context,
+                                      builder:
+                                          (dialogContext) => AlertDialog(
+                                            title: const Text('Edit node text'),
+                                            content: TextField(
+                                              controller: textController,
+                                              autofocus: true,
+                                              minLines: 1,
+                                              maxLines: 4,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed:
+                                                    () =>
+                                                        Navigator.of(
+                                                          dialogContext,
+                                                        ).pop(),
+                                                child: const Text('Cancel'),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed:
+                                                    () => Navigator.of(
+                                                      dialogContext,
+                                                    ).pop(textController.text),
+                                                child: const Text('Save'),
+                                              ),
+                                            ],
+                                          ),
+                                    );
+                                    if (newText != null &&
+                                        newText.trim().isNotEmpty) {
+                                      vm.updateNodeText(
+                                        node.id,
+                                        newText.trim(),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -415,6 +549,44 @@ class MindMapNodeWidget extends StatelessWidget {
         // Rect-like are handled elsewhere; use full area here (not used)
         return const Size(1.0, 1.0);
     }
+  }
+
+  Widget _actionCircle({
+    required String tooltip,
+    required Color color,
+    required IconData icon,
+    required Color iconColor,
+    required VoidCallback onTap,
+  }) {
+    return Tooltip(
+      message: tooltip,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) {}, // claim gesture arena early
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: onTap,
+            child: SizedBox(
+              width: 36,
+              height: 36,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1.5),
+                  ),
+                  child: Icon(icon, size: 16, color: iconColor),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

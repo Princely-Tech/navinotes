@@ -207,18 +207,13 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         final vm = Provider.of<MindMapVm>(context, listen: false);
-        final selected = vm.selectedNodeId;
-        if (selected != null && content.id != null) {
-          vm.attachContentToNodeById(selected, content.id!);
-          MessageDisplayService.showMessage(
-            context,
-            'Attached to selected node',
-          );
+        final targetNodeId = vm.attachingNodeId;
+        if (targetNodeId != null && content.id != null) {
+          vm.attachContentToNodeById(targetNodeId, content.id!);
+          MessageDisplayService.showMessage(context, 'Attachment added');
         } else {
-          MessageDisplayService.showErrorMessage(
-            context,
-            'Select a node first to attach',
-          );
+          // Not in attach mode: ensure any stale mode is cleared
+          vm.cancelAttachMode();
         }
       },
       child: _imgRow(title: title, img: img),
@@ -251,18 +246,12 @@ Widget _tappableDeckRow({
     behavior: HitTestBehavior.opaque,
     onTap: () {
       final vm = Provider.of<MindMapVm>(context, listen: false);
-      final selected = vm.selectedNodeId;
-      if (selected != null && deck.id != null) {
-        vm.attachDeckToNodeById(selected, deck.id!);
-        MessageDisplayService.showMessage(
-          context,
-          'Deck attached to selected node',
-        );
+      final targetNodeId = vm.attachingNodeId;
+      if (targetNodeId != null && deck.id != null) {
+        vm.attachDeckToNodeById(targetNodeId, deck.id!);
+        MessageDisplayService.showMessage(context, 'Attachment added');
       } else {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Select a node first to attach',
-        );
+        vm.cancelAttachMode();
       }
     },
     child: _imgRow(
