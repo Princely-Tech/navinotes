@@ -46,7 +46,8 @@ enum AiSummaryType {
 enum MindMapFilterType {
   showPdf,
   showNotes,
-  showImages;
+  showImages,
+  showDecks;
 
   @override
   toString() {
@@ -57,6 +58,8 @@ enum MindMapFilterType {
         return 'Show Notes';
       case showImages:
         return 'Show Images';
+      case showDecks:
+        return 'Show Flashcard Decks';
     }
   }
 }

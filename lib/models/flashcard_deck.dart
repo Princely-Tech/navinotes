@@ -135,6 +135,7 @@ class FlashCardDeck {
   }
 
   Future<int>? getCardsCount() {
+    debugPrint('Getting deck cards count for deck $id');
     try {
       return DatabaseHelper.instance.getDeckCardsCount(id!);
     } catch (err) {

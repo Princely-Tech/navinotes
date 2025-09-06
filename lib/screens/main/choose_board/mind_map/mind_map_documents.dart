@@ -1,6 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/models/content.dart';
+import 'package:navinotes/models/flashcard_deck.dart';
 import 'package:navinotes/settings/db_helpers.dart';
 import 'vm.dart';
 
@@ -14,11 +15,14 @@ class MindMapDocuments extends StatefulWidget {
 
 class _MindMapDocumentsState extends State<MindMapDocuments> {
   List<Content> _contents = const [];
+  List<FlashCardDeck> _decks = const [];
+  final Map<int, int> _deckCardCounts = {};
   bool _loading = true;
   List<MindMapFilterType> _selectedFilters = const [
     MindMapFilterType.showPdf,
     MindMapFilterType.showNotes,
     MindMapFilterType.showImages,
+    MindMapFilterType.showDecks,
   ];
 
   @override
@@ -31,9 +35,23 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
     try {
       final vm = Provider.of<MindMapVm>(context, listen: false);
       final data = await DatabaseHelper.instance.getAllContents(vm.boardId);
+      final decks = await DatabaseHelper.instance.getBoardDecks(vm.boardId);
+
+      // Prefetch deck card counts once to avoid recalculating in build
+      final Map<int, int> counts = {};
+      await Future.wait(
+        decks.where((d) => d.id != null).map((d) async {
+          final c = await DatabaseHelper.instance.getDeckCardsCount(d.id!);
+          counts[d.id!] = c;
+        }),
+      );
       if (!mounted) return;
       setState(() {
         _contents = data;
+        _decks = decks;
+        _deckCardCounts
+          ..clear()
+          ..addAll(counts);
         _loading = false;
       });
     } catch (e) {
@@ -73,6 +91,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
     final showNotes = _selectedFilters.contains(MindMapFilterType.showNotes);
     final showPdfs = _selectedFilters.contains(MindMapFilterType.showPdf);
     final showImages = _selectedFilters.contains(MindMapFilterType.showImages);
+    final showDecks = _selectedFilters.contains(MindMapFilterType.showDecks);
 
     return Container(
       decoration: BoxDecoration(
@@ -102,15 +121,16 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                               count: notes.length,
                               child: Column(
                                 spacing: 10,
-                                children: notes
-                                .map(
-                                  (n) => _tappableRow(
-                                    context: context,
-                                    content: n,
-                                    img: Images.file2,
-                                  ),
-                                )
-                                .toList(),
+                                children:
+                                    notes
+                                        .map(
+                                          (n) => _tappableRow(
+                                            context: context,
+                                            content: n,
+                                            img: Images.file2,
+                                          ),
+                                        )
+                                        .toList(),
                               ),
                             ),
                           if (showPdfs || showImages)
@@ -123,22 +143,40 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                                 spacing: 10,
                                 children: [
                                   if (showPdfs)
-                                     ...pdfs.map(
-                                  (f) => _tappableRow(
-                                    context: context,
-                                    content: f,
-                                    img: Images.pdf,
-                                  ),
-                                ),
+                                    ...pdfs.map(
+                                      (f) => _tappableRow(
+                                        context: context,
+                                        content: f,
+                                        img: Images.pdf,
+                                      ),
+                                    ),
                                   if (showImages)
-                                     ...images.map(
-                                  (f) => _tappableRow(
-                                    context: context,
-                                    content: f,
-                                    img: Images.imgCopy,
-                                  ),
-                                ),
+                                    ...images.map(
+                                      (f) => _tappableRow(
+                                        context: context,
+                                        content: f,
+                                        img: Images.img,
+                                      ),
+                                    ),
                                 ],
+                              ),
+                            ),
+                          if (showDecks)
+                            _section(
+                              title: 'Flashcard Decks',
+                              count: _decks.length,
+                              child: Column(
+                                spacing: 10,
+                                children:
+                                    _decks
+                                        .map(
+                                          (d) => _tappableDeckRow(
+                                            context: context,
+                                            deck: d,
+                                            count: _deckCardCounts[d.id] ?? 0,
+                                          ),
+                                        )
+                                        .toList(),
                               ),
                             ),
                           Text(
@@ -158,37 +196,35 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
     );
   }
 
-Widget _tappableRow({
-  required BuildContext context,
-  required Content content,
-  required String img,
-}) {
-  final title = content.title.isNotEmpty
-      ? content.title
-      : (content.file ?? 'Untitled');
-  return GestureDetector(
-    behavior: HitTestBehavior.opaque,
-onTap: () {
-      final vm = Provider.of<MindMapVm>(context, listen: false);
-      final selected = vm.selectedNodeId;
-      if (selected != null && content.id != null) {
-        vm.attachContentToNodeById(selected, content.id!);
-        MessageDisplayService.showMessage(
-          context,
-          'Attached to selected node',
-        );
-     } else {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Select a node first to attach',
-        );
-      }
-    },
-    child: _imgRow(title: title, img: img),
-  );
-}
+  Widget _tappableRow({
+    required BuildContext context,
+    required Content content,
+    required String img,
+  }) {
+    final title =
+        content.title.isNotEmpty ? content.title : (content.file ?? 'Untitled');
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        final vm = Provider.of<MindMapVm>(context, listen: false);
+        final selected = vm.selectedNodeId;
+        if (selected != null && content.id != null) {
+          vm.attachContentToNodeById(selected, content.id!);
+          MessageDisplayService.showMessage(
+            context,
+            'Attached to selected node',
+          );
+        } else {
+          MessageDisplayService.showErrorMessage(
+            context,
+            'Select a node first to attach',
+          );
+        }
+      },
+      child: _imgRow(title: title, img: img),
+    );
+  }
 
-  
   bool _isPdf(String? path) {
     if (path == null) return false;
     final lower = path.toLowerCase();
@@ -204,6 +240,37 @@ onTap: () {
         lower.endsWith('.gif') ||
         lower.endsWith('.webp');
   }
+}
+
+Widget _tappableDeckRow({
+  required BuildContext context,
+  required FlashCardDeck deck,
+  required int count,
+}) {
+  return GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: () {
+      final vm = Provider.of<MindMapVm>(context, listen: false);
+      final selected = vm.selectedNodeId;
+      if (selected != null && deck.id != null) {
+        vm.attachDeckToNodeById(selected, deck.id!);
+        MessageDisplayService.showMessage(
+          context,
+          'Deck attached to selected node',
+        );
+      } else {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Select a node first to attach',
+        );
+      }
+    },
+    child: _imgRow(
+      title: deck.name,
+      img: Images.flashCards,
+      right: '$count cards',
+    ),
+  );
 }
 
 Widget _imgRow({required String title, String? img, String? right}) {

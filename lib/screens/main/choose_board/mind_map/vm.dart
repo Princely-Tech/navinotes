@@ -476,23 +476,64 @@ class MindMapVm extends ChangeNotifier {
   void attachContentToNodeById(String nodeId, int contentId) {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    node.contentID = contentId.toString();
+    // Store as typed attachment for clarity
+    node.contentID = 'content:$contentId';
     notifyListeners();
+  }
+
+  void attachDeckToNodeById(String nodeId, int deckId) {
+    final node = mindMap.findNode(nodeId);
+    if (node == null) return;
+    node.contentID = 'deck:$deckId';
+    notifyListeners();
+  }
+
+  (String type, int? id)? _parseAttachment(String? raw) {
+    if (raw == null || raw.isEmpty) return null;
+    if (raw.contains(':')) {
+      final parts = raw.split(':');
+      if (parts.length == 2) {
+        final id = int.tryParse(parts[1]);
+        return (parts[0], id);
+      }
+      return null;
+    }
+    // Backward compatibility: plain numeric means content
+    final legacyId = int.tryParse(raw);
+    return ('content', legacyId);
   }
 
   Future<Content?> getAttachedContent(String nodeId) async {
     final node = mindMap.findNode(nodeId);
     if (node == null) return null;
-    final idStr = node.contentID;
-    if (idStr == null) return null;
-    final id = int.tryParse(idStr);
+    final parsed = _parseAttachment(node.contentID);
+    if (parsed == null) return null;
+    if (parsed.$1 != 'content') return null;
+    final id = parsed.$2;
     if (id == null) return null;
     final helper = DatabaseHelper.instance;
     return await helper.getContentById(id);
   }
 
   Future<void> openAttachedContent(String nodeId) async {
-    final content = await getAttachedContent(nodeId);
+    final node = mindMap.findNode(nodeId);
+    if (node == null) return;
+    final parsed = _parseAttachment(node.contentID);
+    if (parsed == null) return;
+    final type = parsed.$1;
+    final id = parsed.$2;
+    if (id == null) return;
+
+    if (type == 'deck') {
+      final deck = await DatabaseHelper.instance.getDeck(id);
+      if (deck != null) {
+        NavigationHelper.navigateToFlashCardStudy(deck);
+      }
+      return;
+    }
+
+    // Default: content
+    final content = await DatabaseHelper.instance.getContentById(id);
     if (content == null) return;
 
     if (content.type == AppContentType.file) {
