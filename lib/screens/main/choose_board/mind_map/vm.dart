@@ -115,28 +115,27 @@ class MindMapVm extends ChangeNotifier {
   }
 
   // In vm.dart
-  void startConnectingFrom(String nodeId) {
-    connectingFromNodeId = nodeId;
-    selectedNodeId = nodeId; // Select the node we're connecting from
-    notifyListeners();
-  }
+ void startConnectingFrom(String nodeId) {
+  connectingFromNodeId = nodeId;
+  selectedNodeId = nodeId;
+  notifyListeners();
+}
 
-  void cancelConnecting() {
-    connectingFromNodeId = null;
-    pointerLogical = null;
-    notifyListeners();
-  }
+void cancelConnecting() {
+  connectingFromNodeId = null;
+  notifyListeners();
+}
 
-  void finishConnecting(String targetNodeId) {
-    final sourceId = connectingFromNodeId;
-    if (sourceId == null || sourceId == targetNodeId) {
-      cancelConnecting();
-      return;
-    }
-
-    connectNodes(sourceId, targetNodeId);
+void finishConnecting(String targetNodeId) {
+  final sourceId = connectingFromNodeId;
+  if (sourceId == null || sourceId == targetNodeId) {
     cancelConnecting();
+    return;
   }
+  
+  connectNodes(sourceId, targetNodeId);
+  cancelConnecting();
+}
 
   // ---------- Canvas pan/zoom & pointer handling ----------
   void setScale(double newScale) {

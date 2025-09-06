@@ -50,12 +50,10 @@ class MindMapNodeWidget extends StatelessWidget {
       onTap: () {
         if (vm.connectingFromNodeId != null) {
           // If we're in connection mode, finish the connection
-          if (vm.connectingFromNodeId != node.id) {
-            vm.finishConnecting(node.id);
-          }
+          vm.finishConnecting(node.id);
         } else {
-          // Otherwise, just select/deselect the node
-          vm.selectNode(isSelected ? null : node.id);
+          // Otherwise, just select the node
+          vm.selectNode(node.id);
         }
       },
       onLongPressStart: (details) {
@@ -97,6 +95,13 @@ class MindMapNodeWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           width: node.width,
           height: node.height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            border:
+                isConnectingFrom
+                    ? Border.all(color: Colors.blueAccent, width: 2.0)
+                    : null,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -107,24 +112,36 @@ class MindMapNodeWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (isSelected || isConnectingFrom)
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onPanStart: (details) {
-                    if (!isConnectingFrom) {
-                      // Get the global position and convert it to canvas coordinates
-                      final box = context.findRenderObject() as RenderBox;
-                      final localPosition = box.globalToLocal(
-                        details.globalPosition,
-                      );
-                      vm.startConnectingFrom(node.id);
-                      // Update the pointer position to start from the icon
-                      vm.updatePointerFromVisual(localPosition);
-                    }
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 6.0),
-                    child: Icon(Icons.link, size: 20, color: Colors.white70),
+              // Connection icon overlay
+              if (isSelected)
+                Positioned(
+                  right: -6,
+                  top: -6,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (isConnectingFrom) {
+                        vm.cancelConnecting();
+                      } else {
+                        vm.startConnectingFrom(node.id);
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color:
+                            isConnectingFrom
+                                ? Colors.blueAccent
+                                : Colors.grey[800],
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1.5),
+                      ),
+                      child: Icon(
+                        Icons.link,
+                        size: 16,
+                        color:
+                            isConnectingFrom ? Colors.white : Colors.blueAccent,
+                      ),
+                    ),
                   ),
                 ),
             ],
