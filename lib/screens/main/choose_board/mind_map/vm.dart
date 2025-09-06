@@ -260,6 +260,14 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateSelectedNodeShape(MindMapShape shape) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.shape = shape;
+    // When switching to circle/pill we may want to adjust radius; leave radius as-is for rectangular shapes
+    notifyListeners();
+  }
+
   // ---------- Serialization ----------
   Map<String, dynamic> toJson() => mindMap.toJson();
 

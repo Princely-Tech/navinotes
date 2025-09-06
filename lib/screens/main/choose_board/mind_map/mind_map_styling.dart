@@ -59,11 +59,11 @@ class MindMapStyling extends StatelessWidget {
                 children: [
                   _typography(),
                   _nodeStyling(vm),
-                  AppButton(
-                    onTap: () {},
-                    text: 'Apply Changes',
-                    color: AppTheme.steelBlue,
-                  ),
+                  // AppButton(
+                  //   onTap: () {},
+                  //   text: 'Apply Changes',
+                  //   color: AppTheme.steelBlue,
+                  // ),
                 ],
               ),
             ),
@@ -556,16 +556,16 @@ class MindMapShapeSelect extends StatefulWidget {
 }
 
 class _MindMapShapeSelectState extends State<MindMapShapeSelect> {
-  int shape = 0;
+  MindMapShape selectedShape = MindMapShape.rounded;
 
-  void updateShape(int shape) {
-    setState(() {
-      this.shape = shape;
-    });
+  void updateShape(MindMapShape shape) {
+    setState(() => selectedShape = shape);
     final vm = context.read<MindMapVm>();
-    // Map our 4 buttons to two radii options (rounded vs small radius)
-    final bool radiusIs2 = shape == 1 || shape == 3;
-    vm.updateSelectedNodeBorderRadius(radiusIs2 ? 2.0 : 8.0);
+    vm.updateSelectedNodeShape(shape);
+    // For legacy rounded/sharp choices, also sync a sensible borderRadius
+    if (shape == MindMapShape.rounded) vm.updateSelectedNodeBorderRadius(8.0);
+    if (shape == MindMapShape.sharp) vm.updateSelectedNodeBorderRadius(0.0);
+    if (shape == MindMapShape.pill) vm.updateSelectedNodeBorderRadius(999.0);
   }
 
   @override
@@ -576,9 +576,7 @@ class _MindMapShapeSelectState extends State<MindMapShapeSelect> {
             ? null
             : vm.mindMap.findNode(vm.selectedNodeId!);
     if (node != null) {
-      final is2 = (node.borderRadius <= 2.0 + 0.01);
-      // Derive shape selection from radius (preserve quadrant grouping)
-      shape = is2 ? 1 : 0;
+      selectedShape = node.shape;
     }
     return _titleSection(
       title: 'Node Shape',
@@ -586,38 +584,28 @@ class _MindMapShapeSelectState extends State<MindMapShapeSelect> {
         scrollDirection: Axis.horizontal,
         child: Row(
           spacing: 10,
-          children: List.generate(4, (index) => _shapeItem(index)),
+          children: [
+            _shapeItem(MindMapShape.rounded, 'Rounded'),
+            _shapeItem(MindMapShape.sharp, 'Sharp'),
+            _shapeItem(MindMapShape.pill, 'Pill'),
+            _shapeItem(MindMapShape.circle, 'Circle'),
+            _shapeItem(MindMapShape.diamond, 'Diamond'),
+            _shapeItem(MindMapShape.hexagon, 'Hexagon'),
+            _shapeItem(MindMapShape.parallelogram, 'Parallelogram'),
+            _shapeItem(MindMapShape.octagon, 'Octagon'),
+            _shapeItem(MindMapShape.trapezoid, 'Trapezoid'),
+          ],
         ),
       ),
     );
   }
 
-  Widget _shapeItem(int index) {
-    bool isSelected = shape == index;
-    bool radiusIs2 = index == 1 || index == 3;
-    return InkWell(
-      onTap: () => updateShape(index),
-      child: Container(
-        decoration: ShapeDecoration(
-          color: isSelected ? AppTheme.iceBlue : AppTheme.transparent,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-              width: 1,
-              color: isSelected ? AppTheme.vividBlue : AppTheme.lightGray,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        padding: EdgeInsets.all(10),
-        child: Container(
-          width: 32,
-          height: 24,
-          decoration: BoxDecoration(
-            color: AppTheme.white,
-            borderRadius: BorderRadius.circular(radiusIs2 ? 2 : 8),
-          ),
-        ),
-      ),
+  Widget _shapeItem(MindMapShape shape, String label) {
+    final bool isSelected = selectedShape == shape;
+    return _selectItem(
+      text: label,
+      isSelected: isSelected,
+      onTap: () => updateShape(shape),
     );
   }
 }

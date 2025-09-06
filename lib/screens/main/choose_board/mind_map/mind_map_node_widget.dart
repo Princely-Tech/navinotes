@@ -1,4 +1,5 @@
 // mind_map_node_widget.dart
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navinotes/models/mind_map_node.dart';
@@ -29,7 +30,7 @@ class MindMapNodeWidget extends StatelessWidget {
             ? (isSelected ? 8 : 4)
             : 0;
     final List<BoxShadow>? glowShadow =
-        showGlow
+        showGlow && _isRectLike(node.shape)
             ? [
               BoxShadow(
                 color: toneColor.withOpacity(0.6),
@@ -116,34 +117,14 @@ class MindMapNodeWidget extends StatelessWidget {
               vm.stopDraggingNode();
             }
           },
-          child: Material(
+          child: _buildShapedNode(
+            node: node,
+            isConnectingFrom: isConnectingFrom,
             elevation: elevation,
-            color: Colors.transparent,
+            toneColor: toneColor,
             borderRadius: borderRadius,
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              width: node.width,
-              height: node.height,
-              decoration: BoxDecoration(
-                color: toneColor,
-                borderRadius: borderRadius,
-                border:
-                    isConnectingFrom || showBorder
-                        ? Border.all(color: Colors.blueAccent, width: 2.0)
-                        : null,
-                boxShadow: glowShadow,
-              ),
-              child: Text(
-                node.text,
-                style: TextStyle(
-                  color: node.textColor.withOpacity(node.opacity),
-                  fontSize: node.fontSize,
-                  fontWeight: _toFontWeight(node.fontWeight),
-                  fontFamily: node.fontFamily,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            showBorder: showBorder,
+            glowShadow: glowShadow,
           ),
         ),
 
@@ -214,6 +195,97 @@ class MindMapNodeWidget extends StatelessWidget {
     );
   }
 
+  Widget _buildShapedNode({
+    required MindMapNode node,
+    required bool isConnectingFrom,
+    required double elevation,
+    required Color toneColor,
+    required BorderRadius borderRadius,
+    required bool showBorder,
+    required List<BoxShadow>? glowShadow,
+  }) {
+    final text = Text(
+      node.text,
+      style: TextStyle(
+        color: node.textColor.withOpacity(node.opacity),
+        fontSize: node.fontSize,
+        fontWeight: _toFontWeight(node.fontWeight),
+        fontFamily: node.fontFamily,
+      ),
+      overflow: TextOverflow.ellipsis,
+    );
+
+    final content = Padding(padding: const EdgeInsets.all(8.0), child: text);
+
+    // Rect-like shapes handled with standard Material/Container
+    if (_isRectLike(node.shape)) {
+      return Material(
+        elevation: elevation,
+        color: Colors.transparent,
+        borderRadius: borderRadius,
+        child: Container(
+          padding: EdgeInsets.zero,
+          width: node.width,
+          height: node.height,
+          decoration: BoxDecoration(
+            color: toneColor,
+            borderRadius: borderRadius,
+            border:
+                isConnectingFrom || showBorder
+                    ? Border.all(color: Colors.blueAccent, width: 2.0)
+                    : null,
+            boxShadow: glowShadow,
+          ),
+          child: content,
+        ),
+      );
+    }
+
+    // Non-rect shapes: use PhysicalShape to support elevation and colored shadow
+    final clipper = _shapeClipper(node.shape);
+    final borderPainter =
+        showBorder || isConnectingFrom
+            ? _ShapeBorderPainter(
+              clipper: clipper,
+              borderColor: Colors.blueAccent,
+              strokeWidth: 2,
+            )
+            : null;
+
+    return Stack(
+      children: [
+        PhysicalShape(
+          elevation: elevation,
+          color: toneColor,
+          shadowColor:
+              node.borderStyle == MindMapBorderStyle.glow
+                  ? toneColor.withOpacity(0.8)
+                  : Colors.black,
+          clipper: clipper,
+          clipBehavior: Clip.antiAlias,
+          child: SizedBox(
+            width: node.width,
+            height: node.height,
+            child: Align(alignment: Alignment.centerLeft, child: content),
+          ),
+        ),
+        if (borderPainter != null)
+          IgnorePointer(
+            child: CustomPaint(
+              size: Size(node.width, node.height),
+              painter: borderPainter,
+            ),
+          ),
+      ],
+    );
+  }
+
+  bool _isRectLike(MindMapShape shape) {
+    return shape == MindMapShape.rounded ||
+        shape == MindMapShape.sharp ||
+        shape == MindMapShape.pill;
+  }
+
   // Shift hue toward warmer/cooler based on tone in -1..1
   Color _applyTone(Color color, double tone) {
     if (tone == 0) return color;
@@ -240,4 +312,161 @@ class MindMapNodeWidget extends StatelessWidget {
         return FontWeight.w500;
     }
   }
+
+  CustomClipper<Path> _shapeClipper(MindMapShape shape) {
+    switch (shape) {
+      case MindMapShape.circle:
+        return _CircleClipper();
+      case MindMapShape.diamond:
+        return _DiamondClipper();
+      case MindMapShape.hexagon:
+        return _HexagonClipper();
+      case MindMapShape.parallelogram:
+        return _ParallelogramClipper();
+      case MindMapShape.octagon:
+        return _OctagonClipper();
+      case MindMapShape.trapezoid:
+        return _TrapezoidClipper();
+      case MindMapShape.pill:
+      case MindMapShape.rounded:
+      case MindMapShape.sharp:
+        // Rect-like handled without clipper, but return a rect clipper if needed
+        return _RectClipper();
+    }
+  }
+}
+
+class _ShapeBorderPainter extends CustomPainter {
+  final CustomClipper<Path> clipper;
+  final Color borderColor;
+  final double strokeWidth;
+  _ShapeBorderPainter({
+    required this.clipper,
+    required this.borderColor,
+    this.strokeWidth = 2,
+  });
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = clipper.getClip(size);
+    final paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth
+          ..color = borderColor;
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _ShapeBorderPainter oldDelegate) => true;
+}
+
+class _RectClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) =>
+      Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _CircleClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final r = Rect.fromLTWH(0, 0, size.width, size.height);
+    return Path()..addOval(r);
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _DiamondClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final path =
+        Path()
+          ..moveTo(w / 2, 0)
+          ..lineTo(w, h / 2)
+          ..lineTo(w / 2, h)
+          ..lineTo(0, h / 2)
+          ..close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _HexagonClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final dx = w * 0.2; // side inset
+    return Path()
+      ..moveTo(dx, 0)
+      ..lineTo(w - dx, 0)
+      ..lineTo(w, h / 2)
+      ..lineTo(w - dx, h)
+      ..lineTo(dx, h)
+      ..lineTo(0, h / 2)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _ParallelogramClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final skew = w * 0.15;
+    return Path()
+      ..moveTo(skew, 0)
+      ..lineTo(w, 0)
+      ..lineTo(w - skew, h)
+      ..lineTo(0, h)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _OctagonClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final cut = math.min(w, h) * 0.2;
+    return Path()
+      ..moveTo(cut, 0)
+      ..lineTo(w - cut, 0)
+      ..lineTo(w, cut)
+      ..lineTo(w, h - cut)
+      ..lineTo(w - cut, h)
+      ..lineTo(cut, h)
+      ..lineTo(0, h - cut)
+      ..lineTo(0, cut)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _TrapezoidClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final inset = w * 0.15;
+    return Path()
+      ..moveTo(inset, 0)
+      ..lineTo(w - inset, 0)
+      ..lineTo(w, h)
+      ..lineTo(0, h)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }

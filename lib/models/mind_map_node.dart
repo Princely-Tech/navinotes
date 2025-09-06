@@ -3,6 +3,19 @@ import 'package:uuid/uuid.dart';
 
 enum MindMapBorderStyle { shadow, border, glow, none }
 
+/// Node geometric shape
+enum MindMapShape {
+  rounded,
+  sharp,
+  pill,
+  circle,
+  diamond,
+  hexagon,
+  parallelogram,
+  octagon,
+  trapezoid,
+}
+
 class MindMapNode {
   final String id;
   String text;
@@ -21,6 +34,7 @@ class MindMapNode {
   double colorTone; // -1..1 cooler..warmer (hue shift)
   MindMapBorderStyle borderStyle;
   double borderRadius; // corner radius
+  MindMapShape shape;
 
   MindMapNode({
     String? id,
@@ -38,6 +52,7 @@ class MindMapNode {
     this.colorTone = 0.0,
     this.borderStyle = MindMapBorderStyle.shadow,
     this.borderRadius = 8.0,
+    this.shape = MindMapShape.rounded,
   }) : id = id ?? const Uuid().v4();
 
   factory MindMapNode.fromJson(Map<String, dynamic> json) => MindMapNode(
@@ -58,6 +73,7 @@ class MindMapNode {
         _borderStyleFromString(json['borderStyle']) ??
         MindMapBorderStyle.shadow,
     borderRadius: (json['borderRadius'] ?? 8.0).toDouble(),
+    shape: _shapeFromString(json['shape']) ?? MindMapShape.rounded,
   );
 
   Map<String, dynamic> toJson() => {
@@ -77,6 +93,7 @@ class MindMapNode {
     'colorTone': colorTone,
     'borderStyle': borderStyle.name,
     'borderRadius': borderRadius,
+    'shape': shape.name,
   };
 }
 
@@ -85,6 +102,16 @@ MindMapBorderStyle? _borderStyleFromString(dynamic v) {
   try {
     final s = v.toString();
     return MindMapBorderStyle.values.firstWhere((e) => e.name == s);
+  } catch (_) {
+    return null;
+  }
+}
+
+MindMapShape? _shapeFromString(dynamic v) {
+  if (v == null) return null;
+  try {
+    final s = v.toString();
+    return MindMapShape.values.firstWhere((e) => e.name == s);
   } catch (_) {
     return null;
   }
