@@ -170,26 +170,61 @@ class BoardEditVm extends ChangeNotifier {
     }
   }
 
+  Future<bool?> _promptPickSource(BuildContext context) async {
+    return await showModalBottomSheet<bool>(
+      context: context,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery (Images)'),
+                onTap: () => Navigator.of(sheetContext).pop(true),
+              ),
+              ListTile(
+                leading: const Icon(Icons.insert_drive_file),
+                title: const Text('Documents'),
+                onTap: () => Navigator.of(sheetContext).pop(false),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> importFiles(BuildContext context) async {
     try {
       savingFiles = true;
       notifyListeners();
       final currentUser = getCurrentUserFromSession(context);
       if (isNotNull(currentUser)) {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: [
-            'pdf',
-            'doc',
-            'docx',
-            'ppt',
-            'pptx',
-            'xls',
-            'xlsx',
-            'txt',
-          ],
-          allowMultiple: true,
-        );
+        // Ask user which source to use each time
+        final isGallery = await _promptPickSource(context);
+        if (isGallery == null) {
+          // User dismissed sheet
+          savingFiles = false;
+          notifyListeners();
+          return;
+        }
+
+        FilePickerResult? result;
+        if (isGallery) {
+          // Open gallery/photos UI for images
+          result = await FilePicker.platform.pickFiles(
+            type: FileType.image,
+            allowMultiple: true,
+          );
+        } else {
+          // Open document picker for documents (and other allowed types)
+          result = await FilePicker.platform.pickFiles(
+            type: FileType.custom,
+            allowedExtensions: contentFileAllowedExtensions,
+            allowMultiple: true,
+          );
+        }
 
         if (isNotNull(result) && result!.files.isNotEmpty) {
           int successCount = 0;
@@ -219,22 +254,11 @@ class BoardEditVm extends ChangeNotifier {
               );
             }
           }
-        } else {
-          if (context.mounted) {
-            MessageDisplayService.showErrorMessage(
-              context,
-              'No files were imported',
-            );
-          }
         }
       }
     } catch (e) {
-      debugPrint('Error importing files: $e');
       if (context.mounted) {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Error importing files',
-        );
+        MessageDisplayService.showErrorMessage(context, 'Error picking files');
       }
     } finally {
       savingFiles = false;

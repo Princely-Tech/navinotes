@@ -1,5 +1,20 @@
 import 'package:navinotes/packages.dart';
 
+final contentFileAllowedExtensions = [
+  'pdf',
+  'doc',
+  'docx',
+  'ppt',
+  'pptx',
+  'xls',
+  'xlsx',
+  'txt',
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+];
+
 class Content {
   int? id;
   final String guid;
