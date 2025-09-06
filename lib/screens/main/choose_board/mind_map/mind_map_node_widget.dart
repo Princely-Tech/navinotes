@@ -274,7 +274,7 @@ class MindMapNodeWidget extends StatelessWidget {
           child: SizedBox(
             width: node.width,
             height: node.height,
-            child: Center(child: content),
+            child: _centeredInnerBox(node.shape, content),
           ),
         ),
         if (borderPainter != null)
@@ -340,6 +340,44 @@ class MindMapNodeWidget extends StatelessWidget {
       case MindMapShape.sharp:
         // Rect-like handled without clipper, but return a rect clipper if needed
         return _RectClipper();
+    }
+  }
+
+  // Constrain text inside non-rect shapes to avoid clipping against edges
+  Widget _centeredInnerBox(MindMapShape shape, Widget child) {
+    final Size f = _innerFactors(shape);
+    return Center(
+      child: FractionallySizedBox(
+        widthFactor: f.width,
+        heightFactor: f.height,
+        alignment: Alignment.center,
+        child: child,
+      ),
+    );
+  }
+
+  Size _innerFactors(MindMapShape shape) {
+    switch (shape) {
+      case MindMapShape.circle:
+        // Inscribe a rectangle safely inside a circle
+        return const Size(0.75, 0.75);
+      case MindMapShape.diamond:
+        // Diamond has tighter corners; reduce width more
+        return const Size(0.65, 0.75);
+      case MindMapShape.hexagon:
+        return const Size(0.8, 0.8);
+      case MindMapShape.parallelogram:
+        // Skewed sides; keep a comfortable inset
+        return const Size(0.85, 0.8);
+      case MindMapShape.octagon:
+        return const Size(0.85, 0.85);
+      case MindMapShape.trapezoid:
+        return const Size(0.8, 0.8);
+      case MindMapShape.pill:
+      case MindMapShape.rounded:
+      case MindMapShape.sharp:
+        // Rect-like are handled elsewhere; use full area here (not used)
+        return const Size(1.0, 1.0);
     }
   }
 }
