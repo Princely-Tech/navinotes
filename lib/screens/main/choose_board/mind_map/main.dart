@@ -63,31 +63,16 @@ class MindMapMain extends StatelessWidget {
                   ),
                   const Spacer(),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      final json = vm.toJson();
-                      // copy to clipboard or show in dialog
-                      showDialog(
-                        context: context,
-                        builder:
-                            (_) => AlertDialog(
-                              title: const Text('Mind map JSON'),
-                              content: SizedBox(
-                                width: 600,
-                                child: SingleChildScrollView(
-                                  child: Text(json.toString()),
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: const Text('Close'),
-                                ),
-                              ],
-                            ),
-                      );
+                    onPressed: () async {
+                      await vm.saveToDb();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Mind map saved')),
+                        );
+                      }
                     },
-                    icon: const Icon(Icons.code),
-                    label: const Text('Export JSON'),
+                    icon: const Icon(Icons.save),
+                    label: const Text('Save'),
                   ),
                 ],
               ),

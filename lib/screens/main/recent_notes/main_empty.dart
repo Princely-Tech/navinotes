@@ -81,7 +81,11 @@ class EmptyRecentNotesMain extends StatelessWidget {
                 wrapWithFlexible: true,
                 mainAxisSize: MainAxisSize.min,
                 prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
-                onTap: () => NavigationHelper.push(Routes.mindMap),
+                onTap:
+                    () => NavigationHelper.push(
+                      Routes.mindMap,
+                      arguments: {'boardId': 123, 'contentId': 5},
+                    ),
                 text: 'Mind Map',
                 color: AppTheme.jungleTeal,
               ),

@@ -61,11 +61,25 @@ Map<String, WidgetBuilder> routes = {
   Routes.flashCardAiCreation: (context) => FlashCardAiCreationScreen(),
   Routes.flashCards: (context) => FlashCardScreen(),
 
-
-
-
-    Routes.mindMap: (context) => MindMapScreen(),
-
+  // NavigationHelper.push(
+  //                       Routes.mindMap,
+  //                       arguments: {'boardId': 123, 'contentId': 5},
+  //                     ),
+  Routes.mindMap: (context) {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is Map<String, dynamic>) {
+      final int? boardId = args['boardId'] as int?;
+      final int? contentId = args['contentId'] as int?;
+      if (boardId != null) {
+        return MindMapScreen(boardId: boardId, contentId: contentId);
+      }
+    }
+    // Fallback UI if arguments are missing
+    return Scaffold(
+      appBar: AppBar(title: const Text('Mind Map')),
+      body: const Center(child: Text('Missing route arguments: boardId')),
+    );
+  },
 };
 
 class Routes {

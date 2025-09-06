@@ -6,14 +6,22 @@ import 'vm.dart';
 import 'package:navinotes/packages.dart';
 
 class MindMapScreen extends StatelessWidget {
-  MindMapScreen({super.key});
+  MindMapScreen({super.key, required this.boardId, this.contentId});
+
+  final int boardId;
+  final int? contentId;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => MindMapVm(scaffoldKey: _scaffoldKey),
+      create:
+          (_) => MindMapVm(
+            scaffoldKey: _scaffoldKey,
+            boardId: boardId,
+            contentId: contentId,
+          ),
       child: Consumer<MindMapVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(

@@ -1,10 +1,15 @@
 // vm.dart
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/mind_map.dart';
 import 'package:navinotes/models/mind_map_edge.dart';
 import 'package:navinotes/models/mind_map_node.dart';
+import 'package:navinotes/models/content.dart';
+import 'package:navinotes/settings/db_helpers.dart';
+import 'package:navinotes/settings/enums.dart';
+import 'package:uuid/uuid.dart';
 
 class MindMapVm extends ChangeNotifier {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -17,6 +22,11 @@ class MindMapVm extends ChangeNotifier {
   String? connectingFromNodeId;
   String? draggingNodeId;
 
+  /// Persistence state
+  final int boardId;
+  int? contentId; // row id in contents table for this mindmap
+  String title = 'Mind Map';
+
   /// Canvas transform state (logical coordinates)
   Offset canvasOffset = Offset.zero;
   double scale = 1.0;
@@ -24,8 +34,21 @@ class MindMapVm extends ChangeNotifier {
   /// Latest pointer in logical coordinates used for drawing temporary edge
   Offset? pointerLogical;
 
-  MindMapVm({required this.scaffoldKey})
-    : mindMap = MindMap(name: 'Untitled Mind Map');
+  /// Autosave state
+  Timer? _autoSaveTimer;
+  final Duration autoSaveDelay = const Duration(seconds: 1);
+  bool _suppressAutoSave = false; // used during load/save
+  bool _isSaving = false;
+
+  MindMapVm({required this.scaffoldKey, required this.boardId, this.contentId})
+    : mindMap = MindMap(name: 'Untitled Mind Map') {
+    // If a contentId is provided, load the saved mind map from DB
+    if (contentId != null) {
+      Future.microtask(() => loadFromDb(contentId!));
+    }
+    // Any change notification schedules a debounced autosave
+    addListener(_onVmChanged);
+  }
 
   // Drawer helpers (kept for compatibility)
   void openDrawer() {
@@ -433,11 +456,110 @@ class MindMapVm extends ChangeNotifier {
   Map<String, dynamic> toJson() => mindMap.toJson();
 
   void loadFromJson(Map<String, dynamic> json) {
-    mindMap = MindMap.fromJson(json);
-    selectedNodeId = null;
-    selectedEdgeId = null;
-    connectingFromNodeId = null;
-    draggingNodeId = null;
-    notifyListeners();
+    _suppressAutoSave = true;
+    try {
+      mindMap = MindMap.fromJson(json);
+      selectedNodeId = null;
+      selectedEdgeId = null;
+      connectingFromNodeId = null;
+      draggingNodeId = null;
+      notifyListeners();
+    } finally {
+      _suppressAutoSave = false;
+    }
+  }
+
+  // ---------- Persistence (DB) ----------
+  /// Save (insert or update) the current mind map into the contents table.
+  /// - If contentId is null, insert a new Content row.
+  /// - Otherwise, update the existing row.
+  Future<void> saveToDb({String? newTitle}) async {
+    if (_isSaving) return; // guard re-entrancy
+    _suppressAutoSave = true;
+    _isSaving = true;
+    try {
+      title = newTitle ?? title;
+      final meta = toJson();
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final helper = DatabaseHelper.instance;
+
+      if (contentId == null) {
+        final content = Content(
+          guid: const Uuid().v4(),
+          title: title,
+          type: AppContentType.mindmap,
+          metaData: meta,
+          boardId: boardId,
+          createdAt: now,
+          updatedAt: now,
+          tags: null,
+          content: null,
+          drawing: null,
+          file: null,
+        );
+        final id = await helper.insertContent(content);
+        contentId = id;
+        debugPrint('Content inserted with id: $id');
+      } else {
+        final existing = await helper.getContentById(contentId!);
+        if (existing != null) {
+          final updated = Content(
+            id: existing.id,
+            guid: existing.guid,
+            title: newTitle ?? existing.title,
+            voiceNotes: existing.voiceNotes,
+            coverImage: existing.coverImage,
+            type: existing.type,
+            metaData: meta,
+            boardId: existing.boardId,
+            tags: existing.tags,
+            content: existing.content,
+            drawing: existing.drawing,
+            file: existing.file,
+            createdAt: existing.createdAt,
+            updatedAt: now,
+            syncedAt: existing.syncedAt,
+            coverImageNeedSync: existing.coverImageNeedSync,
+            fileNeedSync: existing.fileNeedSync,
+          );
+          await helper.updateContent(updated);
+          debugPrint('Content updated with id: $contentId');
+        }
+      }
+      // No notifyListeners here; UI usually doesn't need to change after save
+    } finally {
+      _isSaving = false;
+      _suppressAutoSave = false;
+    }
+  }
+
+  /// Load a mind map from DB by contentId (row id) and set internal state.
+  Future<void> loadFromDb(int id) async {
+    final helper = DatabaseHelper.instance;
+    final content = await helper.getContentById(id);
+    if (content == null) return;
+    if (content.type != AppContentType.mindmap) return;
+    contentId = content.id;
+    title = content.title;
+    // meta_data contains our map
+    final meta = content.metaData;
+    loadFromJson(meta);
+  }
+
+  // ---------- Autosave internals ----------
+  void _onVmChanged() {
+    if (_suppressAutoSave || _isSaving) return;
+    _autoSaveTimer?.cancel();
+    _autoSaveTimer = Timer(autoSaveDelay, () async {
+      // Timer fired after inactivity
+      await saveToDb();
+    });
+  }
+
+  @override
+  void dispose() {
+    removeListener(_onVmChanged);
+    _autoSaveTimer?.cancel();
+    super.dispose();
   }
 }
