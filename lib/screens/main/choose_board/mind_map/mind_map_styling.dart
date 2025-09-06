@@ -585,29 +585,171 @@ class _MindMapShapeSelectState extends State<MindMapShapeSelect> {
         child: Row(
           spacing: 10,
           children: [
-            _shapeItem(MindMapShape.rounded, 'Rounded'),
-            _shapeItem(MindMapShape.sharp, 'Sharp'),
-            _shapeItem(MindMapShape.pill, 'Pill'),
-            _shapeItem(MindMapShape.circle, 'Circle'),
-            _shapeItem(MindMapShape.diamond, 'Diamond'),
-            _shapeItem(MindMapShape.hexagon, 'Hexagon'),
-            _shapeItem(MindMapShape.parallelogram, 'Parallelogram'),
-            _shapeItem(MindMapShape.octagon, 'Octagon'),
-            _shapeItem(MindMapShape.trapezoid, 'Trapezoid'),
+            _shapeItem(MindMapShape.rounded),
+            _shapeItem(MindMapShape.sharp),
+            _shapeItem(MindMapShape.pill),
+            _shapeItem(MindMapShape.circle),
+            _shapeItem(MindMapShape.diamond),
+            _shapeItem(MindMapShape.hexagon),
+            _shapeItem(MindMapShape.parallelogram),
+            _shapeItem(MindMapShape.octagon),
+            _shapeItem(MindMapShape.trapezoid),
           ],
         ),
       ),
     );
   }
 
-  Widget _shapeItem(MindMapShape shape, String label) {
+  Widget _shapeItem(MindMapShape shape) {
     final bool isSelected = selectedShape == shape;
-    return _selectItem(
-      text: label,
-      isSelected: isSelected,
+    return InkWell(
       onTap: () => updateShape(shape),
+      child: Container(
+        decoration: ShapeDecoration(
+          color: isSelected ? AppTheme.iceBlue : AppTheme.transparent,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              width: 1,
+              color: isSelected ? AppTheme.vividBlue : AppTheme.lightGray,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        padding: EdgeInsets.all(10),
+        child: _shapePreview(shape),
+      ),
     );
   }
+
+  Widget _shapePreview(MindMapShape shape) {
+    const double w = 32;
+    const double h = 24;
+    final base = Container(width: w, height: h, color: AppTheme.white);
+    switch (shape) {
+      case MindMapShape.rounded:
+        return Container(
+          width: w,
+          height: h,
+          decoration: BoxDecoration(
+            color: AppTheme.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+        );
+      case MindMapShape.sharp:
+        return Container(width: w, height: h, color: AppTheme.white);
+      case MindMapShape.pill:
+        return Container(
+          width: w,
+          height: h,
+          decoration: BoxDecoration(
+            color: AppTheme.white,
+            borderRadius: BorderRadius.circular(999),
+          ),
+        );
+      case MindMapShape.circle:
+        return ClipOval(child: base);
+      case MindMapShape.diamond:
+        return ClipPath(clipper: _DiamondPreviewClipper(), child: base);
+      case MindMapShape.hexagon:
+        return ClipPath(clipper: _HexagonPreviewClipper(), child: base);
+      case MindMapShape.parallelogram:
+        return ClipPath(clipper: _ParallelogramPreviewClipper(), child: base);
+      case MindMapShape.octagon:
+        return ClipPath(clipper: _OctagonPreviewClipper(), child: base);
+      case MindMapShape.trapezoid:
+        return ClipPath(clipper: _TrapezoidPreviewClipper(), child: base);
+    }
+  }
+}
+
+class _DiamondPreviewClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    return Path()
+      ..moveTo(w / 2, 0)
+      ..lineTo(w, h / 2)
+      ..lineTo(w / 2, h)
+      ..lineTo(0, h / 2)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _HexagonPreviewClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final dx = w * 0.2;
+    return Path()
+      ..moveTo(dx, 0)
+      ..lineTo(w - dx, 0)
+      ..lineTo(w, h / 2)
+      ..lineTo(w - dx, h)
+      ..lineTo(dx, h)
+      ..lineTo(0, h / 2)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _ParallelogramPreviewClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final skew = w * 0.2;
+    return Path()
+      ..moveTo(skew, 0)
+      ..lineTo(w, 0)
+      ..lineTo(w - skew, h)
+      ..lineTo(0, h)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _OctagonPreviewClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final cut = (w < h ? w : h) * 0.2;
+    return Path()
+      ..moveTo(cut, 0)
+      ..lineTo(w - cut, 0)
+      ..lineTo(w, cut)
+      ..lineTo(w, h - cut)
+      ..lineTo(w - cut, h)
+      ..lineTo(cut, h)
+      ..lineTo(0, h - cut)
+      ..lineTo(0, cut)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
+
+class _TrapezoidPreviewClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final w = size.width, h = size.height;
+    final inset = w * 0.15;
+    return Path()
+      ..moveTo(inset, 0)
+      ..lineTo(w - inset, 0)
+      ..lineTo(w, h)
+      ..lineTo(0, h)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
 
 class LineTypeSelect extends StatefulWidget {
