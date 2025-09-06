@@ -102,15 +102,15 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                               count: notes.length,
                               child: Column(
                                 spacing: 10,
-                                children:
-                                    notes
-                                        .map(
-                                          (n) => _imgRow(
-                                            img: Images.file2,
-                                            title: n.title,
-                                          ),
-                                        )
-                                        .toList(),
+                                children: notes
+                                .map(
+                                  (n) => _tappableRow(
+                                    context: context,
+                                    content: n,
+                                    img: Images.file2,
+                                  ),
+                                )
+                                .toList(),
                               ),
                             ),
                           if (showPdfs || showImages)
@@ -123,25 +123,21 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                                 spacing: 10,
                                 children: [
                                   if (showPdfs)
-                                    ...pdfs.map(
-                                      (f) => _imgRow(
-                                        img: Images.pdf,
-                                        title:
-                                            f.title.isNotEmpty
-                                                ? f.title
-                                                : (f.file ?? 'PDF File'),
-                                      ),
-                                    ),
+                                     ...pdfs.map(
+                                  (f) => _tappableRow(
+                                    context: context,
+                                    content: f,
+                                    img: Images.pdf,
+                                  ),
+                                ),
                                   if (showImages)
-                                    ...images.map(
-                                      (f) => _imgRow(
-                                        img: Images.imgCopy,
-                                        title:
-                                            f.title.isNotEmpty
-                                                ? f.title
-                                                : (f.file ?? 'Image'),
-                                      ),
-                                    ),
+                                     ...images.map(
+                                  (f) => _tappableRow(
+                                    context: context,
+                                    content: f,
+                                    img: Images.imgCopy,
+                                  ),
+                                ),
                                 ],
                               ),
                             ),
@@ -162,6 +158,37 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
     );
   }
 
+Widget _tappableRow({
+  required BuildContext context,
+  required Content content,
+  required String img,
+}) {
+  final title = content.title.isNotEmpty
+      ? content.title
+      : (content.file ?? 'Untitled');
+  return GestureDetector(
+    behavior: HitTestBehavior.opaque,
+onTap: () {
+      final vm = Provider.of<MindMapVm>(context, listen: false);
+      final selected = vm.selectedNodeId;
+      if (selected != null && content.id != null) {
+        vm.attachContentToNodeById(selected, content.id!);
+        MessageDisplayService.showMessage(
+          context,
+          'Attached to selected node',
+        );
+     } else {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Select a node first to attach',
+        );
+      }
+    },
+    child: _imgRow(title: title, img: img),
+  );
+}
+
+  
   bool _isPdf(String? path) {
     if (path == null) return false;
     final lower = path.toLowerCase();

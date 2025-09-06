@@ -15,6 +15,7 @@ class MindMapNodeWidget extends StatelessWidget {
     final vm = Provider.of<MindMapVm>(context);
     final isSelected = vm.selectedNodeId == node.id;
     final isConnectingFrom = vm.connectingFromNodeId == node.id;
+    final hasAttachment = node.contentID != null && node.contentID!.isNotEmpty;
 
     final toneColor = _applyTone(
       node.color,
@@ -131,6 +132,41 @@ class MindMapNodeWidget extends StatelessWidget {
             glowShadow: glowShadow,
           ),
         ),
+
+        // Attachment indicator/button
+        if (hasAttachment)
+          Positioned(
+            left: -16,
+            top: node.height / 2 - 12,
+            child: Tooltip(
+              message: 'Open attached document',
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () async {
+                  await vm.openAttachedContent(node.id);
+                },
+                child: SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[800],
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1.5),
+                      ),
+                      child: const Icon(
+                        Icons.attach_file,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
 
         if (isConnectingFrom)
           Positioned(

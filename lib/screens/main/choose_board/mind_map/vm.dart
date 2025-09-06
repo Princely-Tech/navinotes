@@ -9,6 +9,9 @@ import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/models/content.dart';
 import 'package:navinotes/settings/db_helpers.dart';
 import 'package:navinotes/settings/enums.dart';
+import 'package:navinotes/settings/navigation_helper.dart';
+import 'package:navinotes/settings/routes.dart';
+import 'package:open_file/open_file.dart';
 import 'package:uuid/uuid.dart';
 
 class MindMapVm extends ChangeNotifier {
@@ -466,6 +469,63 @@ class MindMapVm extends ChangeNotifier {
       notifyListeners();
     } finally {
       _suppressAutoSave = false;
+    }
+  }
+
+  // ---------- Attachments (Content <-> Node) ----------
+  void attachContentToNodeById(String nodeId, int contentId) {
+    final node = mindMap.findNode(nodeId);
+    if (node == null) return;
+    node.contentID = contentId.toString();
+    notifyListeners();
+  }
+
+  Future<Content?> getAttachedContent(String nodeId) async {
+    final node = mindMap.findNode(nodeId);
+    if (node == null) return null;
+    final idStr = node.contentID;
+    if (idStr == null) return null;
+    final id = int.tryParse(idStr);
+    if (id == null) return null;
+    final helper = DatabaseHelper.instance;
+    return await helper.getContentById(id);
+  }
+
+  Future<void> openAttachedContent(String nodeId) async {
+    final content = await getAttachedContent(nodeId);
+    if (content == null) return;
+
+    if (content.type == AppContentType.file) {
+      final filePath = content.file;
+      if (filePath != null && filePath.isNotEmpty) {
+        final lower = filePath.toLowerCase();
+        if (lower.endsWith('.pdf')) {
+          if (content.id != null) {
+            await NavigationHelper.navigateToPdfView(content.id!);
+          }
+          return;
+        }
+        // Fallback: try to open with OS handler (images, docs, etc.)
+        await OpenFile.open(filePath);
+        return;
+      }
+    }
+
+    if (content.type == AppContentType.note) {
+      // TODO: Navigate directly to a specific note editor if available
+      // For now, navigate to the board's notes screen
+      final board = await content.getBoard();
+      await NavigationHelper.navigateToBoardNotes(board);
+      return;
+    }
+
+    if (content.type == AppContentType.mindmap) {
+      // Open the mind map screen with this content id
+      await NavigationHelper.push(
+        Routes.mindMap,
+        arguments: {'boardId': content.boardId, 'contentId': content.id},
+      );
+      return;
     }
   }
 
