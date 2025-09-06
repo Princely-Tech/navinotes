@@ -1,3 +1,6 @@
+import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_documents.dart';
+import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_styling.dart';
+
 import 'main.dart';
 import 'vm.dart';
 import 'package:navinotes/packages.dart';
@@ -17,10 +20,10 @@ class MindMapScreen extends StatelessWidget {
             scaffoldKey: _scaffoldKey,
             backgroundColor: AppTheme.white,
             endDrawer: CustomDrawer(
-              child: MindMapRight(boardTheme: BoardTheme.minimalist),
+              child: MindMapStyling(boardTheme: BoardTheme.minimalist, vm: vm),
             ),
             drawer: CustomDrawer(
-              child: MindMapLeft(boardTheme: BoardTheme.minimalist),
+              child: MindMapDocuments(boardTheme: BoardTheme.minimalist),
             ),
             body: Column(
               children: [
@@ -37,7 +40,7 @@ class MindMapScreen extends StatelessWidget {
                         desktop: true,
                         child: WidthLimiter(
                           mobile: 256,
-                          child: MindMapLeft(boardTheme: BoardTheme.plain),
+                          child: MindMapDocuments(boardTheme: BoardTheme.plain),
                         ),
                       ),
                       Expanded(child: MindMapMain()),
@@ -46,7 +49,10 @@ class MindMapScreen extends StatelessWidget {
                         laptop: true,
                         child: WidthLimiter(
                           mobile: 256,
-                          child: MindMapRight(boardTheme: BoardTheme.plain),
+                          child: MindMapStyling(
+                            boardTheme: BoardTheme.plain,
+                            vm: vm,
+                          ),
                         ),
                       ),
                     ],

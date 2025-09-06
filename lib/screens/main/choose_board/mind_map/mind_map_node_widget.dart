@@ -1,5 +1,6 @@
 // mind_map_node_widget.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:navinotes/models/mind_map_node.dart';
 import 'package:provider/provider.dart';
 import 'vm.dart';
@@ -13,6 +14,30 @@ class MindMapNodeWidget extends StatelessWidget {
     final vm = Provider.of<MindMapVm>(context);
     final isSelected = vm.selectedNodeId == node.id;
     final isConnectingFrom = vm.connectingFromNodeId == node.id;
+
+    final toneColor = _applyTone(
+      node.color,
+      node.colorTone,
+    ).withOpacity(node.opacity);
+    final borderRadius = BorderRadius.circular(node.borderRadius);
+
+    // Border/Glow setup
+    final bool showBorder = node.borderStyle == MindMapBorderStyle.border;
+    final bool showGlow = node.borderStyle == MindMapBorderStyle.glow;
+    final double elevation =
+        node.borderStyle == MindMapBorderStyle.shadow
+            ? (isSelected ? 8 : 4)
+            : 0;
+    final List<BoxShadow>? glowShadow =
+        showGlow
+            ? [
+              BoxShadow(
+                color: toneColor.withOpacity(0.6),
+                blurRadius: 16,
+                spreadRadius: 2,
+              ),
+            ]
+            : null;
 
     return Stack(
       clipBehavior: Clip.none, // Allow children to overflow
@@ -92,23 +117,30 @@ class MindMapNodeWidget extends StatelessWidget {
             }
           },
           child: Material(
-            elevation: isSelected ? 8 : 4,
-            color: node.color,
-            borderRadius: BorderRadius.circular(8.0),
+            elevation: elevation,
+            color: Colors.transparent,
+            borderRadius: borderRadius,
             child: Container(
               padding: const EdgeInsets.all(8.0),
               width: node.width,
               height: node.height,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
+                color: toneColor,
+                borderRadius: borderRadius,
                 border:
-                    isConnectingFrom
+                    isConnectingFrom || showBorder
                         ? Border.all(color: Colors.blueAccent, width: 2.0)
                         : null,
+                boxShadow: glowShadow,
               ),
               child: Text(
                 node.text,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: node.textColor.withOpacity(node.opacity),
+                  fontSize: node.fontSize,
+                  fontWeight: _toFontWeight(node.fontWeight),
+                  fontFamily: node.fontFamily,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -180,5 +212,32 @@ class MindMapNodeWidget extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  // Shift hue toward warmer/cooler based on tone in -1..1
+  Color _applyTone(Color color, double tone) {
+    if (tone == 0) return color;
+    final hsl = HSLColor.fromColor(color);
+    // Map -1..1 tone to -20..20 degrees shift
+    final shift = tone * 20.0;
+    final newHue = (hsl.hue + shift) % 360;
+    return hsl.withHue(newHue).toColor();
+  }
+
+  FontWeight _toFontWeight(int weight) {
+    switch (weight) {
+      case 300:
+        return FontWeight.w300;
+      case 400:
+        return FontWeight.w400;
+      case 500:
+        return FontWeight.w500;
+      case 600:
+        return FontWeight.w600;
+      case 700:
+        return FontWeight.w700;
+      default:
+        return FontWeight.w500;
+    }
   }
 }

@@ -115,27 +115,27 @@ class MindMapVm extends ChangeNotifier {
   }
 
   // In vm.dart
- void startConnectingFrom(String nodeId) {
-  connectingFromNodeId = nodeId;
-  selectedNodeId = nodeId;
-  notifyListeners();
-}
-
-void cancelConnecting() {
-  connectingFromNodeId = null;
-  notifyListeners();
-}
-
-void finishConnecting(String targetNodeId) {
-  final sourceId = connectingFromNodeId;
-  if (sourceId == null || sourceId == targetNodeId) {
-    cancelConnecting();
-    return;
+  void startConnectingFrom(String nodeId) {
+    connectingFromNodeId = nodeId;
+    selectedNodeId = nodeId;
+    notifyListeners();
   }
-  
-  connectNodes(sourceId, targetNodeId);
-  cancelConnecting();
-}
+
+  void cancelConnecting() {
+    connectingFromNodeId = null;
+    notifyListeners();
+  }
+
+  void finishConnecting(String targetNodeId) {
+    final sourceId = connectingFromNodeId;
+    if (sourceId == null || sourceId == targetNodeId) {
+      cancelConnecting();
+      return;
+    }
+
+    connectNodes(sourceId, targetNodeId);
+    cancelConnecting();
+  }
 
   // ---------- Canvas pan/zoom & pointer handling ----------
   void setScale(double newScale) {
@@ -189,6 +189,74 @@ void finishConnecting(String targetNodeId) {
   /// End dragging
   void stopDraggingNode() {
     draggingNodeId = null;
+    notifyListeners();
+  }
+
+  // ---------- Styling: apply to selected node ----------
+  MindMapNode? get _selectedNode =>
+      selectedNodeId == null ? null : mindMap.findNode(selectedNodeId!);
+
+  void updateSelectedNodeBackgroundColor(Color color) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.color = color;
+    notifyListeners();
+  }
+
+  void updateSelectedNodeTextColor(Color color) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.textColor = color;
+    notifyListeners();
+  }
+
+  void updateSelectedNodeFontSize(double size) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.fontSize = size.clamp(8.0, 48.0);
+    notifyListeners();
+  }
+
+  void updateSelectedNodeFontWeight(int weight) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.fontWeight = weight;
+    notifyListeners();
+  }
+
+  void updateSelectedNodeFontFamily(String? family) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.fontFamily = family;
+    notifyListeners();
+  }
+
+  void updateSelectedNodeOpacity(double opacity) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.opacity = opacity.clamp(0.0, 1.0);
+    notifyListeners();
+  }
+
+  /// colorTone is expected in -1..1 (negative=cooler, positive=warmer)
+  void updateSelectedNodeColorTone(double tone) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.colorTone = tone.clamp(-1.0, 1.0);
+    notifyListeners();
+  }
+
+  void updateSelectedNodeBorderRadius(double radius) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.borderRadius = radius.clamp(0.0, 1000.0);
+    notifyListeners();
+  }
+
+  void updateSelectedNodeBorderStyle(MindMapBorderStyle style) {
+    final node = _selectedNode;
+    if (node == null) return;
+    node.borderStyle = style;
     notifyListeners();
   }
 

@@ -351,6 +351,13 @@ class _CustomSliderState extends State<CustomSlider> {
       ),
       child: Slider(
         value: sliderValue,
+        min: widget.slider.min,
+        max: widget.slider.max,
+        divisions: widget.slider.divisions,
+        semanticFormatterCallback: widget.slider.semanticFormatterCallback,
+        label: widget.slider.label,
+        onChangeStart: widget.slider.onChangeStart,
+        onChangeEnd: widget.slider.onChangeEnd,
         onChanged: updateValue,
         activeColor: AppTheme.dodgerBlue,
         padding: widget.slider.padding ?? EdgeInsets.zero,
