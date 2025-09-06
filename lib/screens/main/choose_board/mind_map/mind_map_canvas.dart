@@ -21,11 +21,17 @@ class MindMapCanvas extends StatelessWidget {
                 // Update pointer for connection line
                 if (vm.connectingFromNodeId != null) {
                   vm.cancelConnecting();
-                  
+
                   vm.updatePointerFromVisual(details.localPosition);
+                } else {
+                  // Try select an edge first
+                  final hit = vm.trySelectEdgeAtVisual(details.localPosition);
+                  if (!hit) {
+                    // Deselect both if tapping empty space
+                    vm.selectEdge(null);
+                    vm.selectNode(null);
+                  }
                 }
-                // Deselect if tapping empty space
-                vm.selectNode(null);
               },
               onPanUpdate: (details) {
                 // Always update pointer position during pan

@@ -1,3 +1,4 @@
+import 'package:navinotes/models/mind_map_edge.dart';
 import 'package:navinotes/packages.dart';
 import 'package:provider/provider.dart';
 import 'vm.dart';
@@ -87,29 +88,69 @@ class MindMapStyling extends StatelessWidget {
               title: 'Connection Color',
               child: ScrollableController(
                 scrollDirection: Axis.horizontal,
-                child: Row(
-                  spacing: 10,
-                  children:
-                      [
-                            AppTheme.steelBlue,
-                            AppTheme.emerald,
-                            AppTheme.mediumOrchid,
-                            AppTheme.orange,
-                            AppTheme.coralRed,
-                            AppTheme.wetAsphalt,
-                          ]
-                          .map(
-                            (color) => Container(
-                              height: 24,
-                              width: 24,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: color,
-                              ),
-                            ),
-                          )
-                          .toList(),
+                child: Consumer<MindMapVm>(
+                  builder: (_, vm, __) {
+                    return Row(
+                      spacing: 10,
+                      children:
+                          [
+                                AppTheme.steelBlue,
+                                AppTheme.emerald,
+                                AppTheme.mediumOrchid,
+                                AppTheme.orange,
+                                AppTheme.coralRed,
+                                AppTheme.wetAsphalt,
+                              ]
+                              .map(
+                                (color) => _colorDot(
+                                  color: color,
+                                  onTap: vm.updateSelectedEdgeColor,
+                                ),
+                              )
+                              .toList(),
+                    );
+                  },
                 ),
+              ),
+            ),
+            _titleSection(
+              title: 'Line Thickness',
+              child: Consumer<MindMapVm>(
+                builder: (_, vm, __) {
+                  final edge =
+                      vm.selectedEdgeId == null
+                          ? null
+                          : vm.mindMap.findEdge(vm.selectedEdgeId!);
+                  final value = edge?.thickness ?? 2.0;
+                  return CustomSlider(
+                    slider: Slider(
+                      min: 0.5,
+                      max: 12.0,
+                      value: value.clamp(0.5, 12.0),
+                      onChanged: vm.updateSelectedEdgeThickness,
+                    ),
+                  );
+                },
+              ),
+            ),
+            _titleSection(
+              title: 'Line Opacity',
+              child: Consumer<MindMapVm>(
+                builder: (_, vm, __) {
+                  final edge =
+                      vm.selectedEdgeId == null
+                          ? null
+                          : vm.mindMap.findEdge(vm.selectedEdgeId!);
+                  final value = edge?.opacity ?? 1.0;
+                  return CustomSlider(
+                    slider: Slider(
+                      min: 0.0,
+                      max: 1.0,
+                      value: value.clamp(0.0, 1.0),
+                      onChanged: vm.updateSelectedEdgeOpacity,
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -760,34 +801,135 @@ class LineTypeSelect extends StatefulWidget {
 }
 
 class _LineTypeSelectState extends State<LineTypeSelect> {
-  int selectedLine = 0;
+  EdgeLineType selectedLine = EdgeLineType.straight;
 
-  void updateLine(int line) {
-    setState(() {
-      selectedLine = line;
-    });
+  void updateLine(EdgeLineType line) {
+    setState(() => selectedLine = line);
+    final vm = context.read<MindMapVm>();
+    vm.updateSelectedEdgeType(line);
   }
 
   @override
   Widget build(BuildContext context) {
+    final vm = context.watch<MindMapVm>();
+    final edge =
+        vm.selectedEdgeId == null
+            ? null
+            : vm.mindMap.findEdge(vm.selectedEdgeId!);
+    if (edge != null) {
+      selectedLine = edge.lineType;
+    }
     return _titleSection(
       title: 'Line Type',
       child: ScrollableController(
         scrollDirection: Axis.horizontal,
         child: Row(
           spacing: 10,
-          children: List.generate(4, (index) => _lineItem(index)),
+          children: EdgeLineType.values.map((t) => _lineItem(t)).toList(),
         ),
       ),
     );
   }
 
-  Widget _lineItem(int index) {
-    bool isSelected = selectedLine == index;
-    return _selectItem(
-      isSelected: isSelected,
-      onTap: () => updateLine(index),
-      icon: Images.straightLine,
+  Widget _lineItem(EdgeLineType type) {
+    bool isSelected = selectedLine == type;
+    return InkWell(
+      onTap: () => updateLine(type),
+      child: Container(
+        decoration: ShapeDecoration(
+          color: isSelected ? AppTheme.iceBlue : AppTheme.transparent,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              width: 1,
+              color: isSelected ? AppTheme.vividBlue : AppTheme.lightGray,
+            ),
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        child: const SizedBox(width: 48, height: 24, child: _LineTypePreview()),
+      ),
     );
   }
+}
+
+class _LineTypePreview extends StatelessWidget {
+  const _LineTypePreview({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(painter: _GenericLinePreviewPainter());
+  }
+}
+
+class _GenericLinePreviewPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = AppTheme.wetAsphalt
+          ..strokeWidth = 2
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
+    final a = Offset(4, size.height / 2);
+    final b = Offset(size.width - 4, size.height / 2);
+    canvas.drawLine(a, b, paint);
+
+    final dashPaint =
+        Paint()
+          ..color = AppTheme.coolGray
+          ..strokeWidth = 2
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
+    _drawDashed(
+      canvas,
+      dashPaint,
+      Offset(4, size.height / 2 + 6),
+      Offset(size.width - 4, size.height / 2 + 6),
+      6,
+      4,
+    );
+
+    final curvePaint =
+        Paint()
+          ..color = AppTheme.coolGray
+          ..strokeWidth = 2
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
+    final mid = Offset(size.width / 2, size.height / 2 - 6);
+    final control = mid + const Offset(0, -6);
+    final path =
+        Path()
+          ..moveTo(4, size.height / 2 - 6)
+          ..quadraticBezierTo(
+            control.dx,
+            control.dy,
+            size.width - 4,
+            size.height / 2 - 6,
+          );
+    canvas.drawPath(path, curvePaint);
+  }
+
+  void _drawDashed(
+    Canvas canvas,
+    Paint paint,
+    Offset a,
+    Offset b,
+    double dash,
+    double gap,
+  ) {
+    final total = (b - a).distance;
+    if (total == 0) return;
+    final dir = (b - a) / total;
+    double traveled = 0;
+    while (traveled <= total) {
+      final start = a + dir * traveled;
+      final end = a + dir * (traveled + dash).clamp(0, total);
+      canvas.drawLine(start, end, paint);
+      traveled += dash + gap;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

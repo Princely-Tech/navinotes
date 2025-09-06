@@ -94,6 +94,15 @@ class MindMap {
     }
   }
 
+  // Find an edge by ID
+  MindMapEdge? findEdge(String edgeId) {
+    try {
+      return edges.firstWhere((edge) => edge.id == edgeId);
+    } catch (_) {
+      return null;
+    }
+  }
+
   // Find all edges connected to a node
   List<MindMapEdge> findConnectedEdges(String nodeId) {
     return edges

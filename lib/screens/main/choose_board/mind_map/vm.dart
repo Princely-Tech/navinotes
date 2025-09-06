@@ -1,4 +1,6 @@
 // vm.dart
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/mind_map.dart';
 import 'package:navinotes/models/mind_map_edge.dart';
@@ -11,6 +13,7 @@ class MindMapVm extends ChangeNotifier {
 
   /// UI state
   String? selectedNodeId;
+  String? selectedEdgeId;
   String? connectingFromNodeId;
   String? draggingNodeId;
 
@@ -111,6 +114,17 @@ class MindMapVm extends ChangeNotifier {
   // ---------- Selection & connect flow ----------
   void selectNode(String? nodeId) {
     selectedNodeId = nodeId;
+    if (nodeId != null) {
+      selectedEdgeId = null; // deselect edges when node is selected
+    }
+    notifyListeners();
+  }
+
+  void selectEdge(String? edgeId) {
+    selectedEdgeId = edgeId;
+    if (edgeId != null) {
+      selectedNodeId = null; // deselect nodes when edge is selected
+    }
     notifyListeners();
   }
 
@@ -174,6 +188,7 @@ class MindMapVm extends ChangeNotifier {
     draggingNodeId = nodeId;
     // keep selected node as dragging node
     selectedNodeId = nodeId;
+    selectedEdgeId = null;
     notifyListeners();
   }
 
@@ -195,6 +210,9 @@ class MindMapVm extends ChangeNotifier {
   // ---------- Styling: apply to selected node ----------
   MindMapNode? get _selectedNode =>
       selectedNodeId == null ? null : mindMap.findNode(selectedNodeId!);
+
+  MindMapEdge? get _selectedEdge =>
+      selectedEdgeId == null ? null : mindMap.findEdge(selectedEdgeId!);
 
   void updateSelectedNodeBackgroundColor(Color color) {
     final node = _selectedNode;
@@ -268,12 +286,156 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ---------- Styling: edges ----------
+  void updateSelectedEdgeColor(Color color) {
+    final edge = _selectedEdge;
+    if (edge == null) return;
+    edge.color = color;
+    notifyListeners();
+  }
+
+  void updateSelectedEdgeType(EdgeLineType type) {
+    final edge = _selectedEdge;
+    if (edge == null) return;
+    edge.lineType = type;
+    notifyListeners();
+  }
+
+  void updateSelectedEdgeThickness(double thickness) {
+    final edge = _selectedEdge;
+    if (edge == null) return;
+    edge.thickness = thickness.clamp(0.5, 12.0);
+    notifyListeners();
+  }
+
+  void updateSelectedEdgeOpacity(double opacity) {
+    final edge = _selectedEdge;
+    if (edge == null) return;
+    edge.opacity = opacity.clamp(0.0, 1.0);
+    notifyListeners();
+  }
+
+  // ---------- Edge hit testing ----------
+  /// Try select an edge at a visual position. Returns true if an edge was selected.
+  bool trySelectEdgeAtVisual(Offset visualLocal) {
+    final logical = visualToLogical(visualLocal);
+    final hitId = _hitTestEdge(logical);
+    selectEdge(hitId);
+    return hitId != null;
+  }
+
+  String? _hitTestEdge(Offset p) {
+    const double tolerance = 8.0; // logical pixels
+    String? closestId;
+    double best = double.infinity;
+    for (final e in mindMap.edges) {
+      final endpoints = _edgeEndpoints(e);
+      final type = e.lineType;
+      double d;
+      if (type == EdgeLineType.elbow) {
+        final mid = Offset(endpoints.$1.dx, endpoints.$2.dy);
+        d = _distanceToSegment(p, endpoints.$1, mid).clamp(0, double.infinity);
+        d = math.min(d, _distanceToSegment(p, mid, endpoints.$2));
+      } else if (type == EdgeLineType.curved) {
+        d = _distanceToQuadraticApprox(
+          p,
+          endpoints.$1,
+          (endpoints.$1 + endpoints.$2) / 2 + const Offset(0, -40),
+          endpoints.$2,
+        );
+      } else {
+        d = _distanceToSegment(p, endpoints.$1, endpoints.$2);
+      }
+      if (d < best && d <= tolerance) {
+        best = d;
+        closestId = e.id;
+      }
+    }
+    return closestId;
+  }
+
+  (Offset, Offset) _edgeEndpoints(MindMapEdge edge) {
+    final s = mindMap.findNode(edge.sourceId)!;
+    final t = mindMap.findNode(edge.targetId)!;
+    final c1 = _nodeCenter(s);
+    final c2 = _nodeCenter(t);
+    return (_edgePoint(s, c2), _edgePoint(t, c1));
+  }
+
+  Offset _nodeCenter(MindMapNode node) => Offset(
+    node.position.dx + node.width / 2,
+    node.position.dy + node.height / 2,
+  );
+
+  Offset _edgePoint(MindMapNode node, Offset towards) {
+    final cx = node.position.dx + node.width / 2;
+    final cy = node.position.dy + node.height / 2;
+    final center = Offset(cx, cy);
+    final v = towards - center;
+    if (v == Offset.zero) return center;
+    final halfW = node.width / 2;
+    final halfH = node.height / 2;
+    switch (node.shape) {
+      case MindMapShape.circle:
+        final len = v.distance;
+        if (len == 0) return center;
+        final radius = halfW < halfH ? halfW : halfH;
+        final dir = v / len;
+        return center + dir * radius;
+      case MindMapShape.diamond:
+        final vx = v.dx.abs();
+        final vy = v.dy.abs();
+        final denom = (vx / halfW) + (vy / halfH);
+        if (denom == 0) return center;
+        final t = 1 / denom;
+        return center + v * t;
+      default:
+        final vx2 = v.dx;
+        final vy2 = v.dy;
+        final sx = vx2 == 0 ? double.infinity : (halfW / vx2.abs());
+        final sy = vy2 == 0 ? double.infinity : (halfH / vy2.abs());
+        final t = sx < sy ? sx : sy;
+        return center + v * t;
+    }
+  }
+
+  double _distanceToSegment(Offset p, Offset a, Offset b) {
+    final ab = b - a;
+    final ap = p - a;
+    final ab2 = ab.dx * ab.dx + ab.dy * ab.dy;
+    if (ab2 == 0) return (p - a).distance;
+    final t = ((ap.dx * ab.dx + ap.dy * ab.dy) / ab2).clamp(0.0, 1.0);
+    final proj = Offset(a.dx + ab.dx * t, a.dy + ab.dy * t);
+    return (p - proj).distance;
+  }
+
+  double _distanceToQuadraticApprox(Offset p, Offset a, Offset c, Offset b) {
+    // Sample the quadratic curve and take min distance
+    double best = double.infinity;
+    const int steps = 24;
+    Offset prev = a;
+    for (int i = 1; i <= steps; i++) {
+      final t = i / steps;
+      final q = _quadraticPoint(a, c, b, t);
+      final d = _distanceToSegment(p, prev, q);
+      if (d < best) best = d;
+      prev = q;
+    }
+    return best;
+  }
+
+  Offset _quadraticPoint(Offset a, Offset c, Offset b, double t) {
+    final mt = 1 - t;
+    return a * (mt * mt) + c * (2 * mt * t) + b * (t * t);
+  }
+
   // ---------- Serialization ----------
   Map<String, dynamic> toJson() => mindMap.toJson();
 
   void loadFromJson(Map<String, dynamic> json) {
     mindMap = MindMap.fromJson(json);
     selectedNodeId = null;
+    selectedEdgeId = null;
     connectingFromNodeId = null;
     draggingNodeId = null;
     notifyListeners();
