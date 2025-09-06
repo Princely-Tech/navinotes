@@ -51,7 +51,7 @@ class MindMapNodeWidget extends StatelessWidget {
             final newText = await showDialog<String>(
               context: context,
               builder:
-                  (_) => AlertDialog(
+                  (dialogContext) => AlertDialog(
                     title: const Text('Edit node text'),
                     content: TextField(
                       controller: textController,
@@ -61,18 +61,22 @@ class MindMapNodeWidget extends StatelessWidget {
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => Navigator.of(dialogContext).pop(),
                         child: const Text('Cancel'),
                       ),
                       ElevatedButton(
                         onPressed:
-                            () =>
-                                Navigator.of(context).pop(textController.text),
+                            () => Navigator.of(
+                              dialogContext,
+                            ).pop(textController.text),
                         child: const Text('Save'),
                       ),
                     ],
                   ),
             );
+            // debugPrint('newText: $newText');
+            // if (!context.mounted) return; // avoid using a deactivated context
+            // debugPrint('context mounted');
             if (newText != null && newText.trim().isNotEmpty) {
               vm.updateNodeText(node.id, newText.trim());
             }

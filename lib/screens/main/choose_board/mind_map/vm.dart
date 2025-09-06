@@ -36,7 +36,7 @@ class MindMapVm extends ChangeNotifier {
 
   /// Autosave state
   Timer? _autoSaveTimer;
-  final Duration autoSaveDelay = const Duration(seconds: 1);
+  final Duration autoSaveDelay = const Duration(seconds: 5);
   bool _suppressAutoSave = false; // used during load/save
   bool _isSaving = false;
 

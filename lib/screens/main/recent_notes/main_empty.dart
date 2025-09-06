@@ -84,7 +84,7 @@ class EmptyRecentNotesMain extends StatelessWidget {
                 onTap:
                     () => NavigationHelper.push(
                       Routes.mindMap,
-                      arguments: {'boardId': 123, 'contentId': 5},
+                      arguments: {'boardId': 1, 'contentId': 5},
                     ),
                 text: 'Mind Map',
                 color: AppTheme.jungleTeal,

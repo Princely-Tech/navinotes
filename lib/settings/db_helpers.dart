@@ -252,6 +252,8 @@ class DatabaseHelper {
     final sortBy = sortType.toString();
     final db = await instance.database;
     final result = await db.query('boards', orderBy: '$sortBy $sortOrder');
+    debugPrint('Getting boards sorted by $sortBy $sortOrder');
+    debugPrint(result.toString());
     return result.map((json) => Board.fromMap(json)).toList();
   }
 
@@ -262,6 +264,8 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [boardId],
     );
+    debugPrint('Getting board $boardId');
+    debugPrint(result.toString());
     return result.map((json) => Board.fromMap(json)).first;
   }
 
@@ -385,7 +389,6 @@ class DatabaseHelper {
     );
     return result.length;
   }
-
 
   // Update a flashcard
   Future<int> updateFlashCard(FlashCard flashcard) async {

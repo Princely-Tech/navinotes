@@ -54,18 +54,27 @@ class MindMapStyling extends StatelessWidget {
           Expanded(
             child: ScrollableController(
               mobilePadding: EdgeInsets.all(15),
-              child: Column(
-                spacing: 30,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _typography(),
-                  _nodeStyling(vm),
-                  // AppButton(
-                  //   onTap: () {},
-                  //   text: 'Apply Changes',
-                  //   color: AppTheme.steelBlue,
-                  // ),
-                ],
+              child: Consumer<MindMapVm>(
+                builder: (_, vm, __) {
+                  final bool showEdgeStyling = vm.selectedEdgeId != null;
+                  return Column(
+                    spacing: 30,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (!showEdgeStyling) ...[
+                        _typography(),
+                        _nodeStyling(vm),
+                      ] else ...[
+                        _connectionLines(),
+                      ],
+                      // AppButton(
+                      //   onTap: () {},
+                      //   text: 'Apply Changes',
+                      //   color: AppTheme.steelBlue,
+                      // ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -217,8 +226,56 @@ class MindMapStyling extends StatelessWidget {
               ),
             ),
           ),
+          _titleSection(
+            title: 'Size (px)',
+            child: Consumer<MindMapVm>(
+              builder: (_, vm, __) {
+                final node =
+                    vm.selectedNodeId == null
+                        ? null
+                        : vm.mindMap.findNode(vm.selectedNodeId!);
+                final double width = (node?.width ?? 160).clamp(60.0, 600.0);
+                final double height = (node?.height ?? 80).clamp(40.0, 400.0);
+                void setWidth(double w) {
+                  if (node == null) return;
+                  final newW = w.clamp(60.0, 600.0);
+                  vm.updateNodeSize(node.id, newW, node.height);
+                }
 
-          _connectionLines(),
+                void setHeight(double h) {
+                  if (node == null) return;
+                  final newH = h.clamp(40.0, 400.0);
+                  vm.updateNodeSize(
+                    node.id,
+                    node.height == null ? width : node.width,
+                    newH,
+                  );
+                }
+
+                return Column(
+                  spacing: 8,
+                  children: [
+                    _sizeRow(
+                      label: 'Width',
+                      value: width,
+                      step: 10,
+                      min: 60,
+                      max: 600,
+                      onChanged: setWidth,
+                    ),
+                    _sizeRow(
+                      label: 'Height',
+                      value: height,
+                      step: 10,
+                      min: 40,
+                      max: 400,
+                      onChanged: setHeight,
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -231,12 +288,12 @@ class MindMapStyling extends StatelessWidget {
         spacing: 15,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomInputField(
-            constraints: BoxConstraints(minHeight: 30),
-            label: 'Font Family',
-            labelStyle: titleTextStyle,
-            selectItems: [],
-          ),
+          // CustomInputField(
+          //   constraints: BoxConstraints(minHeight: 30),
+          //   label: 'Font Family',
+          //   labelStyle: titleTextStyle,
+          //   selectItems: [],
+          // ),
           _titleSection(
             title: 'Font Size',
             child: Consumer<MindMapVm>(
@@ -934,4 +991,39 @@ class _LineTypePreviewPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _LineTypePreviewPainter oldDelegate) =>
       oldDelegate.type != type;
+}
+
+Widget _sizeRow({
+  required String label,
+  required double value,
+  required double step,
+  required double min,
+  required double max,
+  required ValueChanged<double> onChanged,
+}) {
+  void dec() => onChanged((value - step).clamp(min, max));
+  void inc() => onChanged((value + step).clamp(min, max));
+  return Row(
+    children: [
+      Expanded(child: Text('$label', style: titleTextStyle)),
+      IconButton(
+        tooltip: 'Decrease $label',
+        onPressed: dec,
+        icon: const Icon(Icons.remove, size: 18),
+      ),
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: AppTheme.aliceBlue,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Text(value.toStringAsFixed(0), style: AppTheme.text),
+      ),
+      IconButton(
+        tooltip: 'Increase $label',
+        onPressed: inc,
+        icon: const Icon(Icons.add, size: 18),
+      ),
+    ],
+  );
 }

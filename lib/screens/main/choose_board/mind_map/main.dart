@@ -37,14 +37,7 @@ class MindMapMain extends StatelessWidget {
                     label: const Text('Add node'),
                   ),
                   const SizedBox(width: 8),
-                  ElevatedButton.icon(
-                    onPressed:
-                        vm.connectingFromNodeId == null
-                            ? null
-                            : () => vm.cancelConnecting(),
-                    icon: const Icon(Icons.link_off),
-                    label: const Text('Cancel connect'),
-                  ),
+
                   const SizedBox(width: 8),
                   IconButton(
                     tooltip: 'Zoom in',
