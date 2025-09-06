@@ -216,7 +216,10 @@ class MindMapNodeWidget extends StatelessWidget {
         fontWeight: _toFontWeight(node.fontWeight),
         fontFamily: node.fontFamily,
       ),
-      overflow: TextOverflow.ellipsis,
+      softWrap: true,
+      maxLines: null, // allow wrapping to multiple lines
+      overflow: TextOverflow.clip, // keep within node height
+      textAlign: TextAlign.center,
     );
 
     final content = Padding(padding: const EdgeInsets.all(8.0), child: text);
@@ -231,6 +234,7 @@ class MindMapNodeWidget extends StatelessWidget {
           padding: EdgeInsets.zero,
           width: node.width,
           height: node.height,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             color: toneColor,
             borderRadius: borderRadius,
@@ -270,7 +274,7 @@ class MindMapNodeWidget extends StatelessWidget {
           child: SizedBox(
             width: node.width,
             height: node.height,
-            child: Align(alignment: Alignment.centerLeft, child: content),
+            child: Center(child: content),
           ),
         ),
         if (borderPainter != null)
