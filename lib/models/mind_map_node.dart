@@ -23,7 +23,7 @@ class MindMapNode {
   Color color;
   double width;
   double height;
-  String? noteId; // Optional reference to a note
+  String? contentID; // Optional reference to a note
 
   // Styling
   Color textColor;
@@ -43,7 +43,7 @@ class MindMapNode {
     this.color = Colors.blue,
     this.width = 120.0,
     this.height = 60.0,
-    this.noteId,
+    this.contentID,
     this.textColor = Colors.white,
     this.fontSize = 14.0,
     this.fontWeight = 500,
@@ -62,7 +62,7 @@ class MindMapNode {
     color: Color(json['color'] ?? Colors.blue.value),
     width: (json['width'] ?? 120.0).toDouble(),
     height: (json['height'] ?? 60.0).toDouble(),
-    noteId: json['noteId'],
+    contentID: json['contentID'],
     textColor: Color(json['textColor'] ?? Colors.white.value),
     fontSize: (json['fontSize'] ?? 14.0).toDouble(),
     fontWeight: (json['fontWeight'] ?? 500) as int,
@@ -84,7 +84,7 @@ class MindMapNode {
     'color': color.value,
     'width': width,
     'height': height,
-    'noteId': noteId,
+    'contentID': contentID,
     'textColor': textColor.value,
     'fontSize': fontSize,
     'fontWeight': fontWeight,

@@ -45,13 +45,13 @@ class MindMap {
     required String text,
     required Offset position,
     Color color = Colors.blue,
-    String? noteId,
+    String? contentId,
   }) {
     final node = MindMapNode(
       text: text,
       position: position,
       color: color,
-      noteId: noteId,
+      contentID: contentId,
     );
     nodes.add(node);
     return node;
