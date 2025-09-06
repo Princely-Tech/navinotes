@@ -141,36 +141,39 @@ class MindMapNodeWidget extends StatelessWidget {
 
         if (isSelected)
           Positioned(
-            right: -16, // Position outside the node
-            top: node.height / 2, // Slightly above center
+            right: -16,
+            top: node.height / 2 - 12,
             child: GestureDetector(
+              behavior:
+                  HitTestBehavior.translucent, // ensures taps hit here first
               onTap: () {
-                debugPrint('tapped');
                 if (isConnectingFrom) {
                   vm.cancelConnecting();
                 } else {
                   vm.startConnectingFrom(node.id);
                 }
               },
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color:
-                      isConnectingFrom ? Colors.blueAccent : Colors.grey[800],
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+              child: SizedBox(
+                width: 36,
+                height: 36,
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color:
+                          isConnectingFrom
+                              ? Colors.blueAccent
+                              : Colors.grey[800],
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 1.5),
                     ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.link,
-                  size: 16,
-                  color: isConnectingFrom ? Colors.white : Colors.blueAccent,
+                    child: Icon(
+                      Icons.link,
+                      size: 16,
+                      color:
+                          isConnectingFrom ? Colors.white : Colors.blueAccent,
+                    ),
+                  ),
                 ),
               ),
             ),
