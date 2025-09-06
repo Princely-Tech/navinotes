@@ -8,72 +8,78 @@ import 'edge_painter.dart';
 class MindMapCanvas extends StatelessWidget {
   const MindMapCanvas({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<MindMapVm>(builder: (_, vm, __) {
-      return LayoutBuilder(builder: (context, constraints) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapDown: (details) {
+  // In mind_map_canvas.dart
+@override
+Widget build(BuildContext context) {
+  return Consumer<MindMapVm>(builder: (_, vm, __) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (details) {
+          // Update pointer for connection line
+          if (vm.connectingFromNodeId != null) {
             vm.updatePointerFromVisual(details.localPosition);
-            // deselect if tapped background
-            vm.selectNode(null);
-          },
-          onPanStart: (details) {
-            // If we are dragging a node, don't pan canvas here (node will handle movement)
-            if (vm.draggingNodeId != null) return;
-            // start panning
-          },
-          onPanUpdate: (details) {
-            // update pointer for temporary edge
-            vm.updatePointerFromVisual(details.localPosition);
-            // if dragging node, ignore canvas pan here
-            if (vm.draggingNodeId != null) return;
-            // pan canvas
-            vm.panCanvasBy(details.delta);
-          },
-          onPanEnd: (_) {
-            vm.pointerLogical = null;
-          },
-          child: ClipRect(
-            child: Container(
-              color: Colors.transparent,
-              child: Transform.scale(
-                scale: vm.scale,
-                alignment: Alignment.topLeft,
-                child: Transform.translate(
-                  offset: vm.canvasOffset,
-                  child: SizedBox(
-                    // make a large virtual canvas to allow space
-                    width: 3000,
-                    height: 2000,
-                    child: Stack(
-                      children: [
-                        // edges painter (below nodes)
-                        Positioned.fill(
-                          child: CustomPaint(
-                            painter: EdgePainter(vm),
-                          ),
+          }
+          // Deselect if tapping empty space
+          vm.selectNode(null);
+        },
+       onPanUpdate: (details) {
+  // Always update pointer position during pan
+  if (vm.connectingFromNodeId != null) {
+    // Convert to local position within the canvas
+    final box = context.findRenderObject() as RenderBox;
+    final localPosition = box.globalToLocal(details.globalPosition);
+    vm.updatePointerFromVisual(localPosition);
+  }
+  // Only pan the canvas if we're not connecting or dragging a node
+  if (vm.draggingNodeId == null && vm.connectingFromNodeId == null) {
+    vm.panCanvasBy(details.delta);
+  }
+},
+        onPanEnd: (_) {
+          if (vm.connectingFromNodeId != null) {
+            // If we were connecting and didn't connect to a node, cancel
+            vm.cancelConnecting();
+          }
+        },
+        child: ClipRect(
+          child: Container(
+            color: Colors.transparent,
+            child: Transform.scale(
+              scale: vm.scale,
+              alignment: Alignment.topLeft,
+              child: Transform.translate(
+                offset: vm.canvasOffset,
+                child: SizedBox(
+                  width: 3000,
+                  height: 2000,
+                  child: Stack(
+                    children: [
+                      // edges painter (below nodes)
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: EdgePainter(vm),
                         ),
+                      ),
 
-                        // nodes
-                        for (final node in vm.mindMap.nodes)
-                          Positioned(
-                            left: node.position.dx,
-                            top: node.position.dy,
-                            width: node.width,
-                            height: node.height,
-                            child: MindMapNodeWidget(node: node),
-                          ),
-                      ],
-                    ),
+                      // nodes
+                      for (final node in vm.mindMap.nodes)
+                        Positioned(
+                          left: node.position.dx,
+                          top: node.position.dy,
+                          width: node.width,
+                          height: node.height,
+                          child: MindMapNodeWidget(node: node),
+                        ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
-        );
-      });
+        ),
+      );
     });
-  }
+  });
+}
 }

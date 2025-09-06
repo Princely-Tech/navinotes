@@ -16,56 +16,79 @@ class MindMapNodeWidget extends StatelessWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        if (vm.connectingFromNodeId != null) {
-          // if connecting mode active and tapped this as target
-          if (vm.connectingFromNodeId != node.id) {
-            vm.finishConnecting(node.id);
-          }
-        } else {
-          vm.selectNode(node.id);
-        }
-      },
-      onLongPress: () {
-        // start connect mode from this node
-        vm.startConnectingFrom(node.id);
-      },
       onDoubleTap: () async {
         // edit label dialog
         final textController = TextEditingController(text: node.text);
         final newText = await showDialog<String>(
           context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Edit node text'),
-            content: TextField(
-              controller: textController,
-              autofocus: true,
-              minLines: 1,
-              maxLines: 4,
-            ),
-            actions: [
-              TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
-              ElevatedButton(onPressed: () => Navigator.of(context).pop(textController.text), child: const Text('Save')),
-            ],
-          ),
+          builder:
+              (_) => AlertDialog(
+                title: const Text('Edit node text'),
+                content: TextField(
+                  controller: textController,
+                  autofocus: true,
+                  minLines: 1,
+                  maxLines: 4,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed:
+                        () => Navigator.of(context).pop(textController.text),
+                    child: const Text('Save'),
+                  ),
+                ],
+              ),
         );
         if (newText != null && newText.trim().isNotEmpty) {
           vm.updateNodeText(node.id, newText.trim());
         }
       },
-
-      // Dragging the node
+      onTap: () {
+        if (vm.connectingFromNodeId != null) {
+          // If we're in connection mode, finish the connection
+          if (vm.connectingFromNodeId != node.id) {
+            vm.finishConnecting(node.id);
+          }
+        } else {
+          // Otherwise, just select/deselect the node
+          vm.selectNode(isSelected ? null : node.id);
+        }
+      },
+      onLongPressStart: (details) {
+        // Start connection on long press
+        vm.startConnectingFrom(node.id);
+      },
       onPanStart: (_) {
-        vm.startDraggingNode(node.id);
+        // Only start dragging if not in connection mode
+        if (vm.connectingFromNodeId == null) {
+          vm.startDraggingNode(node.id);
+        }
       },
       onPanUpdate: (details) {
-        // details.delta is in screen pixels — convert by scale in VM
-        vm.dragNodeBy(node.id, details.delta);
-      },
-      onPanEnd: (_) {
-        vm.stopDraggingNode();
+        // If in connection mode, update pointer position
+        if (vm.connectingFromNodeId != null) {
+          // Convert the local position to canvas coordinates
+          final box = context.findRenderObject() as RenderBox;
+          final localPosition = box.globalToLocal(details.globalPosition);
+          vm.updatePointerFromVisual(localPosition);
+        } else if (vm.draggingNodeId == node.id) {
+          // Only handle node dragging if we're the dragging node
+          vm.dragNodeBy(node.id, details.delta);
+        }
       },
 
+      onPanEnd: (_) {
+        if (vm.connectingFromNodeId == node.id) {
+          // If we were connecting and didn't connect to another node, cancel
+          vm.cancelConnecting();
+        } else if (vm.draggingNodeId == node.id) {
+          vm.stopDraggingNode();
+        }
+      },
       child: Material(
         elevation: isSelected ? 8 : 4,
         color: node.color,
@@ -84,10 +107,25 @@ class MindMapNodeWidget extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (isConnectingFrom)
-                const Padding(
-                  padding: EdgeInsets.only(left: 6.0),
-                  child: Icon(Icons.link, size: 18, color: Colors.white70),
+              if (isSelected || isConnectingFrom)
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onPanStart: (details) {
+                    if (!isConnectingFrom) {
+                      // Get the global position and convert it to canvas coordinates
+                      final box = context.findRenderObject() as RenderBox;
+                      final localPosition = box.globalToLocal(
+                        details.globalPosition,
+                      );
+                      vm.startConnectingFrom(node.id);
+                      // Update the pointer position to start from the icon
+                      vm.updatePointerFromVisual(localPosition);
+                    }
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: 6.0),
+                    child: Icon(Icons.link, size: 20, color: Colors.white70),
+                  ),
                 ),
             ],
           ),

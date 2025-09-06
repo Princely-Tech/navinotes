@@ -114,8 +114,10 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  // In vm.dart
   void startConnectingFrom(String nodeId) {
     connectingFromNodeId = nodeId;
+    selectedNodeId = nodeId; // Select the node we're connecting from
     notifyListeners();
   }
 
@@ -127,13 +129,13 @@ class MindMapVm extends ChangeNotifier {
 
   void finishConnecting(String targetNodeId) {
     final sourceId = connectingFromNodeId;
-    if (sourceId == null) return;
-    if (sourceId != targetNodeId) {
-      connectNodes(sourceId, targetNodeId);
+    if (sourceId == null || sourceId == targetNodeId) {
+      cancelConnecting();
+      return;
     }
-    connectingFromNodeId = null;
-    pointerLogical = null;
-    notifyListeners();
+
+    connectNodes(sourceId, targetNodeId);
+    cancelConnecting();
   }
 
   // ---------- Canvas pan/zoom & pointer handling ----------
