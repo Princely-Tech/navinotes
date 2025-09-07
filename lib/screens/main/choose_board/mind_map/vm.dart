@@ -39,7 +39,6 @@ class MindMapVm extends ChangeNotifier {
   String title = 'Mind Map';
 
   /// Canvas transform state (logical coordinates)
-  Offset canvasOffset = Offset.zero;
   double scale = 1.0;
 
   /// Latest pointer in logical coordinates used for drawing temporary edge
@@ -84,7 +83,7 @@ class MindMapVm extends ChangeNotifier {
   }) {
     final node = MindMapNode(
       text: text,
-      position: _constrainPosition(logicalPosition),
+      position: logicalPosition,
       color: color,
     );
     mindMap.nodes.add(node);
@@ -101,7 +100,7 @@ class MindMapVm extends ChangeNotifier {
   }) {
     final node = MindMapNode(
       text: text,
-      position: _constrainPosition(logicalPosition),
+      position: logicalPosition,
       color: color,
     );
     node.contentID = 'content:$contentId';
@@ -119,7 +118,7 @@ class MindMapVm extends ChangeNotifier {
   }) {
     final node = MindMapNode(
       text: text,
-      position: _constrainPosition(logicalPosition),
+      position: logicalPosition,
       color: color,
     );
     node.contentID = 'deck:$deckId';
@@ -137,7 +136,7 @@ class MindMapVm extends ChangeNotifier {
   void updateNodePosition(String nodeId, Offset newLogicalPosition) {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    node.position = _constrainPosition(newLogicalPosition);
+    node.position = newLogicalPosition;
     notifyListeners();
   }
 
@@ -242,19 +241,11 @@ class MindMapVm extends ChangeNotifier {
   void zoomOut() => setScale((scale / 1.2).clamp(0.2, 4.0));
   void resetZoom() {
     scale = 1.0;
-    canvasOffset = Offset.zero;
-    notifyListeners();
-  }
-
-  /// Pan canvas by a logical delta. delta is in screen pixels; convert to logical by dividing scale.
-  void panCanvasBy(Offset screenDelta) {
-    canvasOffset += screenDelta / scale;
     notifyListeners();
   }
 
   /// Convert a visual/screen-local pointer into logical coordinates (the coordinate space of nodes).
-  Offset visualToLogical(Offset visualLocal) =>
-      visualLocal / scale - canvasOffset;
+  Offset visualToLogical(Offset visualLocal) => visualLocal / scale;
 
   /// Set latest pointer (in logical coords) — used by painting the temporary edge.
   void updatePointerFromVisual(Offset visualLocal) {
@@ -277,7 +268,7 @@ class MindMapVm extends ChangeNotifier {
     if (draggingNodeId != nodeId) return;
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    node.position = _constrainPosition(node.position + (screenDelta / scale));
+    node.position = node.position + (screenDelta / scale);
     notifyListeners();
   }
 
@@ -746,23 +737,20 @@ class MindMapVm extends ChangeNotifier {
     super.dispose();
   }
 
-  Offset _constrainPosition(Offset position) {
-    final x = position.dx.clamp(
-      0.0,
-      canvasWidth - 200.0,
-    ); // Leave space for node width
-    final y = position.dy.clamp(
-      0.0,
-      canvasHeight - 100.0,
-    ); // Leave space for node height
-    return Offset(x, y);
-  }
-
   /// Validate and fix positions of all existing nodes to ensure they're within canvas bounds
   void validateNodeBounds() {
     bool hasChanges = false;
     for (final node in mindMap.nodes) {
-      final constrainedPosition = _constrainPosition(node.position);
+      final constrainedPosition = Offset(
+        node.position.dx.clamp(
+          0.0,
+          canvasWidth - 200.0,
+        ), // Leave space for node width
+        node.position.dy.clamp(
+          0.0,
+          canvasHeight - 100.0,
+        ), // Leave space for node height
+      );
       if (constrainedPosition != node.position) {
         node.position = constrainedPosition;
         hasChanges = true;
