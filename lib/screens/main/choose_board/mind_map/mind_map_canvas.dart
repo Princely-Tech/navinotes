@@ -47,67 +47,69 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
               },
               builder: (context, candidateData, rejectedData) {
                 final isDragOver = candidateData.isNotEmpty;
-                return Container(
-                  decoration:
-                      isDragOver
-                          ? BoxDecoration(
-                            border: Border.all(
-                              color: Colors.blue.withOpacity(0.5),
-                              width: 2,
-                            ),
-                            color: Colors.blue.withOpacity(0.1),
-                          )
-                          : null,
-                  child: InteractiveViewer(
-                    transformationController: _transformationController,
-                    boundaryMargin: EdgeInsets.only(right: 100, bottom: 100),
-                    minScale: 0.1,
-                    maxScale: 4.0,
-                    constrained: false,
-                    scaleEnabled: true,
-                    panEnabled: true,
-                    clipBehavior: Clip.none,
-                    onInteractionUpdate: (details) {
-                      // Update VM scale when user zooms
-                      vm.setScale(details.scale);
-                    },
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTapDown: (details) {
-                        if (vm.connectingFromNodeId != null) {
-                          vm.cancelConnecting();
-                          vm.updatePointerFromVisual(details.localPosition);
-                        } else {
-                          final hit = vm.trySelectEdgeAtVisual(
-                            details.localPosition,
-                          );
-                          if (!hit) {
-                            vm.selectEdge(null);
-                            vm.selectNode(null);
-                          }
-                        }
-                      },
-                      child: Container(
-                        width: MindMapVm.canvasWidth,
-                        height: MindMapVm.canvasHeight,
-                        color: Colors.transparent,
-                        child: Stack(
-                          children: [
-                            // edges painter (below nodes)
-                            Positioned.fill(
-                              child: CustomPaint(painter: EdgePainter(vm)),
-                            ),
-
-                            // nodes
-                            for (final node in vm.mindMap.nodes)
-                              Positioned(
-                                left: node.position.dx,
-                                top: node.position.dy,
-                                width: node.width,
-                                height: node.height,
-                                child: MindMapNodeWidget(node: node),
+                return ClipRect(
+                  child: Container(
+                    decoration:
+                        isDragOver
+                            ? BoxDecoration(
+                              border: Border.all(
+                                color: Colors.blue.withOpacity(0.5),
+                                width: 2,
                               ),
-                          ],
+                              color: Colors.blue.withOpacity(0.1),
+                            )
+                            : null,
+                    child: InteractiveViewer(
+                      transformationController: _transformationController,
+                      boundaryMargin: EdgeInsets.all(50),
+                      minScale: 0.1,
+                      maxScale: 4.0,
+                      constrained: false,
+                      scaleEnabled: true,
+                      panEnabled: true,
+                      clipBehavior: Clip.none,
+                      onInteractionUpdate: (details) {
+                        // Update VM scale when user zooms
+                        vm.setScale(details.scale);
+                      },
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTapDown: (details) {
+                          if (vm.connectingFromNodeId != null) {
+                            vm.cancelConnecting();
+                            vm.updatePointerFromVisual(details.localPosition);
+                          } else {
+                            final hit = vm.trySelectEdgeAtVisual(
+                              details.localPosition,
+                            );
+                            if (!hit) {
+                              vm.selectEdge(null);
+                              vm.selectNode(null);
+                            }
+                          }
+                        },
+                        child: Container(
+                          width: MindMapVm.canvasWidth,
+                          height: MindMapVm.canvasHeight,
+                          color: Colors.transparent,
+                          child: Stack(
+                            children: [
+                              // edges painter (below nodes)
+                              Positioned.fill(
+                                child: CustomPaint(painter: EdgePainter(vm)),
+                              ),
+
+                              // nodes
+                              for (final node in vm.mindMap.nodes)
+                                Positioned(
+                                  left: node.position.dx,
+                                  top: node.position.dy,
+                                  width: node.width,
+                                  height: node.height,
+                                  child: MindMapNodeWidget(node: node),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
