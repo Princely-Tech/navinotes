@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -910,70 +911,94 @@ class MindMapVm extends ChangeNotifier {
     return Offset(x, y);
   }
 
-  /// Export mind map as PDF
+  /// Export mind map as PDF by converting PNG to PDF
   Future<void> exportAsPdf(BuildContext context) async {
-    try {
-      final pdf = pw.Document();
-
-      // Calculate bounds of all nodes
-      final bounds = _calculateMindMapBounds();
-
-      // Handle empty mind map
-      if (bounds == Rect.zero) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('No nodes to export')));
-        }
-        return;
-      }
-
-      pdf.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.a4.landscape,
-          build: (pw.Context context) {
-            return _buildPdfPage(bounds);
-          },
-        ),
-      );
-
-      // Save PDF
-      final output = await getApplicationDocumentsDirectory();
-      final file = File(
-        '${output.path}/mindmap_${DateTime.now().millisecondsSinceEpoch}.pdf',
-      );
-      await file.writeAsBytes(await pdf.save());
-
-      await handleFileSharing(
-        file,
-        context: context,
-        successMessage: 'PDF exported.',
-        errorMessage: 'Failed to export PDF',
-      );
-    } catch (e) {
-      print('Error exporting PDF: $e');
+    final byteData = await exportAsByteData();
+    if (byteData == null) {
       if (context.mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Failed to export PDF')));
       }
+      return;
+    }
+
+    final pdf = pw.Document();
+    final pngImage = pw.MemoryImage(byteData.buffer.asUint8List());
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4.landscape,
+        build: (pw.Context context) {
+          return pw.Center(child: pw.Image(pngImage, fit: pw.BoxFit.contain));
+        },
+      ),
+    );
+
+    // Save PDF
+    final output = await getApplicationDocumentsDirectory();
+    final file = File(
+      '${output.path}/mindmap_${DateTime.now().millisecondsSinceEpoch}.pdf',
+    );
+    await file.writeAsBytes(await pdf.save());
+
+    await handleFileSharing(
+      file,
+      context: context,
+      successMessage: 'PDF exported.',
+      errorMessage: 'Failed to export PDF',
+    );
+    // delete the original file
+    if (file.existsSync()) {
+      await file.delete();
     }
   }
 
   /// Export mind map as PNG
   Future<void> exportAsPng(BuildContext context) async {
+    final byteData = await exportAsByteData();
+
+    if (byteData == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to export PNG')));
+      }
+      return;
+    }
+    // Save PNG
+    final output = await getApplicationDocumentsDirectory();
+    final file = File(
+      '${output.path}/mindmap_${DateTime.now().millisecondsSinceEpoch}.png',
+    );
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+
+    await handleFileSharing(
+      file,
+      context: context,
+      successMessage: 'PNG exported.',
+      errorMessage: 'Failed to export PNG',
+    );
+    // delete the original file
+    if (file.existsSync()) {
+      await file.delete();
+    }
+  }
+
+  /// Export mind map as PNG
+  Future<ByteData?> exportAsByteData() async {
     try {
       // Calculate bounds
       final bounds = _calculateMindMapBounds();
 
       // Handle empty mind map
       if (bounds == Rect.zero) {
-        if (context.mounted) {
+        if (scaffoldKey.currentContext != null) {
           ScaffoldMessenger.of(
-            context,
+            scaffoldKey.currentContext!,
           ).showSnackBar(const SnackBar(content: Text('No nodes to export')));
         }
-        return;
+        return null;
       }
 
       // Create a custom painter to render the mind map
@@ -998,28 +1023,10 @@ class MindMapVm extends ChangeNotifier {
       );
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
-      if (byteData != null) {
-        // Save PNG
-        final output = await getApplicationDocumentsDirectory();
-        final file = File(
-          '${output.path}/mindmap_${DateTime.now().millisecondsSinceEpoch}.png',
-        );
-        await file.writeAsBytes(byteData.buffer.asUint8List());
-
-        await handleFileSharing(
-          file,
-          context: context,
-          successMessage: 'PNG exported.',
-          errorMessage: 'Failed to export PNG',
-        );
-      }
+      return byteData;
     } catch (e) {
       print('Error exporting PNG: $e');
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Failed to export PNG')));
-      }
+      return null;
     }
   }
 
@@ -1040,76 +1047,6 @@ class MindMapVm extends ChangeNotifier {
     }
 
     return Rect.fromLTRB(minX - 50, minY - 50, maxX + 50, maxY + 50);
-  }
-
-  /// Build PDF page content using widgets instead of custom paint
-  pw.Widget _buildPdfPage(Rect bounds) {
-    return pw.Stack(
-      children: [
-        // Draw edges as lines
-        ...mindMap.edges.map((edge) {
-          final fromNode = mindMap.findNode(edge.sourceId);
-          final toNode = mindMap.findNode(edge.targetId);
-          if (fromNode == null || toNode == null) return pw.Container();
-
-          return pw.Positioned(
-            left: 0,
-            top: 0,
-            child: pw.CustomPaint(
-              size: PdfPoint(bounds.width + 100, bounds.height + 100),
-              painter: (PdfGraphics canvas, PdfPoint size) {
-                final fromCenter = PdfPoint(
-                  fromNode.position.dx + fromNode.width / 2 - bounds.left + 50,
-                  fromNode.position.dy + fromNode.height / 2 - bounds.top + 50,
-                );
-                final toCenter = PdfPoint(
-                  toNode.position.dx + toNode.width / 2 - bounds.left + 50,
-                  toNode.position.dy + toNode.height / 2 - bounds.top + 50,
-                );
-                canvas.setStrokeColor(PdfColors.grey600);
-                canvas.setLineWidth(2);
-                canvas.drawLine(
-                  fromCenter.x,
-                  fromCenter.y,
-                  toCenter.x,
-                  toCenter.y,
-                );
-                canvas.strokePath();
-              },
-            ),
-          );
-        }).toList(),
-        // Draw nodes
-        ...mindMap.nodes.map((node) {
-          return pw.Positioned(
-            left: node.position.dx - bounds.left + 50,
-            top: node.position.dy - bounds.top + 50,
-            child: pw.Container(
-              width: node.width,
-              height: node.height,
-              decoration: pw.BoxDecoration(
-                color: PdfColor.fromInt(node.color.value),
-                border: pw.Border.all(color: PdfColors.black, width: 1),
-                borderRadius: pw.BorderRadius.circular(node.borderRadius),
-              ),
-              padding: const pw.EdgeInsets.all(8),
-              child: pw.Center(
-                child: pw.Text(
-                  node.text,
-                  style: pw.TextStyle(
-                    fontSize: math.min(node.fontSize * 0.75, 10),
-                    color: PdfColor.fromInt(node.textColor.value),
-                  ),
-                  textAlign: pw.TextAlign.center,
-                  maxLines: 3,
-                  overflow: pw.TextOverflow.clip,
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ],
-    );
   }
 
   /// Draw mind map to Flutter canvas

@@ -208,11 +208,15 @@ Future<void> handleFileDownload(Content file, BuildContext context) async {
   }
 }
 
-Future<void> handleFileSharing(File file, {required BuildContext context, String? successMessage, String? errorMessage}) async {
-  
+Future<bool> handleFileSharing(
+  File file, {
+  required BuildContext context,
+  String? successMessage,
+  String? errorMessage,
+}) async {
   if (!await file.exists()) {
     MessageDisplayService.showErrorMessage(context, 'File not found');
-    return;
+    return false;
   }
 
   // ipad bug
@@ -227,16 +231,17 @@ Future<void> handleFileSharing(File file, {required BuildContext context, String
 
   if (result.status == ShareResultStatus.success) {
     debugPrint('File shared successfully');
-  if (successMessage != null) {
-    MessageDisplayService.showMessage(context, successMessage);
-  }
-  }else{
+    if (successMessage != null) {
+      MessageDisplayService.showMessage(context, successMessage);
+    }
+    return true;
+  } else {
     debugPrint('File shared failed');
     if (errorMessage != null) {
       MessageDisplayService.showErrorMessage(context, errorMessage);
     }
+    return false;
   }
-
 }
 
 Future<void> handleContentDelete({

@@ -181,4 +181,22 @@ class NavigationHelper {
   static void navigateToProfile() {
     // push(Routes.profile);
   }
+
+  static navigateToContent(Content content) async {
+    // TODO: Implement
+  }
+
+  static navigateToContentById(int contentId) async {
+    final content = await DatabaseHelper.instance.getContentById(contentId);
+    return navigateToContent(content!);
+  }
+
+  static navigateToDeck(FlashCardDeck deck) {
+    // TODO: Implement
+  }
+
+  static navigateToDeckById(int deckId) async {
+    final deck = await DatabaseHelper.instance.getDeck(deckId);
+    return navigateToDeck(deck!);
+  }
 }
