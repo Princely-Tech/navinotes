@@ -309,7 +309,15 @@ class MindMapVm extends ChangeNotifier {
     if (draggingNodeId != nodeId) return;
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    node.position = _constrainPosition(node.position + (screenDelta / scale));
+    
+    // Get the current scale from the transformation controller if available
+    double currentScale = scale;
+    if (_transformationController != null) {
+      currentScale = _transformationController!.value.getMaxScaleOnAxis();
+    }
+    
+    // Apply the screen delta divided by the current scale to get logical movement
+    node.position = _constrainPosition(node.position + (screenDelta / currentScale));
     notifyListeners();
   }
 
