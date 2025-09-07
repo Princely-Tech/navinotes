@@ -238,13 +238,13 @@ class MindMapStyling extends StatelessWidget {
                 final double height = (node?.height ?? 80).clamp(40.0, 400.0);
                 void setWidth(double w) {
                   if (node == null) return;
-                  final newW = w.clamp(60.0, 600.0);
+                  final newW = w.clamp(150.0, 600.0);
                   vm.updateNodeSize(node.id, newW, node.height);
                 }
 
                 void setHeight(double h) {
                   if (node == null) return;
-                  final newH = h.clamp(40.0, 400.0);
+                  final newH = h.clamp(80.0, 400.0);
                   vm.updateNodeSize(
                     node.id,
                     node.height == null ? width : node.width,

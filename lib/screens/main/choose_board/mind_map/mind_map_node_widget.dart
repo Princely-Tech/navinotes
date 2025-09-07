@@ -44,10 +44,10 @@ class MindMapNodeWidget extends StatelessWidget {
 
     // Expand hit-test area to include space below the node for the toolbar
     return SizedBox(
-      width: math.max(node.width, 160),
+      width: math.max(node.width, 270),
       height: node.height + 56, // extra space for toolbar + margin
       child: SizedBox(
-        width: math.max(node.width, 160),
+        width: math.max(node.width, 270),
         height: node.height + 56,
         child: Stack(
           clipBehavior: Clip.none, // Allow children to overflow
@@ -238,10 +238,10 @@ class MindMapNodeWidget extends StatelessWidget {
               Positioned(
                 left: 0,
                 right: 0,
-                top: node.height / 2 - 6,
+                top: node.height - 40,
                 child: Center(
                   child: SizedBox(
-                    width: math.max(node.width, 160),
+                    width: math.max(node.width, 270),
                     // Use a Stack so a transparent absorber sits under the toolbar while buttons remain on top
                     child: Stack(
                       children: [
