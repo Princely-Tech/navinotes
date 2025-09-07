@@ -1,19 +1,22 @@
 import 'package:navinotes/packages.dart';
+import 'vm.dart';
 
-class CustomMindMapHeader extends StatelessWidget {
-  const CustomMindMapHeader({
+class MindMapHeader extends StatelessWidget {
+  const MindMapHeader({
     super.key,
     required this.openDrawer,
     required this.openEndDrawer,
     required this.boardTheme,
     this.toggleDocumentPanel,
     this.isDocumentPanelVisible = true,
+    required this.mindMapVm,
   });
   final VoidCallback openDrawer;
   final VoidCallback openEndDrawer;
   final BoardTheme boardTheme;
   final VoidCallback? toggleDocumentPanel;
   final bool isDocumentPanelVisible;
+  final MindMapVm mindMapVm;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +46,10 @@ class CustomMindMapHeader extends StatelessWidget {
               constraints: BoxConstraints(minWidth: constraints.maxWidth),
               child: Row(
                 spacing: 30,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  if (toggleDocumentPanel != null) _documentToggleButton(),
+                  _menuButton(),
                   Row(
                     children: [
                       InkWell(
@@ -54,44 +59,13 @@ class CustomMindMapHeader extends StatelessWidget {
                           color: AppTheme.vividRose,
                         ),
                       ),
-                      _menuButton(),
+                      SizedBox(width: 10),
                       _title(),
                     ],
                   ),
-                  VisibleController(
-                    mobile: false,
-                    laptop: true,
-                    child: Row(
-                      spacing: 25,
-                      children: [
-                        if (boardTheme.isNature) ...[
-                          _imgItem(img: Images.leaf),
-                          _imgItem(img: Images.plant),
-                          _imgItem(img: Images.tree),
-                        ],
-                        if (boardTheme.isPlain || boardTheme.isMinimalist) ...[
-                          _imgItem(img: Images.edit),
-                          _imgItem(img: Images.hook),
-                          _imgItem(img: Images.sdCard),
-                        ],
-                        _searchField(),
-                        if (toggleDocumentPanel != null)
-                          _documentToggleButton(),
-                      ],
-                    ),
-                  ),
+
                   Row(
                     children: [
-                      Row(
-                        children: [
-                          _shareBtn(),
-                          _customizationTxt(),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: ProfilePic(size: 32),
-                          ),
-                        ],
-                      ),
                       VisibleController(
                         mobile: true,
                         laptop: false,
@@ -107,74 +81,12 @@ class CustomMindMapHeader extends StatelessWidget {
                       ),
                     ],
                   ),
+                  _mindMapControlButtons(context),
                 ],
               ),
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _customizationTxt() {
-    Color color = AppTheme.darkMossGreen;
-    BordThemeValues params = boardTheme.values;
-    switch (boardTheme) {
-      case BoardTheme.plain:
-        color = AppTheme.graphite;
-        break;
-      default:
-    }
-    return VisibleController(
-      mobile: false,
-      desktop: true,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 15),
-        child: Text(
-          'Customization',
-          style: AppTheme.text.copyWith(
-            color: color,
-            fontFamily: params.fontFamily,
-            height: 1.43,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _shareBtn() {
-    Color color = AppTheme.deepMoss;
-    Color textColor = AppTheme.white;
-    Color iconColor = AppTheme.white;
-    Color? borderColor;
-    BordThemeValues params = boardTheme.values;
-    switch (boardTheme) {
-      case BoardTheme.plain:
-      case BoardTheme.minimalist:
-        color = AppTheme.white;
-        borderColor = AppTheme.lightGray;
-        textColor = AppTheme.graphite;
-        iconColor = AppTheme.black;
-        break;
-      default:
-    }
-    return AppButton(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 10,
-      onTap: () {},
-      minHeight: 32,
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-      text: 'Share',
-      color: color,
-      borderColor: borderColor,
-      prefix: SVGImagePlaceHolder(
-        imagePath: Images.share2,
-        color: iconColor,
-        size: 14,
-      ),
-      style: AppTheme.text.copyWith(
-        color: textColor,
-        fontFamily: params.fontFamily,
       ),
     );
   }
@@ -280,28 +192,91 @@ class CustomMindMapHeader extends StatelessWidget {
   }
 
   Widget _documentToggleButton() {
-    Color color = AppTheme.coffee;
+    Color color = AppTheme.darkMossGreen;
     switch (boardTheme) {
       case BoardTheme.plain:
-        color = AppTheme.graphite;
-        break;
-      case BoardTheme.minimalist:
-        color = AppTheme.asbestos;
+        color = AppTheme.black;
         break;
       default:
     }
-
-    return InkWell(
-      onTap: toggleDocumentPanel,
-      borderRadius: BorderRadius.circular(4),
-      child: Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          isDocumentPanelVisible ? Icons.menu_open : Icons.menu,
-          color: color,
-          size: 16,
+    return VisibleController(
+      mobile: false,
+      desktop: true,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 5),
+        child: MenuButton(
+          decoration: BoxDecoration(color: color),
+          onPressed: toggleDocumentPanel,
         ),
       ),
+    );
+  }
+
+  Widget _mindMapControlButtons(BuildContext context) {
+    return Row(
+      spacing: 8,
+      children: [
+        // Add Node button
+        ElevatedButton.icon(
+          onPressed: () {
+            // add in-center node
+            final size = MediaQuery.of(context).size;
+            // Visual center:
+            final visualCenter = Offset(
+              size.width / 3,
+              (size.height - 120) / 2,
+            );
+            final logical = mindMapVm.visualToLogical(visualCenter);
+            mindMapVm.addNodeAt(text: 'New node', logicalPosition: logical);
+          },
+          icon: const Icon(Icons.add, size: 16),
+          label: const Text('Add node'),
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(0, 32),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            textStyle: TextStyle(fontSize: 12),
+          ),
+        ),
+
+        // Zoom controls
+        IconButton(
+          tooltip: 'Zoom in',
+          onPressed: mindMapVm.zoomIn,
+          icon: const Icon(Icons.zoom_in, size: 18),
+          constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+        ),
+        IconButton(
+          tooltip: 'Zoom out',
+          onPressed: mindMapVm.zoomOut,
+          icon: const Icon(Icons.zoom_out, size: 18),
+          constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+        ),
+        IconButton(
+          tooltip: 'Reset zoom & pan',
+          onPressed: mindMapVm.resetZoom,
+          icon: const Icon(Icons.center_focus_strong, size: 18),
+          constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+        ),
+
+        // Save button
+        ElevatedButton.icon(
+          onPressed: () async {
+            await mindMapVm.saveToDb();
+            if (context.mounted) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Mind map saved')));
+            }
+          },
+          icon: const Icon(Icons.save, size: 16),
+          label: const Text('Save'),
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(0, 32),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            textStyle: TextStyle(fontSize: 12),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -11,74 +11,9 @@ class MindMapMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MindMapVm>(
       builder: (_, vm, __) {
-        return Column(
-          children: [
-            // small toolbar inside the main area (keeps global layout intact)
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 8.0,
-              ),
-              child: Row(
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // add in-center node
-                      final size = MediaQuery.of(context).size;
-                      // Visual center:
-                      final visualCenter = Offset(
-                        size.width / 3,
-                        (size.height - 120) / 2,
-                      );
-                      final logical = vm.visualToLogical(visualCenter);
-                      vm.addNodeAt(text: 'New node', logicalPosition: logical);
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add node'),
-                  ),
-                  const SizedBox(width: 8),
-
-                  const SizedBox(width: 8),
-                  IconButton(
-                    tooltip: 'Zoom in',
-                    onPressed: vm.zoomIn,
-                    icon: const Icon(Icons.zoom_in),
-                  ),
-                  IconButton(
-                    tooltip: 'Zoom out',
-                    onPressed: vm.zoomOut,
-                    icon: const Icon(Icons.zoom_out),
-                  ),
-                  IconButton(
-                    tooltip: 'Reset zoom & pan',
-                    onPressed: vm.resetZoom,
-                    icon: const Icon(Icons.center_focus_strong),
-                  ),
-                  const Spacer(),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      await vm.saveToDb();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Mind map saved')),
-                        );
-                      }
-                    },
-                    icon: const Icon(Icons.save),
-                    label: const Text('Save'),
-                  ),
-                ],
-              ),
-            ),
-
-            // actual canvas area
-            Expanded(
-              child: Container(
-                color: Colors.transparent,
-                child: const MindMapCanvas(),
-              ),
-            ),
-          ],
+        return Container(
+          color: Colors.transparent,
+          child: const MindMapCanvas(),
         );
       },
     );

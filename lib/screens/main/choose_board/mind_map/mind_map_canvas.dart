@@ -82,6 +82,7 @@ class MindMapCanvas extends StatelessWidget {
                       }
                     },
                     child: ClipRect(
+                      clipBehavior: Clip.none,
                       child: Container(
                         color: Colors.transparent,
                         child: Transform.scale(

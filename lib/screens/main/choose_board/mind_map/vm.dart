@@ -30,6 +30,8 @@ class MindMapVm extends ChangeNotifier {
   String? draggingNodeId;
   // When not null, the next document/deck tapped in the sidebar will attach to this node
   String? attachingNodeId;
+  // Document panel visibility (desktop only)
+  bool isDocumentPanelVisible = true;
 
   /// Persistence state
   final int boardId;
@@ -66,6 +68,12 @@ class MindMapVm extends ChangeNotifier {
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  // Document panel toggle
+  void toggleDocumentPanel() {
+    isDocumentPanelVisible = !isDocumentPanelVisible;
+    notifyListeners();
   }
 
   // ---------- Mind map operations ----------

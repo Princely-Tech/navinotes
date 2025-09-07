@@ -1,4 +1,5 @@
 import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_documents.dart';
+import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_header.dart';
 import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_styling.dart';
 
 import 'main.dart';
@@ -35,22 +36,28 @@ class MindMapScreen extends StatelessWidget {
             ),
             body: Column(
               children: [
-                CustomMindMapHeader(
+                MindMapHeader(
                   openDrawer: vm.openDrawer,
                   boardTheme: BoardTheme.plain,
                   openEndDrawer: vm.openEndDrawer,
+                  toggleDocumentPanel: vm.toggleDocumentPanel,
+                  isDocumentPanelVisible: vm.isDocumentPanelVisible,
+                  mindMapVm: vm,
                 ),
                 Expanded(
                   child: Row(
                     children: [
-                      VisibleController(
-                        mobile: false,
-                        desktop: true,
-                        child: WidthLimiter(
-                          mobile: 256,
-                          child: MindMapDocuments(boardTheme: BoardTheme.plain),
+                      if (vm.isDocumentPanelVisible)
+                        VisibleController(
+                          mobile: false,
+                          desktop: true,
+                          child: WidthLimiter(
+                            mobile: 256,
+                            child: MindMapDocuments(
+                              boardTheme: BoardTheme.plain,
+                            ),
+                          ),
                         ),
-                      ),
                       Expanded(child: MindMapMain()),
                       VisibleController(
                         mobile: false,
