@@ -203,20 +203,41 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
   }) {
     final title =
         content.title.isNotEmpty ? content.title : (content.file ?? 'Untitled');
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        final vm = Provider.of<MindMapVm>(context, listen: false);
-        final targetNodeId = vm.attachingNodeId;
-        if (targetNodeId != null && content.id != null) {
-          vm.attachContentToNodeById(targetNodeId, content.id!);
-          MessageDisplayService.showMessage(context, 'Attachment added');
-        } else {
-          // Not in attach mode: ensure any stale mode is cleared
-          vm.cancelAttachMode();
-        }
-      },
-      child: _imgRow(title: title, img: img),
+    return Draggable<Content>(
+      data: content,
+      feedback: Material(
+        elevation: 4,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: 200,
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppTheme.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppTheme.dodgerBlue, width: 2),
+          ),
+          child: _imgRow(title: title, img: img),
+        ),
+      ),
+      childWhenDragging: Opacity(
+        opacity: 0.5,
+        child: _imgRow(title: title, img: img),
+      ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          final vm = Provider.of<MindMapVm>(context, listen: false);
+          final targetNodeId = vm.attachingNodeId;
+          if (targetNodeId != null && content.id != null) {
+            vm.attachContentToNodeById(targetNodeId, content.id!);
+            MessageDisplayService.showMessage(context, 'Attachment added');
+          } else {
+            // Not in attach mode: ensure any stale mode is cleared
+            vm.cancelAttachMode();
+          }
+        },
+        child: _imgRow(title: title, img: img),
+      ),
     );
   }
 
@@ -242,22 +263,51 @@ Widget _tappableDeckRow({
   required FlashCardDeck deck,
   required int count,
 }) {
-  return GestureDetector(
-    behavior: HitTestBehavior.opaque,
-    onTap: () {
-      final vm = Provider.of<MindMapVm>(context, listen: false);
-      final targetNodeId = vm.attachingNodeId;
-      if (targetNodeId != null && deck.id != null) {
-        vm.attachDeckToNodeById(targetNodeId, deck.id!);
-        MessageDisplayService.showMessage(context, 'Attachment added');
-      } else {
-        vm.cancelAttachMode();
-      }
-    },
-    child: _imgRow(
-      title: deck.name,
-      img: Images.flashCards,
-      right: '$count cards',
+  return Draggable<FlashCardDeck>(
+    data: deck,
+    feedback: Material(
+      elevation: 4,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        width: 200,
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppTheme.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppTheme.dodgerBlue, width: 2),
+        ),
+        child: _imgRow(
+          title: deck.name,
+          img: Images.flashCards,
+          right: '$count cards',
+        ),
+      ),
+    ),
+    childWhenDragging: Opacity(
+      opacity: 0.5,
+      child: _imgRow(
+        title: deck.name,
+        img: Images.flashCards,
+        right: '$count cards',
+      ),
+    ),
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        final vm = Provider.of<MindMapVm>(context, listen: false);
+        final targetNodeId = vm.attachingNodeId;
+        if (targetNodeId != null && deck.id != null) {
+          vm.attachDeckToNodeById(targetNodeId, deck.id!);
+          MessageDisplayService.showMessage(context, 'Attachment added');
+        } else {
+          vm.cancelAttachMode();
+        }
+      },
+      child: _imgRow(
+        title: deck.name,
+        img: Images.flashCards,
+        right: '$count cards',
+      ),
     ),
   );
 }

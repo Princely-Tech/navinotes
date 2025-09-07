@@ -19,6 +19,10 @@ class MindMapVm extends ChangeNotifier {
 
   MindMap mindMap;
 
+  /// Canvas dimensions
+  static const double canvasWidth = 20000;
+  static const double canvasHeight = 15000;
+
   /// UI state
   String? selectedNodeId;
   String? selectedEdgeId;
@@ -72,9 +76,45 @@ class MindMapVm extends ChangeNotifier {
   }) {
     final node = MindMapNode(
       text: text,
-      position: logicalPosition,
+      position: _constrainPosition(logicalPosition),
       color: color,
     );
+    mindMap.nodes.add(node);
+    notifyListeners();
+    return node;
+  }
+
+  /// Create a new node with attached content at the specified position
+  MindMapNode addNodeWithContent({
+    required String text,
+    required Offset logicalPosition,
+    required int contentId,
+    Color color = Colors.blue,
+  }) {
+    final node = MindMapNode(
+      text: text,
+      position: _constrainPosition(logicalPosition),
+      color: color,
+    );
+    node.contentID = 'content:$contentId';
+    mindMap.nodes.add(node);
+    notifyListeners();
+    return node;
+  }
+
+  /// Create a new node with attached deck at the specified position
+  MindMapNode addNodeWithDeck({
+    required String text,
+    required Offset logicalPosition,
+    required int deckId,
+    Color color = Colors.blue,
+  }) {
+    final node = MindMapNode(
+      text: text,
+      position: _constrainPosition(logicalPosition),
+      color: color,
+    );
+    node.contentID = 'deck:$deckId';
     mindMap.nodes.add(node);
     notifyListeners();
     return node;
@@ -89,7 +129,7 @@ class MindMapVm extends ChangeNotifier {
   void updateNodePosition(String nodeId, Offset newLogicalPosition) {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    node.position = newLogicalPosition;
+    node.position = _constrainPosition(newLogicalPosition);
     notifyListeners();
   }
 
@@ -229,7 +269,7 @@ class MindMapVm extends ChangeNotifier {
     if (draggingNodeId != nodeId) return;
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    node.position = node.position + (screenDelta / scale);
+    node.position = _constrainPosition(node.position + (screenDelta / scale));
     notifyListeners();
   }
 
@@ -676,6 +716,9 @@ class MindMapVm extends ChangeNotifier {
     // meta_data contains our map
     final meta = content.metaData;
     loadFromJson(meta);
+
+    // Validate that all nodes are within canvas bounds
+    validateNodeBounds();
   }
 
   // ---------- Autosave internals ----------
@@ -693,5 +736,32 @@ class MindMapVm extends ChangeNotifier {
     removeListener(_onVmChanged);
     _autoSaveTimer?.cancel();
     super.dispose();
+  }
+
+  Offset _constrainPosition(Offset position) {
+    final x = position.dx.clamp(
+      0.0,
+      canvasWidth - 200.0,
+    ); // Leave space for node width
+    final y = position.dy.clamp(
+      0.0,
+      canvasHeight - 100.0,
+    ); // Leave space for node height
+    return Offset(x, y);
+  }
+
+  /// Validate and fix positions of all existing nodes to ensure they're within canvas bounds
+  void validateNodeBounds() {
+    bool hasChanges = false;
+    for (final node in mindMap.nodes) {
+      final constrainedPosition = _constrainPosition(node.position);
+      if (constrainedPosition != node.position) {
+        node.position = constrainedPosition;
+        hasChanges = true;
+      }
+    }
+    if (hasChanges) {
+      notifyListeners();
+    }
   }
 }
