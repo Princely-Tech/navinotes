@@ -60,12 +60,13 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                           : null,
                   child: InteractiveViewer(
                     transformationController: _transformationController,
-                    boundaryMargin: EdgeInsets.all(100),
+                    boundaryMargin: EdgeInsets.only(right: 100, bottom: 100),
                     minScale: 0.1,
                     maxScale: 4.0,
                     constrained: false,
                     scaleEnabled: true,
                     panEnabled: true,
+                    clipBehavior: Clip.none,
                     onInteractionUpdate: (details) {
                       // Update VM scale when user zooms
                       vm.setScale(details.scale);
