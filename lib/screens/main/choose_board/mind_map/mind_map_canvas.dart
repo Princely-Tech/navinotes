@@ -7,87 +7,112 @@ import 'edge_painter.dart';
 import 'package:navinotes/models/content.dart';
 import 'package:navinotes/models/flashcard_deck.dart';
 
-class MindMapCanvas extends StatelessWidget {
+class MindMapCanvas extends StatefulWidget {
   const MindMapCanvas({super.key});
+
+  @override
+  State<MindMapCanvas> createState() => _MindMapCanvasState();
+}
+
+class _MindMapCanvasState extends State<MindMapCanvas> {
+  final TransformationController _transformationController =
+      TransformationController();
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<MindMapVm>(
       builder: (_, vm, __) {
-        return DragTarget<Object>(
-          onWillAcceptWithDetails: (details) {
-            // Accept Content or FlashCardDeck objects
-            return details.data is Content || details.data is FlashCardDeck;
-          },
-          onAcceptWithDetails: (details) {
-            // Handle the drop - create a new node with the content attached
-            _handleDrop(context, vm, details.data, details.offset);
-          },
-          builder: (context, candidateData, rejectedData) {
-            final isDragOver = candidateData.isNotEmpty;
-            return Container(
-              decoration:
-                  isDragOver
-                      ? BoxDecoration(
-                        border: Border.all(
-                          color: Colors.blue.withOpacity(0.5),
-                          width: 2,
-                        ),
-                        color: Colors.blue.withOpacity(0.1),
-                      )
-                      : null,
-              child: InteractiveViewer(
-                boundaryMargin: EdgeInsets.all(100),
-                minScale: 0.1,
-                maxScale: 4.0,
-                constrained: false,
-                scaleEnabled: true,
-                panEnabled: true,
-                onInteractionUpdate: (details) {
-                  // Update VM scale when user zooms
-                  vm.setScale(details.scale);
-                },
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapDown: (details) {
-                    if (vm.connectingFromNodeId != null) {
-                      vm.cancelConnecting();
-                      vm.updatePointerFromVisual(details.localPosition);
-                    } else {
-                      final hit = vm.trySelectEdgeAtVisual(
-                        details.localPosition,
-                      );
-                      if (!hit) {
-                        vm.selectEdge(null);
-                        vm.selectNode(null);
-                      }
-                    }
-                  },
-                  child: Container(
-                    width: MindMapVm.canvasWidth,
-                    height: MindMapVm.canvasHeight,
-                    color: Colors.transparent,
-                    child: Stack(
-                      children: [
-                        // edges painter (below nodes)
-                        Positioned.fill(
-                          child: CustomPaint(painter: EdgePainter(vm)),
-                        ),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            // Update VM with current viewport info
+            vm.updateViewportInfo(
+              constraints.biggest,
+              _transformationController,
+            );
 
-                        // nodes
-                        for (final node in vm.mindMap.nodes)
-                          Positioned(
-                            left: node.position.dx,
-                            top: node.position.dy,
-                            width: node.width,
-                            height: node.height,
-                            child: MindMapNodeWidget(node: node),
-                          ),
-                      ],
+            return DragTarget<Object>(
+              onWillAcceptWithDetails: (details) {
+                // Accept Content or FlashCardDeck objects
+                return details.data is Content || details.data is FlashCardDeck;
+              },
+              onAcceptWithDetails: (details) {
+                // Handle the drop - create a new node with the content attached
+                _handleDrop(context, vm, details.data, details.offset);
+              },
+              builder: (context, candidateData, rejectedData) {
+                final isDragOver = candidateData.isNotEmpty;
+                return Container(
+                  decoration:
+                      isDragOver
+                          ? BoxDecoration(
+                            border: Border.all(
+                              color: Colors.blue.withOpacity(0.5),
+                              width: 2,
+                            ),
+                            color: Colors.blue.withOpacity(0.1),
+                          )
+                          : null,
+                  child: InteractiveViewer(
+                    transformationController: _transformationController,
+                    boundaryMargin: EdgeInsets.all(100),
+                    minScale: 0.1,
+                    maxScale: 4.0,
+                    constrained: false,
+                    scaleEnabled: true,
+                    panEnabled: true,
+                    onInteractionUpdate: (details) {
+                      // Update VM scale when user zooms
+                      vm.setScale(details.scale);
+                    },
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTapDown: (details) {
+                        if (vm.connectingFromNodeId != null) {
+                          vm.cancelConnecting();
+                          vm.updatePointerFromVisual(details.localPosition);
+                        } else {
+                          final hit = vm.trySelectEdgeAtVisual(
+                            details.localPosition,
+                          );
+                          if (!hit) {
+                            vm.selectEdge(null);
+                            vm.selectNode(null);
+                          }
+                        }
+                      },
+                      child: Container(
+                        width: MindMapVm.canvasWidth,
+                        height: MindMapVm.canvasHeight,
+                        color: Colors.transparent,
+                        child: Stack(
+                          children: [
+                            // edges painter (below nodes)
+                            Positioned.fill(
+                              child: CustomPaint(painter: EdgePainter(vm)),
+                            ),
+
+                            // nodes
+                            for (final node in vm.mindMap.nodes)
+                              Positioned(
+                                left: node.position.dx,
+                                top: node.position.dy,
+                                width: node.width,
+                                height: node.height,
+                                child: MindMapNodeWidget(node: node),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         );

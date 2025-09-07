@@ -760,4 +760,48 @@ class MindMapVm extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Get the center position of the currently visible viewport
+  Offset getViewportCenter(Size viewportSize) {
+    // Since we're using InteractiveViewer, we need to calculate the center
+    // of the currently visible area within the large canvas
+    // For now, we'll use a simple approach - place at viewport center
+    // This can be enhanced later to track actual InteractiveViewer state
+    return Offset(viewportSize.width / 2, viewportSize.height / 2);
+  }
+
+  /// Current viewport information
+  Size? _viewportSize;
+  TransformationController? _transformationController;
+
+  /// Update viewport information from the canvas
+  void updateViewportInfo(
+    Size viewportSize,
+    TransformationController controller,
+  ) {
+    _viewportSize = viewportSize;
+    _transformationController = controller;
+  }
+
+  /// Get the center of the currently visible area in canvas coordinates
+  Offset getCurrentViewportCenter() {
+    if (_viewportSize == null || _transformationController == null) {
+      // Fallback to canvas center if no viewport info
+      return Offset(canvasWidth / 2, canvasHeight / 2);
+    }
+
+    final matrix = _transformationController!.value;
+    final translation = matrix.getTranslation();
+    final scale = matrix.getMaxScaleOnAxis();
+
+    // Calculate the center of the visible viewport in canvas coordinates
+    final viewportCenterX = _viewportSize!.width / 2;
+    final viewportCenterY = _viewportSize!.height / 2;
+
+    // Convert viewport center to canvas coordinates
+    final canvasCenterX = (viewportCenterX - translation.x) / scale;
+    final canvasCenterY = (viewportCenterY - translation.y) / scale;
+
+    return Offset(canvasCenterX, canvasCenterY);
+  }
 }

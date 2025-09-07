@@ -219,15 +219,12 @@ class MindMapHeader extends StatelessWidget {
         // Add Node button
         ElevatedButton.icon(
           onPressed: () {
-            // add in-center node
-            final size = MediaQuery.of(context).size;
-            // Visual center:
-            final visualCenter = Offset(
-              size.width / 3,
-              (size.height - 120) / 2,
+            // Add node at center of currently visible viewport
+            final centerPosition = mindMapVm.getCurrentViewportCenter();
+            mindMapVm.addNodeAt(
+              text: 'New node',
+              logicalPosition: centerPosition,
             );
-            final logical = mindMapVm.visualToLogical(visualCenter);
-            mindMapVm.addNodeAt(text: 'New node', logicalPosition: logical);
           },
           icon: const Icon(Icons.add, size: 16),
           label: const Text('Add node'),
