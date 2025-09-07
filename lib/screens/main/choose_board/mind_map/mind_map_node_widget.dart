@@ -119,8 +119,8 @@ class MindMapNodeWidget extends StatelessWidget {
                   );
                   vm.updatePointerFromVisual(localPosition);
                 } else if (vm.draggingNodeId == node.id) {
-                  // Only handle node dragging if we're the dragging node
-                  vm.dragNodeBy(node.id, details.delta);
+                  // Handle node dragging with proper coordinate transformation
+                  vm.dragNodeByGlobal(node.id, details.globalPosition);
                 }
               },
 

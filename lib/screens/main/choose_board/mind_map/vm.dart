@@ -321,6 +321,36 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Move the dragging node using global position for accurate tracking
+  void dragNodeByGlobal(String nodeId, Offset globalPosition) {
+    if (draggingNodeId != nodeId) return;
+    final node = mindMap.findNode(nodeId);
+    if (node == null) return;
+    
+    // Store the initial global position when dragging starts
+    if (_dragStartGlobal == null) {
+      _dragStartGlobal = globalPosition;
+      _dragStartNodePosition = node.position;
+      return;
+    }
+    
+    // Calculate the delta from start position
+    final globalDelta = globalPosition - _dragStartGlobal!;
+    
+    // Get current transformation matrix
+    if (_transformationController != null) {
+      final matrix = _transformationController!.value;
+      final scale = matrix.getMaxScaleOnAxis();
+      
+      // Convert global delta to canvas coordinates
+      final canvasDelta = globalDelta / scale;
+      
+      // Apply delta to original position
+      node.position = _constrainPosition(_dragStartNodePosition! + canvasDelta);
+      notifyListeners();
+    }
+  }
+
   /// End dragging
   void stopDraggingNode() {
     draggingNodeId = null;
@@ -818,6 +848,10 @@ class MindMapVm extends ChangeNotifier {
   /// Current viewport information
   Size? _viewportSize;
   TransformationController? _transformationController;
+
+  /// Drag tracking for accurate node movement
+  Offset? _dragStartGlobal;
+  Offset? _dragStartNodePosition;
 
   /// Update viewport information from the canvas
   void updateViewportInfo(
