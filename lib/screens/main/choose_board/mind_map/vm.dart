@@ -83,7 +83,7 @@ class MindMapVm extends ChangeNotifier {
   }) {
     final node = MindMapNode(
       text: text,
-      position: logicalPosition,
+      position: _constrainPosition(logicalPosition),
       color: color,
     );
     mindMap.nodes.add(node);
@@ -100,7 +100,7 @@ class MindMapVm extends ChangeNotifier {
   }) {
     final node = MindMapNode(
       text: text,
-      position: logicalPosition,
+      position: _constrainPosition(logicalPosition),
       color: color,
     );
     node.contentID = 'content:$contentId';
@@ -118,7 +118,7 @@ class MindMapVm extends ChangeNotifier {
   }) {
     final node = MindMapNode(
       text: text,
-      position: logicalPosition,
+      position: _constrainPosition(logicalPosition),
       color: color,
     );
     node.contentID = 'deck:$deckId';
@@ -136,7 +136,7 @@ class MindMapVm extends ChangeNotifier {
   void updateNodePosition(String nodeId, Offset newLogicalPosition) {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    node.position = newLogicalPosition;
+    node.position = _constrainPosition(newLogicalPosition);
     notifyListeners();
   }
 
@@ -268,7 +268,7 @@ class MindMapVm extends ChangeNotifier {
     if (draggingNodeId != nodeId) return;
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    node.position = node.position + (screenDelta / scale);
+    node.position = _constrainPosition(node.position + (screenDelta / scale));
     notifyListeners();
   }
 
@@ -763,10 +763,6 @@ class MindMapVm extends ChangeNotifier {
 
   /// Get the center position of the currently visible viewport
   Offset getViewportCenter(Size viewportSize) {
-    // Since we're using InteractiveViewer, we need to calculate the center
-    // of the currently visible area within the large canvas
-    // For now, we'll use a simple approach - place at viewport center
-    // This can be enhanced later to track actual InteractiveViewer state
     return Offset(viewportSize.width / 2, viewportSize.height / 2);
   }
 
@@ -803,5 +799,12 @@ class MindMapVm extends ChangeNotifier {
     final canvasCenterY = (viewportCenterY - translation.y) / scale;
 
     return Offset(canvasCenterX, canvasCenterY);
+  }
+
+  /// Constrain position to stay within canvas boundaries
+  Offset _constrainPosition(Offset position) {
+    final x = position.dx.clamp(0.0, canvasWidth - 200.0); // Leave space for node width
+    final y = position.dy.clamp(0.0, canvasHeight - 100.0); // Leave space for node height
+    return Offset(x, y);
   }
 }
