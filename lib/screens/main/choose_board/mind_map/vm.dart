@@ -354,6 +354,8 @@ class MindMapVm extends ChangeNotifier {
   /// End dragging
   void stopDraggingNode() {
     draggingNodeId = null;
+    _dragStartGlobal = null;
+    _dragStartNodePosition = null;
     notifyListeners();
   }
 
