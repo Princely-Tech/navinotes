@@ -237,11 +237,52 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  void zoomIn() => setScale((scale * 1.2).clamp(0.2, 4.0));
-  void zoomOut() => setScale((scale / 1.2).clamp(0.2, 4.0));
+  void zoomIn() {
+    if (_transformationController != null) {
+      final currentMatrix = _transformationController!.value;
+      final currentScale = currentMatrix.getMaxScaleOnAxis();
+      final newScale = (currentScale * 1.2).clamp(0.1, 4.0);
+      
+      // Get current translation to maintain position
+      final translation = currentMatrix.getTranslation();
+      
+      // Create new matrix with updated scale but same translation
+      final newMatrix = Matrix4.identity()
+        ..translate(translation.x, translation.y)
+        ..scale(newScale);
+      
+      _transformationController!.value = newMatrix;
+      setScale(newScale);
+    }
+  }
+  
+  void zoomOut() {
+    if (_transformationController != null) {
+      final currentMatrix = _transformationController!.value;
+      final currentScale = currentMatrix.getMaxScaleOnAxis();
+      final newScale = (currentScale / 1.2).clamp(0.1, 4.0);
+      
+      // Get current translation to maintain position
+      final translation = currentMatrix.getTranslation();
+      
+      // Create new matrix with updated scale but same translation
+      final newMatrix = Matrix4.identity()
+        ..translate(translation.x, translation.y)
+        ..scale(newScale);
+      
+      _transformationController!.value = newMatrix;
+      setScale(newScale);
+    }
+  }
+  
   void resetZoom() {
-    scale = 1.0;
-    notifyListeners();
+    if (_transformationController != null) {
+      _transformationController!.value = Matrix4.identity();
+      setScale(1.0);
+    } else {
+      scale = 1.0;
+      notifyListeners();
+    }
   }
 
   /// Convert a visual/screen-local pointer into logical coordinates (the coordinate space of nodes).
