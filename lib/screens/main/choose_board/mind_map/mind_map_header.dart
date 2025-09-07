@@ -273,6 +273,97 @@ class MindMapHeader extends StatelessWidget {
             textStyle: TextStyle(fontSize: 12),
           ),
         ),
+
+        // Export button
+        //   PopupMenuButton<String>(
+        //     onSelected: (value) async {
+        //       if (value == 'pdf') {
+        //         await mindMapVm.exportAsPdf();
+        //       } else if (value == 'png') {
+        //         await mindMapVm.exportAsPng();
+        //       }
+        //     },
+        //     itemBuilder: (context) => [
+        //       PopupMenuItem(
+        //         value: 'pdf',
+        //         child: Row(
+        //           children: [
+        //             Icon(Icons.picture_as_pdf, size: 16),
+        //             SizedBox(width: 8),
+        //             Text('Export as PDF'),
+        //           ],
+        //         ),
+        //       ),
+        //       PopupMenuItem(
+        //         value: 'png',
+        //         child: Row(
+        //           children: [
+        //             Icon(Icons.image, size: 16),
+        //             SizedBox(width: 8),
+        //             Text('Export as PNG'),
+        //           ],
+        //         ),
+        //       ),
+        //     ],
+        //     child: Container(
+        //       height: 32,
+        //       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        //       decoration: BoxDecoration(
+        //         color: Colors.grey[100],
+        //         borderRadius: BorderRadius.circular(4),
+        //         border: Border.all(color: Colors.grey[300]!),
+        //       ),
+        //       child: Row(
+        //         mainAxisSize: MainAxisSize.min,
+        //         children: [
+        //           Icon(Icons.download, size: 16),
+        //           SizedBox(width: 4),
+        //           Text('Export', style: TextStyle(fontSize: 12)),
+        //           SizedBox(width: 4),
+        //           Icon(Icons.arrow_drop_down, size: 16),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        //
+        SizedBox(width: 8),
+        ElevatedButton.icon(
+          onPressed: () async {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('PDF export in progress')),
+              );
+            }
+            await mindMapVm.exportAsPdf(context);
+          },
+          icon: const Icon(Icons.picture_as_pdf, size: 16),
+          label: const Text('PDF'),
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(0, 32),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            textStyle: TextStyle(fontSize: 12),
+          ),
+        ),
+
+        SizedBox(width: 8),
+
+        ElevatedButton.icon(
+          onPressed: () async {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('PNG export in progress')),
+              );
+            }
+            await mindMapVm.exportAsPng(context);
+          },
+          icon: const Icon(Icons.image, size: 16),
+          label: const Text('PNG'),
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(0, 32),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            textStyle: TextStyle(fontSize: 12),
+          ),
+        ),
       ],
     );
   }

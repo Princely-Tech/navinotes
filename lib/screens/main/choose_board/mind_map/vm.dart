@@ -1,6 +1,8 @@
 // vm.dart
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/mind_map.dart';
@@ -9,9 +11,14 @@ import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/models/content.dart';
 import 'package:navinotes/settings/db_helpers.dart';
 import 'package:navinotes/settings/enums.dart';
+import 'package:navinotes/settings/file_utils.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/settings/routes.dart';
 import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
 class MindMapVm extends ChangeNotifier {
@@ -242,39 +249,41 @@ class MindMapVm extends ChangeNotifier {
       final currentMatrix = _transformationController!.value;
       final currentScale = currentMatrix.getMaxScaleOnAxis();
       final newScale = (currentScale * 1.2).clamp(0.1, 4.0);
-      
+
       // Get current translation to maintain position
       final translation = currentMatrix.getTranslation();
-      
+
       // Create new matrix with updated scale but same translation
-      final newMatrix = Matrix4.identity()
-        ..translate(translation.x, translation.y)
-        ..scale(newScale);
-      
+      final newMatrix =
+          Matrix4.identity()
+            ..translate(translation.x, translation.y)
+            ..scale(newScale);
+
       _transformationController!.value = newMatrix;
       setScale(newScale);
     }
   }
-  
+
   void zoomOut() {
     if (_transformationController != null) {
       final currentMatrix = _transformationController!.value;
       final currentScale = currentMatrix.getMaxScaleOnAxis();
       final newScale = (currentScale / 1.2).clamp(0.1, 4.0);
-      
+
       // Get current translation to maintain position
       final translation = currentMatrix.getTranslation();
-      
+
       // Create new matrix with updated scale but same translation
-      final newMatrix = Matrix4.identity()
-        ..translate(translation.x, translation.y)
-        ..scale(newScale);
-      
+      final newMatrix =
+          Matrix4.identity()
+            ..translate(translation.x, translation.y)
+            ..scale(newScale);
+
       _transformationController!.value = newMatrix;
       setScale(newScale);
     }
   }
-  
+
   void resetZoom() {
     if (_transformationController != null) {
       _transformationController!.value = Matrix4.identity();
@@ -309,15 +318,17 @@ class MindMapVm extends ChangeNotifier {
     if (draggingNodeId != nodeId) return;
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    
+
     // Get the current scale from the transformation controller if available
     double currentScale = scale;
     if (_transformationController != null) {
       currentScale = _transformationController!.value.getMaxScaleOnAxis();
     }
-    
+
     // Apply the screen delta divided by the current scale to get logical movement
-    node.position = _constrainPosition(node.position + (screenDelta / currentScale));
+    node.position = _constrainPosition(
+      node.position + (screenDelta / currentScale),
+    );
     notifyListeners();
   }
 
@@ -326,25 +337,25 @@ class MindMapVm extends ChangeNotifier {
     if (draggingNodeId != nodeId) return;
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
-    
+
     // Store the initial global position when dragging starts
     if (_dragStartGlobal == null) {
       _dragStartGlobal = globalPosition;
       _dragStartNodePosition = node.position;
       return;
     }
-    
+
     // Calculate the delta from start position
     final globalDelta = globalPosition - _dragStartGlobal!;
-    
+
     // Get current transformation matrix
     if (_transformationController != null) {
       final matrix = _transformationController!.value;
       final scale = matrix.getMaxScaleOnAxis();
-      
+
       // Convert global delta to canvas coordinates
       final canvasDelta = globalDelta / scale;
-      
+
       // Apply delta to original position
       node.position = _constrainPosition(_dragStartNodePosition! + canvasDelta);
       notifyListeners();
@@ -888,8 +899,289 @@ class MindMapVm extends ChangeNotifier {
 
   /// Constrain position to stay within canvas boundaries
   Offset _constrainPosition(Offset position) {
-    final x = position.dx.clamp(0.0, canvasWidth - 200.0); // Leave space for node width
-    final y = position.dy.clamp(0.0, canvasHeight - 100.0); // Leave space for node height
+    final x = position.dx.clamp(
+      0.0,
+      canvasWidth - 200.0,
+    ); // Leave space for node width
+    final y = position.dy.clamp(
+      0.0,
+      canvasHeight - 100.0,
+    ); // Leave space for node height
     return Offset(x, y);
+  }
+
+  /// Export mind map as PDF
+  Future<void> exportAsPdf(BuildContext context) async {
+    try {
+      final pdf = pw.Document();
+
+      // Calculate bounds of all nodes
+      final bounds = _calculateMindMapBounds();
+
+      // Handle empty mind map
+      if (bounds == Rect.zero) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('No nodes to export')));
+        }
+        return;
+      }
+
+      pdf.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4.landscape,
+          build: (pw.Context context) {
+            return _buildPdfPage(bounds);
+          },
+        ),
+      );
+
+      // Save PDF
+      final output = await getApplicationDocumentsDirectory();
+      final file = File(
+        '${output.path}/mindmap_${DateTime.now().millisecondsSinceEpoch}.pdf',
+      );
+      await file.writeAsBytes(await pdf.save());
+
+      await handleFileSharing(
+        file,
+        context: context,
+        successMessage: 'PDF exported.',
+        errorMessage: 'Failed to export PDF',
+      );
+    } catch (e) {
+      print('Error exporting PDF: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to export PDF')));
+      }
+    }
+  }
+
+  /// Export mind map as PNG
+  Future<void> exportAsPng(BuildContext context) async {
+    try {
+      // Calculate bounds
+      final bounds = _calculateMindMapBounds();
+
+      // Handle empty mind map
+      if (bounds == Rect.zero) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('No nodes to export')));
+        }
+        return;
+      }
+
+      // Create a custom painter to render the mind map
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+      final size = Size(bounds.width + 100, bounds.height + 100);
+
+      // Draw white background
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height),
+        Paint()..color = Colors.white,
+      );
+
+      // Draw mind map
+      _drawMindMapToCanvas(canvas, bounds);
+
+      // Convert to image
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(
+        size.width.toInt(),
+        size.height.toInt(),
+      );
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      if (byteData != null) {
+        // Save PNG
+        final output = await getApplicationDocumentsDirectory();
+        final file = File(
+          '${output.path}/mindmap_${DateTime.now().millisecondsSinceEpoch}.png',
+        );
+        await file.writeAsBytes(byteData.buffer.asUint8List());
+
+        await handleFileSharing(
+          file,
+          context: context,
+          successMessage: 'PNG exported.',
+          errorMessage: 'Failed to export PNG',
+        );
+      }
+    } catch (e) {
+      print('Error exporting PNG: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to export PNG')));
+      }
+    }
+  }
+
+  /// Calculate bounding rectangle of all nodes
+  Rect _calculateMindMapBounds() {
+    if (mindMap.nodes.isEmpty) return Rect.zero;
+
+    double minX = double.infinity;
+    double minY = double.infinity;
+    double maxX = double.negativeInfinity;
+    double maxY = double.negativeInfinity;
+
+    for (final node in mindMap.nodes) {
+      minX = math.min(minX, node.position.dx);
+      minY = math.min(minY, node.position.dy);
+      maxX = math.max(maxX, node.position.dx + node.width);
+      maxY = math.max(maxY, node.position.dy + node.height);
+    }
+
+    return Rect.fromLTRB(minX - 50, minY - 50, maxX + 50, maxY + 50);
+  }
+
+  /// Build PDF page content using widgets instead of custom paint
+  pw.Widget _buildPdfPage(Rect bounds) {
+    return pw.Stack(
+      children: [
+        // Draw edges as lines
+        ...mindMap.edges.map((edge) {
+          final fromNode = mindMap.findNode(edge.sourceId);
+          final toNode = mindMap.findNode(edge.targetId);
+          if (fromNode == null || toNode == null) return pw.Container();
+
+          return pw.Positioned(
+            left: 0,
+            top: 0,
+            child: pw.CustomPaint(
+              size: PdfPoint(bounds.width + 100, bounds.height + 100),
+              painter: (PdfGraphics canvas, PdfPoint size) {
+                final fromCenter = PdfPoint(
+                  fromNode.position.dx + fromNode.width / 2 - bounds.left + 50,
+                  fromNode.position.dy + fromNode.height / 2 - bounds.top + 50,
+                );
+                final toCenter = PdfPoint(
+                  toNode.position.dx + toNode.width / 2 - bounds.left + 50,
+                  toNode.position.dy + toNode.height / 2 - bounds.top + 50,
+                );
+                canvas.setStrokeColor(PdfColors.grey600);
+                canvas.setLineWidth(2);
+                canvas.drawLine(
+                  fromCenter.x,
+                  fromCenter.y,
+                  toCenter.x,
+                  toCenter.y,
+                );
+                canvas.strokePath();
+              },
+            ),
+          );
+        }).toList(),
+        // Draw nodes
+        ...mindMap.nodes.map((node) {
+          return pw.Positioned(
+            left: node.position.dx - bounds.left + 50,
+            top: node.position.dy - bounds.top + 50,
+            child: pw.Container(
+              width: node.width,
+              height: node.height,
+              decoration: pw.BoxDecoration(
+                color: PdfColor.fromInt(node.color.value),
+                border: pw.Border.all(color: PdfColors.black, width: 1),
+                borderRadius: pw.BorderRadius.circular(node.borderRadius),
+              ),
+              padding: const pw.EdgeInsets.all(8),
+              child: pw.Center(
+                child: pw.Text(
+                  node.text,
+                  style: pw.TextStyle(
+                    fontSize: math.min(node.fontSize * 0.75, 10),
+                    color: PdfColor.fromInt(node.textColor.value),
+                  ),
+                  textAlign: pw.TextAlign.center,
+                  maxLines: 3,
+                  overflow: pw.TextOverflow.clip,
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ],
+    );
+  }
+
+  /// Draw mind map to Flutter canvas
+  void _drawMindMapToCanvas(Canvas canvas, Rect bounds) {
+    // Draw edges first
+    for (final edge in mindMap.edges) {
+      final fromNode = mindMap.findNode(edge.sourceId);
+      final toNode = mindMap.findNode(edge.targetId);
+      if (fromNode != null && toNode != null) {
+        final fromCenter = Offset(
+          fromNode.position.dx + fromNode.width / 2 - bounds.left + 50,
+          fromNode.position.dy + fromNode.height / 2 - bounds.top + 50,
+        );
+        final toCenter = Offset(
+          toNode.position.dx + toNode.width / 2 - bounds.left + 50,
+          toNode.position.dy + toNode.height / 2 - bounds.top + 50,
+        );
+
+        canvas.drawLine(
+          fromCenter,
+          toCenter,
+          Paint()
+            ..color = Colors.grey[600]!
+            ..strokeWidth = 2,
+        );
+      }
+    }
+
+    // Draw nodes
+    for (final node in mindMap.nodes) {
+      final rect = Rect.fromLTWH(
+        node.position.dx - bounds.left + 50,
+        node.position.dy - bounds.top + 50,
+        node.width,
+        node.height,
+      );
+
+      // Draw node background
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, Radius.circular(node.borderRadius)),
+        Paint()..color = node.color.withOpacity(node.opacity),
+      );
+
+      // Draw node border
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, Radius.circular(node.borderRadius)),
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1,
+      );
+
+      // Draw text
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: node.text,
+          style: TextStyle(
+            color: node.textColor,
+            fontSize: node.fontSize,
+            fontWeight: FontWeight.values[node.fontWeight ~/ 100 - 1],
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout(maxWidth: node.width - 16);
+      textPainter.paint(
+        canvas,
+        Offset(
+          rect.left + 8,
+          rect.top + (rect.height - textPainter.height) / 2,
+        ),
+      );
+    }
   }
 }
