@@ -9,7 +9,6 @@ Widget buildEditorToolBar(NoteCreationVm vm) {
     child: Container(
       color: Colors.white,
       child: QuillSimpleToolbar(
-
         controller: vm.richEditorController,
         //TODO check this didnt break stuff
         config: buildCustomToolbarConfig(
@@ -70,15 +69,23 @@ Widget buildTextEditor(
     height: inputHeight,
     padding: const EdgeInsets.only(top: 55, bottom: 24),
     child: ResponsiveHorizontalPadding(
-      child: QuillEditor.basic(
-        controller: vm.richEditorController,
-        config: QuillEditorConfig(
-          placeholder: '',
-          autoFocus: true,
-          showCursor: true,
-          padding: const EdgeInsets.all(12.0), // Add some padding
-          expands: false, // Set to false to allow proper cursor positioning
-          scrollable: true,
+      child: SingleChildScrollView(
+        child: QuillEditor(
+          controller: vm.richEditorController,
+          scrollController: ScrollController(),
+          focusNode: FocusNode(),
+          config: QuillEditorConfig(
+            placeholder: 'Start writing your note...',
+            autoFocus: true,
+            showCursor: true,
+            enableInteractiveSelection: true,
+            enableSelectionToolbar: true,
+            padding: const EdgeInsets.all(12.0),
+            expands: false,
+            scrollable: true,
+            minHeight: inputHeight - 79, // Account for padding
+            maxHeight: null, // Allow unlimited height
+          ),
         ),
       ),
     ),

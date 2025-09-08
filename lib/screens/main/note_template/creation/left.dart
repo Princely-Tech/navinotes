@@ -59,11 +59,11 @@ class NoteCreationLeft extends StatelessWidget {
     return _section(
       title: 'STUDY TOOLS',
       children: [
-        _listTile(
-          icon: _tileIcon(icon: Images.clock, color: AppTheme.orange),
-          title: 'Pomodoro Timer',
-          route: Routes.pomodoroTimer,
-        ),
+        // _listTile(
+        //   icon: _tileIcon(icon: Images.clock, color: AppTheme.orange),
+        //   title: 'Pomodoro Timer',
+        //   route: Routes.pomodoroTimer,
+        // ),
         _listTile(
           icon: _tileIcon(icon: Images.stack, color: AppTheme.teal),
           title: 'FlashCards',
