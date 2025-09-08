@@ -1,4 +1,4 @@
-note editor
+
 pdf editor
 each board note list
 note templates

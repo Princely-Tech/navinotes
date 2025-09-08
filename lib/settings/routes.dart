@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/choose_board/mind_map/index.dart';
 import 'package:navinotes/screens/main/flashcards/ai/index.dart';
 import 'package:navinotes/screens/main/flashcards/index.dart';
+import 'package:navinotes/screens/pomodora/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -59,6 +60,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.flashcardStudy: (context) => FlashCardStudyScreen(),
   Routes.flashCardAiCreation: (context) => FlashCardAiCreationScreen(),
   Routes.flashCards: (context) => FlashCardScreen(),
+  Routes.pomodoroTimer: (context) => PomodoroTimerScreen(),
 
   // NavigationHelper.push(
   //                       Routes.mindMap,
