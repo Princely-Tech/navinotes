@@ -9,24 +9,64 @@ class BoardPlainPopupOverview extends StatelessWidget {
       builder: (_, apiServiceProvider, _) {
         return Consumer<BoardEditVm>(
           builder: (context, vm, _) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _headerSection(context),
-                _recentNotesSection(vm),
-                _courseActions(),
-                Divider(height: 1, color: AppTheme.lightGray),
-                _fileUploads(vm: vm, context: context),
-                //  _studyTemplates(), // not completed
-                _syllabus(
-                  vm: vm,
-                  apiServiceProvider: apiServiceProvider,
-                  context: context,
-                ),
-                _courseOutline(vm: vm),
-                Divider(height: 1, color: AppTheme.lightGray),
-                _courseDetails(vm: vm),
-              ],
+            return FutureBuilder<List<Content>>(
+              future: _getAllContents(vm.board.id!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    height: 200,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 16),
+                          Text(
+                            'Loading board contents...',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                final allContents = snapshot.data ?? [];
+                final notes =
+                    allContents
+                        .where((content) => content.type == AppContentType.note)
+                        .toList();
+                final mindMaps =
+                    allContents
+                        .where(
+                          (content) => content.type == AppContentType.mindmap,
+                        )
+                        .toList();
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _headerSection(context),
+                    _recentNotesSection(notes),
+                    _mindMapsSection(mindMaps),
+                    _courseActions(),
+                    Divider(height: 1, color: AppTheme.lightGray),
+                    _fileUploads(vm: vm, context: context),
+                    //  _studyTemplates(), // not completed
+                    _syllabus(
+                      vm: vm,
+                      apiServiceProvider: apiServiceProvider,
+                      context: context,
+                    ),
+                    _courseOutline(vm: vm),
+                    Divider(height: 1, color: AppTheme.lightGray),
+                    _courseDetails(vm: vm),
+                  ],
+                );
+              },
             );
           },
         );
@@ -655,71 +695,128 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   child: CustomCard(
                     addBorder: true,
                     addCardShadow: true,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Image preview or icon section
+                        _buildFilePreview(file),
+
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(
-                                getFileIcon(file.file),
-                                size: 24,
-                                color: AppTheme.vividBlue,
+                              Text(
+                                name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14.0,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14.0,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                              const SizedBox(height: 8),
+                              Text(
+                                size,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 12.0,
                                 ),
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            size,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12.0,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.open_in_new, size: 20),
-                                onPressed: () {
-                                  NavigationHelper.navigateToContent(file);
-                                },
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                tooltip: 'Open',
-                              ),
-                              const SizedBox(width: 8),
-                              IconButton(
-                                icon: const Icon(Icons.download, size: 20),
-                                onPressed: () {
-                                  handleFileDownload(file, context);
-                                },
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                tooltip: 'Download',
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.open_in_new,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      NavigationHelper.navigateToContent(file);
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    tooltip: 'Open',
+                                  ),
+                                  const SizedBox(width: 8),
+                                  IconButton(
+                                    icon: const Icon(Icons.download, size: 20),
+                                    onPressed: () {
+                                      handleFileDownload(file, context);
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    tooltip: 'Download',
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );
               }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilePreview(Content file) {
+    final filePath = file.file;
+    if (filePath == null) {
+      return _buildFileIconPreview(file);
+    }
+
+    // Check if it's an image file
+    final extension = filePath.toLowerCase();
+    final isImage =
+        extension.endsWith('.png') ||
+        extension.endsWith('.jpg') ||
+        extension.endsWith('.jpeg') ||
+        extension.endsWith('.gif') ||
+        extension.endsWith('.webp') ||
+        extension.endsWith('.bmp');
+
+    if (isImage && File(filePath).existsSync()) {
+      return Container(
+        height: 120,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+          color: Colors.grey.shade100,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+          child: Image.file(
+            File(filePath),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return _buildFileIconPreview(file);
+            },
+          ),
+        ),
+      );
+    }
+
+    return _buildFileIconPreview(file);
+  }
+
+  Widget _buildFileIconPreview(Content file) {
+    return Container(
+      height: 120,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+        color: Colors.grey.shade100,
+      ),
+      child: Center(
+        child: Icon(
+          getFileIcon(file.file),
+          size: 48,
+          color: AppTheme.vividBlue,
         ),
       ),
     );
@@ -1271,69 +1368,119 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _recentNotesSection(BoardEditVm vm) {
+  Widget _recentNotesSection(List<Content> notes) {
+    // Sort by updated date (most recent first)
+    notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
     return _section(
-      child: FutureBuilder<List<Content>>(
-        future: _getRecentNotes(vm.board.id!),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(
-              height: 100,
-              child: Center(child: CircularProgressIndicator()),
-            );
-          }
-
-          final notes = snapshot.data ?? [];
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Recent Notes',
-                    style: TextStyle(
-                      color: const Color(0xFF1F2937),
-                      fontSize: 18.0,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  if (notes.length >= 5)
-                    TextButton(
+              Text(
+                'Recent Notes',
+                style: TextStyle(
+                  color: const Color(0xFF1F2937),
+                  fontSize: 18.0,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              if (notes.length > 5)
+                Consumer<BoardEditVm>(
+                  builder: (context, vm, _) {
+                    return TextButton(
                       onPressed: vm.goToBoardNotes,
                       child: Text(
-                        'View All More',
+                        'View All',
                         style: TextStyle(
                           color: AppTheme.vividBlue,
                           fontSize: 14.0,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
-                ],
-              ),
-              if (notes.isEmpty)
-                Text(
-                  'No notes yet. Create your first note to get started.',
-                  style: TextStyle(
-                    color: const Color(0xFF6B7280),
-                    fontSize: 14.0,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.italic,
-                  ),
-                )
-              else
-                Column(
-                  spacing: 8,
-                  children:
-                      notes.take(5).map((note) => _noteItem(note)).toList(),
+                    );
+                  },
                 ),
             ],
-          );
-        },
+          ),
+          if (notes.isEmpty)
+            Text(
+              'No notes yet. Create your first note to get started.',
+              style: TextStyle(
+                color: const Color(0xFF6B7280),
+                fontSize: 14.0,
+                fontFamily: 'Inter',
+                fontStyle: FontStyle.italic,
+              ),
+            )
+          else
+            Column(
+              spacing: 8,
+              children: notes.take(5).map((note) => _noteItem(note)).toList(),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _mindMapsSection(List<Content> mindMaps) {
+    // Sort by updated date (most recent first)
+    mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return _section(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 16,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Mind Maps',
+                style: TextStyle(
+                  color: const Color(0xFF1F2937),
+                  fontSize: 18.0,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              if (mindMaps.length > 5)
+                TextButton(
+                  onPressed: () {
+                    // TODO: Navigate to mind maps view
+                  },
+                  child: Text(
+                    'View All',
+                    style: TextStyle(
+                      color: AppTheme.vividBlue,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          if (mindMaps.isEmpty)
+            Text(
+              'No mind maps yet. Create your first mind map to get started.',
+              style: TextStyle(
+                color: const Color(0xFF6B7280),
+                fontSize: 14.0,
+                fontFamily: 'Inter',
+                fontStyle: FontStyle.italic,
+              ),
+            )
+          else
+            Column(
+              spacing: 8,
+              children:
+                  mindMaps.map((mindMap) => _mindMapItem(mindMap)).toList(),
+            ),
+        ],
       ),
     );
   }
@@ -1387,22 +1534,64 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Future<List<Content>> _getRecentNotes(int boardId) async {
+  Future<List<Content>> _getAllContents(int boardId) async {
     try {
-      final allContents = await DatabaseHelper.instance.getAllContents(boardId);
-      final notes =
-          allContents
-              .where((content) => content.type == AppContentType.note)
-              .toList();
-
-      // Sort by updated date (most recent first)
-      notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-
-      return notes.take(5).toList();
+      return await DatabaseHelper.instance.getAllContents(boardId);
     } catch (e) {
-      debugPrint('Error fetching recent notes: $e');
+      debugPrint('Error fetching contents: $e');
       return [];
     }
+  }
+
+  Widget _mindMapItem(Content mindMap) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(mindMap),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.account_tree, size: 16, color: AppTheme.emeraldGreen),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    mindMap.title.isNotEmpty
+                        ? mindMap.title
+                        : 'Untitled Mind Map',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF1F2937),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        mindMap.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: const Color(0xFF6B7280),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _editBoardDescription(BuildContext context) {

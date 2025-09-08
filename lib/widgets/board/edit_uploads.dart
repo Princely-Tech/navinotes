@@ -33,11 +33,8 @@ class BoardEditUploads extends StatelessWidget {
               addCardShadow: true,
               child: Row(
                 children: [
-                  Icon(
-                    getFileIcon(file.file),
-                    size: 40,
-                    color: AppTheme.vividBlue,
-                  ),
+                  // Image preview or icon
+                  _buildFilePreview(file),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -124,6 +121,64 @@ class BoardEditUploads extends StatelessWidget {
               ),
             );
           }).toList(),
+    );
+  }
+
+  Widget _buildFilePreview(Content file) {
+    final filePath = file.file;
+    if (filePath == null) {
+      return _buildFileIconPreview(file);
+    }
+
+    // Check if it's an image file
+    final extension = filePath.toLowerCase();
+    final isImage =
+        extension.endsWith('.png') ||
+        extension.endsWith('.jpg') ||
+        extension.endsWith('.jpeg') ||
+        extension.endsWith('.gif') ||
+        extension.endsWith('.webp') ||
+        extension.endsWith('.bmp');
+
+    if (isImage && File(filePath).existsSync()) {
+      return Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.grey.shade100,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.file(
+            File(filePath),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return _buildFileIconPreview(file);
+            },
+          ),
+        ),
+      );
+    }
+
+    return _buildFileIconPreview(file);
+  }
+
+  Widget _buildFileIconPreview(Content file) {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.grey.shade100,
+      ),
+      child: Center(
+        child: Icon(
+          getFileIcon(file.file),
+          size: 32,
+          color: AppTheme.vividBlue,
+        ),
+      ),
     );
   }
 
