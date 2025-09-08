@@ -159,6 +159,39 @@ class NoteCreationVm extends ChangeNotifier {
     });
   }
 
+  Future<void> updateTitle(String newTitle) async {
+    if (content != null) {
+      titleController.text = newTitle;
+      final updatedContent = content!.getUpdatedContent(
+        title: newTitle,
+        updatedAt: generateUnixTimestamp(),
+      );
+
+      try {
+        await dbHelper.updateContent(updatedContent);
+        content = updatedContent;
+        notifyListeners();
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Title updated successfully!'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      } catch (err) {
+        debugPrint('Error updating title: $err');
+        if (context.mounted) {
+          MessageDisplayService.showErrorMessage(
+            context,
+            'Could not update title!',
+          );
+        }
+      }
+    }
+  }
+
   Future<void> updateContentInDb({bool showSnackBar = false}) async {
     try {
       if (content != null) {
@@ -364,11 +397,6 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveDrawing() async {
-    // Implement saving the drawing
-    // This could save the drawing as an image or keep it as vector data
-  }
-
   void openDrawer() {
     scaffoldKey.currentState?.openDrawer();
   }
@@ -521,6 +549,10 @@ class NoteCreationVm extends ChangeNotifier {
     _autoSaveTimer = Timer.periodic(_autoSaveInterval, (_) {
       updateContentInDb(showSnackBar: false);
     });
+  }
+
+  Future<void> save() async {
+    return updateContentInDb(showSnackBar: true);
   }
 
   TextEditingController summaryController = TextEditingController();

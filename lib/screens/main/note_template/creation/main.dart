@@ -212,7 +212,13 @@ class NoteCreationMain extends StatelessWidget {
             color: AppTheme.stormGray,
           ),
         ),
-        AppButton(onTap: () {}, text: 'Share', mainAxisSize: MainAxisSize.min),
+        AppButton(
+          onTap: () {
+            vm.save();
+          },
+          text: 'Save',
+          mainAxisSize: MainAxisSize.min,
+        ),
       ],
     );
   }
