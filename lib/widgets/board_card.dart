@@ -44,57 +44,67 @@ class BoardCard extends StatelessWidget {
                 isCardHeader: true,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 15,
-                children: [
-                  Text(
-                    board.name,
-                    style: AppTheme.text.copyWith(
-                      fontSize: 18.0,
-                      fontWeight: getFontWeight(600),
-                    ),
-                  ),
-                  Text(
-                    'Last edited ${_formatDate(DateTime.fromMillisecondsSinceEpoch(board.updatedAt * 1000))}',
-                    style: AppTheme.text.copyWith(
-                      color: AppTheme.steelMist,
-                      fontSize: 12.0,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      FutureBuilder(
-                        future: DatabaseHelper.instance.getAllNotes(board.id!),
-                        builder: (context, asyncSnapshot) {
-                          bool loading =
-                              asyncSnapshot.connectionState ==
-                              ConnectionState.waiting;
-                          return Flexible(
-                            child: LoadingIndicator(
-                              loading: loading,
+            FutureBuilder(
+              future: board.getContents(),
+              builder: (context, asyncSnapshot) {
+                bool loading =
+                    asyncSnapshot.connectionState == ConnectionState.waiting;
+
+                // Get the loaded contents from the async snapshot
+                final contents = asyncSnapshot.data ?? [];
+                final notes =
+                    contents
+                        .where((c) => c.type == AppContentType.note)
+                        .toList();
+                final mindMaps =
+                    contents
+                        .where((c) => c.type == AppContentType.mindmap)
+                        .toList();
+
+                return LoadingIndicator(
+                  loading: loading,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 15,
+                      children: [
+                        Text(
+                          board.name,
+                          style: AppTheme.text.copyWith(
+                            fontSize: 18.0,
+                            fontWeight: getFontWeight(600),
+                          ),
+                        ),
+                        Text(
+                          'Created ${_formatDate(DateTime.fromMillisecondsSinceEpoch(board.createdAt * 1000))}',
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.steelMist,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            CustomTag(
+                              '${notes.length} notes',
+                              color: AppTheme.paleBlue,
+                              textColor: AppTheme.electricIndigo,
+                            ),
+
+                            Flexible(
                               child: CustomTag(
-                                '${asyncSnapshot.data?.length ?? 0} notes', // TODO: Get actual note count
-                                color: AppTheme.paleBlue,
-                                textColor: AppTheme.electricIndigo,
+                                '${mindMaps.length} mindmaps',
+                                color: AppTheme.lightMintGreen,
+                                textColor: AppTheme.emeraldGreen,
                               ),
                             ),
-                          );
-                        },
-                      ),
-                      Flexible(
-                        child: CustomTag(
-                          '0 mindmaps', // TODO: Get actual mindmap count
-                          color: AppTheme.lightMintGreen,
-                          textColor: AppTheme.emeraldGreen,
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),

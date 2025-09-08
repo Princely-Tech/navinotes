@@ -266,6 +266,20 @@ class BoardEditVm extends ChangeNotifier {
     }
   }
 
+  updateBoardDescription(String newDescription) {
+    board.description = newDescription;
+    notifyListeners();
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+    dbHelper.updateBoard(board);
+  }
+
+  updateBoardName(String newName) {
+    board.name = newName;
+    notifyListeners();
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+    dbHelper.updateBoard(board);
+  }
+
   Future uploadSyllabus({
     required BuildContext context,
     required ApiServiceProvider apiServiceProvider,

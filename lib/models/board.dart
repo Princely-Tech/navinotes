@@ -6,10 +6,10 @@ class Board {
   final String guid;
   final int userId;
   final String type;
-  final String name;
+  String name;
   final Map<String, dynamic> customization;
   final bool isPublic;
-  final String? description;
+  String? description;
   final String? subject;
   final String? level;
   final String? term;
@@ -98,6 +98,10 @@ class Board {
     } catch (e) {
       return null;
     }
+  }
+
+  bool hasDescription() {
+    return description != null && description!.isNotEmpty;
   }
 
   setIDAfterCreate(int id) {
@@ -265,7 +269,37 @@ class Board {
       (i) => Content.fromMap(maps[i]),
     );
     _hasFetchedContents = true;
+
     return _cachedContents!;
+  }
+
+  getAllNotes() {
+    return _cachedContents!
+        .where((c) => c.type == AppContentType.note)
+        .toList();
+  }
+
+  getAllMindMaps() {
+    return _cachedContents!
+        .where((c) => c.type == AppContentType.mindmap)
+        .toList();
+  }
+
+  getAllFiles() {
+    return _cachedContents!
+        .where((c) => c.type == AppContentType.file)
+        .toList();
+  }
+
+  getLastEditedAt() {
+    if (_cachedContents != null) {
+      debugPrint(
+        'Last edited at: ${_cachedContents!.last.updatedAt} | ${_cachedContents!.last.title}',
+      );
+      return _cachedContents!.last.updatedAt;
+    }
+    debugPrint('Last edited at board : ${updatedAt} | ${name}');
+    return updatedAt;
   }
 
   /// Clears the cached contents, forcing a fresh fetch on next getContents() call

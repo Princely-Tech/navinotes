@@ -11,7 +11,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _headerSection(),
+                _headerSection(context),
                 _courseActions(),
                 Divider(height: 1, color: AppTheme.lightGray),
                 _fileUploads(vm: vm, context: context),
@@ -1057,7 +1057,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _headerLeft() {
+  Widget _headerLeft(BuildContext context) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return Consumer<BoardEditVm>(
@@ -1070,31 +1070,72 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 16,
                   children: [
-                    Text(
-                      'Explore ${board.name}',
-                      style: TextStyle(
-                        color: const Color(0xFF1F2937),
-                        fontSize: getDeviceResponsiveValue(
-                          deviceType: layoutVm.deviceType,
-                          mobile: 24,
-                          laptop: 28,
-                          desktop: 30,
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            'Explore ${board.name}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: const Color(0xFF1F2937),
+                              fontSize: getDeviceResponsiveValue(
+                                deviceType: layoutVm.deviceType,
+                                mobile: 24,
+                                laptop: 28,
+                                desktop: 30,
+                              ),
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                              height: 1.2,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                        height: 1.2,
-                      ),
+                        SizedBox(width: 8),
+
+                        InkWell(
+                          onTap: () => _editBoardName(context),
+                          child: Icon(
+                            Icons.edit,
+                            size: 16,
+                            color: AppTheme.vividBlue,
+                          ),
+                        ),
+                      ],
                     ),
 
-                    Text(
-                      getBoardDescription(board),
-                      style: TextStyle(
-                        color: const Color(0xFF6B7280),
-                        fontSize: 16.0,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 1.5,
-                      ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            (board.hasDescription())
+                                ? board.description!
+                                : 'Describe your board',
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: const Color(0xFF6B7280),
+                              fontSize: 16.0,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 1.5,
+                              fontStyle: FontStyle.italic,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+
+                        SizedBox(width: 8),
+                        InkWell(
+                          onTap: () => _editBoardDescription(context),
+                          child: Icon(
+                            Icons.edit,
+                            size: 16,
+                            color: AppTheme.vividBlue,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -1228,18 +1269,106 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _headerSection() {
+  Widget _headerSection(BuildContext context) {
     return _section(
       child: ResponsiveSection(
-        mobile: Column(spacing: 20, children: [_headerLeft(), _headerRight()]),
+        mobile: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          spacing: 20,
+          children: [_headerLeft(context), _headerRight()],
+        ),
         desktop: Row(
           spacing: 48,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(child: _headerLeft()),
+            Expanded(child: _headerLeft(context)),
             WidthLimiter(mobile: 400, child: _headerRight()),
           ],
         ),
       ),
+    );
+  }
+
+  void _editBoardName(BuildContext context) {
+    final vm = Provider.of<BoardEditVm>(context, listen: false);
+    final controller = TextEditingController(text: vm.board.name);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Board Name'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter board name...',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+            onSubmitted: (value) {
+              if (value.trim().isNotEmpty) {
+                vm.updateBoardName(value.trim());
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (controller.text.trim().isNotEmpty) {
+                  vm.updateBoardName(controller.text.trim());
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editBoardDescription(BuildContext context) {
+    final vm = Provider.of<BoardEditVm>(context, listen: false);
+    final controller = TextEditingController(text: vm.board.description ?? '');
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Board Description'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter board description...',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+            maxLines: 3,
+            onSubmitted: (value) {
+              vm.updateBoardDescription(value.trim());
+              Navigator.of(context).pop();
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                vm.updateBoardDescription(controller.text.trim());
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
