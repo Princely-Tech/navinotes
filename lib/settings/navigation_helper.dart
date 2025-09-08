@@ -190,6 +190,14 @@ class NavigationHelper {
     if (content.type == AppContentType.file) {
       return _handleFileNavigation(content);
     }
+
+    if (content.type == AppContentType.mindmap) {
+     push(
+                      Routes.mindMap,
+                      arguments: {'contentId': content.id},
+                    );
+    }
+
     // TODO: Implement
   }
 
@@ -229,11 +237,46 @@ class NavigationHelper {
 
   static navigateToDeck(FlashCardDeck deck) {
     debugPrint('Navigating to deck ${deck.id} - ${deck.name}');
-    // TODO: Implement
+    navigateToManualFlashCard(ManualFlashCardProps(deck: deck));
   }
 
   static navigateToDeckById(int deckId) async {
     final deck = await DatabaseHelper.instance.getDeck(deckId);
     return navigateToDeck(deck!);
+  }
+
+
+  static createAndNavigateToNewMindMap(Board board) {
+    
+  }
+
+  static createAndNavigateToNewFlashCard(Board board) async {
+    final dbHelper = DatabaseHelper.instance;
+
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    final random = Random();
+    final adjectives = ['New', 'Fresh', 'Smart', 'Quick', 'Study', 'Master'];
+    final nouns = ['Deck', 'Set', 'Collection', 'Pack', 'Bundle'];
+    final adjective = adjectives[random.nextInt(adjectives.length)];
+    final noun = nouns[random.nextInt(nouns.length)];
+
+    final newDeck = FlashCardDeck(
+      guid: 'deck_${DateTime.now().millisecondsSinceEpoch}',
+      boardId: board.id!,
+      name: '$adjective $noun ${now % 100}',
+      description: 'Created on ${DateTime.now().toString().split(' ')[0]}',
+      cardsPerDay: 20,
+      steps: [1, 10],
+      againInterval: 1,
+      hardInterval: 3,
+      goodInterval: 5,
+      easyInterval: 7,
+      createdAt: now,
+      updatedAt: now,
+    );
+
+    final id = await dbHelper.insertDeck(newDeck);
+    newDeck.id = id;
+    navigateToDeck(newDeck);
   }
 }

@@ -50,11 +50,16 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _headerSection(context),
-                    _recentNotesSection(notes),
-                    _mindMapsSection(mindMaps),
+
                     _courseActions(),
-                    Divider(height: 1, color: AppTheme.lightGray),
+                    _recentNotesSection(notes),
+
                     _fileUploads(vm: vm, context: context),
+                    _mindMapsSection(mindMaps),
+
+                    _flashCardsDeckSection(vm),
+
+                    Divider(height: 1, color: AppTheme.lightGray),
                     //  _studyTemplates(), // not completed
                     _syllabus(
                       vm: vm,
@@ -1448,20 +1453,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              if (mindMaps.length > 5)
-                TextButton(
-                  onPressed: () {
-                    // TODO: Navigate to mind maps view
-                  },
-                  child: Text(
-                    'View All',
-                    style: TextStyle(
-                      color: AppTheme.vividBlue,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
             ],
           ),
           if (mindMaps.isEmpty)
@@ -1481,6 +1472,83 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   mindMaps.map((mindMap) => _mindMapItem(mindMap)).toList(),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _flashCardsDeckSection(BoardEditVm vm) {
+    return _section(
+      child: FutureBuilder<List<FlashCardDeck>>(
+        future: _getFlashCardDecks(vm.board.id!),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+              height: 100,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          final flashCardDecks = snapshot.data ?? [];
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Flashcard Decks',
+                    style: TextStyle(
+                      color: const Color(0xFF1F2937),
+                      fontSize: 18.0,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Consumer<BoardEditVm>(
+                    builder: (context, vm, _) {
+                      return TextButton.icon(
+                        onPressed: vm.createFlashCardDeck,
+                        icon: Icon(
+                          Icons.add,
+                          size: 16,
+                          color: AppTheme.vividBlue,
+                        ),
+                        label: Text(
+                          'Create Deck',
+                          style: TextStyle(
+                            color: AppTheme.vividBlue,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              if (flashCardDecks.isEmpty)
+                Text(
+                  'No flashcard decks yet. Create your first deck to get started.',
+                  style: TextStyle(
+                    color: const Color(0xFF6B7280),
+                    fontSize: 14.0,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.italic,
+                  ),
+                )
+              else
+                Column(
+                  spacing: 8,
+                  children:
+                      flashCardDecks
+                          .map((deck) => _flashCardDeckItem(deck))
+                          .toList(),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -1543,6 +1611,15 @@ class BoardPlainPopupOverview extends StatelessWidget {
     }
   }
 
+  Future<List<FlashCardDeck>> _getFlashCardDecks(int boardId) async {
+    try {
+      return await DatabaseHelper.instance.getBoardDecks(boardId);
+    } catch (e) {
+      debugPrint('Error fetching flashcard decks: $e');
+      return [];
+    }
+  }
+
   Widget _mindMapItem(Content mindMap) {
     return InkWell(
       onTap: () => NavigationHelper.navigateToContent(mindMap),
@@ -1578,6 +1655,59 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     formatDate(
                       DateTime.fromMillisecondsSinceEpoch(
                         mindMap.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: const Color(0xFF6B7280),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _flashCardDeckItem(FlashCardDeck deck) {
+    return InkWell(
+      onTap: () {
+        NavigationHelper.navigateToDeck(deck);
+      },
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.quiz, size: 16, color: AppTheme.vividBlue),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    deck.name.isNotEmpty
+                        ? deck.name
+                        : 'Untitled Flashcard Deck',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF1F2937),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        deck.updatedAt * 1000,
                       ),
                     ),
                     style: TextStyle(

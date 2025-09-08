@@ -30,7 +30,7 @@ class FlashCardVm extends ChangeNotifier {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
-      
+
       builder:
           (context) => DraggableScrollableSheet(
             expand: false,
@@ -87,33 +87,7 @@ class FlashCardVm extends ChangeNotifier {
   Future<void> createNewDeck(Board board) async {
     try {
       setCreatingDeck(true);
-      final dbHelper = DatabaseHelper.instance;
-
-      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      final random = Random();
-      final adjectives = ['New', 'Fresh', 'Smart', 'Quick', 'Study', 'Master'];
-      final nouns = ['Deck', 'Set', 'Collection', 'Pack', 'Bundle'];
-      final adjective = adjectives[random.nextInt(adjectives.length)];
-      final noun = nouns[random.nextInt(nouns.length)];
-
-      final newDeck = FlashCardDeck(
-        guid: 'deck_${DateTime.now().millisecondsSinceEpoch}',
-        boardId: board.id!,
-        name: '$adjective $noun ${now % 100}',
-        description: 'Created on ${DateTime.now().toString().split(' ')[0]}',
-        cardsPerDay: 20,
-        steps: [1, 10],
-        againInterval: 1,
-        hardInterval: 3,
-        goodInterval: 5,
-        easyInterval: 7,
-        createdAt: now,
-        updatedAt: now,
-      );
-
-      final id = await dbHelper.insertDeck(newDeck);
-      newDeck.id = id;
-      goToManualFlashCard(newDeck);
+      NavigationHelper.createAndNavigateToNewFlashCard(board);
     } catch (e) {
       debugPrint('Error creating deck: $e');
       if (context.mounted) {
@@ -127,9 +101,7 @@ class FlashCardVm extends ChangeNotifier {
   }
 
   Future<void> goToManualFlashCard(FlashCardDeck deck) async {
-    await NavigationHelper.navigateToManualFlashCard(
-      ManualFlashCardProps(deck: deck),
-    );
+    await NavigationHelper.navigateToDeck(deck);
     sessionVm.getAllBoard();
   }
 

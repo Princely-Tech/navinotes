@@ -195,6 +195,10 @@ class BoardEditVm extends ChangeNotifier {
     );
   }
 
+  createFlashCardDeck() {
+    NavigationHelper.createAndNavigateToNewFlashCard(board);
+  }
+
   Future<void> importFiles(BuildContext context) async {
     try {
       savingFiles = true;

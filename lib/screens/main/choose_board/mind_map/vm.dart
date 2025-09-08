@@ -39,7 +39,6 @@ class MindMapVm extends ChangeNotifier {
   bool isDocumentPanelVisible = true;
 
   /// Persistence state
-  final int boardId;
   int? contentId; // row id in contents table for this mindmap
   Content? baseContent; // the content this mindmap is based on
   String title = "Mind Map";
@@ -55,11 +54,15 @@ class MindMapVm extends ChangeNotifier {
   final Duration autoSaveDelay = const Duration(seconds: 5);
   bool _suppressAutoSave = false; // used during load/save
   bool _isSaving = false;
+  bool _isLoading = false;
 
-  MindMapVm({required this.scaffoldKey, required this.boardId, this.contentId})
+  bool get isLoading => _isLoading;
+
+  MindMapVm({required this.scaffoldKey, required this.contentId})
     : mindMap = MindMap(name: 'Untitled Mind Map') {
     // If a contentId is provided, load the saved mind map from DB
     if (contentId != null) {
+      _isLoading = true;
       Future.microtask(() => loadFromDb(contentId!));
     }
     // Any change notification schedules a debounced autosave
@@ -989,25 +992,7 @@ class MindMapVm extends ChangeNotifier {
       final now = DateTime.now().millisecondsSinceEpoch;
       final helper = DatabaseHelper.instance;
 
-      if (contentId == null) {
-        final content = Content(
-          guid: const Uuid().v4(),
-          title: title,
-          type: AppContentType.mindmap,
-          metaData: meta,
-          boardId: boardId,
-          createdAt: now,
-          updatedAt: now,
-          tags: null,
-          content: null,
-          drawing: null,
-          file: null,
-        );
-        final id = await helper.insertContent(content);
-        contentId = id;
-        debugPrint('Content inserted with id: $id');
-      } else {
-        final existing = await helper.getContentById(contentId!);
+     final existing = await helper.getContentById(contentId!);
         if (existing != null) {
           final updated = Content(
             id: existing.id,
@@ -1031,7 +1016,6 @@ class MindMapVm extends ChangeNotifier {
           await helper.updateContent(updated);
           debugPrint('Content updated with id: $contentId');
         }
-      }
       // No notifyListeners here; UI usually doesn't need to change after save
     } finally {
       _isSaving = false;
@@ -1043,8 +1027,16 @@ class MindMapVm extends ChangeNotifier {
   Future<void> loadFromDb(int id) async {
     final helper = DatabaseHelper.instance;
     final content = await helper.getContentById(id);
-    if (content == null) return;
-    if (content.type != AppContentType.mindmap) return;
+    if (content == null) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+    if (content.type != AppContentType.mindmap) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
     contentId = content.id;
     baseContent = content;
     title = content.title;
@@ -1055,6 +1047,9 @@ class MindMapVm extends ChangeNotifier {
 
     // Validate that all nodes are within canvas bounds
     validateNodeBounds();
+    
+    _isLoading = false;
+    notifyListeners();
   }
 
   // ---------- Autosave internals ----------

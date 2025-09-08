@@ -34,8 +34,15 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
   Future<void> _loadContents() async {
     try {
       final vm = Provider.of<MindMapVm>(context, listen: false);
-      final data = await DatabaseHelper.instance.getAllContents(vm.boardId);
-      final decks = await DatabaseHelper.instance.getBoardDecks(vm.boardId);
+
+      if (vm.baseContent == null) return;
+
+      final data = await DatabaseHelper.instance.getAllContents(
+        vm.baseContent!.boardId,
+      );
+      final decks = await DatabaseHelper.instance.getBoardDecks(
+        vm.baseContent!.boardId,
+      );
 
       // Prefetch deck card counts once to avoid recalculating in build
       final Map<int, int> counts = {};
