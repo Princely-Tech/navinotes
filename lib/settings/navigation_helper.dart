@@ -197,6 +197,16 @@ class NavigationHelper {
     }
 
     // TODO: Implement
+
+    if (content.type == AppContentType.note) {
+      BoardNoteTemplate template = getNoteTemplateFromString(
+        content.metaData[ContentMetadataKey.template],
+      );
+      return NavigationHelper.navigateToNoteWithTemplate(
+        template: template,
+        contentId: content.id!,
+      );
+    }
   }
 
   static _handleFileNavigation(Content content) async {

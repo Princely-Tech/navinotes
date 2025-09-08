@@ -18,17 +18,6 @@ class DatabaseHelper {
     return _database!;
   }
 
-  // Future<Database> _initDB(String filePath) async {
-  //   final dbPath = await getDatabasesPath();
-  //   final path = join(dbPath, filePath);
-  //   return await openDatabase(
-  //     path,
-  //     version: _databaseVersion,
-  //     onCreate: _createDB,
-  //     onUpgrade: _onUpgrade,
-  //   );
-  // }
-
   Future<Database> _initDB(String filePath) async {
     if (kIsWeb) {
       // Use WebAssembly-backed SQLite on web
@@ -202,17 +191,12 @@ class DatabaseHelper {
     return await db.insert('tags', tag.toMap());
   }
 
-  Future<List<Board>> getAllBoards({
-    NoteSortType sortType = NoteSortType.updatedAt,
-  }) async {
-    String sortOrder = 'DESC';
-    if (sortType == NoteSortType.createdAt) {
-      sortOrder = 'ASC';
-    }
-    final sortBy = sortType.toString();
+  Future<List<Board>> getAllBoards() async {
     final db = await instance.database;
-    final result = await db.query('boards', orderBy: 'updated_at ASC');
-    debugPrint('Getting boards sorted by $sortBy $sortOrder');
+    final result = await db.query(
+      'boards',
+      orderBy: 'updated_at DESC, created_at DESC',
+    );
     debugPrint(result.toString());
     return result.map((json) => Board.fromMap(json)).toList();
   }
@@ -229,15 +213,14 @@ class DatabaseHelper {
     return result.map((json) => Board.fromMap(json)).first;
   }
 
-  Future<List<Content>> getAllContents(
-    int boardId) async {
+  Future<List<Content>> getAllContents(int boardId) async {
     final db = await instance.database;
     debugPrint('Getting contents of $boardId');
     final result = await db.query(
       'contents',
       where: 'board_id = ?',
       whereArgs: [boardId],
-      orderBy: 'updated_at ASC',
+      orderBy: 'updated_at DESC, created_at DESC',
     );
     return result.map((json) => Content.fromMap(json)).toList();
   }
@@ -274,6 +257,18 @@ class DatabaseHelper {
   Future<int> deleteContent(int contentId) async {
     final db = await instance.database;
     return await db.delete('contents', where: 'id = ?', whereArgs: [contentId]);
+  }
+
+  Future<List<Content>> getRecentContentsAcrossAllBoards({
+    int limit = 10,
+  }) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'contents',
+      orderBy: 'updated_at DESC',
+      limit: limit,
+    );
+    return result.map((map) => Content.fromMap(map)).toList();
   }
 
   Future<int> updateContent(Content content) async {
@@ -313,15 +308,14 @@ class DatabaseHelper {
   }
 
   // Get all flashcards for a deck
-  Future<List<FlashCard>> getDeckFlashCards(
-    int deckId) async {
+  Future<List<FlashCard>> getDeckFlashCards(int deckId) async {
     final db = await instance.database;
 
     final List<Map<String, dynamic>> maps = await db.query(
       'flashcards',
       where: 'deck_id = ?',
       whereArgs: [deckId],
-      orderBy: 'updated_at ASC',
+      orderBy: 'updated_at DESC, created_at DESC',
     );
 
     return List.generate(maps.length, (i) => FlashCard.fromMap(maps[i]));
@@ -362,7 +356,7 @@ class DatabaseHelper {
       'contents',
       where: 'board_id = ? AND type = ?',
       whereArgs: [boardId, AppContentType.flashcardDeck.toString()],
-      orderBy: 'updated_at ASC',
+      orderBy: 'updated_at DESC, created_at DESC',
     );
 
     return List.generate(maps.length, (i) {

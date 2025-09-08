@@ -263,40 +263,43 @@ Future<Content?> saveFileToDb({
   required int boardId,
   String? title,
 }) async {
-  if (isNull(pickedFile.path)) return null;
+  debugPrint('Save File to DB');
+
+  if (isNull(pickedFile.path)) {
+    debugPrint('No file path');
+    return null;
+  }
 
   try {
     final dbHelper = DatabaseHelper.instance;
     final filesDir = await getFilesDirectory();
-    if (context.mounted) {
-      final currentUser = getCurrentUserFromSession(context);
-      final file = File(pickedFile.path!);
-      final fileName =
-          '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
-      final savedFile = await file.copy('${filesDir.path}/$fileName');
-      final currentTimestamp = generateUnixTimestamp();
-      // Create content entry for the file
+    final currentUser = getCurrentUser();
+    final file = File(pickedFile.path!);
+    final fileName =
+        '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
+    final savedFile = await file.copy('${filesDir.path}/$fileName');
+    final currentTimestamp = generateUnixTimestamp();
+    // Create content entry for the file
 
-      var content = Content(
-        guid: generateGUID(currentUser!.id!),
-        type: AppContentType.file,
-        metaData: {
-          ContentMetadataKey.originalFileName: pickedFile.name,
-          ContentMetadataKey.fileSize: pickedFile.size,
-          ContentMetadataKey.fileExtension: pickedFile.extension,
-        },
-        boardId: boardId,
-        title: title ?? pickedFile.name,
-        file: savedFile.path,
-        createdAt: currentTimestamp,
-        updatedAt: currentTimestamp,
-        fileNeedSync: true,
-      );
+    var content = Content(
+      guid: generateGUID(currentUser?.id ?? 0),
+      type: AppContentType.file,
+      metaData: {
+        ContentMetadataKey.originalFileName: pickedFile.name,
+        ContentMetadataKey.fileSize: pickedFile.size,
+        ContentMetadataKey.fileExtension: pickedFile.extension,
+      },
+      boardId: boardId,
+      title: title ?? pickedFile.name,
+      file: savedFile.path,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
+      fileNeedSync: true,
+    );
 
-      final id = await dbHelper.insertContent(content);
-      content.id = id;
-      return content;
-    }
+    final id = await dbHelper.insertContent(content);
+    content.id = id;
+    return content;
   } catch (e) {
     debugPrint('Error saving file ${pickedFile.name}: $e');
     if (context.mounted) {
@@ -307,5 +310,4 @@ Future<Content?> saveFileToDb({
     }
     return null;
   }
-  return null;
 }

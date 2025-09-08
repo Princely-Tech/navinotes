@@ -1,5 +1,7 @@
 import 'package:navinotes/packages.dart';
 
+User? currentUser;
+
 class SessionManager extends ChangeNotifier {
   static const String _tokenKey = 'user_token';
   static const String _userKey = 'user_data';
@@ -131,15 +133,18 @@ class SessionManager extends ChangeNotifier {
 User? getCurrentUserFromSession(BuildContext context) {
   final sessionManager =
       NavigationHelper.navigatorKey.currentContext!.read<SessionManager>();
-  final currentUser = sessionManager.user;
 
-  if (isNull(currentUser)) {
-   
+  if (isNull(sessionManager.user)) {
     if (context.mounted) {
       MessageDisplayService.showErrorMessage(context, 'User not logged in');
     }
     NavigationHelper.logOut();
     return null;
   }
-  return sessionManager.user;
+  currentUser = sessionManager.user;
+  return currentUser;
+}
+
+User? getCurrentUser() {
+  return currentUser;
 }

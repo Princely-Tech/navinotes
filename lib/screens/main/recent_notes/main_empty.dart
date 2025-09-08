@@ -45,101 +45,11 @@ class EmptyRecentNotesMain extends StatelessWidget {
           ),
           AppButton(
             mainAxisSize: MainAxisSize.min,
-            onTap: () {},
-            text: 'Create Your First Note',
+            onTap: () {
+              NavigationHelper.pushReplacement(Routes.dashboard);
+            },
+            text: 'Go to Boards to Create Your First Note',
             color: AppTheme.jungleTeal,
-          ),
-          Row(
-            spacing: 15,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppButton.text(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.folder, size: 18),
-                onTap: () {},
-                text: 'Browse Your Boards',
-                color: AppTheme.jungleTeal,
-              ),
-              AppButton.text(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
-                onTap: () {},
-                text: 'Import from PDF',
-                color: AppTheme.jungleTeal,
-              ),
-            ],
-          ),
-
-          // todo: remove
-          Row(
-            spacing: 15,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppButton.text(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
-                onTap:
-                    () => NavigationHelper.push(
-                      Routes.mindMap,
-                      arguments: {'boardId': 1, 'contentId': 5},
-                    ),
-                text: 'Mind Map',
-                color: AppTheme.jungleTeal,
-              ),
-
-              AppButton.text(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
-                onTap:
-                    () => NavigationHelper.push(Routes.boardMinimalistMindMap),
-                text: 'Minimalistic Mind Map',
-                color: AppTheme.jungleTeal,
-              ),
-
-              AppButton.text(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
-                onTap:
-                    () =>
-                        NavigationHelper.push(Routes.boardLightAcademiaMindMap),
-                text: 'Light Academia Mind Map',
-                color: AppTheme.jungleTeal,
-              ),
-
-              AppButton.text(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
-                onTap:
-                    () =>
-                        NavigationHelper.push(Routes.boardDarkAcademiaMindMap),
-                text: 'Dark Academia Mind Map',
-                color: AppTheme.jungleTeal,
-              ),
-
-              AppButton.text(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
-                onTap: () => NavigationHelper.push(Routes.boardNatureMindMap),
-                text: 'Nature Mind Map',
-                color: AppTheme.jungleTeal,
-              ),
-
-              AppButton.text(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.import, size: 16),
-                onTap: () => NavigationHelper.push(Routes.boardPlainMindMap),
-                text: 'Plain Mind Map',
-                color: AppTheme.jungleTeal,
-              ),
-            ],
           ),
         ],
       ),

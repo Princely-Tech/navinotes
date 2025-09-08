@@ -1,7 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/flashcards/create_vm.dart';
 
-
 class FlashCardsManualCreationAppBar extends StatelessWidget {
   const FlashCardsManualCreationAppBar({super.key});
 
@@ -54,12 +53,11 @@ class FlashCardsManualCreationAppBar extends StatelessWidget {
                                       ),
                                     ),
                                     RichTextHeader(
-                                      title: 'Create FlashCards',
+                                      title: vm.props.deck.title,
                                       showLogo: true,
                                     ),
                                   ],
                                 ),
-                                _trailing(vm),
                               ],
                             ),
                           ),
@@ -73,41 +71,6 @@ class FlashCardsManualCreationAppBar extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _trailing(FlashCardCreationVm vm) {
-    return Row(
-      children: [
-        Row(
-          children: [
-            AppIconButton(
-              onPressed: NavigationHelper.navigateToSettings,
-              icon: SVGImagePlaceHolder(
-                imagePath: Images.settings,
-                color: AppTheme.stormGray,
-                size: 16,
-              ),
-            ),
-            AppIconButton(
-              onPressed: NavigationHelper.navigateToTutorial,
-              icon: SVGImagePlaceHolder(
-                imagePath: Images.ques,
-                color: AppTheme.stormGray,
-                size: 16,
-              ),
-            ),
-          ],
-        ),
-        VisibleController(
-          mobile: true,
-          laptop: false,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 5),
-            child: MenuButton(onPressed: vm.openEndDrawer),
-          ),
-        ),
-      ],
     );
   }
 }

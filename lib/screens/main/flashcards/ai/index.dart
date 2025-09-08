@@ -30,7 +30,6 @@ class FlashCardAiCreationScreen extends StatelessWidget {
               backgroundColor: const Color(0xFFF9FAFB),
               scaffoldKey: _scaffoldKey,
               endDrawer: CustomDrawer(child: FlashCardsManualCreationRight()),
-              drawer: CustomDrawer(child: FlashCardAiCreationLeft()),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -39,13 +38,9 @@ class FlashCardAiCreationScreen extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        VisibleController(
-                          mobile: false,
-                          desktop: true,
-                          child: WidthLimiter(
-                            mobile: 288,
-                            child: FlashCardAiCreationLeft(),
-                          ),
+                        WidthLimiter(
+                          mobile: 288,
+                          child: FlashCardAiCreationLeft(),
                         ),
                         Expanded(child: FlashCardAiCreationMain()),
                         VisibleController(
@@ -85,14 +80,6 @@ class FlashCardAiCreationScreen extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    VisibleController(
-                      mobile: true,
-                      largeDesktop: false,
-                      child: AppIconButton(
-                        onPressed: vm.openDrawer,
-                        icon: Icon(Icons.menu),
-                      ),
-                    ),
                     AppIconButton(
                       onPressed: NavigationHelper.pop,
                       icon: Icon(Icons.arrow_back),
@@ -115,7 +102,7 @@ class FlashCardAiCreationScreen extends StatelessWidget {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: " | Create FlashCards",
+                                  text: " | ${vm.props.deck.title}",
                                   style: TextStyle(
                                     color: Color(0xFF1F2937),
                                     fontSize: 18,
@@ -136,22 +123,6 @@ class FlashCardAiCreationScreen extends StatelessWidget {
               /// Right section (two icons)
               Row(
                 children: [
-                  AppIconButton(
-                    onPressed: NavigationHelper.navigateToSettings,
-                    icon: SVGImagePlaceHolder(
-                      imagePath: Images.settings,
-                      size: 16,
-                      color: const Color(0xFF4B5563),
-                    ),
-                  ),
-                  AppIconButton(
-                    onPressed: NavigationHelper.navigateToTutorial,
-                    icon: SVGImagePlaceHolder(
-                      imagePath: Images.alertI,
-                      size: 16,
-                      color: const Color(0xFF4B5563),
-                    ),
-                  ),
                   VisibleController(
                     mobile: true,
                     desktop: false,

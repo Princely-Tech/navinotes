@@ -93,42 +93,43 @@ class NavigationSideBar extends StatelessWidget {
   }
 
   Widget _footer() {
-    return Padding(
-      padding: EdgeInsets.all(15),
-      child: Column(
-        spacing: 10,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Storage Usage',
-            style: AppTheme.text.copyWith(
-              color: AppTheme.steelMist,
-              fontSize: shrinkWrap ? 10.0 : 12.0,
-            ),
-          ),
-          Column(
-            spacing: 4,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LinearProgressIndicator(
-                value: 3.5 / 10,
-                backgroundColor: AppTheme.lightGray,
-                borderRadius: BorderRadius.circular(100),
-                minHeight: 8,
-                color: AppTheme.vividBlue,
-              ),
-              Text(
-                '3.5 GB / 10 GB',
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.steelMist,
-                  fontSize: shrinkWrap ? 10.0 : 12.0,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    return SizedBox.shrink();
+    // return Padding(
+    //   padding: EdgeInsets.all(15),
+    //   child: Column(
+    //     spacing: 10,
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       Text(
+    //         'Storage Usage',
+    //         style: AppTheme.text.copyWith(
+    //           color: AppTheme.steelMist,
+    //           fontSize: shrinkWrap ? 10.0 : 12.0,
+    //         ),
+    //       ),
+    //       Column(
+    //         spacing: 4,
+    //         crossAxisAlignment: CrossAxisAlignment.start,
+    //         children: [
+    //           LinearProgressIndicator(
+    //             value: 3.5 / 10,
+    //             backgroundColor: AppTheme.lightGray,
+    //             borderRadius: BorderRadius.circular(100),
+    //             minHeight: 8,
+    //             color: AppTheme.vividBlue,
+    //           ),
+    //           Text(
+    //             '3.5 GB / 10 GB',
+    //             style: AppTheme.text.copyWith(
+    //               color: AppTheme.steelMist,
+    //               fontSize: shrinkWrap ? 10.0 : 12.0,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   Widget _itemIcon({required String icon, required Color color}) {

@@ -134,7 +134,9 @@ class BoardDarkAcadTimelineItem extends StatelessWidget {
     required String? assignment,
     required String? dueDate,
   }) {
-    return Column(
+    return (assignment == null || assignment.isEmpty)
+        ? SizedBox.shrink()
+        : Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(

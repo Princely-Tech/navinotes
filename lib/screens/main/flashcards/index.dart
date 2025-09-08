@@ -20,8 +20,27 @@ class FlashCardScreen extends StatelessWidget {
                   loading: vm.creatingDeck,
                   child: Column(
                     spacing: 15,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+
                     children: [
                       FlashCardsAppBar(),
+                      SizedBox(height: 8),
+                      ScrollableController(
+                        child: ResponsivePadding(
+                          mobile: EdgeInsets.all(10),
+                          tablet: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 0,
+                          ),
+                          child: Text(
+                            'Select a board to start',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                       Expanded(
                         child: ScrollableController(
                           child: ResponsivePadding(

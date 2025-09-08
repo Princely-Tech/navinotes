@@ -41,6 +41,11 @@ class BoardCard extends StatelessWidget {
                         .where((c) => c.type == AppContentType.mindmap)
                         .toList();
 
+                final decks =
+                    contents
+                        .where((c) => c.type == AppContentType.flashcardDeck)
+                        .toList();
+
                 return LoadingIndicator(
                   loading: loading,
                   child: Padding(
@@ -57,7 +62,7 @@ class BoardCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Created ${formatDate(DateTime.fromMillisecondsSinceEpoch(board.createdAt * 1000))}',
+                          'Updated ${formatDate(DateTime.fromMillisecondsSinceEpoch(board.getLastEditedAt() * 1000))}',
                           style: AppTheme.text.copyWith(
                             color: AppTheme.steelMist,
                             fontSize: 12.0,
@@ -74,6 +79,14 @@ class BoardCard extends StatelessWidget {
                             Flexible(
                               child: CustomTag(
                                 '${mindMaps.length} mindmaps',
+                                color: AppTheme.lightMintGreen,
+                                textColor: AppTheme.emeraldGreen,
+                              ),
+                            ),
+
+                            Flexible(
+                              child: CustomTag(
+                                '${decks.length} decks',
                                 color: AppTheme.lightMintGreen,
                                 textColor: AppTheme.emeraldGreen,
                               ),

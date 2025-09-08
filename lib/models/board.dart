@@ -257,17 +257,9 @@ class Board {
       return _cachedContents!;
     }
 
-    final db = await DatabaseHelper.instance.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'contents',
-      where: 'board_id = ?',
-      whereArgs: [id],
-    );
+    final db = await DatabaseHelper.instance;
+    _cachedContents = await db.getAllContents(id ?? 0);
 
-    _cachedContents = List.generate(
-      maps.length,
-      (i) => Content.fromMap(maps[i]),
-    );
     _hasFetchedContents = true;
 
     return _cachedContents!;
@@ -292,11 +284,8 @@ class Board {
   }
 
   getLastEditedAt() {
-    if (_cachedContents != null) {
-      debugPrint(
-        'Last edited at: ${_cachedContents!.last.updatedAt} | ${_cachedContents!.last.title}',
-      );
-      return _cachedContents!.last.updatedAt;
+    if (_cachedContents != null && _cachedContents!.isNotEmpty) {
+      return _cachedContents!.first.updatedAt;
     }
     debugPrint('Last edited at board : ${updatedAt} | ${name}');
     return updatedAt;

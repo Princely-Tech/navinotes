@@ -127,47 +127,7 @@ class BoardEditVm extends ChangeNotifier {
   }
 
   Future<void> importPdfFile(BuildContext context) async {
-    try {
-      importingPdf = true;
-      notifyListeners();
-      final currentUser = getCurrentUserFromSession(context);
-      if (isNotNull(currentUser)) {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: ['pdf'],
-        );
-
-        // if (isNotNull(result) && result!.files.isNotEmpty) {
-        final pickedFile = result!.files.first;
-
-        if (context.mounted) {
-          Content? content = await saveFileToDb(
-            pickedFile: pickedFile,
-            context: context,
-            boardId: board.id!,
-          );
-
-          if (isNotNull(content?.id)) {
-            if (context.mounted) {
-              MessageDisplayService.showMessage(
-                context,
-                'Successfully imported PDF file',
-              );
-            }
-            await NavigationHelper.navigateToPdfView(content!.id!);
-          }
-        }
-        loadFiles(board.id!);
-      }
-    } catch (e) {
-      debugPrint('Error importing pdf: $e');
-      if (context.mounted) {
-        MessageDisplayService.showErrorMessage(context, 'Error importing pdf');
-      }
-    } finally {
-      importingPdf = false;
-      notifyListeners();
-    }
+    return importFiles(context, allowedExtensions: ['pdf']);
   }
 
   Future<bool?> _promptPickSource(BuildContext context) async {
@@ -199,18 +159,25 @@ class BoardEditVm extends ChangeNotifier {
     NavigationHelper.createAndNavigateToNewFlashCard(board);
   }
 
-
- createMindMap() {
+  createMindMap() {
     NavigationHelper.createAndNavigateToNewMindMap(board);
   }
-  Future<void> importFiles(BuildContext context) async {
+
+  Future<void> importFiles(
+    BuildContext context, {
+    List<String>? allowedExtensions,
+  }) async {
     try {
       savingFiles = true;
       notifyListeners();
       final currentUser = getCurrentUserFromSession(context);
       if (isNotNull(currentUser)) {
         // Ask user which source to use each time
-        final isGallery = await _promptPickSource(context);
+
+        final isGallery =
+            (allowedExtensions == null)
+                ? await _promptPickSource(context)
+                : false;
         if (isGallery == null) {
           // User dismissed sheet
           savingFiles = false;
@@ -225,36 +192,39 @@ class BoardEditVm extends ChangeNotifier {
             type: FileType.image,
             allowMultiple: true,
           );
+          debugPrint('Gallery result: ${result?.files.length}');
         } else {
           // Open document picker for documents (and other allowed types)
           result = await FilePicker.platform.pickFiles(
             type: FileType.custom,
-            allowedExtensions: contentFileAllowedExtensions,
+            allowedExtensions:
+                (allowedExtensions == null)
+                    ? contentFileAllowedExtensions
+                    : allowedExtensions,
             allowMultiple: true,
           );
+          debugPrint('Document result: ${result?.files.length}');
         }
 
         if (isNotNull(result) && result!.files.isNotEmpty) {
           int successCount = 0;
 
           for (var pickedFile in result.files) {
-            if (context.mounted) {
-              await saveFileToDb(
-                pickedFile: pickedFile,
-                context: context,
-                boardId: board.id!,
-              );
-              successCount++;
-            }
+            await saveFileToDb(
+              pickedFile: pickedFile,
+              context: context,
+              boardId: board.id!,
+            );
+            successCount++;
           }
 
+          loadFiles(board.id!);
           if (context.mounted) {
             if (successCount > 0) {
               MessageDisplayService.showMessage(
                 context,
                 'Successfully imported $successCount file(s)',
               );
-              loadFiles(board.id!);
             } else {
               MessageDisplayService.showErrorMessage(
                 context,
@@ -262,6 +232,8 @@ class BoardEditVm extends ChangeNotifier {
               );
             }
           }
+        } else {
+          debugPrint('No files selected');
         }
       }
     } catch (e) {

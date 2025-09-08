@@ -19,7 +19,6 @@ class BoardPlainPopupScreen extends StatelessWidget {
             child: ScaffoldFrame(
               scaffoldKey: _scaffoldKey,
               backgroundColor: AppTheme.ghostWhite,
-              drawer: CustomDrawer(child: NavigationSideBar()),
               body: Column(
                 children: [
                   _header(),
@@ -94,7 +93,6 @@ class BoardPlainPopupScreen extends StatelessWidget {
                     child: Row(
                       spacing: 20,
                       children: [
-                        MenuButton(onPressed: vm.openDrawer),
                         Expanded(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
