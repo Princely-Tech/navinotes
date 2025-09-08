@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/date_utils.dart';
 
 class BoardMinimalistPopupScreen extends StatelessWidget {
   BoardMinimalistPopupScreen({super.key});
@@ -40,7 +41,11 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                               children: [
                                 _courseTitle(),
                                 _courseActions(),
+                                _recentNotesSection(),
+                                _mindMapsSection(),
+                                _flashCardsDeckSection(),
                                 _fileUploads(),
+                                _syllabusSection(),
                                 _courseTimeLine(),
                               ],
                             ),
@@ -293,29 +298,72 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Explore ${vm.board.name}',
-                  style: TextStyle(
-                    color: const Color(0xFF2C2C2C),
-                    fontSize: getDeviceResponsiveValue(
-                      deviceType: layoutVm.deviceType,
-                      mobile: 25,
-                      laptop: 30,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Explore ${vm.board.name}',
+                        style: TextStyle(
+                          color: const Color(0xFF2C2C2C),
+                          fontSize: getDeviceResponsiveValue(
+                            deviceType: layoutVm.deviceType,
+                            mobile: 25,
+                            laptop: 30,
+                          ),
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
                     ),
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w300,
-                  ),
+                    SizedBox(width: 8),
+                    Builder(
+                      builder: (context) {
+                        return InkWell(
+                          onTap: () => _editBoardName(context),
+                          child: Icon(
+                            Icons.edit,
+                            size: 16,
+                            color: const Color(0xFF00555A),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 SizedBox(height: 24),
-                Text(
-                  getBoardDescription(vm.board),
-                  // 'Discover the fundamental principles of cellular structure, function, and genetic inheritance through this comprehensive course. Develop critical thinking skills while exploring cutting-edge research in molecular biology.',
-                  style: TextStyle(
-                    color: const Color(0xFF6B6B6B),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w300,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        vm.board.hasDescription()
+                            ? vm.board.description!
+                            : 'Describe your board',
+                        style: TextStyle(
+                          color: const Color(0xFF6B6B6B),
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w300,
+                          fontStyle:
+                              vm.board.hasDescription()
+                                  ? FontStyle.normal
+                                  : FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Builder(
+                      builder: (context) {
+                        return InkWell(
+                          onTap: () => _editBoardDescription(context),
+                          child: Icon(
+                            Icons.edit,
+                            size: 16,
+                            color: const Color(0xFF00555A),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 SizedBox(height: 48),
                 Row(
@@ -711,6 +759,475 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
           fontWeight: FontWeight.w300,
         ),
       ),
+    );
+  }
+
+  Widget _recentNotesSection() {
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return FutureBuilder<List<Content>>(
+          future: _getAllContents(vm.board.id!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SizedBox.shrink();
+            }
+
+            final allContents = snapshot.data ?? [];
+            final notes =
+                allContents
+                    .where((content) => content.type == AppContentType.note)
+                    .toList();
+
+            if (notes.isEmpty) {
+              return SizedBox.shrink();
+            }
+
+            // Sort by updated date (most recent first)
+            notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+            return _section(
+              title: 'Recent Notes',
+              subTitle: 'Your latest notes and insights',
+              child: Column(
+                spacing: 12,
+                children: notes.take(3).map((note) => _noteItem(note)).toList(),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _mindMapsSection() {
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return FutureBuilder<List<Content>>(
+          future: _getAllContents(vm.board.id!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SizedBox.shrink();
+            }
+
+            final allContents = snapshot.data ?? [];
+            final mindMaps =
+                allContents
+                    .where((content) => content.type == AppContentType.mindmap)
+                    .toList();
+
+            if (mindMaps.isEmpty) {
+              return SizedBox.shrink();
+            }
+
+            // Sort by updated date (most recent first)
+            mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+            return _section(
+              title: 'Mind Maps',
+              subTitle: 'Visual representations of your knowledge',
+              child: Column(
+                spacing: 12,
+                children:
+                    mindMaps
+                        .take(3)
+                        .map((mindMap) => _mindMapItem(mindMap))
+                        .toList(),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _flashCardsDeckSection() {
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return FutureBuilder<List<Content>>(
+          future: _getFlashCardDecks(vm.board.id!),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SizedBox.shrink();
+            }
+
+            final flashCardDecks = snapshot.data ?? [];
+
+            if (flashCardDecks.isEmpty) {
+              return SizedBox.shrink();
+            }
+
+            return _section(
+              title: 'Flashcard Decks',
+              subTitle: 'Practice and memorize key concepts',
+              child: Column(
+                spacing: 12,
+                children:
+                    flashCardDecks
+                        .take(3)
+                        .map((deck) => _flashCardDeckItem(deck))
+                        .toList(),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _syllabusSection() {
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return Consumer<ApiServiceProvider>(
+          builder: (_, apiServiceProvider, _) {
+            var btnText = "Upload syllabus to get AI analysis";
+            var desc =
+                "After uploading your syllabus, we'll automatically generate course details, a timeline of important dates, and assignments for your semester";
+
+            if (vm.board.courseTimeLines != null) {
+              btnText = "Change syllabus";
+              desc =
+                  "Your timeline, assignments and course details are generated from the syllabus you uploaded.";
+            }
+
+            var syllabusContent = vm.board.syllabusContent;
+
+            return _section(
+              title: 'Course Syllabus',
+              subTitle: desc,
+              child: Column(
+                spacing: 16,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppButton.secondary(
+                    mainAxisSize: MainAxisSize.min,
+                    loading: vm.uploadingSyllabus,
+                    onTap: () {
+                      vm.uploadSyllabus(
+                        context: context,
+                        apiServiceProvider: apiServiceProvider,
+                      );
+                    },
+                    color: const Color(0xFF00555A),
+                    text: btnText,
+                    minHeight: 40,
+                    style: TextStyle(
+                      color: const Color(0xFF6B6B6B),
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  if (syllabusContent != null)
+                    Row(
+                      spacing: 16,
+                      children: [
+                        AppButton.text(
+                          onTap: () {
+                            NavigationHelper.navigateToContent(syllabusContent);
+                          },
+                          text: 'Open Syllabus',
+                          style: TextStyle(
+                            color: const Color(0xFF00555A),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        AppButton.text(
+                          onTap: () {
+                            handleFileDownload(syllabusContent, context);
+                          },
+                          text: 'Download Syllabus',
+                          style: TextStyle(
+                            color: const Color(0xFF00555A),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _noteItem(Content note) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(note),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFF0F0F0)),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: Row(
+          children: [
+            SVGImagePlaceHolder(
+              imagePath: Images.edit,
+              size: 16,
+              color: const Color(0xFF00555A),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    note.title.isNotEmpty ? note.title : 'Untitled Note',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF2C2C2C),
+                      fontFamily: 'Inter',
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        note.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: const Color(0xFF6B6B6B),
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _mindMapItem(Content mindMap) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(mindMap),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFF0F0F0)),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: Row(
+          children: [
+            SVGImagePlaceHolder(
+              imagePath: Images.share,
+              size: 16,
+              color: const Color(0xFF00555A),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    mindMap.title.isNotEmpty
+                        ? mindMap.title
+                        : 'Untitled Mind Map',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF2C2C2C),
+                      fontFamily: 'Inter',
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        mindMap.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: const Color(0xFF6B6B6B),
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _flashCardDeckItem(Content deck) {
+    return InkWell(
+      onTap: () {
+        NavigationHelper.navigateToDeck(deck);
+      },
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFF0F0F0)),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: Row(
+          children: [
+            SVGImagePlaceHolder(
+              imagePath: Images.flashCards,
+              size: 16,
+              color: const Color(0xFF00555A),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    deck.title.isNotEmpty
+                        ? deck.title
+                        : 'Untitled Flashcard Deck',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xFF2C2C2C),
+                      fontFamily: 'Inter',
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        deck.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: const Color(0xFF6B6B6B),
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<List<Content>> _getAllContents(int boardId) async {
+    try {
+      return await DatabaseHelper.instance.getAllContents(boardId);
+    } catch (e) {
+      debugPrint('Error fetching contents: $e');
+      return [];
+    }
+  }
+
+  Future<List<Content>> _getFlashCardDecks(int boardId) async {
+    try {
+      return await DatabaseHelper.instance.getBoardDecks(boardId);
+    } catch (e) {
+      debugPrint('Error fetching flashcard decks: $e');
+      return [];
+    }
+  }
+
+  void _editBoardName(BuildContext context) {
+    final vm = Provider.of<BoardEditVm>(context, listen: false);
+    final controller = TextEditingController(text: vm.board.name);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Board Name'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter board name...',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+            onSubmitted: (value) {
+              if (value.trim().isNotEmpty) {
+                vm.updateBoardName(value.trim());
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (controller.text.trim().isNotEmpty) {
+                  vm.updateBoardName(controller.text.trim());
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editBoardDescription(BuildContext context) {
+    final vm = Provider.of<BoardEditVm>(context, listen: false);
+    final controller = TextEditingController(text: vm.board.description ?? '');
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Board Description'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter board description...',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+            maxLines: 3,
+            onSubmitted: (value) {
+              vm.updateBoardDescription(value.trim());
+              Navigator.of(context).pop();
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                vm.updateBoardDescription(controller.text.trim());
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
