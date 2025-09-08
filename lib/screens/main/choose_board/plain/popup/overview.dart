@@ -291,50 +291,11 @@ class BoardPlainPopupOverview extends StatelessWidget {
                           : SizedBox.shrink(),
                     ],
                   ),
-
-                  // Progress Bar
-                  // Container(
-                  //   height: 8,
-                  //   width: double.infinity,
-                  //   decoration: BoxDecoration(
-                  //     color: const Color(0xFFE5E7EB),
-                  //     borderRadius: BorderRadius.circular(9999),
-                  //   ),
-                  //   child: FractionallySizedBox(
-                  //     alignment: Alignment.centerLeft,
-                  //     widthFactor: 0.72,
-                  //     child: Container(
-                  //       decoration: BoxDecoration(
-                  //         color: const Color(0xFF3B82F6),
-                  //         borderRadius: BorderRadius.circular(9999),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             )
             : SizedBox.shrink(),
-        // Tags
-        // Wrap(
-        //   spacing: 8,
-        //   runSpacing: 8,
-        //   children: [
-        //     _tagLabel('Cell Membrane'),
-        //     _tagLabel('Cytoplasm'),
-        //     _tagLabel('Organelles'),
-        //     _tagLabel('Microscopy'),
-        //   ],
-        // ),
       ],
-    );
-  }
-
-  Widget _tagLabel(String text) {
-    return CustomTag(
-      text,
-      color: const Color(0xFFF8F9FA),
-      textColor: Color(0xFF6B7280),
     );
   }
 

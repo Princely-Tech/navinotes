@@ -778,19 +778,39 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                     .where((content) => content.type == AppContentType.note)
                     .toList();
 
-            if (notes.isEmpty) {
-              return SizedBox.shrink();
-            }
-
             // Sort by updated date (most recent first)
             notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
             return _section(
               title: 'Recent Notes',
-              subTitle: 'Your latest notes and insights',
+              subTitle: notes.isEmpty
+                  ? 'No notes yet. Create your first note to get started.'
+                  : 'Your latest notes and insights',
               child: Column(
-                spacing: 12,
-                children: notes.take(3).map((note) => _noteItem(note)).toList(),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AppButton.text(
+                        onTap: vm.goToBoardNotes,
+                        text: notes.isEmpty ? 'Create Note' : 'View All Notes',
+                        style: TextStyle(
+                          color: const Color(0xFF00555A),
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (notes.isNotEmpty)
+                    Column(
+                      spacing: 12,
+                      children: notes.take(3).map((note) => _noteItem(note)).toList(),
+                    ),
+                ],
               ),
             );
           },
@@ -815,23 +835,43 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                     .where((content) => content.type == AppContentType.mindmap)
                     .toList();
 
-            if (mindMaps.isEmpty) {
-              return SizedBox.shrink();
-            }
-
             // Sort by updated date (most recent first)
             mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
 
             return _section(
               title: 'Mind Maps',
-              subTitle: 'Visual representations of your knowledge',
+              subTitle: mindMaps.isEmpty
+                  ? 'No mind maps yet. Create your first mind map to get started.'
+                  : 'Visual representations of your knowledge',
               child: Column(
-                spacing: 12,
-                children:
-                    mindMaps
-                        .take(3)
-                        .map((mindMap) => _mindMapItem(mindMap))
-                        .toList(),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AppButton.text(
+                        onTap: vm.createMindMap,
+                        text: 'Create Mind Map',
+                        style: TextStyle(
+                          color: const Color(0xFF00555A),
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (mindMaps.isNotEmpty)
+                    Column(
+                      spacing: 12,
+                      children:
+                          mindMaps
+                              .take(3)
+                              .map((mindMap) => _mindMapItem(mindMap))
+                              .toList(),
+                    ),
+                ],
               ),
             );
           },
@@ -852,20 +892,40 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
 
             final flashCardDecks = snapshot.data ?? [];
 
-            if (flashCardDecks.isEmpty) {
-              return SizedBox.shrink();
-            }
-
             return _section(
               title: 'Flashcard Decks',
-              subTitle: 'Practice and memorize key concepts',
+              subTitle: flashCardDecks.isEmpty
+                  ? 'No flashcard decks yet. Create your first deck to get started.'
+                  : 'Practice and memorize key concepts',
               child: Column(
-                spacing: 12,
-                children:
-                    flashCardDecks
-                        .take(3)
-                        .map((deck) => _flashCardDeckItem(deck))
-                        .toList(),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AppButton.text(
+                        onTap: vm.createFlashCardDeck,
+                        text: 'Create Deck',
+                        style: TextStyle(
+                          color: const Color(0xFF00555A),
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (flashCardDecks.isNotEmpty)
+                    Column(
+                      spacing: 12,
+                      children:
+                          flashCardDecks
+                              .take(3)
+                              .map((deck) => _flashCardDeckItem(deck))
+                              .toList(),
+                    ),
+                ],
               ),
             );
           },

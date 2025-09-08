@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:navinotes/packages.dart';
 
 class BoardDarkAcadPopupScreen extends StatelessWidget {
@@ -41,8 +42,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                                 _heroSection(),
                                 _courseActions(),
                                 _fileUploadsSection(),
-
-                                // _studyTemplatesSection(),
+                                _syllabusSection(),
                                 _courseTimeline(),
                                 _footer(),
                               ],
@@ -65,10 +65,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     return Consumer<BoardEditVm>(
       builder: (_, vm, _) {
         final courseInfo = vm.board.courseInfo;
-
-        if (isNull(courseInfo)) {
-          return const SizedBox.shrink();
-        }
 
         return Consumer<LayoutProviderVm>(
           builder: (_, layoutVm, _) {
@@ -109,14 +105,16 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      stringOrNotSpecified(
-                                        courseInfo?.title,
-                                        nullPrefix: 'Course name',
-                                      ),
+                                      (isNull(courseInfo))
+                                          ? 'Upload syllabus to get course details'
+                                          : stringOrNotSpecified(
+                                            courseInfo?.title,
+                                            nullPrefix: 'Course name',
+                                          ),
 
                                       style: TextStyle(
                                         color: const Color(0xFFF7F3E9),
-                                        fontSize: 24,
+                                        fontSize: isNull(courseInfo) ? 16 : 24,
                                         fontFamily: 'Playfair Display',
                                         fontWeight: FontWeight.w700,
                                         height: 1.33,
@@ -140,8 +138,9 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                                 AppButton(
                                   mainAxisSize: MainAxisSize.min,
                                   onTap:
-                                      () => callPhoneNumber(courseInfo!.phone!),
-                                  text: 'Contact Professor',
+                                      () => callPhoneNumber(courseInfo.phone!),
+                                  text:
+                                      'Contact Professor \n${courseInfo!.phone ?? ''}',
                                   color: const Color(0xFFC19B47),
                                   minHeight: 40,
                                   shape: RoundedRectangleBorder(
@@ -156,14 +155,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                                 ),
                             ],
                           ),
-                          // SizedBox(height: 40),
-                          // Divider(color: const Color(0x19F7F3E9), height: 1),
-                          // SizedBox(height: 33),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   spacing: 30,
-                          //   children: [_footerItem(), _footerItem()],
-                          // ),
                         ],
                       ),
                     ),
@@ -177,56 +168,121 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     );
   }
 
-  Widget _footerItem() {
-    return Flexible(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Quick Links',
-            style: TextStyle(
-              color: const Color(0xFFC19B47),
-              fontSize: 16,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
-              height: 1.50,
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Course Syllabus',
-            style: TextStyle(
-              color: const Color(0xB2F7F3E9),
-              fontSize: 14,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-              height: 1.43,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Academic Calendar',
-            style: TextStyle(
-              color: const Color(0xB2F7F3E9),
-              fontSize: 14,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-              height: 1.43,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            'Library Resources',
-            style: TextStyle(
-              color: const Color(0xB2F7F3E9),
-              fontSize: 14,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-              height: 1.43,
-            ),
-          ),
-        ],
-      ),
+  Widget _syllabusSection() {
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return Consumer<ApiServiceProvider>(
+          builder: (_, apiServiceProvider, _) {
+            var btnText = "Upload syllabus to get AI analysis";
+            var desc =
+                "After uploading your syllabus, we'll automatically generate course details, a timeline of important dates, and assignments for your semester";
+
+            if (vm.board.courseTimeLines != null) {
+              btnText = "Change syllabus";
+              desc =
+                  "Your timeline, assignments and course details are generated from the syllabus you uploaded.";
+            }
+
+            var syllabusContent = vm.board.syllabusContent;
+
+            return Container(
+              key: vm.courseTimelineKey,
+
+              color: const Color(0xFF2B1810),
+              width: double.infinity,
+              child: ResponsiveHorizontalPadding(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 64),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Course Syllabus',
+                        style: TextStyle(
+                          color: const Color(0xFFF7F3E9),
+                          fontSize: 30,
+                          fontFamily: 'Playfair Display',
+                          fontWeight: FontWeight.w700,
+                          height: 1.20,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        desc,
+                        style: TextStyle(
+                          color: const Color(0xB2F7F3E9),
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 1.50,
+                        ),
+                      ),
+                      SizedBox(height: 40),
+                      Row(
+                        spacing: 16,
+                        children: [
+                          AppButton(
+                            mainAxisSize: MainAxisSize.min,
+                            loading: vm.uploadingSyllabus,
+                            onTap: () {
+                              vm.uploadSyllabus(
+                                context: context,
+                                apiServiceProvider: apiServiceProvider,
+                              );
+                            },
+                            color: const Color(0xFFC19B47),
+                            text: btnText,
+                            minHeight: 40,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            style: TextStyle(
+                              color: const Color(0xFF2B1810),
+                              fontSize: 16,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (syllabusContent != null) ...[
+                            AppButton.text(
+                              onTap: () {
+                                NavigationHelper.navigateToContent(
+                                  syllabusContent,
+                                );
+                              },
+                              text: 'Open Syllabus',
+                              style: TextStyle(
+                                color: const Color(0xFFC19B47),
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w500,
+                                height: 1.50,
+                              ),
+                            ),
+                            AppButton.text(
+                              onTap: () {
+                                handleFileDownload(syllabusContent, context);
+                              },
+                              text: 'Download',
+                              style: TextStyle(
+                                color: const Color(0xB2F7F3E9),
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 1.50,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -240,7 +296,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
         double maxHeight = screenHeight(context) / 2;
 
         return Container(
-          key: vm.courseTimelineKey,
           color: const Color(0xFF2B1810),
           padding: EdgeInsets.only(top: 64),
           child: ResponsiveHorizontalPadding(
@@ -289,68 +344,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _studyTemplatesSection() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 64),
-      child: ResponsiveHorizontalPadding(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Study Templates',
-              style: TextStyle(
-                color: const Color(0xFF4A3426),
-                fontSize: 30,
-                fontFamily: 'Playfair Display',
-                fontWeight: FontWeight.w700,
-                height: 1.20,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Professional formats for your historical analysis',
-              style: TextStyle(
-                color: const Color(0xB24A3426),
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                height: 1.50,
-              ),
-            ),
-            SizedBox(height: 40),
-            CustomGrid(
-              spacing: 32,
-              children: [
-                _buildTemplateCard(
-                  title: 'Research Paper',
-                  description:
-                      'Formal academic structure with citation guidelines',
-                  lastUsed: '2 days ago',
-                  imageUrl: Images.boardDarkAcadResearchPaper,
-                ),
-
-                _buildTemplateCard(
-                  title: 'Critical Analysis',
-                  description: 'Framework for evaluating historical sources',
-                  lastUsed: '1 week ago',
-                  imageUrl: Images.boardDarkAcadAnalysis,
-                ),
-
-                _buildTemplateCard(
-                  title: 'Comparative Study',
-                  description:
-                      'Template for comparing historical events or figures',
-                  lastUsed: '3 weeks ago',
-                  imageUrl: Images.boardDarkAcadStudy,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -430,7 +423,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                             ScrollableController(
                               scrollDirection: Axis.horizontal,
                               child: Row(
-                                spacing: 32,
+                                spacing: 16,
                                 children:
                                     vm.uploadedFiles.map((file) {
                                       return _buildFileCard(file);
@@ -851,16 +844,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                         Expanded(
                           child: Row(
                             children: [
-                              VisibleController(
-                                mobile: true,
-                                largeDesktop: false,
-                                child: MenuButton(
-                                  onPressed: vm.openDrawer,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF7F3E9),
-                                  ),
-                                ),
-                              ),
                               IconButton(
                                 onPressed: NavigationHelper.pop,
                                 icon: Icon(
@@ -889,7 +872,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        ProfilePic(),
                       ],
                     ),
 
@@ -1026,82 +1008,93 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
   }
 
   Widget _buildFileCard(Content file) {
+    final metaDataSize = file.metaData[ContentMetadataKey.fileSize];
+    final size = getFileSize(metaDataSize);
+    final name = file.title;
+
     return Builder(
       builder: (context) {
-        return InkWell(
-          onTap: () => NavigationHelper.navigateToContent(file),
-          child: Container(
-            // constraints: BoxConstraints(maxWidth: 400),
+        return Container(
+          width: 200,
+          margin: const EdgeInsets.only(right: 16),
+          child: InkWell(
+            onTap: () => NavigationHelper.navigateToContent(file),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A3426),
+                borderRadius: BorderRadius.circular(2),
+                border: Border.all(color: const Color(0x33C19B47), width: 1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // File preview section
+                  _buildFilePreview(file),
 
-            // width: 384,
-            // height: 228,
-            decoration: BoxDecoration(
-              color: const Color(0xFF4A3426),
-              borderRadius: BorderRadius.circular(2),
-            ),
-            padding: EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: const Color(0x33C19B47),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                  child: Icon(
-                    getFileIcon(file.file),
-                    color: AppTheme.goldenSaffron,
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  file.title,
-                  style: TextStyle(
-                    color: const Color(0xFFF7F3E9),
-                    fontSize: 20,
-                    fontFamily: 'Playfair Display',
-                    fontWeight: FontWeight.w600,
-                    height: 1.40,
-                  ),
-                ),
-                SizedBox(height: 8),
-                // Text(
-                //   description,
-                //   style: TextStyle(
-                //     color: const Color(0xB2F7F3E9),
-                //     fontSize: 14,
-                //     fontFamily: 'Inter',
-                //     fontWeight: FontWeight.w400,
-                //     height: 1.43,
-                //   ),
-                // ),
-                // Spacer(),
-                Row(
-                  spacing: 50,
-                  children: [
-                    Text(
-                      getFileDescription(file),
-                      style: TextStyle(
-                        color: const Color(0x99F7F3E9),
-                        fontSize: 12,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 1.33,
-                      ),
+                  // Content section
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                            color: const Color(0xFFF7F3E9),
+                            fontSize: 16,
+                            fontFamily: 'Playfair Display',
+                            fontWeight: FontWeight.w600,
+                            height: 1.40,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          size,
+                          style: TextStyle(
+                            color: const Color(0x99F7F3E9),
+                            fontSize: 12,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap:
+                                  () =>
+                                      NavigationHelper.navigateToContent(file),
+                              child: Container(
+                                padding: EdgeInsets.all(4),
+                                child: Icon(
+                                  Icons.open_in_new,
+                                  color: AppTheme.goldenSaffron,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            InkWell(
+                              onTap: () => handleFileDownload(file, context),
+                              child: Container(
+                                padding: EdgeInsets.all(4),
+                                child: SVGImagePlaceHolder(
+                                  imagePath: Images.upload4,
+                                  color: AppTheme.goldenSaffron,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    InkWell(
-                      onTap: () => handleFileDownload(file, context),
-                      child: SVGImagePlaceHolder(
-                        imagePath: Images.upload4,
-                        color: AppTheme.goldenSaffron,
-                        size: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -1109,76 +1102,60 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTemplateCard({
-    required String title,
-    required String description,
-    required String lastUsed,
-    required String imageUrl,
-  }) {
-    return CustomCard(
-      addCardShadow: true,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          AspectRatio(
-            aspectRatio: 5 / 2,
-            child: ImagePlaceHolder(
-              imagePath: imageUrl,
-              borderRadius: BorderRadius.zero,
-            ),
+  Widget _buildFilePreview(Content file) {
+    final filePath = file.file;
+    if (filePath == null) {
+      return _buildFileIconPreview(file);
+    }
+
+    // Check if it's an image file
+    final extension = filePath.toLowerCase();
+    final isImage =
+        extension.endsWith('.png') ||
+        extension.endsWith('.jpg') ||
+        extension.endsWith('.jpeg') ||
+        extension.endsWith('.gif') ||
+        extension.endsWith('.webp') ||
+        extension.endsWith('.bmp');
+
+    if (isImage && File(filePath).existsSync()) {
+      return Container(
+        height: 120,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
+          color: const Color(0x33C19B47),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
+          child: Image.file(
+            File(filePath),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return _buildFileIconPreview(file);
+            },
           ),
-          Container(
-            padding: EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: const Color(0xFF4A3426),
-                    fontSize: 20,
-                    fontFamily: 'Playfair Display',
-                    fontWeight: FontWeight.w600,
-                    height: 1.40,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: const Color(0xB24A3426),
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    height: 1.43,
-                  ),
-                ),
-                SizedBox(height: 16),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.access_time_filled,
-                      size: 12,
-                      color: const Color(0x994A3426),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Last used $lastUsed',
-                      style: TextStyle(
-                        color: const Color(0x994A3426),
-                        fontSize: 12,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 1.33,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
+      );
+    }
+
+    return _buildFileIconPreview(file);
+  }
+
+  Widget _buildFileIconPreview(Content file) {
+    return Container(
+      height: 120,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
+        color: const Color(0x33C19B47),
+      ),
+      child: Center(
+        child: Icon(
+          getFileIcon(file.file),
+          size: 48,
+          color: AppTheme.goldenSaffron,
+        ),
       ),
     );
   }
