@@ -113,22 +113,21 @@ class NavigationHelper {
     bool replace = false,
     bool isNew = false,
   }) {
-    if (!isNew) {
-      return navigateToBoardPopup(board, replace: replace);
-    }
-    final boardType = board.boardType ?? BoardTypeCodes.plain;
+    return navigateToBoardPopup(board, replace: replace);
 
-    final route = switch (boardType) {
-      BoardTypeCodes.plain => Routes.boardPlainEdit,
-      BoardTypeCodes.minimalist => Routes.boardMinimalistEdit,
-      BoardTypeCodes.darkAcademia => Routes.boardDarkAcademiaEdit,
-      BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaEdit,
-      BoardTypeCodes.nature => Routes.boardNatureEdit,
-    };
-    if (replace) {
-      return NavigationHelper.pushReplacement(route, arguments: board);
-    }
-    return NavigationHelper.push(route, arguments: board);
+    // final boardType = board.boardType ?? BoardTypeCodes.plain;
+
+    // final route = switch (boardType) {
+    //   BoardTypeCodes.plain => Routes.boardPlainEdit,
+    //   BoardTypeCodes.minimalist => Routes.boardMinimalistEdit,
+    //   BoardTypeCodes.darkAcademia => Routes.boardDarkAcademiaEdit,
+    //   BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaEdit,
+    //   BoardTypeCodes.nature => Routes.boardNatureEdit,
+    // };
+    // if (replace) {
+    //   return NavigationHelper.pushReplacement(route, arguments: board);
+    // }
+    // return NavigationHelper.push(route, arguments: board);
   }
 
   static navigateToManualFlashCard(

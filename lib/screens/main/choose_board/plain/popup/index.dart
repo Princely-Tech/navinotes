@@ -127,21 +127,7 @@ class BoardPlainPopupScreen extends StatelessWidget {
                               if (!showBottomSelectRows)
                                 Expanded(child: _selectRows()),
 
-                              Row(
-                                spacing: 10,
-                                children: [
-                                  IconButton(
-                                    onPressed:
-                                        NavigationHelper.navigateToSettings,
-                                    icon: SVGImagePlaceHolder(
-                                      imagePath: Images.settings,
-                                      size: 16,
-                                      color: AppTheme.stormGray,
-                                    ),
-                                  ),
-                                  ProfilePic(),
-                                ],
-                              ),
+                             
                             ],
                           ),
                         ),

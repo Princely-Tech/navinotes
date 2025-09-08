@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 import 'package:uuid/uuid.dart';
 
 bool isNotNull(dynamic value) => value != null;
+bool hasText(String? value) => value != null && value.isNotEmpty;
 
 bool isNull(dynamic value) => value == null;
 

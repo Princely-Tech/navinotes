@@ -22,8 +22,8 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // _header(),
-                // _navigationSection(),
+                _header(),
+                _navigationSection(),
                 Expanded(
                   child: ScrollableController(
                     mobilePadding: EdgeInsets.symmetric(vertical: 15),
@@ -38,12 +38,10 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               spacing: 50,
                               children: [
-                                // _courseTitle(),
-                                // _courseActions(),
-                                // _fileUploads(),
-
-                                // _studyTemplates(),
-                                // _courseTimeLine(),
+                                _courseTitle(),
+                                _courseActions(),
+                                _fileUploads(),
+                                _courseTimeLine(),
                               ],
                             ),
                           ),
@@ -114,16 +112,6 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                 _footerItem(
                   title: 'Course Details',
                   children: [
-                    // _buildDetailItem('Course:', courseInfo?.title),
-                    // _buildDetailItem('Instructor:', courseInfo?.instructor),
-                    // _buildDetailItem(
-                    //   'Email:',
-                    //   courseInfo?.email,
-                    //   color: const Color(0xFF3B82F6),
-                    // ),
-                    // _buildDetailItem('Office:', courseInfo?.location),
-                    // _buildDetailItem('Office Hours:', courseInfo?.officeHours),
-                    // _buildDetailItem('Phone:', courseInfo?.phone),
                     _buildDetailItem('Course: ${courseInfo?.title}'),
                     _buildDetailItem('Instructor: ${courseInfo?.instructor}'),
                     _buildDetailItem('Email: ${courseInfo?.email}'),
@@ -140,42 +128,6 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                     _buildDetailItem('Schedule: ${courseInfo?.schedule}'),
                     _buildDetailItem('Location: ${courseInfo?.location}'),
                     _buildDetailItem('Semester: ${courseInfo?.semester}'),
-                    //   SizedBox(height: 25),
-                    //   Text(
-                    //     'Quick Links',
-                    //     style: TextStyle(
-                    //       color: const Color(0xFF6B6B6B),
-                    //       fontSize: 14,
-                    //       fontFamily: 'Inter',
-                    //       fontWeight: FontWeight.w300,
-                    //     ),
-                    //   ),
-                    //   SizedBox(height: 16),
-                    //   Row(
-                    //     spacing: 15,
-                    //     children:
-                    //         ['Syllabus', 'Library Resources', 'Academic Calendar']
-                    //             .map(
-                    //               (str) => AppButton.text(
-                    //                 onTap: () {},
-                    //                 wrapWithFlexible: true,
-                    //                 child: Flexible(
-                    //                   child: Text(
-                    //                     str,
-                    //                     textAlign: TextAlign.center,
-                    //                     style: TextStyle(
-                    //                       color: const Color(0xFF00555A),
-                    //                       fontSize: 14,
-                    //                       fontFamily: 'Inter',
-                    //                       fontWeight: FontWeight.w300,
-                    //                       height: 1.43,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             )
-                    //             .toList(),
-                    //   ),
                   ],
                 ),
               ],
@@ -206,48 +158,8 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                 spacing: 40,
                 children:
                     courseOutlines
-                        .map(
-                          (item) => BoardMinimalistOutlineItem(
-                            item,
-                            // title: 'Week 1-2: Cell Structure & Function',
-                            // status: 'In Progress',
-                            // assignment: 'Assignment: Cell Structure Lab Report',
-                            // dueDate: 'Due Sept 16',
-                            // progress: 0.65,
-                            // tags: [
-                            //   'Cell Membrane',
-                            //   'Cytoplasm',
-                            //   'Organelles',
-                            //   'Microscopy',
-                            // ],
-                          ),
-                        )
+                        .map((item) => BoardMinimalistOutlineItem(item))
                         .toList(),
-                // children: [
-
-                //   _buildTimelineCard(
-                //     title: 'Week 3-4: Genetics & DNA',
-                //     status: 'Upcoming',
-                //     assignment: 'Assignment: Genetic Inheritance Quiz',
-                //     dueDate: 'Due Sept 27',
-                //     progress: 0.1,
-                //     tags: ['DNA Structure', 'Inheritance', 'Genes', 'Mutations'],
-                //   ),
-
-                //   _buildTimelineCard(
-                //     title: 'Week 5-6: Evolution & Natural Selection',
-                //     status: 'Not Started',
-                //     assignment: 'Assignment: Evolution Case Study',
-                //     dueDate: 'Not Started',
-                //     progress: 0.0,
-                //     tags: [
-                //       'Natural Selection',
-                //       'Adaptation',
-                //       'Speciation',
-                //       'Fossil Record',
-                //     ],
-                //   ),
-                // ],
               ),
             ),
           ),
@@ -255,48 +167,6 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
       },
     );
   }
-
-  Widget _studyTemplates() {
-    return _section(
-      title: 'Study Templates',
-      subTitle: 'Professional formats for your scientific analysis',
-      child: CustomGrid(
-        spacing: 32,
-        children: [
-          _buildTemplateCard(
-            icon: Images.flask,
-            title: 'Lab Report',
-            description: 'Format for experimental documentation',
-            usage: 'Used 24 times',
-          ),
-
-          _buildTemplateCard(
-            icon: Images.chart3,
-            title: 'Research Analysis',
-            description: 'Framework for evaluating scientific sources',
-            usage: 'Used 12 times',
-          ),
-
-          _buildTemplateCard(
-            icon: Images.file2,
-            title: 'Scientific Summary',
-            description: 'Templates for summarizing complex topics',
-            usage: 'Used 8 times',
-          ),
-        ],
-      ),
-    );
-  }
-
-  //  AppButton.secondary(
-  //                     onTap: vm.goToBoardNotes,
-  //                     mainAxisSize: MainAxisSize.min,
-  //                     wrapWithFlexible: true,
-  //                     minHeight: 40,
-  //                     text: 'View All Notes',
-  //                     color: const Color(0xFFF0F0F0),
-
-  //                   )
 
   Widget _fileUploads() {
     return Consumer<BoardEditVm>(
@@ -328,28 +198,6 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                           vm.uploadedFiles.map((file) {
                             return _buildFileCard(file);
                           }).toList(),
-                      // children: [
-                      //   _buildFileCard(
-                      //     icon: Icons.picture_as_pdf,
-                      //     title: 'Cell Structure Guide',
-                      //     details: 'PDF • 2.4 MB • Uploaded Sept 8',
-                      //     tag: 'Required reading',
-                      //   ),
-
-                      //   _buildFileCard(
-                      //     icon: Icons.picture_as_pdf,
-                      //     title: 'Genetics Research Paper',
-                      //     details: 'PDF • 3.7 MB • Uploaded Sept 7',
-                      //     tag: 'Supplemental reading',
-                      //   ),
-
-                      //   _buildFileCard(
-                      //     icon: Icons.video_library,
-                      //     title: 'Lab Procedures Video',
-                      //     details: 'MP4 • 45:12 • 112 MB',
-                      //     tag: 'Required viewing',
-                      //   ),
-                      // ],
                     ),
                   ),
         );
@@ -608,7 +456,6 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      MenuButton(onPressed: vm.openDrawer),
                       IconButton(
                         onPressed: NavigationHelper.pop,
                         icon: Icon(
@@ -629,26 +476,6 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-                Row(
-                  children: [
-                    AppIconButton(
-                      onPressed: NavigationHelper.navigateToNotification,
-                      icon: Icon(
-                        Icons.notifications,
-                        size: 24,
-                        color: const Color(0xFF6B6B6B),
-                      ),
-                    ),
-                    AppIconButton(
-                      onPressed: NavigationHelper.navigateToProfile,
-                      icon: Icon(
-                        Icons.person,
-                        size: 24,
-                        color: const Color(0xFF6B6B6B),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),

@@ -24,7 +24,7 @@ class BoardEditAssignment extends StatelessWidget {
             ],
           );
         case BoardTypeCodes.minimalist:
-        // case BoardTypeCodes.plain:
+        case BoardTypeCodes.plain:
           return Column(
             children:
                 courseOutlines

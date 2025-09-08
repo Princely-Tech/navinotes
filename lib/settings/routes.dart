@@ -36,7 +36,6 @@ Map<String, WidgetBuilder> routes = {
   Routes.boardMinimalistNotePage: (context) => BoardMinimalistNotePageScreen(),
   Routes.boardMinimalistMindMap: (context) => BoardMinimalistMindMapScreen(),
   Routes.boardPlain: (context) => BoardPlainScreen(),
-  Routes.boardPlainEdit: (context) => BoardPlainEditScreen(),
   Routes.boardPlainMindMap: (context) => BoardPlainMindMapScreen(),
   Routes.boardLightAcademia: (context) => BoardLightAcademiaScreen(),
   Routes.boardLightAcademiaEdit: (context) => BoardLightAcadEditScreen(),
@@ -115,7 +114,6 @@ class Routes {
   static const boardMinimalistNotePage = 'boardMinimalistNotePage';
   static const boardMinimalistMindMap = 'boardMinimalistMindMap';
   static const boardPlain = 'boardPlain';
-  static const boardPlainEdit = 'boardPlainEdit';
   static const boardPlainNotePage = 'boardPlainNotePage';
   static const boardPlainMindMap = 'boardPlainMindMap';
   static const boardLightAcademia = 'boardLightAcademia';

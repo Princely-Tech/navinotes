@@ -84,9 +84,10 @@ class BoardLightAcadTimelineItem extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  timelineItem.description ??
-                                      timelineItem.assignment ??
-                                      'No assignment',
+                                  (timelineItem.assignment != null &&
+                                          timelineItem.assignment!.isNotEmpty)
+                                      ? timelineItem.assignment!
+                                      : 'No assignment',
                                   style: TextStyle(
                                     color: const Color(0xFF654321),
                                     fontSize: 16,
@@ -96,61 +97,30 @@ class BoardLightAcadTimelineItem extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // Container(
-                              //   padding: EdgeInsets.symmetric(
-                              //     horizontal: 8,
-                              //     vertical: 4,
-                              //   ),
-                              //   decoration: BoxDecoration(
-                              //     color:
-                              //         status == 'In Progress'
-                              //             ? const Color(0x33FFB347)
-                              //             : status == 'Due Oct 15'
-                              //             ? const Color(0x33D4AF37)
-                              //             : const Color(0xFFF5F2E8),
-                              //     borderRadius: BorderRadius.circular(4),
-                              //   ),
-                              //   child: Text(
-                              //     status,
-                              //     style: TextStyle(
-                              //       color: const Color(0xFF8B4513),
-                              //       fontSize: 12,
-                              //       fontFamily: 'Open Sans',
-                              //       fontWeight: FontWeight.w400,
-                              //     ),
-                              //   ),
-                              // ),
+                              if (timelineItem.due != null &&
+                                  timelineItem.due!.isNotEmpty)
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0x33D4AF37),
+                                    // : const Color(0xFFF5F2E8),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    'Due: ${timelineItem.due ?? ''}',
+                                    style: TextStyle(
+                                      color: const Color(0xFF8B4513),
+                                      fontSize: 12,
+                                      fontFamily: 'Open Sans',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
                             ],
                           ),
-
-                          // if (progress > 0) ...[
-                          // SizedBox(height: 16),
-                          // LinearProgressIndicator(
-                          //   value: 100,
-                          //   backgroundColor: const Color(0xFFF5F2E8),
-                          //   color: const Color(0xFFD4AF37),
-                          // ),
-                          // ],
-
-                          // SizedBox(height: 16),
-                          // Wrap(
-                          //   spacing: 8,
-                          //   runSpacing: 8,
-                          //   children:
-                          //       tags
-                          //           .map(
-                          //             (tag) => Text(
-                          //               tag,
-                          //               style: TextStyle(
-                          //                 color: const Color(0xFF8B4513),
-                          //                 fontSize: 12,
-                          //                 fontFamily: 'Open Sans',
-                          //                 fontWeight: FontWeight.w400,
-                          //               ),
-                          //             ),
-                          //           )
-                          //           .toList(),
-                          // ),
                         ],
                       ),
                     ),

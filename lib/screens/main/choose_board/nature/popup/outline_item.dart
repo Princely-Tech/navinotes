@@ -105,14 +105,26 @@ class BoardNatureOutlineItem extends StatelessWidget {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(
-                                          Icons.assignment,
+                                          (isNotNull(timelineItem.assignment) &&
+                                                  timelineItem
+                                                      .assignment!
+                                                      .isNotEmpty)
+                                              ? Icons.assignment
+                                              : Icons.assignment_outlined,
                                           size: 16,
                                           color: Colors.white,
                                         ),
                                         SizedBox(width: 8),
                                         Flexible(
                                           child: Text(
-                                            timelineItem.assignment!,
+                                            (isNotNull(
+                                                      timelineItem.assignment,
+                                                    ) &&
+                                                    timelineItem
+                                                        .assignment!
+                                                        .isNotEmpty)
+                                                ? timelineItem.assignment!
+                                                : 'No Assignment',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,

@@ -7,22 +7,8 @@ class BoardMinimalistOutlineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     int? progress = getSessionProgress(courseTimeline);
 
-    String status;
-    if (progress == null) {
-      status = 'Not Started';
-    } else if (progress > 0) {
-      status = 'In Progress';
-    } else {
-      status = 'Not Started';
-    }
+    Color statusColor = const Color(0xFF00555A);
 
-    bool isInProgress = status == 'In Progress';
-    Color statusColor;
-    if (isInProgress) {
-      statusColor = const Color(0xFF00555A);
-    } else {
-      statusColor = const Color(0xFF6B6B6B);
-    }
     return Container(
       padding: EdgeInsets.all(25),
       decoration: BoxDecoration(
@@ -50,14 +36,11 @@ class BoardMinimalistOutlineItem extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color:
-                      isInProgress
-                          ? const Color(0x1900555A)
-                          : const Color(0xFFF0F0F0),
+                  color: const Color(0x1900555A),
                   borderRadius: BorderRadius.circular(2),
                 ),
                 child: Text(
-                  status,
+                  courseTimeline.due ?? '',
                   style: TextStyle(
                     color: statusColor,
                     fontSize: 12,
@@ -68,7 +51,7 @@ class BoardMinimalistOutlineItem extends StatelessWidget {
               ),
             ],
           ),
-          if (isNotNull(courseTimeline.assignment)) ...[
+          if (hasText(courseTimeline.assignment)) ...[
             SizedBox(height: 16),
             Text(
               courseTimeline.assignment!,
@@ -85,10 +68,7 @@ class BoardMinimalistOutlineItem extends StatelessWidget {
           Text(
             stringOrNotSpecified(courseTimeline.due, nullPrefix: 'Due date'),
             style: TextStyle(
-              color:
-                  isInProgress
-                      ? const Color(0xFF00555A)
-                      : const Color(0xFF6B6B6B),
+              color: const Color(0xFF00555A),
               fontSize: 12,
               fontFamily: 'Inter',
               fontWeight: FontWeight.w300,
@@ -103,31 +83,6 @@ class BoardMinimalistOutlineItem extends StatelessWidget {
               color: const Color(0xFF00555A),
             ),
           ],
-
-          // SizedBox(height: 16),
-          // Wrap(
-          //   spacing: 8,
-          //   runSpacing: 8,
-          //   children:
-          //       tags
-          //           .map(
-          //             (tag) => Chip(
-          //               label: Text(
-          //                 tag,
-          //                 style: TextStyle(
-          //                   color: const Color(0xFF2C2C2C),
-          //                   fontSize: 12,
-          //                   fontFamily: 'Inter',
-          //                   fontWeight: FontWeight.w300,
-          //                 ),
-          //               ),
-          //               backgroundColor: const Color(0xFFF0F0F0),
-          //               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          //               visualDensity: VisualDensity.compact,
-          //             ),
-          //           )
-          //           .toList(),
-          // ),
         ],
       ),
     );

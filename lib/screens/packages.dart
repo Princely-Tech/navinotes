@@ -37,7 +37,6 @@ export 'main/choose_board/minimalist/edit/index.dart';
 export 'main/choose_board/minimalist/index.dart';
 export 'main/choose_board/minimalist/mind_map/index.dart';
 export 'main/choose_board/minimalist/note_page/index.dart';
-export 'main/choose_board/plain/edit/index.dart';
 export 'main/choose_board/plain/index.dart';
 export 'main/choose_board/plain/mind_map/index.dart';
 export 'main/choose_board/plain/popup/index.dart';

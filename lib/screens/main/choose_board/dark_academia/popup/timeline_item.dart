@@ -135,53 +135,67 @@ class BoardDarkAcadTimelineItem extends StatelessWidget {
     required String? dueDate,
   }) {
     return (assignment == null || assignment.isEmpty)
-        ? SizedBox.shrink()
+        ? Center(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'No Assignment',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: const Color(0xFFC19B47),
+                fontSize: 12,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        )
         : Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFF4A3426),
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16,
-            children: [
-              Text(
-                'Assignment',
-                style: TextStyle(
-                  color: const Color(0xFFF7F3E9),
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w500,
-                ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A3426),
+                borderRadius: BorderRadius.circular(2),
               ),
-              if (isNotNull(assignment))
-                Text(
-                  assignment!,
-                  style: TextStyle(
-                    color: const Color(0xB2F7F3E9),
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16,
+                children: [
+                  Text(
+                    'Assignment',
+                    style: TextStyle(
+                      color: const Color(0xFFF7F3E9),
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              Text(
-                'Due: $dueDate',
-                style: TextStyle(
-                  color: const Color(0xFFC19B47),
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                ),
+                  if (isNotNull(assignment))
+                    Text(
+                      assignment,
+                      style: TextStyle(
+                        color: const Color(0xB2F7F3E9),
+                        fontSize: 14,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  Text(
+                    'Due: $dueDate',
+                    style: TextStyle(
+                      color: const Color(0xFFC19B47),
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
-    );
+            ),
+          ],
+        );
   }
 
   Widget _timelineDivider() {
