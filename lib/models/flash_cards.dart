@@ -82,22 +82,6 @@ class FlashCard {
     );
   }
 
-  // FlashCard getUpdatedFlashCard({
-  //   List<Map<String, dynamic>>? front,
-  //   List<Map<String, dynamic>>? back,
-  //   String? tags,
-  //   int? updatedAt,
-  //   int? deckId,
-  // }) {
-  //   return copyWith(
-  //     front: front,
-  //     back: back,
-  //     tags: tags,
-  //     updatedAt: updatedAt ?? DateTime.now().millisecondsSinceEpoch ~/ 1000,
-  //     deckId: deckId,
-  //   );
-  // }
-
   void setIDAfterCreate(int id) {
     this.id = id;
   }
@@ -128,7 +112,6 @@ class FlashCard {
     required List<Map<String, dynamic>> back,
     String? tags,
   }) {
-    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     return FlashCard(
       difficulty: FlashcardDifficulty.easy,
       guid: 'flashcard_${DateTime.now().millisecondsSinceEpoch}',
@@ -136,8 +119,8 @@ class FlashCard {
       front: front,
       back: back,
       tags: tags,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: generateUnixTimestamp(),
+      updatedAt: generateUnixTimestamp(),
     );
   }
 }

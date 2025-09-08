@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart' as path;
+import 'package:uuid/uuid.dart';
 
 class NavigationHelper {
   NavigationHelper._();
@@ -192,10 +193,7 @@ class NavigationHelper {
     }
 
     if (content.type == AppContentType.mindmap) {
-     push(
-                      Routes.mindMap,
-                      arguments: {'contentId': content.id},
-                    );
+      push(Routes.mindMap, arguments: {'contentId': content.id});
     }
 
     // TODO: Implement
@@ -245,9 +243,23 @@ class NavigationHelper {
     return navigateToDeck(deck!);
   }
 
-
-  static createAndNavigateToNewMindMap(Board board) {
-    
+  static createAndNavigateToNewMindMap(Board board) async {
+    final content = Content(
+      guid: const Uuid().v4(),
+      title: 'New Mind Map',
+      type: AppContentType.mindmap,
+      boardId: board.id!,
+      createdAt: generateUnixTimestamp(),
+      updatedAt: generateUnixTimestamp(),
+      metaData: {},
+      tags: null,
+      content: null,
+      drawing: null,
+      file: null,
+    );
+    final id = await DatabaseHelper.instance.insertContent(content);
+    debugPrint('Content inserted with id: $id');
+    return navigateToContentById(id);
   }
 
   static createAndNavigateToNewFlashCard(Board board) async {
@@ -271,8 +283,8 @@ class NavigationHelper {
       hardInterval: 3,
       goodInterval: 5,
       easyInterval: 7,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: generateUnixTimestamp(),
+      updatedAt: generateUnixTimestamp(),
     );
 
     final id = await dbHelper.insertDeck(newDeck);

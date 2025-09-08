@@ -14,6 +14,7 @@ import 'package:navinotes/settings/db_helpers.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/settings/file_utils.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
+import 'package:navinotes/settings/time_helpers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -989,33 +990,32 @@ class MindMapVm extends ChangeNotifier {
     _isSaving = true;
     try {
       final meta = toJson();
-      final now = DateTime.now().millisecondsSinceEpoch;
       final helper = DatabaseHelper.instance;
 
-     final existing = await helper.getContentById(contentId!);
-        if (existing != null) {
-          final updated = Content(
-            id: existing.id,
-            guid: existing.guid,
-            title: title,
-            voiceNotes: existing.voiceNotes,
-            coverImage: existing.coverImage,
-            type: existing.type,
-            metaData: meta,
-            boardId: existing.boardId,
-            tags: existing.tags,
-            content: existing.content,
-            drawing: existing.drawing,
-            file: existing.file,
-            createdAt: existing.createdAt,
-            updatedAt: now,
-            syncedAt: existing.syncedAt,
-            coverImageNeedSync: existing.coverImageNeedSync,
-            fileNeedSync: existing.fileNeedSync,
-          );
-          await helper.updateContent(updated);
-          debugPrint('Content updated with id: $contentId');
-        }
+      final existing = await helper.getContentById(contentId!);
+      if (existing != null) {
+        final updated = Content(
+          id: existing.id,
+          guid: existing.guid,
+          title: title,
+          voiceNotes: existing.voiceNotes,
+          coverImage: existing.coverImage,
+          type: existing.type,
+          metaData: meta,
+          boardId: existing.boardId,
+          tags: existing.tags,
+          content: existing.content,
+          drawing: existing.drawing,
+          file: existing.file,
+          createdAt: existing.createdAt,
+          updatedAt: generateUnixTimestamp(),
+          syncedAt: existing.syncedAt,
+          coverImageNeedSync: existing.coverImageNeedSync,
+          fileNeedSync: existing.fileNeedSync,
+        );
+        await helper.updateContent(updated);
+        debugPrint('Content updated with id: $contentId');
+      }
       // No notifyListeners here; UI usually doesn't need to change after save
     } finally {
       _isSaving = false;
@@ -1047,7 +1047,7 @@ class MindMapVm extends ChangeNotifier {
 
     // Validate that all nodes are within canvas bounds
     validateNodeBounds();
-    
+
     _isLoading = false;
     notifyListeners();
   }

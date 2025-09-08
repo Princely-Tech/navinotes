@@ -448,9 +448,7 @@ class DatabaseHelper {
     final db = await instance.database;
     return await db.update(
       'decks',
-      deck
-          .copyWith(updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000)
-          .toMap(),
+      deck.copyWith(updatedAt: generateUnixTimestamp()).toMap(),
       where: 'id = ?',
       whereArgs: [deck.id],
     );

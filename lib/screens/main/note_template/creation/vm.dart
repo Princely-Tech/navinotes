@@ -115,7 +115,7 @@ class NoteCreationVm extends ChangeNotifier {
 
       content = content!.getUpdatedContent(
         voiceNotes: updatedVoiceNotes,
-        updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        updatedAt: generateUnixTimestamp(),
       );
 
       // Save to database
@@ -176,7 +176,7 @@ class NoteCreationVm extends ChangeNotifier {
           content: richEditorContent,
           // voiceNotes: content!.voiceNotes,
           drawing: drawingContent,
-          updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          updatedAt: generateUnixTimestamp(),
         );
 
         // Save to database
@@ -308,7 +308,7 @@ class NoteCreationVm extends ChangeNotifier {
         // Create a new voice note with duration and file size
         final voiceNote = VoiceNote(
           name: DateTime.now().toString().substring(0, 19),
-          createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          createdAt: generateUnixTimestamp(),
           file: _recordingPath!,
           duration: duration,
           fileSize: fileSize,
@@ -319,7 +319,7 @@ class NoteCreationVm extends ChangeNotifier {
           ..add(voiceNote);
         content = content!.getUpdatedContent(
           voiceNotes: updatedVoiceNotes,
-          updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          updatedAt: generateUnixTimestamp(),
         );
 
         // Save to database
