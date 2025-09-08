@@ -20,17 +20,7 @@ class DarkAcademiaScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    VisibleController(
-                      mobile: false,
-                      laptop: true,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 15),
-                        child: MenuButton(
-                          onPressed: () {},
-                          decoration: BoxDecoration(color: AppTheme.oatCream),
-                        ),
-                      ),
-                    ),
+                    
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),

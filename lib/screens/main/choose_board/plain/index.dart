@@ -53,7 +53,7 @@ class BoardPlainScreen extends StatelessWidget {
                                     children: [
                                       Consumer<BoardCreateVm>(
                                         builder: (context, vm, _) {
-                                           return AppButton(
+                                          return AppButton(
                                             loading: vm.isLoading,
                                             mainAxisSize: MainAxisSize.min,
                                             text: 'Create My Academic Board',
@@ -369,13 +369,6 @@ class BoardPlainScreen extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: MenuButton(
-                      onPressed: () {},
-                      decoration: BoxDecoration(color: AppTheme.vividRose),
-                    ),
-                  ),
                   AppButton.text(
                     wrapWithFlexible: true,
                     mainAxisSize: MainAxisSize.min,

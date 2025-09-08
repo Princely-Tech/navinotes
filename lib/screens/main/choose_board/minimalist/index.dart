@@ -18,18 +18,7 @@ class MinimalistScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    VisibleController(
-                      mobile: false,
-                      laptop: true,
-                      child: ResponsivePadding(
-                        mobile: EdgeInsets.only(left: mobilePadding, top: 5),
-                        tablet: EdgeInsets.only(left: tabletPadding, top: 5),
-                        child: MenuButton(
-                          onPressed: () {},
-                          decoration: BoxDecoration(color: AppTheme.midGray),
-                        ),
-                      ),
-                    ),
+                   
                     Expanded(
                       child: Column(
                         spacing: 30,

@@ -32,7 +32,61 @@ class BoardNaturePopupScreen extends StatelessWidget {
                         _heroSection(),
                         _courseActions(),
                         _fileUploadsSection(),
+                        Consumer<BoardEditVm>(
+                          builder: (_, vm, _) {
+                            return FutureBuilder<List<Content>>(
+                              future: _getAllContents(vm.board.id!),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Container(
+                                    height: 200,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: const Color(0xFF4A7C59),
+                                      ),
+                                    ),
+                                  );
+                                }
 
+                                final allContents = snapshot.data ?? [];
+                                final notes =
+                                    allContents
+                                        .where(
+                                          (content) =>
+                                              content.type ==
+                                              AppContentType.note,
+                                        )
+                                        .toList();
+                                final mindMaps =
+                                    allContents
+                                        .where(
+                                          (content) =>
+                                              content.type ==
+                                              AppContentType.mindmap,
+                                        )
+                                        .toList();
+                                final flashCardDecks =
+                                    allContents
+                                        .where(
+                                          (content) =>
+                                              content.type ==
+                                              AppContentType.flashcardDeck,
+                                        )
+                                        .toList();
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _recentNotesSection(notes),
+                                    _mindMapsSection(mindMaps),
+                                    _flashCardsDeckSection(flashCardDecks),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
                         // _studyTemplateSection(),
                         _semesterJourney(),
                         _courseInfo(),
@@ -140,22 +194,6 @@ class BoardNaturePopupScreen extends StatelessWidget {
               SizedBox(height: 24),
               Row(
                 children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(32),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        width: 2,
-                      ),
-                      // image: DecorationImage(
-                      //   image: NetworkImage("https://placehold.co/60x60"),
-                      //   fit: BoxFit.cover,
-                      // ),
-                    ),
-                  ),
-                  SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,7 +368,6 @@ class BoardNaturePopupScreen extends StatelessWidget {
           builder: (context, vm, _) {
             List<CourseTimeline> courseOutlines =
                 vm.board.courseTimeLines ?? [];
-            double maxHeight = screenHeight(context) / 2;
             return Container(
               key: vm.courseTimelineKey,
               color: const Color(0xFF2D5016),
@@ -340,44 +377,41 @@ class BoardNaturePopupScreen extends StatelessWidget {
                 title: 'Semester Journey',
                 child: Column(
                   children: [
-                    if (courseOutlines.isEmpty)
-                      AppButton(
-                        loading: vm.uploadingSyllabus,
-                        onTap:
-                            () => vm.uploadSyllabus(
-                              context: context,
-                              apiServiceProvider: apiServiceProvider,
-                            ),
-                        text: 'Upload Syllabus',
-                        color: const Color(0xFF4A7C59),
-                        mainAxisSize: MainAxisSize.min,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        minHeight: 40,
-                        spacing: 10,
-                        prefix: SVGImagePlaceHolder(
-                          imagePath: Images.upload,
-                          color: AppTheme.white,
-                          size: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9999),
-                        ),
-                      )
-                    else
-                      ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: maxHeight),
-                        child: SingleChildScrollView(
-                          padding: EdgeInsets.only(bottom: 60),
-                          child: Column(
-                            children: [
-                              for (int i = 0; i < courseOutlines.length; i++)
-                                BoardNatureOutlineItem(i),
-                            ],
+                    AppButton(
+                      loading: vm.uploadingSyllabus,
+                      onTap:
+                          () => vm.uploadSyllabus(
+                            context: context,
+                            apiServiceProvider: apiServiceProvider,
                           ),
-                        ),
+                      text:
+                          (courseOutlines.isEmpty)
+                              ? 'Upload Syllabus'
+                              : 'Update Syllabus',
+                      color: const Color(0xFF4A7C59),
+                      mainAxisSize: MainAxisSize.min,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      minHeight: 40,
+                      spacing: 10,
+                      prefix: SVGImagePlaceHolder(
+                        imagePath: Images.upload,
+                        color: AppTheme.white,
+                        size: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9999),
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    if (courseOutlines.isNotEmpty)
+                      Column(
+                        children: [
+                          for (int i = 0; i < courseOutlines.length; i++)
+                            BoardNatureOutlineItem(i),
+                        ],
                       ),
                   ],
                 ),
@@ -730,7 +764,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Next Class',
+                                    'Next Session',
                                     style: TextStyle(
                                       color: const Color(0xFFF8F6F0),
                                       fontSize: 16,
@@ -1231,24 +1265,21 @@ class BoardNaturePopupScreen extends StatelessWidget {
   }
 
   Widget _buildInfoItem(IconData icon, String? text) {
-    bool isPhone = icon == Icons.phone;
+    if (text == null || text.isEmpty) return SizedBox.shrink();
     return Padding(
-      padding: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: 12),
       child: Row(
+        spacing: 12,
         children: [
-          Icon(icon, size: 16, color: Colors.white.withValues(alpha: 0.8)),
-          SizedBox(width: 8),
-          Flexible(
-            child: InkWell(
-              onTap: isPhone ? () => callPhoneNumber(text!) : null,
-              child: Text(
-                stringOrNotSpecified(text),
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.9),
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontWeight: isPhone ? FontWeight.w600 : FontWeight.w400,
-                ),
+          Icon(icon, size: 16, color: Colors.white.withValues(alpha: 0.7)),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.8),
+                fontSize: 14,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),
@@ -1257,28 +1288,361 @@ class BoardNaturePopupScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickLinkButton(String text, IconData icon) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: const Color(0x4C4A7C59),
-        borderRadius: BorderRadius.circular(9999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: Colors.white),
-          SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-            ),
+  // Content sections
+  Widget _recentNotesSection(List<Content> notes) {
+    // Sort by updated date (most recent first)
+    notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          title: 'Recent Notes',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      onTap: vm.createNoteHandler,
+                      mainAxisSize: MainAxisSize.min,
+                      color: const Color(0xFF4A7C59),
+                      text:
+                          notes.isEmpty
+                              ? 'Create your first note'
+                              : 'Create new note',
+                      minHeight: 40,
+                      prefix: Icon(Icons.add, color: Colors.white, size: 16),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (notes.isEmpty)
+                Text(
+                  'No notes yet. Create your first note to get started with your studies.',
+                  style: TextStyle(
+                    color: const Color(0xFF6B7280),
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.italic,
+                  ),
+                )
+              else
+                Column(
+                  spacing: 8,
+                  children:
+                      notes
+                          .take(5)
+                          .map((note) => _buildNoteItem(note))
+                          .toList(),
+                ),
+            ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  Widget _mindMapsSection(List<Content> mindMaps) {
+    // Sort by updated date (most recent first)
+    mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          title: 'Mind Maps',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      onTap: vm.createMindMap,
+                      mainAxisSize: MainAxisSize.min,
+                      color: const Color(0xFF4A7C59),
+                      text:
+                          mindMaps.isEmpty
+                              ? 'Create your first mind map'
+                              : 'Create new mind map',
+                      minHeight: 40,
+                      prefix: Icon(
+                        Icons.account_tree,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (mindMaps.isEmpty)
+                Text(
+                  'No mind maps yet. Create your first mind map to visualize your ideas.',
+                  style: TextStyle(
+                    color: const Color(0xFF6B7280),
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.italic,
+                  ),
+                )
+              else
+                Column(
+                  spacing: 8,
+                  children:
+                      mindMaps
+                          .take(5)
+                          .map((mindMap) => _buildMindMapItem(mindMap))
+                          .toList(),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _flashCardsDeckSection(List<Content> flashCardDecks) {
+    // Sort by updated date (most recent first)
+    flashCardDecks.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          title: 'Flashcard Decks',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      onTap: vm.createFlashCardDeck,
+                      mainAxisSize: MainAxisSize.min,
+                      color: const Color(0xFF4A7C59),
+                      text:
+                          flashCardDecks.isEmpty
+                              ? 'Create your first deck'
+                              : 'Create new deck',
+                      minHeight: 40,
+                      prefix: Icon(Icons.quiz, color: Colors.white, size: 16),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (flashCardDecks.isEmpty)
+                Text(
+                  'No flashcard decks yet. Create your first deck to start practicing.',
+                  style: TextStyle(
+                    color: const Color(0xFF6B7280),
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.italic,
+                  ),
+                )
+              else
+                Column(
+                  spacing: 8,
+                  children:
+                      flashCardDecks
+                          .take(5)
+                          .map((deck) => _buildFlashCardDeckItem(deck))
+                          .toList(),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Helper method for data fetching
+  Future<List<Content>> _getAllContents(int boardId) async {
+    try {
+      return await DatabaseHelper.instance.getAllContents(boardId);
+    } catch (e) {
+      debugPrint('Error fetching contents: $e');
+      return [];
+    }
+  }
+
+  // Helper widgets for rendering items
+  Widget _buildNoteItem(Content note) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(note),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0x1A4A7C59),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0x4C4A7C59)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.note, size: 16, color: const Color(0xFF4A7C59)),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    note.title.isNotEmpty ? note.title : 'Untitled Note',
+                    style: TextStyle(
+                      color: const Color(0xFF2D5016),
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatUnixTimestamp(note.updatedAt),
+                    style: TextStyle(
+                      color: const Color(0xFF6B7280),
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMindMapItem(Content mindMap) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(mindMap),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0x1A4A7C59),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0x4C4A7C59)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.account_tree, size: 16, color: const Color(0xFF4A7C59)),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    mindMap.title.isNotEmpty
+                        ? mindMap.title
+                        : 'Untitled Mind Map',
+                    style: TextStyle(
+                      color: const Color(0xFF2D5016),
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatUnixTimestamp(mindMap.updatedAt),
+                    style: TextStyle(
+                      color: const Color(0xFF6B7280),
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFlashCardDeckItem(Content deck) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(deck),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0x1A4A7C59),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0x4C4A7C59)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.quiz, size: 16, color: const Color(0xFF4A7C59)),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    deck.title.isNotEmpty
+                        ? deck.title
+                        : 'Untitled Flashcard Deck',
+                    style: TextStyle(
+                      color: const Color(0xFF2D5016),
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatUnixTimestamp(deck.updatedAt),
+                    style: TextStyle(
+                      color: const Color(0xFF6B7280),
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

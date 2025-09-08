@@ -423,13 +423,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: MenuButton(
-                      onPressed: () {},
-                      decoration: BoxDecoration(color: AppTheme.burntLeather),
-                    ),
-                  ),
+                 
                   AppButton.text(
                     wrapWithFlexible: true,
                     mainAxisSize: MainAxisSize.min,

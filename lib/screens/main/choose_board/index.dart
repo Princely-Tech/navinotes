@@ -43,7 +43,6 @@ class ChooseBoardScreen extends StatelessWidget {
         ),
       ),
     );
-   
   }
 
   Widget _footer() {
@@ -65,28 +64,6 @@ class ChooseBoardScreen extends StatelessWidget {
                           ? Column(
                             spacing: 10,
                             children: [
-                              Row(
-                                spacing: 10,
-                                children: [
-                                  FlutterSwitch(
-                                    width: 40,
-                                    height: 22,
-                                    toggleSize: 20,
-                                    value: vm.saveAsFavoriteStyle,
-                                    padding: 1,
-                                    onToggle: vm.updateSaveAsFavoriteStyle,
-                                    activeColor: AppTheme.vividRose,
-                                    inactiveColor: AppTheme.lightGray,
-                                  ),
-                                  Text(
-                                    'Save as Favorite Style',
-                                    style: AppTheme.text.copyWith(
-                                      color: AppTheme.vividRose,
-                                      fontWeight: getFontWeight(500),
-                                    ),
-                                  ),
-                                ],
-                              ),
                               Row(
                                 spacing: 20,
                                 mainAxisSize: MainAxisSize.min,
@@ -117,30 +94,8 @@ class ChooseBoardScreen extends StatelessWidget {
                           )
                           : Row(
                             spacing: 30,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Row(
-                                spacing: 10,
-                                children: [
-                                  FlutterSwitch(
-                                    width: 40,
-                                    height: 22,
-                                    toggleSize: 20,
-                                    value: vm.saveAsFavoriteStyle,
-                                    padding: 1,
-                                    onToggle: vm.updateSaveAsFavoriteStyle,
-                                    activeColor: AppTheme.vividRose,
-                                    inactiveColor: AppTheme.lightGray,
-                                  ),
-                                  Text(
-                                    'Save as Favorite Style',
-                                    style: AppTheme.text.copyWith(
-                                      color: AppTheme.vividRose,
-                                      fontWeight: getFontWeight(500),
-                                    ),
-                                  ),
-                                ],
-                              ),
                               Row(
                                 spacing: 20,
                                 mainAxisSize: MainAxisSize.min,

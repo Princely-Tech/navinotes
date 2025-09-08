@@ -42,10 +42,6 @@ class ChooseBoardVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSaveAsFavoriteStyle(bool value) {
-    saveAsFavoriteStyle = value;
-    notifyListeners();
-  }
 
   // void openEndDrawer() {
   //   scaffoldKey.currentState?.openEndDrawer();
