@@ -64,28 +64,29 @@ Widget buildTextEditor(
   double inputWidth,
   double inputHeight,
 ) {
+  // Create a focus node that we can control
+  final focusNode = FocusNode();
+
+  // Request focus after the widget is built
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    focusNode.requestFocus();
+  });
+
   return Container(
     width: inputWidth,
     height: inputHeight,
     padding: const EdgeInsets.only(top: 55, bottom: 24),
     child: ResponsiveHorizontalPadding(
-      child: SingleChildScrollView(
-        child: QuillEditor(
-          controller: vm.richEditorController,
-          scrollController: ScrollController(),
-          focusNode: FocusNode(),
-          config: QuillEditorConfig(
-            placeholder: 'Start writing your note...',
-            autoFocus: true,
-            showCursor: true,
-            enableInteractiveSelection: true,
-            enableSelectionToolbar: true,
-            padding: const EdgeInsets.all(12.0),
-            expands: false,
-            scrollable: true,
-            minHeight: inputHeight - 79, // Account for padding
-            maxHeight: null, // Allow unlimited height
-          ),
+      child: QuillEditor(
+        controller: vm.richEditorController,
+        scrollController: ScrollController(),
+        focusNode: focusNode,
+        config: const QuillEditorConfig(
+          placeholder: 'Start writing your note...',
+          showCursor: true,
+          padding: EdgeInsets.all(12.0),
+          expands: true,
+          scrollable: true,
         ),
       ),
     ),
