@@ -142,7 +142,10 @@ class MindMapVm extends ChangeNotifier {
   }
 
   /// Delete a node with confirmation dialog
-  Future<void> deleteNodeWithConfirmation(BuildContext context, String nodeId) async {
+  Future<void> deleteNodeWithConfirmation(
+    BuildContext context,
+    String nodeId,
+  ) async {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
 
@@ -151,7 +154,9 @@ class MindMapVm extends ChangeNotifier {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete Node'),
-          content: Text('Are you sure you want to delete "${node.text}"?\n\nThis action cannot be undone.'),
+          content: Text(
+            'Are you sure you want to delete "${node.text}"?\n\nThis action cannot be undone.',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -159,9 +164,7 @@ class MindMapVm extends ChangeNotifier {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
               child: const Text('Delete'),
             ),
           ],
@@ -171,7 +174,7 @@ class MindMapVm extends ChangeNotifier {
 
     if (confirmed == true) {
       removeNode(nodeId);
-      
+
       // Show success message
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -237,22 +240,28 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteEdgeWithConfirmation(BuildContext context, String edgeId) async {
+  Future<void> deleteEdgeWithConfirmation(
+    BuildContext context,
+    String edgeId,
+  ) async {
     final edge = mindMap.findEdge(edgeId);
     if (edge == null) return;
 
     final sourceNode = mindMap.findNode(edge.sourceId);
     final targetNode = mindMap.findNode(edge.targetId);
-    final edgeDescription = sourceNode != null && targetNode != null
-        ? '"${sourceNode.text}" → "${targetNode.text}"'
-        : 'this connection';
+    final edgeDescription =
+        sourceNode != null && targetNode != null
+            ? '"${sourceNode.text}" → "${targetNode.text}"'
+            : 'this connection';
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete Connection'),
-          content: Text('Are you sure you want to delete the connection $edgeDescription?\n\nThis action cannot be undone.'),
+          content: Text(
+            'Are you sure you want to delete the connection $edgeDescription?\n\nThis action cannot be undone.',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -260,9 +269,7 @@ class MindMapVm extends ChangeNotifier {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-              ),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
               child: const Text('Delete'),
             ),
           ],
@@ -629,6 +636,7 @@ class MindMapVm extends ChangeNotifier {
     if (v == Offset.zero) return center;
     final halfW = node.width / 2;
     final halfH = node.height / 2;
+
     switch (node.shape) {
       case MindMapShape.circle:
         final len = v.distance;
@@ -636,6 +644,7 @@ class MindMapVm extends ChangeNotifier {
         final radius = halfW < halfH ? halfW : halfH;
         final dir = v / len;
         return center + dir * radius;
+
       case MindMapShape.diamond:
         final vx = v.dx.abs();
         final vy = v.dy.abs();
@@ -643,7 +652,24 @@ class MindMapVm extends ChangeNotifier {
         if (denom == 0) return center;
         final t = 1 / denom;
         return center + v * t;
+
+      case MindMapShape.hexagon:
+        return _hexagonEdgePoint(center, halfW, halfH, v);
+
+      case MindMapShape.octagon:
+        return _octagonEdgePoint(center, halfW, halfH, v);
+
+      case MindMapShape.parallelogram:
+        return _parallelogramEdgePoint(center, halfW, halfH, v);
+
+      case MindMapShape.trapezoid:
+        return _trapezoidEdgePoint(center, halfW, halfH, v);
+
+      case MindMapShape.pill:
+        return _pillEdgePoint(center, halfW, halfH, v);
+
       default:
+        // Rectangle and rounded rectangle
         final vx2 = v.dx;
         final vy2 = v.dy;
         final sx = vx2 == 0 ? double.infinity : (halfW / vx2.abs());
@@ -651,6 +677,160 @@ class MindMapVm extends ChangeNotifier {
         final t = sx < sy ? sx : sy;
         return center + v * t;
     }
+  }
+
+  Offset _hexagonEdgePoint(
+    Offset center,
+    double halfW,
+    double halfH,
+    Offset v,
+  ) {
+    // Hexagon vertices (flat top)
+    final vertices = <Offset>[
+      Offset(halfW, 0), // Right
+      Offset(halfW * 0.5, halfH), // Bottom right
+      Offset(-halfW * 0.5, halfH), // Bottom left
+      Offset(-halfW, 0), // Left
+      Offset(-halfW * 0.5, -halfH), // Top left
+      Offset(halfW * 0.5, -halfH), // Top right
+    ];
+
+    return _polygonEdgeIntersection(center, vertices, v);
+  }
+
+  Offset _octagonEdgePoint(
+    Offset center,
+    double halfW,
+    double halfH,
+    Offset v,
+  ) {
+    // Octagon vertices
+    final cut = 0.3; // How much to cut the corners
+    final vertices = <Offset>[
+      Offset(halfW, halfH * cut), // Right top
+      Offset(halfW * cut, halfH), // Top right
+      Offset(-halfW * cut, halfH), // Top left
+      Offset(-halfW, halfH * cut), // Left top
+      Offset(-halfW, -halfH * cut), // Left bottom
+      Offset(-halfW * cut, -halfH), // Bottom left
+      Offset(halfW * cut, -halfH), // Bottom right
+      Offset(halfW, -halfH * cut), // Right bottom
+    ];
+
+    return _polygonEdgeIntersection(center, vertices, v);
+  }
+
+  Offset _parallelogramEdgePoint(
+    Offset center,
+    double halfW,
+    double halfH,
+    Offset v,
+  ) {
+    // Parallelogram with skewed sides (clockwise from top-right)
+    final skew = halfW * 0.25; // Reduced skew factor for better proportions
+    final vertices = <Offset>[
+      Offset(halfW - skew, -halfH), // Top right
+      Offset(halfW + skew, halfH), // Bottom right
+      Offset(-halfW + skew, halfH), // Bottom left
+      Offset(-halfW - skew, -halfH), // Top left
+    ];
+
+    return _polygonEdgeIntersection(center, vertices, v);
+  }
+
+  Offset _trapezoidEdgePoint(
+    Offset center,
+    double halfW,
+    double halfH,
+    Offset v,
+  ) {
+    // Trapezoid (wider at bottom, clockwise from top-right)
+    final topWidth = halfW * 0.65; // Slightly wider top for better proportions
+    final vertices = <Offset>[
+      Offset(topWidth, -halfH), // Top right
+      Offset(halfW, halfH), // Bottom right
+      Offset(-halfW, halfH), // Bottom left
+      Offset(-topWidth, -halfH), // Top left
+    ];
+
+    return _polygonEdgeIntersection(center, vertices, v);
+  }
+
+  Offset _pillEdgePoint(Offset center, double halfW, double halfH, Offset v) {
+    // Pill shape (rectangle with semicircular ends)
+    if (halfW > halfH) {
+      // Horizontal pill
+      final rectWidth = halfW - halfH;
+      if (v.dx.abs() > rectWidth) {
+        // Hit the circular ends
+        final circleCenter =
+            v.dx > 0 ? Offset(rectWidth, 0) : Offset(-rectWidth, 0);
+        final toCircle = v - circleCenter;
+        final len = toCircle.distance;
+        if (len == 0) return center + circleCenter;
+        return center + circleCenter + (toCircle / len) * halfH;
+      } else {
+        // Hit the straight sides
+        final t = halfH / v.dy.abs();
+        return center + v * t;
+      }
+    } else {
+      // Vertical pill
+      final rectHeight = halfH - halfW;
+      if (v.dy.abs() > rectHeight) {
+        // Hit the circular ends
+        final circleCenter =
+            v.dy > 0 ? Offset(0, rectHeight) : Offset(0, -rectHeight);
+        final toCircle = v - circleCenter;
+        final len = toCircle.distance;
+        if (len == 0) return center + circleCenter;
+        return center + circleCenter + (toCircle / len) * halfW;
+      } else {
+        // Hit the straight sides
+        final t = halfW / v.dx.abs();
+        return center + v * t;
+      }
+    }
+  }
+
+  Offset _polygonEdgeIntersection(
+    Offset center,
+    List<Offset> vertices,
+    Offset v,
+  ) {
+    // Find intersection of ray from center in direction v with polygon edges
+    double closestT = double.infinity;
+
+    for (int i = 0; i < vertices.length; i++) {
+      final p1 = vertices[i];
+      final p2 = vertices[(i + 1) % vertices.length];
+
+      // Ray-line segment intersection
+      final edge = p2 - p1;
+      final toStart = p1;
+
+      final cross = v.dx * edge.dy - v.dy * edge.dx;
+      if (cross.abs() < 1e-10) continue; // Parallel
+
+      final t1 = (toStart.dx * edge.dy - toStart.dy * edge.dx) / cross;
+      final t2 = (toStart.dx * v.dy - toStart.dy * v.dx) / cross;
+
+      if (t1 > 0 && t2 >= 0 && t2 <= 1 && t1 < closestT) {
+        closestT = t1;
+      }
+    }
+
+    if (closestT == double.infinity) {
+      // Fallback to rectangular intersection
+      final vx = v.dx;
+      final vy = v.dy;
+      final sx = vx == 0 ? double.infinity : (vertices[0].dx.abs() / vx.abs());
+      final sy = vy == 0 ? double.infinity : (vertices[0].dy.abs() / vy.abs());
+      final t = sx < sy ? sx : sy;
+      return center + v * t;
+    }
+
+    return center + v * closestT;
   }
 
   double _distanceToSegment(Offset p, Offset a, Offset b) {

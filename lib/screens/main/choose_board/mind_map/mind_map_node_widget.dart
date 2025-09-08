@@ -83,9 +83,6 @@ class MindMapNodeWidget extends StatelessWidget {
                         ],
                       ),
                 );
-                // debugPrint('newText: $newText');
-                // if (!context.mounted) return; // avoid using a deactivated context
-                // debugPrint('context mounted');
                 if (newText != null && newText.trim().isNotEmpty) {
                   vm.updateNodeText(node.id, newText.trim());
                 }
@@ -178,7 +175,7 @@ class MindMapNodeWidget extends StatelessWidget {
                             Icons.attach_file,
                             size: 16,
                             color: Colors.white.withValues(
-                              alpha: (isSelected) ? 0.5 : 0.6,
+                              alpha: (isSelected) ? 1 : 0.6,
                             ),
                           ),
                         ),
