@@ -1453,6 +1453,26 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
+              Consumer<BoardEditVm>(
+                builder: (context, vm, _) {
+                  return TextButton.icon(
+                    onPressed: vm.createMindMap,
+                    icon: Icon(
+                      Icons.add,
+                      size: 16,
+                      color: AppTheme.emeraldGreen,
+                    ),
+                    label: Text(
+                      'Create Mind Map',
+                      style: TextStyle(
+                        color: AppTheme.vividBlue,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
           if (mindMaps.isEmpty)

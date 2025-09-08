@@ -199,6 +199,10 @@ class BoardEditVm extends ChangeNotifier {
     NavigationHelper.createAndNavigateToNewFlashCard(board);
   }
 
+
+ createMindMap() {
+    NavigationHelper.createAndNavigateToNewMindMap(board);
+  }
   Future<void> importFiles(BuildContext context) async {
     try {
       savingFiles = true;
