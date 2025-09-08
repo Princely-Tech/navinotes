@@ -24,7 +24,7 @@ class NoteCreationLeft extends StatelessWidget {
                   Column(children: [_searchField(), _createNoteButton()]),
                   _noteBooks(),
                   _studyTool(),
-                  _tags(),
+                  // _tags(),
                 ],
               ),
             ),
@@ -70,10 +70,10 @@ class NoteCreationLeft extends StatelessWidget {
           route: Routes.flashCards,
         ),
         //TODO ask about this
-        _listTile(
-          icon: _tileIcon(icon: Images.chart3, color: Color(0xFF2D3748)),
-          title: 'Study Analytics',
-        ),
+        // _listTile(
+        //   icon: _tileIcon(icon: Images.chart3, color: Color(0xFF2D3748)),
+        //   title: 'Study Analytics',
+        // ),
       ],
     );
   }
@@ -82,9 +82,26 @@ class NoteCreationLeft extends StatelessWidget {
     String title = 'NOTEBOOKS';
     return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
-        return FutureBuilder<List<Board>>(
-          future: DatabaseHelper.instance.getAllBoards(),
-          // future: DatabaseHelper.instance.getAllBoards(),
+        // Only show notes from the current board
+        if (vm.content?.boardId == null) {
+          return _section(
+            title: title,
+            children: [
+              Text(
+                'No board selected',
+                style: TextStyle(
+                  color: const Color(0xFF6B7280),
+                  fontSize: 14.0,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          );
+        }
+
+        return FutureBuilder<List<Content>>(
+          future: DatabaseHelper.instance.getAllContents(vm.content!.boardId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return _section(
@@ -92,47 +109,44 @@ class NoteCreationLeft extends StatelessWidget {
                 children: [Center(child: CircularProgressIndicator())],
               );
             }
-            List<Board> boards = snapshot.data ?? [];
+
+            if (snapshot.hasError) {
+              return _section(
+                title: title,
+                children: [
+                  Text(
+                    'Error loading notes',
+                    style: TextStyle(
+                      color: AppTheme.coralRed,
+                      fontSize: 14.0,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            List<Content> contents = snapshot.data ?? [];
             List<Color> iconColors = [
               AppTheme.vividRose,
               AppTheme.vividBlue,
               AppTheme.emerald,
               AppTheme.mediumOrchid,
             ];
+
             return _section(
               title: title,
               children:
-                  boards.map((board) {
-                    return FutureBuilder(
-                      future: DatabaseHelper.instance.getAllContents(board.id!),
-                      builder: (_, snapshot) {
-                        bool loading = false;
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          loading = true;
-                        }
-                        if (snapshot.hasError) {
-                          loading = false;
-                        }
-
-                        List<Content>? contents = snapshot.data;
-                        int? count;
-                        if (isNotNull(contents)) {
-                          count = contents!.length;
-                        }
-                        return LoadingIndicator(
-                          loading: loading,
-                          child: _listTile(
-                            icon: _tileIcon(
-                              icon: Images.book,
-                              color: getRandomListElement(iconColors),
-                            ),
-                            title: board.name,
-                            count: count,
-                            isActive: vm.content?.boardId == board.id,
-                          ),
-                        );
-                      },
+                  contents.map((content) {
+                    return _listTile(
+                      icon: _tileIcon(
+                        icon: Images.scroll,
+                        color: getRandomListElement(iconColors),
+                      ),
+                      title: content.title,
+                      isActive: vm.content?.id == content.id,
+                      onTap: () => NavigationHelper.navigateToContent(content),
                     );
                   }).toList(),
             );
@@ -152,6 +166,7 @@ class NoteCreationLeft extends StatelessWidget {
     required Widget icon,
     int? count,
     String? route,
+    VoidCallback? onTap,
   }) {
     return Consumer<NoteCreationVm>(
       builder: (_, vm, _) {
@@ -186,7 +201,9 @@ class NoteCreationLeft extends StatelessWidget {
               ),
             ),
             onTap: () {
-              if (isNotNull(route)) {
+              if (onTap != null) {
+                onTap();
+              } else if (isNotNull(route)) {
                 vm.goToRoute(route!);
               }
             },
@@ -276,11 +293,7 @@ class NoteCreationLeft extends StatelessWidget {
               },
               itemBuilder: (_, item) {
                 return CustomListTile(
-                  onTap:
-                      () => goToNotePageWithContent(
-                        content: item,
-                        context: context,
-                      ),
+                  onTap: () => NavigationHelper.navigateToContent(item),
                   title: item.title,
                   color: AppTheme.steelMist,
                   activeColor: AppTheme.strongBlue,

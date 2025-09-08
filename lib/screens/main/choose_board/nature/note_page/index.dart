@@ -37,11 +37,6 @@ class NatureNotePageScreen extends StatelessWidget {
                         child: ResponsiveSection(
                           mobile: NatureNotePageMain(),
                           desktop: Row(
-                            // spacing: getDeviceResponsiveValue(
-                            //   deviceType: layoutVm.deviceType,
-                            //   mobile: 10,
-                            //   desktop: 30,
-                            // ),
                             children: [
                               Expanded(child: NatureNotePageMain()),
                               Padding(

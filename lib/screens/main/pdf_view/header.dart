@@ -53,31 +53,31 @@ class PdfViewHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Row(
-                        spacing: 15,
-                        children: [
-                          SVGImagePlaceHolder(
-                            imagePath: Images.recent,
-                            size: 16,
-                          ),
-                          SVGImagePlaceHolder(
-                            imagePath: Images.share2,
-                            size: 16,
-                          ),
-                          Icon(Icons.more_horiz, color: AppTheme.stormGray),
-                        ],
-                      ),
-                      VisibleController(
-                        mobile: getMenuVisible(layoutVm.deviceType),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: MenuButton(onPressed: vm.openDrawer),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Row(
+                  //       spacing: 15,
+                  //       children: [
+                  //         SVGImagePlaceHolder(
+                  //           imagePath: Images.recent,
+                  //           size: 16,
+                  //         ),
+                  //         SVGImagePlaceHolder(
+                  //           imagePath: Images.share2,
+                  //           size: 16,
+                  //         ),
+                  //         Icon(Icons.more_horiz, color: AppTheme.stormGray),
+                  //       ],
+                  //     ),
+                  //     VisibleController(
+                  //       mobile: getMenuVisible(layoutVm.deviceType),
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.only(left: 10),
+                  //         child: MenuButton(onPressed: vm.openDrawer),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             );

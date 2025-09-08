@@ -1162,94 +1162,63 @@ class BoardNaturePopupScreen extends StatelessWidget {
               ),
             ],
           ),
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: IntrinsicWidth(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 16,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 48,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: color.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
+          child: InkWell(
+            onTap: () => NavigationHelper.navigateToContent(file),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: IntrinsicWidth(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: 16,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: color.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(getFileIcon(file.file), color: color),
                         ),
-                        child: Icon(getFileIcon(file.file), color: color),
-                      ),
-                      SizedBox(width: 16),
-                      Text(
-                        file.title,
-                        style: TextStyle(
-                          color: color,
-                          fontSize: 20,
-                          fontFamily: 'Crimson Text',
-                          fontWeight: FontWeight.w400,
+                        SizedBox(width: 16),
+                        Text(
+                          file.title,
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 20,
+                            fontFamily: 'Crimson Text',
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-
-                  // WidthLimiter(
-                  //   mobile: 250,
-                  //   child: Text(
-                  //     description,
-                  //     style: TextStyle(
-                  //       color: const Color(0xFF4B5563),
-                  //       fontSize: 16,
-                  //       fontFamily: 'Inter',
-                  //       fontWeight: FontWeight.w400,
-                  //     ),
-                  //   ),
-                  // ),
-                  Row(
-                    spacing: 30,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      // Flexible(
-                      //   child: Container(
-                      //     padding: EdgeInsets.symmetric(
-                      //       horizontal: 12,
-                      //       vertical: 4,
-                      //     ),
-                      //     decoration: BoxDecoration(
-                      //       color: color.withValues(alpha: 0.2),
-                      //       borderRadius: BorderRadius.circular(9999),
-                      //     ),
-                      //     child: Text(
-                      //       tag,
-                      //       style: TextStyle(
-                      //         color: color,
-                      //         fontSize: 14,
-                      //         fontFamily: 'Inter',
-                      //         fontWeight: FontWeight.w500,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      Text(
-                        getFileDescription(file),
-                        style: TextStyle(
-                          color: const Color(0xFF4B5563),
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
+                      ],
+                    ),
+                    Row(
+                      spacing: 30,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          getFileDescription(file),
+                          style: TextStyle(
+                            color: const Color(0xFF4B5563),
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () => handleFileDownload(file, context),
-                        child: SVGImagePlaceHolder(
-                          imagePath: Images.upload4,
-                          size: 16,
-                          color: AppTheme.mossGreen,
+                        InkWell(
+                          onTap: () => handleFileDownload(file, context),
+                          child: SVGImagePlaceHolder(
+                            imagePath: Images.upload4,
+                            size: 16,
+                            color: AppTheme.mossGreen,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

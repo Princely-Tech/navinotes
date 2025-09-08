@@ -9,60 +9,90 @@ class PdfViewMain extends StatelessWidget {
     return Consumer<PdfViewVm>(
       builder: (_, vm, _) {
         return Column(
-          children: [
-            PdfViewHeader(),
-            Expanded(
-              child:
-                  isNotNull(vm.comPdfVm.document)
-                      ? CPDFReaderWidget(
-                        document: vm.comPdfVm.document!,
-                        configuration: CPDFConfiguration(
-                          toolbarConfig: CPDFToolbarConfig(
-                            mainToolbarVisible: false,
-                          ),
-                          contentEditorConfig: CPDFContentEditorConfig(),
-                          readerViewConfig: CPDFReaderViewConfig(
-                            verticalMode: false,
-                            displayMode: CPDFDisplayMode.singlePage,
-                            continueMode: false,
-                            enableSliderBar: false,
-                            enablePageIndicator: false,
-                          ),
-                          modeConfig: CPDFModeConfig(
-                            initialViewMode: CPDFViewMode.annotations,
-                          ),
-                          annotationsConfig: CPDFAnnotationsConfig(
-                            annotationAuthor: 'Navinotes',
-                            availableTypes: [
-                              CPDFAnnotationType.highlight,
-                              CPDFAnnotationType.underline,
-                              CPDFAnnotationType.strikeout,
-                              CPDFAnnotationType.freetext,
-                              CPDFAnnotationType.ink,
-                              CPDFAnnotationType.ink_eraser,
-                              CPDFAnnotationType.note,
-                              CPDFAnnotationType.pencil,
-                              CPDFAnnotationType.pictures,
-                              CPDFAnnotationType.squiggly,
-                              CPDFAnnotationType.strikeout,
-                              CPDFAnnotationType.arrow,
-                            ],
-                          ),
-                        ),
-                        onSaveCallback: () {
-                          // print('Saved');
-                        },
-                        onCreated: (controller) {
-                          // print('Created');
-                          // controller.
-                        },
-                      )
-                      : const Center(child: CircularProgressIndicator()),
-            ),
-            PdfViewFooter(),
-          ],
+          children: [PdfViewHeader(), Expanded(child: _buildContent(vm))],
         );
       },
     );
+  }
+
+  Widget _buildContent(PdfViewVm vm) {
+    // Show loading state
+    if (vm.isLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text(
+              'Loading PDF...',
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Show error state
+    if (vm.errorMessage != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
+            SizedBox(height: 16),
+            Text(
+              'Error Loading PDF',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.red[700],
+              ),
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                vm.errorMessage!,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              ),
+            ),
+            SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => NavigationHelper.pop(),
+              child: Text('Go Back'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Show PDF viewer if document is loaded
+    if (isNotNull(vm.comPdfVm.document)) {
+      debugPrint('Rendering PDF viewer with document: ${vm.comPdfVm.document}');
+      
+      // Try a simple approach first - just the widget with minimal config
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: CPDFReaderWidget(
+          document: vm.comPdfVm.document!,
+          configuration: CPDFConfiguration(
+            toolbarConfig: CPDFToolbarConfig(
+              mainToolbarVisible: true,
+            ),
+          ),
+          onSaveCallback: () {
+            debugPrint('PDF Saved');
+          },
+          onCreated: (controller) {
+            debugPrint('PDF Reader Created with controller: $controller');
+          },
+        ),
+      );
+    }
+
+    // Fallback loading state
+    return const Center(child: CircularProgressIndicator());
   }
 }

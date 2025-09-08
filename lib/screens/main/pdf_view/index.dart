@@ -6,6 +6,9 @@ class PdfViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get contentId from route arguments
+    final int contentId = ModalRoute.of(context)?.settings.arguments as int;
+
     return ChangeNotifierProvider(
       create: (_) => ComPdfVm(),
       child: Consumer<ComPdfVm>(
@@ -15,13 +18,14 @@ class PdfViewScreen extends StatelessWidget {
               final vm = PdfViewVm(
                 scaffoldKey: GlobalKey(),
                 comPdfVm: comPdfVm,
+                contentId: contentId,
               );
               vm.initialize(context);
               return vm;
             },
             child: ScaffoldFrame(
               scaffoldKey: _scaffoldKey,
-              endDrawer: CustomDrawer(child: PdfViewAside()),
+              // endDrawer: CustomDrawer(child: PdfViewAside()),
               backgroundColor: AppTheme.white,
               body: Stack(
                 children: [
@@ -30,11 +34,11 @@ class PdfViewScreen extends StatelessWidget {
                     desktop: Row(
                       children: [
                         Expanded(child: PdfViewMain()),
-                        WidthLimiter(mobile: 288, child: PdfViewAside()),
+                        // WidthLimiter(mobile: 288, child: PdfViewAside()),
                       ],
                     ),
                   ),
-                  PdfViewOverlay(),
+                  //PdfViewOverlay(),
                 ],
               ),
             ),
