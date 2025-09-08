@@ -239,11 +239,6 @@ class FlashCardStudyScreen extends StatelessWidget {
           runSpacing: 15,
           alignment: WrapAlignment.center,
           children: [
-
-
-
-
-
             ...FlashcardDifficulty.values.map((difficulty) {
               Color textColor = difficulty.textColor;
               IconData? icon;

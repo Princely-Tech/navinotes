@@ -69,10 +69,7 @@ class BoardNotePageVm extends ChangeNotifier {
 
   Future<List<Content>> getRecentContents(int count) async {
     //TODO check the recentViewedLogic
-    final all = await dbHelper.getAllContents(
-      board.id!,
-      sortType: NoteSortType.updatedAt,
-    );
+    final all = await dbHelper.getAllContents(board.id!);
     return all.take(count).toList();
   }
 

@@ -183,7 +183,6 @@ class DatabaseHelper {
     if (oldVersion < 9) {
       // nothing.
     }
-
   }
 
   // Example CRUD for Boards
@@ -212,7 +211,7 @@ class DatabaseHelper {
     }
     final sortBy = sortType.toString();
     final db = await instance.database;
-    final result = await db.query('boards', orderBy: '$sortBy $sortOrder');
+    final result = await db.query('boards', orderBy: 'updated_at ASC');
     debugPrint('Getting boards sorted by $sortBy $sortOrder');
     debugPrint(result.toString());
     return result.map((json) => Board.fromMap(json)).toList();
@@ -231,21 +230,14 @@ class DatabaseHelper {
   }
 
   Future<List<Content>> getAllContents(
-    int boardId, {
-    NoteSortType sortType = NoteSortType.updatedAt,
-  }) async {
-    String sortOrder = 'DESC';
-    if (sortType == NoteSortType.createdAt) {
-      sortOrder = 'ASC';
-    }
+    int boardId) async {
     final db = await instance.database;
-    final sortBy = sortType.toString();
-    debugPrint('Getting contents of $boardId sorted by $sortBy $sortOrder');
+    debugPrint('Getting contents of $boardId');
     final result = await db.query(
       'contents',
       where: 'board_id = ?',
       whereArgs: [boardId],
-      orderBy: '$sortBy $sortOrder',
+      orderBy: 'updated_at ASC',
     );
     return result.map((json) => Content.fromMap(json)).toList();
   }
@@ -322,19 +314,14 @@ class DatabaseHelper {
 
   // Get all flashcards for a deck
   Future<List<FlashCard>> getDeckFlashCards(
-    int deckId, {
-    NoteSortType sortType = NoteSortType.createdAt,
-  }) async {
+    int deckId) async {
     final db = await instance.database;
-    String sortOrder = 'ASC';
-    final sortBy =
-        sortType == NoteSortType.createdAt ? 'created_at' : 'updated_at';
 
     final List<Map<String, dynamic>> maps = await db.query(
       'flashcards',
       where: 'deck_id = ?',
       whereArgs: [deckId],
-      orderBy: '$sortBy $sortOrder',
+      orderBy: 'updated_at ASC',
     );
 
     return List.generate(maps.length, (i) => FlashCard.fromMap(maps[i]));
@@ -374,8 +361,8 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> maps = await db.query(
       'contents',
       where: 'board_id = ? AND type = ?',
-      whereArgs: [boardId, AppContentType.flashcardDeck],
-      orderBy: 'name ASC',
+      whereArgs: [boardId, AppContentType.flashcardDeck.toString()],
+      orderBy: 'updated_at ASC',
     );
 
     return List.generate(maps.length, (i) {
