@@ -60,7 +60,7 @@ class MindMapHeader extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 10),
-                      _title(),
+                      _title(mindMapVm),
                     ],
                   ),
 
@@ -91,7 +91,7 @@ class MindMapHeader extends StatelessWidget {
     );
   }
 
-  Widget _title() {
+  Widget _title(MindMapVm vm) {
     BordThemeValues params = boardTheme.values;
     Color color = AppTheme.darkMossGreen;
     FontWeight? fontWeight;
@@ -106,7 +106,7 @@ class MindMapHeader extends StatelessWidget {
       default:
     }
     return Text(
-      'Advanced Biology',
+      vm.title,
       style: AppTheme.text.copyWith(
         color: color,
         fontSize: 20.0,

@@ -44,7 +44,8 @@ class MindMapVm extends ChangeNotifier {
   /// Persistence state
   final int boardId;
   int? contentId; // row id in contents table for this mindmap
-  String title = 'Mind Map';
+Content? baseContent; // the content this mindmap is based on
+String? title;
 
   /// Canvas transform state (logical coordinates)
   double scale = 1.0;
@@ -1042,6 +1043,7 @@ class MindMapVm extends ChangeNotifier {
     if (content == null) return;
     if (content.type != AppContentType.mindmap) return;
     contentId = content.id;
+    baseContent = content;
     title = content.title;
     // meta_data contains our map
     final meta = content.metaData;

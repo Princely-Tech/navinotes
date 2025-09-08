@@ -1,6 +1,8 @@
 // mind_map_canvas.dart
 import 'package:flutter/material.dart';
+import 'package:navinotes/settings/packages.dart';
 import 'package:provider/provider.dart';
+import 'package:vector_math/vector_math_64.dart';
 import 'vm.dart';
 import 'mind_map_node_widget.dart';
 import 'edge_painter.dart';
@@ -53,10 +55,10 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                         isDragOver
                             ? BoxDecoration(
                               border: Border.all(
-                                color: Colors.blue.withOpacity(0.5),
+                                color: AppTheme.cerulean.withValues(alpha: 0.5),
                                 width: 2,
                               ),
-                              color: Colors.blue.withOpacity(0.1),
+                              color: AppTheme.cerulean.withValues(alpha: 0.1),
                             )
                             : null,
                     child: InteractiveViewer(
@@ -91,7 +93,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                         child: Container(
                           width: MindMapVm.canvasWidth,
                           height: MindMapVm.canvasHeight,
-                          color: Colors.transparent,
+                          color: AppTheme.transparent,
                           child: Stack(
                             children: [
                               // edges painter (below nodes)
@@ -129,8 +131,17 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
     dynamic data,
     Offset offset,
   ) {
-    // Use offset directly as logical position since we're not using transforms
-    final dropPosition = offset;
+    // Convert global screen coordinates to logical canvas coordinates
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final localOffset = renderBox.globalToLocal(offset);
+
+    // Transform the local offset through the InteractiveViewer's transformation
+    final Matrix4 transform = _transformationController.value;
+    final Matrix4 invertedTransform = Matrix4.inverted(transform);
+    final Vector3 transformedPoint = invertedTransform.transform3(
+      Vector3(localOffset.dx, localOffset.dy, 0),
+    );
+    final dropPosition = Offset(transformedPoint.x, transformedPoint.y);
 
     if (data is Content) {
       if (data.id != null) {
