@@ -94,61 +94,9 @@ String getFileType(String? filePath) {
 }
 
 /// Handles opening a file with appropriate application based on file type
-Future<void> handleOpenFile(Content file, BuildContext context) async {
-  if (!context.mounted) return;
-
-  try {
-    final filePath = file.file;
-    if (filePath == null || filePath.isEmpty) {
-      MessageDisplayService.showErrorMessage(
-        context,
-        'Cannot open file: No file path available',
-      );
-      return;
-    }
-
-    final fileEntity = File(filePath);
-    if (!await fileEntity.exists()) {
-      if (context.mounted) {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'File not found: ${path.basename(filePath)}',
-        );
-      }
-      return;
-    }
-
-    final ext = path.extension(filePath).toLowerCase();
-
-    // Handle PDF files with custom viewer
-    if (ext == '.pdf') {
-      if (file.id != null) {
-        NavigationHelper.navigateToPdfView(file.id!);
-      } else {
-        if (context.mounted) {
-          MessageDisplayService.showErrorMessage(
-            context,
-            'Cannot open PDF: Invalid file reference',
-          );
-        }
-      }
-      return;
-    }
-    //TODO test this
-    // For other file types, try to open with system default app
-    final result = await OpenFile.open(filePath);
-
-    if (result.type != ResultType.done) {
-      throw Exception(result.message);
-    }
-  } catch (e) {
-    if (context.mounted) {
-      MessageDisplayService.showErrorMessage(
-        context,
-        'Failed to open file: ${e.toString().replaceAll('Exception: ', '')}',
-      );
-    }
-  }
+Future<bool> openFile(File file) async {
+  final result = await OpenFile.open(file.path);
+  return result.type == ResultType.done;
 }
 
 Rect _safeShareOrigin(BuildContext context) {

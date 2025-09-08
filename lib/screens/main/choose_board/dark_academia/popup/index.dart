@@ -1029,7 +1029,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     return Builder(
       builder: (context) {
         return InkWell(
-          onTap: () => handleOpenFile(file, context),
+          onTap: () => NavigationHelper.navigateToContent(file),
           child: Container(
             // constraints: BoxConstraints(maxWidth: 400),
 

@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/date_utils.dart';
 
 class BoardPlainPopupOverview extends StatelessWidget {
   const BoardPlainPopupOverview({super.key});
@@ -12,6 +13,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _headerSection(context),
+                _recentNotesSection(vm),
                 _courseActions(),
                 Divider(height: 1, color: AppTheme.lightGray),
                 _fileUploads(vm: vm, context: context),
@@ -36,9 +38,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     if (vm.board.courseInfo == null) {
       return const SizedBox.shrink();
     }
-
     final courseInfo = vm.board.courseInfo;
-
     return _section(
       color: AppTheme.white,
       child: CustomGrid(
@@ -98,22 +98,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   _detailRow('Duration:', courseInfo?.semesterDuration),
                 ],
               ),
-              // Text(
-              //   'Quick Links',
-              //   style: TextStyle(
-              //     color: const Color(0xFF1F2937),
-              //     fontSize: 16.0,
-              //     fontWeight: FontWeight.w500,
-              //   ),
-              // ),
-              // Row(
-              //   spacing: 16,
-              //   children: [
-              //     _linkText('Syllabus'),
-              //     _linkText('Library Resources'),
-              //     _linkText('Academic Calendar'),
-              //   ],
-              // ),
             ],
           ),
         ],
@@ -150,18 +134,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  /// Helper for quick link text
-  Widget _linkText(String text) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: const Color(0xFF3B82F6),
-        fontSize: 14.0,
-        fontWeight: FontWeight.w400,
-      ),
     );
   }
 
@@ -500,7 +472,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   icon: Icons.open_in_new,
                   label: 'Open Syllabus',
                   onTap: () {
-                    handleOpenFile(syllabusContent, context);
+                    NavigationHelper.navigateToContent(syllabusContent);
                   },
                 )
                 : SizedBox.shrink(),
@@ -647,39 +619,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  // Widget fileUploads1({required BoardEditVm vm}) {
-  //   return _section(
-  //     color: AppTheme.white,
-  //     header: _sectionHeader(
-  //       title: 'File Uploads',
-  //       subtitle: 'Essential readings and resources for your studies',
-  //     ),
-  //     child: ScrollableController(
-  //       scrollDirection: Axis.horizontal,
-  //       child: Row(
-  //         spacing: 25,
-  //         children: [
-  //           _fileCard(
-  //             title: 'Cell Structure Guide',
-  //             subtitle: 'PDF • 2.4 MB • Uploaded Sept 5',
-  //             status: 'Required reading',
-  //           ),
-  //           _fileCard(
-  //             title: 'Genetics Research Paper',
-  //             subtitle: 'PDF • 3.7 MB • Uploaded Sept 7',
-  //             status: 'Supplemental reading',
-  //           ),
-  //           _fileCard(
-  //             title: 'Lab Procedures Video',
-  //             subtitle: 'MP4 • 45:12 • 112 MB',
-  //             status: 'Required viewing',
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _fileUploads({
     required BoardEditVm vm,
     required BuildContext context,
@@ -710,7 +649,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 final metaDataSize = file.metaData[ContentMetadataKey.fileSize];
                 final size = getFileSize(metaDataSize);
                 final name = file.title;
-                //TODO return to this. Needs description
                 return Container(
                   width: 200,
                   margin: const EdgeInsets.only(right: 16),
@@ -758,7 +696,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                               IconButton(
                                 icon: const Icon(Icons.open_in_new, size: 20),
                                 onPressed: () {
-                                  handleOpenFile(file, context);
+                                  NavigationHelper.navigateToContent(file);
                                 },
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
@@ -1139,6 +1077,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 Row(
                   spacing: 16,
                   children: [
@@ -1330,6 +1269,140 @@ class BoardPlainPopupOverview extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _recentNotesSection(BoardEditVm vm) {
+    return _section(
+      child: FutureBuilder<List<Content>>(
+        future: _getRecentNotes(vm.board.id!),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+              height: 100,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          final notes = snapshot.data ?? [];
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Recent Notes',
+                    style: TextStyle(
+                      color: const Color(0xFF1F2937),
+                      fontSize: 18.0,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (notes.length >= 5)
+                    TextButton(
+                      onPressed: vm.goToBoardNotes,
+                      child: Text(
+                        'View All More',
+                        style: TextStyle(
+                          color: AppTheme.vividBlue,
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              if (notes.isEmpty)
+                Text(
+                  'No notes yet. Create your first note to get started.',
+                  style: TextStyle(
+                    color: const Color(0xFF6B7280),
+                    fontSize: 14.0,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.italic,
+                  ),
+                )
+              else
+                Column(
+                  spacing: 8,
+                  children:
+                      notes.take(5).map((note) => _noteItem(note)).toList(),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _noteItem(Content note) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(note),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.note, size: 16, color: AppTheme.steelBlue),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    note.title.isNotEmpty ? note.title : 'Untitled Note',
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF1F2937),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        note.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: const Color(0xFF6B7280),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<List<Content>> _getRecentNotes(int boardId) async {
+    try {
+      final allContents = await DatabaseHelper.instance.getAllContents(boardId);
+      final notes =
+          allContents
+              .where((content) => content.type == AppContentType.note)
+              .toList();
+
+      // Sort by updated date (most recent first)
+      notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+      return notes.take(5).toList();
+    } catch (e) {
+      debugPrint('Error fetching recent notes: $e');
+      return [];
+    }
   }
 
   void _editBoardDescription(BuildContext context) {

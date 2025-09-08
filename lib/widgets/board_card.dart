@@ -1,31 +1,11 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/date_utils.dart';
 
 class BoardCard extends StatelessWidget {
   const BoardCard({super.key, required this.board, required this.onTap});
 
   final Board board;
   final VoidCallback onTap;
-
-  String _formatDate(DateTime date) {
-    return '${_getMonthName(date.month)} ${date.day}, ${date.year}';
-  }
-
-  String _getMonthName(int month) {
-    return [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ][month - 1];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +57,7 @@ class BoardCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Created ${_formatDate(DateTime.fromMillisecondsSinceEpoch(board.createdAt * 1000))}',
+                          'Created ${formatDate(DateTime.fromMillisecondsSinceEpoch(board.createdAt * 1000))}',
                           style: AppTheme.text.copyWith(
                             color: AppTheme.steelMist,
                             fontSize: 12.0,

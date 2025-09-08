@@ -4,8 +4,6 @@ class BoardEditUploads extends StatelessWidget {
   const BoardEditUploads(this.vm, {super.key});
   final BoardEditVm vm;
 
-  
-
   @override
   Widget build(BuildContext context) {
     if (vm.uploadedFiles.isEmpty) {
@@ -83,7 +81,9 @@ class BoardEditUploads extends StatelessWidget {
                                       icon: Icons.open_in_new,
                                       label: 'Open',
                                       onTap: () {
-                                        handleOpenFile(file, context);
+                                        NavigationHelper.navigateToContent(
+                                          file,
+                                        );
                                       },
                                     ),
                                     const Divider(height: 1, thickness: 1),

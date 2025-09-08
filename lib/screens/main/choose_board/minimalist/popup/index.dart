@@ -729,7 +729,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
         return Consumer<LayoutProviderVm>(
           builder: (_, layoutVm, _) {
             return InkWell(
-              onTap: () => handleOpenFile(file, context),
+              onTap: () => NavigationHelper.navigateToContent(file),
               child: Container(
                 padding: EdgeInsets.all(25),
                 decoration: BoxDecoration(

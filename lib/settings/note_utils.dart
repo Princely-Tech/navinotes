@@ -9,7 +9,7 @@ Future<void> goToNotePageWithContent({
     return;
   }
   if (isNotNull(content.file)) {
-    return handleOpenFile(content, context);
+    return NavigationHelper.navigateToContent(content);
   }
   BoardNoteTemplate template = getNoteTemplateFromString(
     content.metaData[ContentMetadataKey.template],

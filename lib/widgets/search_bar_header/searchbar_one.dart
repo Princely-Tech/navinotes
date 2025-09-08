@@ -44,7 +44,7 @@ class _SearchBarOneState extends State<SearchBarOne> {
       icon: icon,
       onTap: () async {
         await (isFile
-            ? handleOpenFile(content, context)
+            ? NavigationHelper.navigateToContent(content)
             : goToNotePageWithContent(content: content, context: context));
         _initItems();
       },

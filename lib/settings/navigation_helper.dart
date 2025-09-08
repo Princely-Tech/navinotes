@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:path/path.dart' as path;
 
 class NavigationHelper {
   NavigationHelper._();
@@ -184,7 +185,41 @@ class NavigationHelper {
 
   static navigateToContent(Content content) async {
     debugPrint('Navigating to content ${content.id} - ${content.title}');
+
+    //Handle file
+    if (content.type == AppContentType.file) {
+      return _handleFileNavigation(content);
+    }
     // TODO: Implement
+  }
+
+  static _handleFileNavigation(Content content) async {
+    try {
+      final filePath = content.file;
+      if (filePath == null || filePath.isEmpty) {
+        return;
+      }
+
+      final fileEntity = File(filePath);
+      if (!fileEntity.existsSync()) {
+        return;
+      }
+
+      final ext = path.extension(filePath).toLowerCase();
+
+      // Handle PDF files with custom viewer
+      if (ext == '.pdf') {
+        navigateToPdfView(content.id!);
+        return;
+      }
+
+      final result = await openFile(fileEntity);
+      if (!result) {
+        throw Exception('Failed to open file');
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   static navigateToContentById(int contentId) async {
