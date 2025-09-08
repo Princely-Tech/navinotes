@@ -126,27 +126,6 @@ class DatabaseHelper {
       synced_at INTEGER
     )
     ''');
-
-    await db.execute('''
-    CREATE TABLE decks (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      guid TEXT NOT NULL,
-      board_id INTEGER,
-      last_studied INTEGER,
-      name TEXT NOT NULL,
-      description TEXT,
-      cards_per_day INTEGER DEFAULT 20,
-      steps TEXT DEFAULT '[1, 10]',
-      again_interval INTEGER DEFAULT 1,
-      hard_interval INTEGER DEFAULT 3,
-      good_interval INTEGER DEFAULT 5,
-      easy_interval INTEGER DEFAULT 7,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
-      synced_at INTEGER,
-      FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE SET NULL
-    )
-    ''');
   }
 
   // Add this new method to handle database upgrades
@@ -202,27 +181,9 @@ class DatabaseHelper {
       await db.execute('ALTER TABLE contents ADD COLUMN voice_notes TEXT');
     }
     if (oldVersion < 9) {
-      await db.execute('''
-      CREATE TABLE IF NOT EXISTS decks (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        guid TEXT NOT NULL,
-        user_id INTEGER NOT NULL,
-        board_id INTEGER,
-        name TEXT NOT NULL,
-        description TEXT,
-        cards_per_day INTEGER DEFAULT 20,
-        steps TEXT DEFAULT '[1, 10]',
-        again_interval INTEGER DEFAULT 1,
-        hard_interval INTEGER DEFAULT 3,
-        good_interval INTEGER DEFAULT 5,
-        easy_interval INTEGER DEFAULT 7,
-        created_at INTEGER NOT NULL,
-        updated_at INTEGER NOT NULL,
-        synced_at INTEGER,
-        FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE SET NULL
-      )
-      ''');
+      // nothing.
     }
+
   }
 
   // Example CRUD for Boards
@@ -407,56 +368,33 @@ class DatabaseHelper {
     return await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
   }
 
-  // FlashCardDeck methods
-  Future<int> insertDeck(FlashCardDeck deck) async {
-    final db = await instance.database;
-    final id = await db.insert('decks', deck.toMap());
-    deck.setIDAfterCreate(id);
-    return id;
-  }
-
-  Future<List<FlashCardDeck>> getBoardDecks(int boardId) async {
+  Future<List<Content>> getBoardDecks(int boardId) async {
     final db = await instance.database;
 
     final List<Map<String, dynamic>> maps = await db.query(
-      'decks',
-      where: 'board_id = ?',
-      whereArgs: [boardId],
+      'contents',
+      where: 'board_id = ? AND type = ?',
+      whereArgs: [boardId, AppContentType.flashcardDeck],
       orderBy: 'name ASC',
     );
 
     return List.generate(maps.length, (i) {
-      return FlashCardDeck.fromMap(maps[i]);
+      return Content.fromMap(maps[i]);
     });
   }
 
-  Future<FlashCardDeck?> getDeck(int id) async {
+  Future<Content?> getDeck(int id) async {
     final db = await instance.database;
     final List<Map<String, dynamic>> maps = await db.query(
-      'decks',
+      'contents',
       where: 'id = ?',
       whereArgs: [id],
     );
 
     if (maps.isNotEmpty) {
-      return FlashCardDeck.fromMap(maps.first);
+      return Content.fromMap(maps.first);
     }
     return null;
-  }
-
-  Future<int> updateDeck(FlashCardDeck deck) async {
-    final db = await instance.database;
-    return await db.update(
-      'decks',
-      deck.copyWith(updatedAt: generateUnixTimestamp()).toMap(),
-      where: 'id = ?',
-      whereArgs: [deck.id],
-    );
-  }
-
-  Future<int> deleteDeck(int id) async {
-    final db = await instance.database;
-    return await db.delete('decks', where: 'id = ?', whereArgs: [id]);
   }
 
   Future close() async {

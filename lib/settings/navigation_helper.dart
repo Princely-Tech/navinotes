@@ -82,7 +82,7 @@ class NavigationHelper {
     );
   }
 
-  static void navigateToFlashCardStudy(FlashCardDeck deck) {
+  static void navigateToFlashCardStudy(Content deck) {
     push(Routes.flashcardStudy, arguments: deck);
   }
 
@@ -147,7 +147,7 @@ class NavigationHelper {
     );
   }
 
-  static navigateToAiFlashCard(FlashCardDeck deck, {bool replace = false}) {
+  static navigateToAiFlashCard(Content deck, {bool replace = false}) {
     if (replace) {
       return NavigationHelper.pushReplacement(
         Routes.flashCardAiCreation,
@@ -233,8 +233,8 @@ class NavigationHelper {
     return navigateToContent(content!);
   }
 
-  static navigateToDeck(FlashCardDeck deck) {
-    debugPrint('Navigating to deck ${deck.id} - ${deck.name}');
+  static navigateToDeck(Content deck) {
+    debugPrint('Navigating to deck ${deck.id} - ${deck.title}');
     navigateToManualFlashCard(ManualFlashCardProps(deck: deck));
   }
 
@@ -244,10 +244,39 @@ class NavigationHelper {
   }
 
   static createAndNavigateToNewMindMap(Board board) async {
+    final id = await _createNewContent(
+      AppContentType.mindmap,
+      board,
+      'New Mind Map',
+    );
+    return navigateToContentById(id);
+  }
+
+  static createAndNavigateToNewFlashCard(Board board) async {
+    final random = Random();
+    final adjectives = ['New', 'Fresh', 'Smart', 'Quick', 'Study', 'Master'];
+    final nouns = ['Deck', 'Set', 'Collection', 'Pack', 'Bundle'];
+    final adjective = adjectives[random.nextInt(adjectives.length)];
+    final noun = nouns[random.nextInt(nouns.length)];
+
+    final title = '$adjective $noun ${generateUnixTimestamp() % 100}';
+    final id = await _createNewContent(
+      AppContentType.flashcardDeck,
+      board,
+      title,
+    );
+    return navigateToDeckById(id);
+  }
+
+  static Future<int> _createNewContent(
+    AppContentType type,
+    Board board,
+    String title,
+  ) async {
     final content = Content(
       guid: const Uuid().v4(),
-      title: 'New Mind Map',
-      type: AppContentType.mindmap,
+      title: title,
+      type: type,
       boardId: board.id!,
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
@@ -258,37 +287,6 @@ class NavigationHelper {
       file: null,
     );
     final id = await DatabaseHelper.instance.insertContent(content);
-    debugPrint('Content inserted with id: $id');
-    return navigateToContentById(id);
-  }
-
-  static createAndNavigateToNewFlashCard(Board board) async {
-    final dbHelper = DatabaseHelper.instance;
-
-    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    final random = Random();
-    final adjectives = ['New', 'Fresh', 'Smart', 'Quick', 'Study', 'Master'];
-    final nouns = ['Deck', 'Set', 'Collection', 'Pack', 'Bundle'];
-    final adjective = adjectives[random.nextInt(adjectives.length)];
-    final noun = nouns[random.nextInt(nouns.length)];
-
-    final newDeck = FlashCardDeck(
-      guid: 'deck_${DateTime.now().millisecondsSinceEpoch}',
-      boardId: board.id!,
-      name: '$adjective $noun ${now % 100}',
-      description: 'Created on ${DateTime.now().toString().split(' ')[0]}',
-      cardsPerDay: 20,
-      steps: [1, 10],
-      againInterval: 1,
-      hardInterval: 3,
-      goodInterval: 5,
-      easyInterval: 7,
-      createdAt: generateUnixTimestamp(),
-      updatedAt: generateUnixTimestamp(),
-    );
-
-    final id = await dbHelper.insertDeck(newDeck);
-    newDeck.id = id;
-    navigateToDeck(newDeck);
+    return id;
   }
 }

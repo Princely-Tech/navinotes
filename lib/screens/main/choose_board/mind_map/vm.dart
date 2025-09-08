@@ -126,23 +126,6 @@ class MindMapVm extends ChangeNotifier {
     return node;
   }
 
-  /// Create a new node with attached deck at the specified position
-  MindMapNode addNodeWithDeck({
-    required String text,
-    required Offset logicalPosition,
-    required int deckId,
-    Color color = Colors.blue,
-  }) {
-    final node = MindMapNode(
-      text: text,
-      position: _constrainPosition(logicalPosition),
-      color: color,
-    );
-    node.contentID = 'deck:$deckId';
-    mindMap.nodes.add(node);
-    notifyListeners();
-    return node;
-  }
 
   void removeNode(String nodeId) {
     mindMap.removeNode(nodeId);
@@ -914,15 +897,6 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  void attachDeckToNodeById(String nodeId, int deckId) {
-    final node = mindMap.findNode(nodeId);
-    if (node == null) return;
-    node.contentID = 'deck:$deckId';
-    // exit attach mode after attaching
-    attachingNodeId = null;
-    notifyListeners();
-  }
-
   void removeAttachmentFromNode(String nodeId) {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
@@ -962,18 +936,11 @@ class MindMapVm extends ChangeNotifier {
     if (node == null) return;
     final parsed = _parseAttachment(node.contentID);
     if (parsed == null) return;
-    final type = parsed.$1;
+    // final type = parsed.$1;
     final id = parsed.$2;
     if (id == null) return;
 
-    if (type == 'deck') {
-      final deck = await DatabaseHelper.instance.getDeck(id);
-      if (deck != null) {
-        NavigationHelper.navigateToDeck(deck);
-      }
-      return;
-    }
-
+  
     // Default: content
     final content = await DatabaseHelper.instance.getContentById(id);
     if (content == null) return;

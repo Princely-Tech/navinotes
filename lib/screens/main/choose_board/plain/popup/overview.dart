@@ -1498,7 +1498,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
 
   Widget _flashCardsDeckSection(BoardEditVm vm) {
     return _section(
-      child: FutureBuilder<List<FlashCardDeck>>(
+      child: FutureBuilder<List<Content>>(
         future: _getFlashCardDecks(vm.board.id!),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -1631,7 +1631,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     }
   }
 
-  Future<List<FlashCardDeck>> _getFlashCardDecks(int boardId) async {
+  Future<List<Content>> _getFlashCardDecks(int boardId) async {
     try {
       return await DatabaseHelper.instance.getBoardDecks(boardId);
     } catch (e) {
@@ -1691,7 +1691,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _flashCardDeckItem(FlashCardDeck deck) {
+  Widget _flashCardDeckItem(Content deck) {
     return InkWell(
       onTap: () {
         NavigationHelper.navigateToDeck(deck);
@@ -1712,8 +1712,8 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    deck.name.isNotEmpty
-                        ? deck.name
+                    deck.title.isNotEmpty
+                        ? deck.title
                         : 'Untitled Flashcard Deck',
                     style: TextStyle(
                       fontSize: 14.0,

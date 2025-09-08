@@ -10,7 +10,7 @@ class FlashCardAiCreationScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final deck = ModalRoute.of(context)?.settings.arguments as FlashCardDeck;
+    final deck = ModalRoute.of(context)?.settings.arguments as Content;
     return ChangeNotifierProvider(
       create: (context) {
         final vm = FlashCardCreationVm(

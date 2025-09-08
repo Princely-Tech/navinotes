@@ -7,7 +7,6 @@ import 'vm.dart';
 import 'mind_map_node_widget.dart';
 import 'edge_painter.dart';
 import 'package:navinotes/models/content.dart';
-import 'package:navinotes/models/flashcard_deck.dart';
 
 class MindMapCanvas extends StatefulWidget {
   const MindMapCanvas({super.key});
@@ -41,7 +40,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
             return DragTarget<Object>(
               onWillAcceptWithDetails: (details) {
                 // Accept Content or FlashCardDeck objects
-                return details.data is Content || details.data is FlashCardDeck;
+                return details.data is Content;
               },
               onAcceptWithDetails: (details) {
                 // Handle the drop - create a new node with the content attached
@@ -151,14 +150,6 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
           text: title,
           logicalPosition: dropPosition,
           contentId: data.id!,
-        );
-      }
-    } else if (data is FlashCardDeck) {
-      if (data.id != null) {
-        vm.addNodeWithDeck(
-          text: data.name,
-          logicalPosition: dropPosition,
-          deckId: data.id!,
         );
       }
     }

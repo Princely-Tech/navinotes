@@ -23,7 +23,7 @@ class NoteCreationProp {
 }
 
 class ManualFlashCardProps {
-  final FlashCardDeck deck;
+  final Content deck;
   final int? targetIndex;
   ManualFlashCardProps({
     required this.deck,

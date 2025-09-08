@@ -156,6 +156,29 @@ class Content {
     );
   }
 
+  Future<int>? updateTitle({String? newTitle}) {
+    try {
+      Content updatedContent = getUpdatedContent(title: newTitle);
+      return DatabaseHelper.instance.updateContent(updatedContent);
+    } catch (err) {
+      debugPrint('Error updating content title: $err');
+      return null;
+    }
+  }
+
+  Future<int>? getCardsCount() {
+    if (type != AppContentType.flashcardDeck) {
+      debugPrint('Getting deck cards count for deck $id');
+      try {
+        return DatabaseHelper.instance.getDeckCardsCount(id!);
+      } catch (err) {
+        debugPrint('Error getting deck cards count: $err');
+        return null;
+      }
+    }
+    return null;
+  }
+
   Future<Board> getBoard() async {
     final dbHelper = DatabaseHelper.instance;
     final board = await dbHelper.getBoard(boardId);
@@ -234,5 +257,9 @@ class Content {
     DatabaseHelper.instance.updateContent(newContent);
 
     return response;
+  }
+
+  getMeta(key){
+    return metaData[key];
   }
 }

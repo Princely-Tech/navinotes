@@ -68,7 +68,7 @@ class FlashCardStudyHeader extends StatelessWidget {
                                     ),
                                   ),
                                   TextSpan(
-                                    text: vm.deck.name,
+                                    text: vm.deck.title,
                                     style: TextStyle(
                                       color: Color(0xFF374151),
                                       fontSize: 18,

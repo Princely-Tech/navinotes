@@ -45,12 +45,12 @@ class FlashCardCreationVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   BuildContext context;
   ManualFlashCardProps props;
-  FlashCardDeck deck;
+  Content deck;
   FlashCardCreationVm({
     required this.scaffoldKey,
     required this.context,
     required this.props,
-  }) : deckNameController = TextEditingController(text: props.deck.name),
+  }) : deckNameController = TextEditingController(text: props.deck.title),
        deck = props.deck;
 
   TextEditingController deckNameController;
@@ -382,7 +382,7 @@ class FlashCardCreationVm extends ChangeNotifier {
     }
     deckNameFocusNode.addListener(() {
       if (!deckNameFocusNode.hasFocus) {
-        deck.update(name: deckNameController.text);
+        deck.updateTitle(newTitle: deckNameController.text);
       }
     });
     getBoards();

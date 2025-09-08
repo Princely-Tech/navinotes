@@ -93,6 +93,7 @@ enum AppContentType {
   mindmap,
 
   // syllabus,
+  flashcardDeck,
   file;
 
   @override
@@ -104,6 +105,8 @@ enum AppContentType {
         return 'Mindmap';
       // case syllabus:
       //   return 'Syllabus';
+      case flashcardDeck:
+        return 'Flashcard Deck';
       case file:
         return 'File';
     }

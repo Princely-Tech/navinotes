@@ -11,7 +11,7 @@ class FlashCardDecks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<FlashCardDeck>>(
+    return FutureBuilder<List<Content>>(
       future: vm.fetchDecks(board),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -67,7 +67,7 @@ class FlashCardDecks extends StatelessWidget {
     );
   }
 
-  Widget _deckCard(FlashCardDeck deck) {
+  Widget _deckCard(Content deck) {
     return InkWell(
       onTap: () => vm.goToManualFlashCard(deck),
       child: CustomCard(
@@ -80,7 +80,7 @@ class FlashCardDecks extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    deck.name,
+                    deck.title,
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -91,15 +91,15 @@ class FlashCardDecks extends StatelessWidget {
                 ),
               ],
             ),
-            if (deck.description?.isNotEmpty ?? false) ...{
-              const SizedBox(height: 8.0),
-              Text(
-                deck.description!,
-                style: TextStyle(color: Colors.grey[600], fontSize: 14.0),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            },
+            // if (deck.description?.isNotEmpty ?? false) ...{
+            //   const SizedBox(height: 8.0),
+            //   Text(
+            //     deck.description!,
+            //     style: TextStyle(color: Colors.grey[600], fontSize: 14.0),
+            //     maxLines: 2,
+            //     overflow: TextOverflow.ellipsis,
+            //   ),
+            // },
             const SizedBox(height: 12.0),
             FutureBuilder<int?>(
               future: deck.getCardsCount(),

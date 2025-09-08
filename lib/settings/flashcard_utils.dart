@@ -61,7 +61,7 @@ Future<void> deleteFlashCard({
 
 Future<List<FlashCard>> fetchDeckFlashCards({
   required BuildContext context,
-  required FlashCardDeck deck,
+  required Content deck,
 }) async {
   try {
     return DatabaseHelper.instance.getDeckFlashCards(deck.id!);

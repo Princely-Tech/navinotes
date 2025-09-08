@@ -3,12 +3,12 @@ import 'package:navinotes/packages.dart';
 class FlashCardStudyVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   BuildContext context;
-  FlashCardDeck deck;
+  Content deck;
   FlashCardStudyVm({
     required this.scaffoldKey,
     required this.context,
     required this.deck,
-  }) : lastStudied = deck.lastStudied ?? generateUnixTimestamp();
+  }) : lastStudied = deck.getMeta('last_studied') ?? generateUnixTimestamp();
 
   int lastStudied;
   Timer? lastStudiedTimer;

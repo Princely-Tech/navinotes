@@ -11,7 +11,7 @@ class FlashCardStudyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deck = ModalRoute.of(context)?.settings.arguments as FlashCardDeck;
+    final deck = ModalRoute.of(context)?.settings.arguments as Content;
     return ChangeNotifierProvider(
       create: (context) {
         final vm = FlashCardStudyVm(

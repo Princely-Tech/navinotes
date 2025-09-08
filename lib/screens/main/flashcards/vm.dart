@@ -13,7 +13,7 @@ class FlashCardVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<FlashCardDeck>> fetchDecks(Board board) async {
+  Future<List<Content>> fetchDecks(Board board) async {
     final dbHelper = DatabaseHelper.instance;
     try {
       return dbHelper.getBoardDecks(board.id!);
@@ -100,7 +100,7 @@ class FlashCardVm extends ChangeNotifier {
     }
   }
 
-  Future<void> goToManualFlashCard(FlashCardDeck deck) async {
+  Future<void> goToManualFlashCard(Content deck) async {
     await NavigationHelper.navigateToDeck(deck);
     sessionVm.getAllBoard();
   }

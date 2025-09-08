@@ -1,7 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/models/content.dart';
-import 'package:navinotes/models/flashcard_deck.dart';
 import 'package:navinotes/settings/db_helpers.dart';
 import 'vm.dart';
 
@@ -15,7 +14,7 @@ class MindMapDocuments extends StatefulWidget {
 
 class _MindMapDocumentsState extends State<MindMapDocuments> {
   List<Content> _contents = const [];
-  List<FlashCardDeck> _decks = const [];
+  List<Content> _decks = const [];
   final Map<int, int> _deckCardCounts = {};
   bool _loading = true;
   List<MindMapFilterType> _selectedFilters = const [
@@ -40,9 +39,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
       final data = await DatabaseHelper.instance.getAllContents(
         vm.baseContent!.boardId,
       );
-      final decks = await DatabaseHelper.instance.getBoardDecks(
-        vm.baseContent!.boardId,
-      );
+      final decks = data.where((d) => d.type == AppContentType.flashcardDeck).toList();
 
       // Prefetch deck card counts once to avoid recalculating in build
       final Map<int, int> counts = {};
@@ -267,10 +264,10 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
 
 Widget _tappableDeckRow({
   required BuildContext context,
-  required FlashCardDeck deck,
+  required Content deck,
   required int count,
 }) {
-  return Draggable<FlashCardDeck>(
+  return Draggable<Content>(
     data: deck,
     feedback: Material(
       elevation: 4,
@@ -284,7 +281,7 @@ Widget _tappableDeckRow({
           border: Border.all(color: AppTheme.dodgerBlue, width: 2),
         ),
         child: _imgRow(
-          title: deck.name,
+          title: deck.title,
           img: Images.flashCards,
           right: '$count cards',
         ),
@@ -293,7 +290,7 @@ Widget _tappableDeckRow({
     childWhenDragging: Opacity(
       opacity: 0.5,
       child: _imgRow(
-        title: deck.name,
+        title: deck.title,
         img: Images.flashCards,
         right: '$count cards',
       ),
@@ -304,14 +301,14 @@ Widget _tappableDeckRow({
         final vm = Provider.of<MindMapVm>(context, listen: false);
         final targetNodeId = vm.attachingNodeId;
         if (targetNodeId != null && deck.id != null) {
-          vm.attachDeckToNodeById(targetNodeId, deck.id!);
+          vm.attachContentToNodeById(targetNodeId, deck.id!);
           MessageDisplayService.showMessage(context, 'Attachment added');
         } else {
           vm.cancelAttachMode();
         }
       },
       child: _imgRow(
-        title: deck.name,
+        title: deck.title,
         img: Images.flashCards,
         right: '$count cards',
       ),
