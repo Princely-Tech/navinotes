@@ -228,8 +228,6 @@ class Board {
   Content? syllabusContent;
 
   Future<Content?> getSyllabusContent({bool forceRefresh = false}) async {
-    print("getSyllabusContent");
-
     if (syllabusContent != null && !forceRefresh) {
       return syllabusContent;
     }
@@ -239,14 +237,10 @@ class Board {
     }
     print("syllabusContentId: $syllabusContentId");
 
-    final db = await DatabaseHelper.instance.database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      'contents',
-      where: 'id = ?',
-      whereArgs: [syllabusContentId],
+    syllabusContent = await DatabaseHelper.instance.getContentById(
+      syllabusContentId!,
     );
 
-    syllabusContent = maps.isNotEmpty ? Content.fromMap(maps[0]) : null;
     return syllabusContent;
   }
 

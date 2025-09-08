@@ -22,39 +22,6 @@ class DashFilterSection extends StatelessWidget {
             ),
           ),
         ),
-        IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            spacing: 10,
-            children: [
-              AppButton(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.arrowVer),
-                onTap: () {},
-                color: AppTheme.white,
-                style: AppTheme.text.copyWith(color: AppTheme.stormGray),
-                minHeight: 29,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                text: 'Sort',
-                shape: shape,
-              ),
-              AppButton(
-                wrapWithFlexible: true,
-                mainAxisSize: MainAxisSize.min,
-                prefix: SVGImagePlaceHolder(imagePath: Images.filter),
-                onTap: () {},
-                color: AppTheme.white,
-                style: AppTheme.text.copyWith(color: AppTheme.stormGray),
-                minHeight: 29,
-                shape: shape,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                text: 'Filter',
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }

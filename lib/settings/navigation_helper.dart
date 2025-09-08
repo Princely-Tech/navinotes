@@ -195,8 +195,6 @@ class NavigationHelper {
       push(Routes.mindMap, arguments: {'contentId': content.id});
     }
 
-    // TODO: Implement
-
     if (content.type == AppContentType.note) {
       BoardNoteTemplate template = getNoteTemplateFromString(
         content.metaData[ContentMetadataKey.template],
@@ -205,6 +203,10 @@ class NavigationHelper {
         template: template,
         contentId: content.id!,
       );
+    }
+
+    if (content.type == AppContentType.flashcardDeck) {
+      navigateToDeck(content);
     }
   }
 
@@ -217,6 +219,7 @@ class NavigationHelper {
 
       final fileEntity = File(filePath);
       if (!fileEntity.existsSync()) {
+        debugPrint('File does not exist $filePath');
         return;
       }
 

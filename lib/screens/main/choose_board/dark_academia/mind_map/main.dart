@@ -91,19 +91,7 @@ class DarkAcademiaMindMapMain extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      VisibleController(
-                        mobile: true,
-                        desktop: false,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: MenuButton(
-                            decoration: BoxDecoration(
-                              color: AppTheme.royalGold,
-                            ),
-                            onPressed: vm.openDrawer,
-                          ),
-                        ),
-                      ),
+                     
                       Row(
                         spacing: 15,
                         children: [

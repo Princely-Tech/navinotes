@@ -94,13 +94,6 @@ class BoardNatureEditScreen extends StatelessWidget {
                       child: WidthLimiter(
                         mobile: largeDesktopSize,
                         child: TextRowSelect(
-                          // items: [
-                          //   'Overview',
-                          //   'Uploads',
-                          //   'Assignments',
-                          //   'Resources',
-                          // ],
-                          //TODO consider adding resources
                           items:
                               EditBoardTab.values
                                   .map((item) => item.toString())

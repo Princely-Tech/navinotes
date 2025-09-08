@@ -860,12 +860,6 @@ class BoardNaturePopupScreen extends StatelessWidget {
                           Expanded(
                             child: Row(
                               children: [
-                                MenuButton(
-                                  onPressed: vm.openDrawer,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF8F6F0),
-                                  ),
-                                ),
                                 AppIconButton(
                                   onPressed: NavigationHelper.pop,
                                   icon: Icon(

@@ -1,13 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/widgets/index.dart';
+import 'package:navinotes/packages.dart';
 
-class RecentActivity extends StatelessWidget {
+class RecentActivity extends StatefulWidget {
   const RecentActivity({super.key});
 
   @override
+  State<RecentActivity> createState() => _RecentActivityState();
+}
+
+class _RecentActivityState extends State<RecentActivity> {
+  List<Content> recentContents = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecentContents();
+  }
+
+  Future<void> _loadRecentContents() async {
+    try {
+      // Get 8 most recent contents of any type
+      recentContents = await DatabaseHelper.instance.getRecentContentsAcrossAllBoards(limit: 8);
+    } catch (e) {
+      debugPrint('Error loading recent contents: $e');
+      recentContents = [];
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Widget divider = Divider(color: AppTheme.lightGray, height: 40);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 20,
@@ -19,79 +47,92 @@ class RecentActivity extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        CustomCard(
-          padding: EdgeInsets.symmetric(vertical: 20),
-          child: Column(
-            children: [
-              _activityCard(
-                body: 'You added new equations to the Schrödinger section',
-                image: _imgCard(
-                  imagePath: Images.file,
-                  color: AppTheme.paleBlue,
-                ),
-                lastUpdated: 'Today, 10:23 AM',
-                subject: 'Physics 101',
-                title: 'Quantum Mechanics Notes',
+        if (isLoading)
+          CustomCard(
+            padding: EdgeInsets.all(40),
+            child: Center(
+              child: Column(
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text(
+                    'Loading recent activity...',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14.0,
+                    ),
+                  ),
+                ],
               ),
-              divider,
-              _activityCard(
-                body: 'You connected 3 new nodes to the UI/UX branch',
-                image: _imgCard(
-                  imagePath: Images.share,
-                  color: AppTheme.lightMintGreen,
-                ),
-                lastUpdated: 'Yesterday, 4:15 PM',
-                subject: 'Project Ideas',
-                title: 'App Development Mindmap',
+            ),
+          )
+        else if (recentContents.isEmpty)
+          CustomCard(
+            padding: EdgeInsets.all(40),
+            child: Center(
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.history,
+                    size: 48,
+                    color: Colors.grey[400],
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'No recent activity',
+                    style: AppTheme.text.copyWith(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Create some content to see your activity here',
+                    style: AppTheme.text.copyWith(
+                      fontSize: 14.0,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ],
               ),
-              divider,
-              _activityCard(
-                body: 'You highlighted 5 quotes and added commentary',
-                image: _imgCard(imagePath: Images.pen, color: AppTheme.purple),
-                lastUpdated: 'April 30, 2025',
-                subject: 'Literature Notes',
-                title: 'Hamlet Character Analysis',
-              ),
-              divider,
-              _activityCard(
-                body: 'You created a new diagram of mitosis phases',
-                image: _imgCard(
-                  imagePath: Images.flask,
-                  color: AppTheme.yellow,
-                ),
-                lastUpdated: 'April 29, 2025',
-                subject: 'Biology 202',
-                title: 'Cell Division Process',
-              ),
-            ],
+            ),
+          )
+        else
+          CustomCard(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [
+                for (int i = 0; i < recentContents.length; i++) ...[
+                  _buildContentCard(recentContents[i]),
+                  if (i < recentContents.length - 1)
+                    Divider(color: AppTheme.lightGray, height: 40),
+                ],
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
 
-  Widget _imgCard({required String imagePath, required Color color}) {
-    return SVGImagePlaceHolder(
-      imagePath: imagePath,
-      containerSize: 40,
-      decoration: ShapeDecoration(
-        color: color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
+  Widget _buildContentCard(Content content) {
+    // Get content type and appropriate icon/color
+    final contentTitle = content.title.isNotEmpty ? content.title : 'Untitled ${content.type.name}';
+    final iconData = _getContentIcon(content.type);
+    final iconColor = _getContentColor(content.type);
+    final contentType = _getContentTypeLabel(content.type);
+    
+    // Format the updated date
+    final updatedDate = DateTime.fromMillisecondsSinceEpoch(
+      content.updatedAt * 1000,
     );
-  }
+    final formattedDate = _formatDate(updatedDate);
+    
+    // Get board name if available
+    final boardName = _getBoardName(content.boardId);
 
-  Widget _activityCard({
-    required String title,
-    required String body,
-    required String subject,
-    required String lastUpdated,
-    required Widget image,
-  }) {
     return InkWell(
-      onTap: () {
-        // NavigationHelper.push(Routes.pdf);
-      },
+      onTap: () => NavigationHelper.navigateToContent(content),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Row(
@@ -102,38 +143,51 @@ class RecentActivity extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 15,
                 children: [
-                  image,
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: ShapeDecoration(
+                      color: iconColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Icon(
+                      iconData,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 10,
+                      spacing: 8,
                       children: [
                         Text(
-                          title,
+                          contentTitle,
                           style: AppTheme.text.copyWith(
                             fontSize: 16.0,
                             fontWeight: getFontWeight(500),
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 8,
-                          children: [
-                            Text(
-                              body,
-                              style: AppTheme.text.copyWith(
-                                color: AppTheme.stormGray,
-                              ),
-                            ),
-                            Text(
-                              subject,
-                              style: AppTheme.text.copyWith(
-                                color: AppTheme.vividRose,
-                                fontSize: 12.0,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          contentType,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.vividRose,
+                            fontSize: 12.0,
+                            fontWeight: getFontWeight(500),
+                          ),
                         ),
+                        if (boardName.isNotEmpty)
+                          Text(
+                            boardName,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.stormGray,
+                              fontSize: 12.0,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -146,7 +200,7 @@ class RecentActivity extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: 30),
                 child: Text(
-                  lastUpdated,
+                  formattedDate,
                   style: AppTheme.text.copyWith(
                     color: AppTheme.steelMist,
                     fontSize: 12.0,
@@ -158,5 +212,71 @@ class RecentActivity extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  IconData _getContentIcon(AppContentType type) {
+    switch (type) {
+      case AppContentType.note:
+        return Icons.note;
+      case AppContentType.mindmap:
+        return Icons.account_tree;
+      case AppContentType.flashcardDeck:
+        return Icons.quiz;
+      case AppContentType.file:
+        return Icons.insert_drive_file;
+      default:
+        return Icons.description;
+    }
+  }
+
+  Color _getContentColor(AppContentType type) {
+    switch (type) {
+      case AppContentType.note:
+        return AppTheme.vividBlue;
+      case AppContentType.mindmap:
+        return AppTheme.vitalGreen;
+      case AppContentType.flashcardDeck:
+        return AppTheme.orange;
+      case AppContentType.file:
+        return AppTheme.bloodFire;
+      default:
+        return AppTheme.paleBlue;
+    }
+  }
+
+  String _getContentTypeLabel(AppContentType type) {
+    switch (type) {
+      case AppContentType.note:
+        return 'NOTE';
+      case AppContentType.mindmap:
+        return 'MIND MAP';
+      case AppContentType.flashcardDeck:
+        return 'FLASHCARDS';
+      case AppContentType.file:
+        return 'FILE';
+      default:
+        return 'CONTENT';
+    }
+  }
+
+  String _getBoardName(int boardId) {
+    // This would ideally come from a cached boards list or be passed down
+    // For now, return empty string as board name lookup would require additional database call
+    return '';
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays == 0) {
+      return 'Today, ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+    } else if (difference.inDays == 1) {
+      return 'Yesterday, ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} days ago';
+    } else {
+      return '${date.month}/${date.day}/${date.year}';
+    }
   }
 }
