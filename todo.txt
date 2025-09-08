@@ -3,3 +3,37 @@ Recent notes
 
 
 market place categories and subcategories
+
+
+ if (content.type == AppContentType.file) {
+      final filePath = content.file;
+      if (filePath != null && filePath.isNotEmpty) {
+        final lower = filePath.toLowerCase();
+        if (lower.endsWith('.pdf')) {
+          if (content.id != null) {
+            await NavigationHelper.navigateToPdfView(content.id!);
+          }
+          return;
+        }
+        // Fallback: try to open with OS handler (images, docs, etc.)
+        await OpenFile.open(filePath);
+        return;
+      }
+    }
+
+    if (content.type == AppContentType.note) {
+      // TODO: Navigate directly to a specific note editor if available
+      // For now, navigate to the board's notes screen
+      final board = await content.getBoard();
+      await NavigationHelper.navigateToBoardNotes(board);
+      return;
+    }
+
+    if (content.type == AppContentType.mindmap) {
+      // Open the mind map screen with this content id
+      await NavigationHelper.push(
+        Routes.mindMap,
+        arguments: {'boardId': content.boardId, 'contentId': content.id},
+      );
+      return;
+    }

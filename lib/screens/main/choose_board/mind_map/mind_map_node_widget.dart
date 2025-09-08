@@ -146,8 +146,8 @@ class MindMapNodeWidget extends StatelessWidget {
             // Attachment indicator/button
             if (hasAttachment)
               Positioned(
-                left: -16,
-                top: node.height / 2 - 12,
+                left: 0,
+                top: 0,
                 child: Tooltip(
                   message: 'Open attached document',
                   child: GestureDetector(
@@ -162,14 +162,24 @@ class MindMapNodeWidget extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
-                            color: Colors.grey[800],
+                            color: Colors.grey[800]!.withValues(
+                              alpha: (isSelected) ? 0.5 : 0.1,
+                            ),
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 1.5),
+                            border:
+                                (isSelected)
+                                    ? Border.all(
+                                      color: Colors.white,
+                                      width: 1.5,
+                                    )
+                                    : null,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.attach_file,
                             size: 16,
-                            color: Colors.white,
+                            color: Colors.white.withValues(
+                              alpha: (isSelected) ? 0.5 : 0.6,
+                            ),
                           ),
                         ),
                       ),
@@ -352,6 +362,18 @@ class MindMapNodeWidget extends StatelessWidget {
                                         newText.trim(),
                                       );
                                     }
+                                  },
+                                ),
+                                _actionCircle(
+                                  tooltip: 'Delete node',
+                                  color: Colors.red,
+                                  icon: Icons.delete,
+                                  iconColor: Colors.white,
+                                  onTap: () async {
+                                    await vm.deleteNodeWithConfirmation(
+                                      context,
+                                      node.id,
+                                    );
                                   },
                                 ),
                               ],
@@ -569,17 +591,17 @@ class MindMapNodeWidget extends StatelessWidget {
             customBorder: const CircleBorder(),
             onTap: onTap,
             child: SizedBox(
-              width: 36,
-              height: 36,
+              width: 28,
+              height: 28,
               child: Center(
                 child: Container(
-                  padding: const EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     color: color,
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 1.5),
                   ),
-                  child: Icon(icon, size: 16, color: iconColor),
+                  child: Icon(icon, size: 20, color: iconColor),
                 ),
               ),
             ),

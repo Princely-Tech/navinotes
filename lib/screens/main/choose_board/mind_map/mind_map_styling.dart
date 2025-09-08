@@ -65,7 +65,7 @@ class MindMapStyling extends StatelessWidget {
                         _typography(),
                         _nodeStyling(vm),
                       ] else ...[
-                        _connectionLines(),
+                        _connectionLines(context),
                       ],
                       // AppButton(
                       //   onTap: () {},
@@ -83,7 +83,7 @@ class MindMapStyling extends StatelessWidget {
     );
   }
 
-  Widget _connectionLines() {
+  Widget _connectionLines(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: _section(
@@ -162,6 +162,36 @@ class MindMapStyling extends StatelessWidget {
                 },
               ),
             ),
+            // Delete edge button
+            _titleSection(
+              title: 'Actions',
+              child: Consumer<MindMapVm>(
+                builder: (_, vm, __) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed:
+                          vm.selectedEdgeId != null
+                              ? () => vm.deleteEdgeWithConfirmation(
+                                context,
+                                vm.selectedEdgeId!,
+                              )
+                              : null,
+                      icon: const Icon(Icons.delete, color: Colors.white),
+                      label: const Text(
+                        'Delete Connection',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        disabledBackgroundColor: Colors.grey.shade300,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -234,8 +264,8 @@ class MindMapStyling extends StatelessWidget {
                     vm.selectedNodeId == null
                         ? null
                         : vm.mindMap.findNode(vm.selectedNodeId!);
-                final double width = (node?.width ?? 160).clamp(60.0, 600.0);
-                final double height = (node?.height ?? 80).clamp(40.0, 400.0);
+                final double width = (node?.width ?? 160).clamp(150.0, 600.0);
+                final double height = (node?.height ?? 80).clamp(80.0, 400.0);
                 void setWidth(double w) {
                   if (node == null) return;
                   final newW = w.clamp(150.0, 600.0);

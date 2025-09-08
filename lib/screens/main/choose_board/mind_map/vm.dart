@@ -141,6 +141,49 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Delete a node with confirmation dialog
+  Future<void> deleteNodeWithConfirmation(BuildContext context, String nodeId) async {
+    final node = mindMap.findNode(nodeId);
+    if (node == null) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Node'),
+          content: Text('Are you sure you want to delete "${node.text}"?\n\nThis action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      removeNode(nodeId);
+      
+      // Show success message
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Node "${node.text}" deleted'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    }
+  }
+
   void updateNodePosition(String nodeId, Offset newLogicalPosition) {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
@@ -192,6 +235,53 @@ class MindMapVm extends ChangeNotifier {
   void removeEdge(String edgeId) {
     mindMap.removeEdge(edgeId);
     notifyListeners();
+  }
+
+  Future<void> deleteEdgeWithConfirmation(BuildContext context, String edgeId) async {
+    final edge = mindMap.findEdge(edgeId);
+    if (edge == null) return;
+
+    final sourceNode = mindMap.findNode(edge.sourceId);
+    final targetNode = mindMap.findNode(edge.targetId);
+    final edgeDescription = sourceNode != null && targetNode != null
+        ? '"${sourceNode.text}" → "${targetNode.text}"'
+        : 'this connection';
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Connection'),
+          content: Text('Are you sure you want to delete the connection $edgeDescription?\n\nThis action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed == true) {
+      removeEdge(edgeId);
+      selectedEdgeId = null; // Clear selection after deletion
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Connection $edgeDescription deleted'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    }
   }
 
   // ---------- Selection & connect flow ----------
@@ -690,7 +780,7 @@ class MindMapVm extends ChangeNotifier {
     if (type == 'deck') {
       final deck = await DatabaseHelper.instance.getDeck(id);
       if (deck != null) {
-        NavigationHelper.navigateToFlashCardStudy(deck);
+        NavigationHelper.navigateToDeck(deck);
       }
       return;
     }
@@ -698,39 +788,7 @@ class MindMapVm extends ChangeNotifier {
     // Default: content
     final content = await DatabaseHelper.instance.getContentById(id);
     if (content == null) return;
-
-    if (content.type == AppContentType.file) {
-      final filePath = content.file;
-      if (filePath != null && filePath.isNotEmpty) {
-        final lower = filePath.toLowerCase();
-        if (lower.endsWith('.pdf')) {
-          if (content.id != null) {
-            await NavigationHelper.navigateToPdfView(content.id!);
-          }
-          return;
-        }
-        // Fallback: try to open with OS handler (images, docs, etc.)
-        await OpenFile.open(filePath);
-        return;
-      }
-    }
-
-    if (content.type == AppContentType.note) {
-      // TODO: Navigate directly to a specific note editor if available
-      // For now, navigate to the board's notes screen
-      final board = await content.getBoard();
-      await NavigationHelper.navigateToBoardNotes(board);
-      return;
-    }
-
-    if (content.type == AppContentType.mindmap) {
-      // Open the mind map screen with this content id
-      await NavigationHelper.push(
-        Routes.mindMap,
-        arguments: {'boardId': content.boardId, 'contentId': content.id},
-      );
-      return;
-    }
+    NavigationHelper.navigateToContent(content);
   }
 
   // ---------- Persistence (DB) ----------

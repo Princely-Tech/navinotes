@@ -183,6 +183,7 @@ class NavigationHelper {
   }
 
   static navigateToContent(Content content) async {
+    debugPrint('Navigating to content ${content.id} - ${content.title}');
     // TODO: Implement
   }
 
@@ -192,6 +193,7 @@ class NavigationHelper {
   }
 
   static navigateToDeck(FlashCardDeck deck) {
+    debugPrint('Navigating to deck ${deck.id} - ${deck.name}');
     // TODO: Implement
   }
 
