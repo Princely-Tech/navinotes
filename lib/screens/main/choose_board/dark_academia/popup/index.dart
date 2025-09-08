@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/date_utils.dart';
 
 class BoardDarkAcadPopupScreen extends StatelessWidget {
   BoardDarkAcadPopupScreen({super.key});
@@ -36,16 +37,78 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                       Expanded(
                         child: ScrollableController(
                           child: vm.returnSelectedTabItem(
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _heroSection(),
-                                _courseActions(),
-                                _fileUploadsSection(),
-                                _syllabusSection(),
-                                _courseTimeline(),
-                                _footer(),
-                              ],
+                            FutureBuilder<List<Content>>(
+                              future: _getAllContents(vm.board.id!),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _heroSection(),
+                                      _courseActions(),
+                                      Container(
+                                        height: 200,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              CircularProgressIndicator(
+                                                color: AppTheme.goldenSaffron,
+                                              ),
+                                              SizedBox(height: 16),
+                                              Text(
+                                                'Loading board contents...',
+                                                style: TextStyle(
+                                                  color: const Color(
+                                                    0xFFF7F3E9,
+                                                  ),
+                                                  fontSize: 14.0,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+
+                                final allContents = snapshot.data ?? [];
+                                final notes =
+                                    allContents
+                                        .where(
+                                          (content) =>
+                                              content.type ==
+                                              AppContentType.note,
+                                        )
+                                        .toList();
+                                final mindMaps =
+                                    allContents
+                                        .where(
+                                          (content) =>
+                                              content.type ==
+                                              AppContentType.mindmap,
+                                        )
+                                        .toList();
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _heroSection(),
+                                    _courseActions(),
+                                    _recentNotesSection(notes),
+                                    _mindMapsSection(mindMaps),
+                                    _flashCardsDeckSection(vm),
+                                    _fileUploadsSection(),
+                                    _syllabusSection(),
+                                    _courseTimeline(),
+                                    _footer(),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -293,7 +356,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
         if (courseOutlines.isEmpty) {
           return SizedBox.shrink();
         }
-        double maxHeight = screenHeight(context) / 2;
 
         return Container(
           color: const Color(0xFF2B1810),
@@ -324,20 +386,14 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 40),
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: maxHeight),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.only(bottom: 60),
-                    child: Column(
-                      children: [
-                        for (int i = 0; i < courseOutlines.length; i++)
-                          BoardDarkAcadTimelineItem(
-                            courseOutlines[i],
-                            isFirst: i == 0,
-                          ),
-                      ],
-                    ),
-                  ),
+                Column(
+                  children: [
+                    for (int i = 0; i < courseOutlines.length; i++)
+                      BoardDarkAcadTimelineItem(
+                        courseOutlines[i],
+                        isFirst: i == 0,
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -652,65 +708,124 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return Consumer<BoardEditVm>(
-          builder: (_, vm, _) {
+          builder: (context, vm, _) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FractionallySizedBox(
-                  widthFactor: getDeviceResponsiveValue(
-                    deviceType: layoutVm.deviceType,
-                    mobile: 0.7,
-                    desktop: 1,
-                  ),
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: vm.board.name,
-                          style: TextStyle(
-                            color: const Color(0xFF4A3426),
-                            fontSize: getDeviceResponsiveValue(
-                              deviceType: layoutVm.deviceType,
-                              mobile: 60,
-                              tablet: 75,
-                              desktop: 96,
-                            ),
-                            fontFamily: 'Luxurious Script',
-                            fontWeight: FontWeight.w400,
-                            height: 0.50,
+                Row(
+                  children: [
+                    Flexible(
+                      child: FractionallySizedBox(
+                        widthFactor: getDeviceResponsiveValue(
+                          deviceType: layoutVm.deviceType,
+                          mobile: 0.7,
+                          desktop: 1,
+                        ),
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: vm.board.name,
+                                style: TextStyle(
+                                  color: const Color(0xFF4A3426),
+                                  fontSize: getDeviceResponsiveValue(
+                                    deviceType: layoutVm.deviceType,
+                                    mobile: 60,
+                                    tablet: 75,
+                                    desktop: 96,
+                                  ),
+                                  fontFamily: 'Luxurious Script',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.50,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ${vm.board.subject}',
+                                style: TextStyle(
+                                  color: const Color(0xFF4A3426),
+                                  // fontSize: 48,
+                                  fontSize: getDeviceResponsiveValue(
+                                    deviceType: layoutVm.deviceType,
+                                    mobile: 30,
+                                    tablet: 35,
+                                    desktop: 48,
+                                  ),
+                                  fontFamily: 'Playfair Display',
+                                  fontWeight: FontWeight.w700,
+                                  height: 1,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        TextSpan(
-                          text: ' ${vm.board.subject}',
-                          style: TextStyle(
-                            color: const Color(0xFF4A3426),
-                            // fontSize: 48,
-                            fontSize: getDeviceResponsiveValue(
-                              deviceType: layoutVm.deviceType,
-                              mobile: 30,
-                              tablet: 35,
-                              desktop: 48,
-                            ),
-                            fontFamily: 'Playfair Display',
-                            fontWeight: FontWeight.w700,
-                            height: 1,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    SizedBox(width: 12),
+                    Builder(
+                      builder: (context) {
+                        return InkWell(
+                          onTap: () => _editBoardName(context),
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0x33C19B47),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Icon(
+                              Icons.edit,
+                              size: 16,
+                              color: const Color(0xFF4A3426),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 SizedBox(height: 24),
-                Text(
-                  //TODO check this
-                  '${vm.board.level}',
-                  style: TextStyle(
-                    color: const Color(0xFF4A3426),
-                    fontSize: 18,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                    height: 1.67,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        (vm.board.hasDescription())
+                            ? vm.board.description!
+                            : 'Add a description for your board',
+                        style: TextStyle(
+                          color: const Color(0xFF4A3426),
+                          fontSize: 18,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                          height: 1.67,
+                          fontStyle:
+                              vm.board.hasDescription()
+                                  ? FontStyle.normal
+                                  : FontStyle.italic,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Builder(
+                      builder: (context) {
+                        return InkWell(
+                          onTap: () => _editBoardDescription(context),
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0x33C19B47),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Icon(
+                              Icons.edit,
+                              size: 16,
+                              color: const Color(0xFF4A3426),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 SizedBox(height: 40),
                 Row(
@@ -1155,6 +1270,619 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
           getFileIcon(file.file),
           size: 48,
           color: AppTheme.goldenSaffron,
+        ),
+      ),
+    );
+  }
+
+  void _editBoardName(BuildContext context) {
+    final vm = Provider.of<BoardEditVm>(context, listen: false);
+    final controller = TextEditingController(text: vm.board.name);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Board Name'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter board name...',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+            onSubmitted: (value) {
+              if (value.trim().isNotEmpty) {
+                vm.updateBoardName(value.trim());
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (controller.text.trim().isNotEmpty) {
+                  vm.updateBoardName(controller.text.trim());
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editBoardDescription(BuildContext context) {
+    final vm = Provider.of<BoardEditVm>(context, listen: false);
+    final controller = TextEditingController(text: vm.board.description ?? '');
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Board Description'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter board description...',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+            maxLines: 3,
+            onSubmitted: (value) {
+              vm.updateBoardDescription(value.trim());
+              Navigator.of(context).pop();
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                vm.updateBoardDescription(controller.text.trim());
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<List<Content>> _getAllContents(int boardId) async {
+    try {
+      return await DatabaseHelper.instance.getAllContents(boardId);
+    } catch (e) {
+      debugPrint('Error fetching contents: $e');
+      return [];
+    }
+  }
+
+  Future<List<Content>> _getFlashCardDecks(int boardId) async {
+    try {
+      return await DatabaseHelper.instance.getBoardDecks(boardId);
+    } catch (e) {
+      debugPrint('Error fetching flashcard decks: $e');
+      return [];
+    }
+  }
+
+  Widget _recentNotesSection(List<Content> notes) {
+    // Sort by updated date (most recent first)
+    notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return Container(
+      color: const Color(0xFF2B1810),
+      width: double.infinity,
+      child: ResponsiveHorizontalPadding(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 64),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Recent Notes',
+                    style: TextStyle(
+                      color: const Color(0xFFF7F3E9),
+                      fontSize: 30,
+                      fontFamily: 'Playfair Display',
+                      fontWeight: FontWeight.w700,
+                      height: 1.20,
+                    ),
+                  ),
+                  if (notes.length > 5)
+                    Consumer<BoardEditVm>(
+                      builder: (context, vm, _) {
+                        return AppButton.text(
+                          onTap: vm.goToBoardNotes,
+                          text: 'View All',
+                          style: TextStyle(
+                            color: AppTheme.goldenSaffron,
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Your latest thoughts and discoveries',
+                style: TextStyle(
+                  color: const Color(0xB2F7F3E9),
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                  height: 1.50,
+                ),
+              ),
+              SizedBox(height: 40),
+              if (notes.isEmpty)
+                Column(
+                  children: [
+                    Text(
+                      'No notes yet. Create your first note to begin your academic journey.',
+                      style: TextStyle(
+                        color: const Color(0x99F7F3E9),
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.italic,
+                        height: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    Consumer<BoardEditVm>(
+                      builder: (context, vm, _) {
+                        return AppButton(
+                          mainAxisSize: MainAxisSize.min,
+                          onTap: vm.goToBoardNotes,
+                          color: const Color(0xFFC19B47),
+                          text: 'Create Note',
+                          minHeight: 40,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          style: TextStyle(
+                            color: const Color(0xFF2B1810),
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                )
+              else
+                Column(
+                  spacing: 16,
+                  children:
+                      notes.take(5).map((note) => _noteItem(note)).toList(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _mindMapsSection(List<Content> mindMaps) {
+    // Sort by updated date (most recent first)
+    mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return Container(
+      color: const Color(0xFF4A3426),
+      width: double.infinity,
+      child: ResponsiveHorizontalPadding(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 64),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Mind Maps',
+                    style: TextStyle(
+                      color: const Color(0xFFF7F3E9),
+                      fontSize: 30,
+                      fontFamily: 'Playfair Display',
+                      fontWeight: FontWeight.w700,
+                      height: 1.20,
+                    ),
+                  ),
+                  Consumer<BoardEditVm>(
+                    builder: (context, vm, _) {
+                      return AppButton.text(
+                        onTap: vm.createMindMap,
+                        text: 'Create Mind Map',
+                        style: TextStyle(
+                          color: AppTheme.goldenSaffron,
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Visual representations of your knowledge',
+                style: TextStyle(
+                  color: const Color(0xB2F7F3E9),
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                  height: 1.50,
+                ),
+              ),
+              SizedBox(height: 40),
+              if (mindMaps.isEmpty)
+                Column(
+                  children: [
+                    Text(
+                      'No mind maps yet. Create your first mind map to visualize connections.',
+                      style: TextStyle(
+                        color: const Color(0x99F7F3E9),
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.italic,
+                        height: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    Consumer<BoardEditVm>(
+                      builder: (context, vm, _) {
+                        return AppButton(
+                          mainAxisSize: MainAxisSize.min,
+                          onTap: vm.createMindMap,
+                          color: const Color(0xFFC19B47),
+                          text: 'Create Mind Map',
+                          minHeight: 40,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          style: TextStyle(
+                            color: const Color(0xFF2B1810),
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                )
+              else
+                Column(
+                  spacing: 16,
+                  children:
+                      mindMaps.map((mindMap) => _mindMapItem(mindMap)).toList(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _flashCardsDeckSection(BoardEditVm vm) {
+    return Container(
+      color: const Color(0xFF2B1810),
+      width: double.infinity,
+      child: ResponsiveHorizontalPadding(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 64),
+          child: FutureBuilder<List<Content>>(
+            future: _getFlashCardDecks(vm.board.id!),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(
+                  height: 100,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppTheme.goldenSaffron,
+                    ),
+                  ),
+                );
+              }
+
+              final flashCardDecks = snapshot.data ?? [];
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Flashcard Decks',
+                        style: TextStyle(
+                          color: const Color(0xFFF7F3E9),
+                          fontSize: 30,
+                          fontFamily: 'Playfair Display',
+                          fontWeight: FontWeight.w700,
+                          height: 1.20,
+                        ),
+                      ),
+                      Consumer<BoardEditVm>(
+                        builder: (context, vm, _) {
+                          return AppButton.text(
+                            onTap: vm.createFlashCardDeck,
+                            text: 'Create Deck',
+                            style: TextStyle(
+                              color: AppTheme.goldenSaffron,
+                              fontSize: 16,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Test your knowledge with interactive study cards',
+                    style: TextStyle(
+                      color: const Color(0xB2F7F3E9),
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      height: 1.50,
+                    ),
+                  ),
+                  SizedBox(height: 40),
+                  if (flashCardDecks.isEmpty)
+                    Column(
+                      children: [
+                        Text(
+                          'No flashcard decks yet. Create your first deck to enhance your learning.',
+                          style: TextStyle(
+                            color: const Color(0x99F7F3E9),
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.italic,
+                            height: 1.5,
+                          ),
+                        ),
+                        SizedBox(height: 24),
+                        Consumer<BoardEditVm>(
+                          builder: (context, vm, _) {
+                            return AppButton(
+                              mainAxisSize: MainAxisSize.min,
+                              onTap: vm.createFlashCardDeck,
+                              color: const Color(0xFFC19B47),
+                              text: 'Create Deck',
+                              minHeight: 40,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                              style: TextStyle(
+                                color: const Color(0xFF2B1810),
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    )
+                  else
+                    Column(
+                      spacing: 16,
+                      children:
+                          flashCardDecks
+                              .map((deck) => _flashCardDeckItem(deck))
+                              .toList(),
+                    ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _noteItem(Content note) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(note),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF4A3426),
+          borderRadius: BorderRadius.circular(2),
+          border: Border.all(color: const Color(0x33C19B47), width: 1),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0x33C19B47),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Icon(Icons.note, size: 20, color: AppTheme.goldenSaffron),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    note.title.isNotEmpty ? note.title : 'Untitled Note',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Playfair Display',
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFFF7F3E9),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        note.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      color: const Color(0x99F7F3E9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _mindMapItem(Content mindMap) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(mindMap),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF2B1810),
+          borderRadius: BorderRadius.circular(2),
+          border: Border.all(color: const Color(0x33C19B47), width: 1),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0x33C19B47),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Icon(
+                Icons.account_tree,
+                size: 20,
+                color: AppTheme.goldenSaffron,
+              ),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    mindMap.title.isNotEmpty
+                        ? mindMap.title
+                        : 'Untitled Mind Map',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Playfair Display',
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFFF7F3E9),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        mindMap.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      color: const Color(0x99F7F3E9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _flashCardDeckItem(Content deck) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToDeck(deck),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color(0xFF4A3426),
+          borderRadius: BorderRadius.circular(2),
+          border: Border.all(color: const Color(0x33C19B47), width: 1),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0x33C19B47),
+                borderRadius: BorderRadius.circular(2),
+              ),
+              child: Icon(Icons.quiz, size: 20, color: AppTheme.goldenSaffron),
+            ),
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    deck.title.isNotEmpty
+                        ? deck.title
+                        : 'Untitled Flashcard Deck',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Playfair Display',
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFFF7F3E9),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatDate(
+                      DateTime.fromMillisecondsSinceEpoch(
+                        deck.updatedAt * 1000,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Inter',
+                      color: const Color(0x99F7F3E9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

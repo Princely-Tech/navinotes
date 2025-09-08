@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/date_utils.dart';
 
 class BoardLightAcadPopupOverview extends StatelessWidget {
   const BoardLightAcadPopupOverview({super.key});
@@ -19,6 +20,60 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                   _courseTitleSection(),
                   _courseActions(),
                   _fileUploads(),
+                  Consumer<BoardEditVm>(
+                    builder: (_, vm, _) {
+                      return FutureBuilder<List<Content>>(
+                        future: _getAllContents(vm.board.id!),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container(
+                              height: 200,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: const Color(0xFF8B4513),
+                                ),
+                              ),
+                            );
+                          }
+
+                          final allContents = snapshot.data ?? [];
+                          final notes =
+                              allContents
+                                  .where(
+                                    (content) =>
+                                        content.type == AppContentType.note,
+                                  )
+                                  .toList();
+                          final mindMaps =
+                              allContents
+                                  .where(
+                                    (content) =>
+                                        content.type == AppContentType.mindmap,
+                                  )
+                                  .toList();
+                          final flashCardDecks =
+                              allContents
+                                  .where(
+                                    (content) =>
+                                        content.type ==
+                                        AppContentType.flashcardDeck,
+                                  )
+                                  .toList();
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 48,
+                            children: [
+                              _recentNotesSection(notes),
+                              _mindMapsSection(mindMaps),
+                              _flashCardsDeckSection(flashCardDecks),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -257,102 +312,60 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
               builder: (_, apiServiceProvider, _) {
                 List<CourseTimeline> courseOutlines =
                     vm.board.courseTimeLines ?? [];
-                if (courseOutlines.isEmpty) {
-                  return AppButton(
-                    onTap:
-                        () => vm.uploadSyllabus(
-                          apiServiceProvider: apiServiceProvider,
-                          context: context,
-                        ),
-                    mainAxisSize: MainAxisSize.min,
-                    color: const Color(0xFFF0EBE0),
-                    text: 'Upload Syllabus',
-                    loading: vm.uploadingSyllabus,
-                    borderColor: const Color(0x338B4513),
-                    minHeight: 40,
-                    prefix: SVGImagePlaceHolder(
-                      imagePath: Images.upload,
-                      color: const Color(0xFF654321),
-                      size: 16,
-                    ),
-                    style: TextStyle(
-                      color: const Color(0xFF654321),
-                      fontSize: 16,
-                      fontFamily: 'EB Garamond',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  );
-                }
                 double maxHeight = screenHeight(context) / 2;
-                return ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: maxHeight),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.only(bottom: 60),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // spacing: 24,
-                      children:
-                          courseOutlines
-                              .map((item) => BoardLightAcadTimelineItem(item))
-                              .toList(),
-                      // children: [
-                      //   _buildTimelineItem(
-                      //     week: 'Week 1-2: Cell Structure & Function',
-                      //     assignment: 'Cell Structure Lab Report',
-                      //     status: 'In Progress',
-                      //     progress: 0.65,
-                      //     tags: [
-                      //       'Cell Membrane',
-                      //       'Cytoplasm',
-                      //       'Organelles',
-                      //       'Microscopy',
-                      //     ],
-                      //   ),
-                      // ],
+
+                return Column(
+                  children: [
+                    AppButton(
+                      onTap:
+                          () => vm.uploadSyllabus(
+                            apiServiceProvider: apiServiceProvider,
+                            context: context,
+                          ),
+                      mainAxisSize: MainAxisSize.min,
+                      color: const Color(0xFFF0EBE0),
+                      text:
+                          courseOutlines.isEmpty
+                              ? 'Upload Syllabus'
+                              : 'Change Syllabus',
+                      loading: vm.uploadingSyllabus,
+                      borderColor: const Color(0x338B4513),
+                      minHeight: 40,
+                      prefix: SVGImagePlaceHolder(
+                        imagePath: Images.upload,
+                        color: const Color(0xFF654321),
+                        size: 16,
+                      ),
+                      style: TextStyle(
+                        color: const Color(0xFF654321),
+                        fontSize: 16,
+                        fontFamily: 'EB Garamond',
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 18),
+                    if (courseOutlines.isNotEmpty)
+                      ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: maxHeight),
+                        child: SingleChildScrollView(
+                          padding: EdgeInsets.only(bottom: 60),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // spacing: 24,
+                            children:
+                                courseOutlines
+                                    .map(
+                                      (item) =>
+                                          BoardLightAcadTimelineItem(item),
+                                    )
+                                    .toList(),
+                          ),
+                        ),
+                      ),
+                  ],
                 );
               },
             ),
-
-            // Timeline Items
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   spacing: 24,
-            //   children: [
-            //     _buildTimelineItem(
-            //       week: 'Week 1-2: Cell Structure & Function',
-            //       assignment: 'Cell Structure Lab Report',
-            //       status: 'In Progress',
-            //       progress: 0.65,
-            //       tags: [
-            //         'Cell Membrane',
-            //         'Cytoplasm',
-            //         'Organelles',
-            //         'Microscopy',
-            //       ],
-            //     ),
-            //   ],
-            // ),
-            // SizedBox(height: 24),
-            // _buildTimelineItem(
-            //   week: 'Week 3-4: Genetics & DNA',
-            //   assignment: 'Genetic Inheritance Quiz',
-            //   status: 'Due Oct 15',
-            //   tags: ['DNA Structure', 'Inheritance', 'Genes', 'Mutations'],
-            // ),
-            // SizedBox(height: 24),
-            // _buildTimelineItem(
-            //   week: 'Week 5-6: Evolution & Natural Selection',
-            //   assignment: 'Evolution Case Study',
-            //   status: 'Not Started',
-            //   tags: [
-            //     'Natural Selection',
-            //     'Adaptation',
-            //     'Speciation',
-            //     'Fossil Record',
-            //   ],
-            // ),
           ],
         );
       },
@@ -1045,6 +1058,373 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                 color: const Color(0xFFFAF7F0),
                 fontSize: 16,
                 fontFamily: 'Open Sans',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // New sections for content
+  Widget _recentNotesSection(List<Content> notes) {
+    // Sort by updated date (most recent first)
+    notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          title: 'Recent Notes',
+          subTitle: 'Your latest study notes and annotations',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      onTap: vm.createNoteHandler,
+                      mainAxisSize: MainAxisSize.min,
+                      color: const Color(0xFFF0EBE0),
+                      text:
+                          notes.isEmpty
+                              ? 'Create your first note'
+                              : 'Create new note',
+                      borderColor: const Color(0x338B4513),
+                      minHeight: 40,
+                      prefix: Icon(
+                        Icons.add,
+                        color: const Color(0xFF654321),
+                        size: 16,
+                      ),
+                      style: TextStyle(
+                        color: const Color(0xFF654321),
+                        fontSize: 16,
+                        fontFamily: 'EB Garamond',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (notes.isEmpty)
+                Text(
+                  'No notes yet. Create your first note to get started with your studies.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: const Color(0xFF8B4513),
+                    fontSize: 14,
+                    fontFamily: 'Open Sans',
+                    fontWeight: FontWeight.w400,
+                  ),
+                )
+              else
+                Column(
+                  spacing: 8,
+                  children:
+                      notes
+                          .take(5)
+                          .map((note) => _buildNoteItem(note))
+                          .toList(),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _mindMapsSection(List<Content> mindMaps) {
+    // Sort by updated date (most recent first)
+    mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          title: 'Mind Maps',
+          subTitle: 'Visual representations of your knowledge',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      onTap: vm.createMindMap,
+                      mainAxisSize: MainAxisSize.min,
+                      color: const Color(0xFFF0EBE0),
+                      text:
+                          mindMaps.isEmpty
+                              ? 'Create your first mind map'
+                              : 'Create new mind map',
+                      borderColor: const Color(0x338B4513),
+                      minHeight: 40,
+                      prefix: Icon(
+                        Icons.account_tree,
+                        color: const Color(0xFF654321),
+                        size: 16,
+                      ),
+                      style: TextStyle(
+                        color: const Color(0xFF654321),
+                        fontSize: 16,
+                        fontFamily: 'EB Garamond',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (mindMaps.isEmpty)
+                Text(
+                  'No mind maps yet. Create your first mind map to visualize your ideas.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: const Color(0xFF8B4513),
+                    fontSize: 14,
+                    fontFamily: 'Open Sans',
+                    fontWeight: FontWeight.w400,
+                  ),
+                )
+              else
+                Column(
+                  spacing: 8,
+                  children:
+                      mindMaps
+                          .take(5)
+                          .map((mindMap) => _buildMindMapItem(mindMap))
+                          .toList(),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _flashCardsDeckSection(List<Content> flashCardDecks) {
+    // Sort by updated date (most recent first)
+    flashCardDecks.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return _section(
+          title: 'Flashcard Decks',
+          subTitle: 'Study cards for active recall practice',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      onTap: vm.createFlashCardDeck,
+                      mainAxisSize: MainAxisSize.min,
+                      color: const Color(0xFFF0EBE0),
+                      text:
+                          flashCardDecks.isEmpty
+                              ? 'Create your first deck'
+                              : 'Create new deck',
+                      borderColor: const Color(0x338B4513),
+                      minHeight: 40,
+                      prefix: Icon(
+                        Icons.quiz,
+                        color: const Color(0xFF654321),
+                        size: 16,
+                      ),
+                      style: TextStyle(
+                        color: const Color(0xFF654321),
+                        fontSize: 16,
+                        fontFamily: 'EB Garamond',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (flashCardDecks.isEmpty)
+                Text(
+                  'No flashcard decks yet. Create your first deck to start practicing.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: const Color(0xFF8B4513),
+                    fontSize: 14,
+                    fontFamily: 'Open Sans',
+                    fontWeight: FontWeight.w400,
+                  ),
+                )
+              else
+                Column(
+                  spacing: 8,
+                  children:
+                      flashCardDecks
+                          .take(5)
+                          .map((deck) => _buildFlashCardDeckItem(deck))
+                          .toList(),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Helper method for data fetching
+  Future<List<Content>> _getAllContents(int boardId) async {
+    try {
+      return await DatabaseHelper.instance.getAllContents(boardId);
+    } catch (e) {
+      debugPrint('Error fetching contents: $e');
+      return [];
+    }
+  }
+
+  // Helper widgets for rendering items
+  Widget _buildNoteItem(Content note) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(note),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0x19A67C52),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0x4C8B4513)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.note, size: 16, color: const Color(0xFFD4AF37)),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    note.title.isNotEmpty ? note.title : 'Untitled Note',
+                    style: TextStyle(
+                      color: const Color(0xFF654321),
+                      fontSize: 14,
+                      fontFamily: 'EB Garamond',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatUnixTimestamp(note.updatedAt),
+                    style: TextStyle(
+                      color: const Color(0xFF8B4513),
+                      fontSize: 12,
+                      fontFamily: 'Open Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMindMapItem(Content mindMap) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToContent(mindMap),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0x19A67C52),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0x4C8B4513)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.account_tree, size: 16, color: const Color(0xFFD4AF37)),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    mindMap.title.isNotEmpty
+                        ? mindMap.title
+                        : 'Untitled Mind Map',
+                    style: TextStyle(
+                      color: const Color(0xFF654321),
+                      fontSize: 14,
+                      fontFamily: 'EB Garamond',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatUnixTimestamp(mindMap.updatedAt),
+                    style: TextStyle(
+                      color: const Color(0xFF8B4513),
+                      fontSize: 12,
+                      fontFamily: 'Open Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFlashCardDeckItem(Content deck) {
+    return InkWell(
+      onTap: () => NavigationHelper.navigateToDeck(deck),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0x19A67C52),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0x4C8B4513)),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.quiz, size: 16, color: const Color(0xFFD4AF37)),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    deck.title.isNotEmpty
+                        ? deck.title
+                        : 'Untitled Flashcard Deck',
+                    style: TextStyle(
+                      color: const Color(0xFF654321),
+                      fontSize: 14,
+                      fontFamily: 'EB Garamond',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    formatUnixTimestamp(deck.updatedAt),
+                    style: TextStyle(
+                      color: const Color(0xFF8B4513),
+                      fontSize: 12,
+                      fontFamily: 'Open Sans',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

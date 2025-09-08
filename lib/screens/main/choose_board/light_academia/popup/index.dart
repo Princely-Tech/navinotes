@@ -76,12 +76,6 @@ class BoardLightAcadPopupScreen extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          MenuButton(
-                            onPressed: vm.openDrawer,
-                            decoration: BoxDecoration(
-                              color: AppTheme.burntLeather.withAlpha(0XFF),
-                            ),
-                          ),
                           AppIconButton(
                             onPressed: NavigationHelper.pop,
                             icon: Icon(
@@ -109,42 +103,6 @@ class BoardLightAcadPopupScreen extends StatelessWidget {
                       mobile: false,
                       laptop: true,
                       child: _textRowSelect(),
-                    ),
-
-                    Row(
-                      children: [
-                        AppIconButton(
-                          onPressed: NavigationHelper.navigateToNotification,
-                          icon: Badge(
-                            backgroundColor: const Color(0xFFD4AF37),
-                            textStyle: AppTheme.text.copyWith(
-                              color: AppTheme.white,
-                              fontSize: 8.0,
-                            ),
-                            label: Center(
-                              child: Text('3', textAlign: TextAlign.center),
-                            ),
-                            child: Icon(
-                              Icons.notifications,
-                              color: const Color(0xFF8B4513),
-                            ),
-                          ),
-                        ),
-                        AppIconButton(
-                          onPressed: () {},
-                          icon: SVGImagePlaceHolder(
-                            imagePath: Images.ques,
-                            size: 16,
-                            color: const Color(0xFF8B4513),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: ProfilePic(
-                            borderColor: const Color(0xFFD4AF37),
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
