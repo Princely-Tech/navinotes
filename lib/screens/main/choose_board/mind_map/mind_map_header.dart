@@ -61,6 +61,14 @@ class MindMapHeader extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       _title(mindMapVm),
+                      IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          size: 16,
+                          color: AppTheme.vividRose,
+                        ),
+                        onPressed: () => _editTitle(context, mindMapVm),
+                      ),
                     ],
                   ),
 
@@ -106,13 +114,54 @@ class MindMapHeader extends StatelessWidget {
       default:
     }
     return Text(
-      vm.title,
+      vm.title ?? 'Untitled',
       style: AppTheme.text.copyWith(
         color: color,
         fontSize: 20.0,
         fontFamily: params.fontFamily,
         fontWeight: fontWeight,
       ),
+    );
+  }
+
+  void _editTitle(BuildContext context, MindMapVm vm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final controller = TextEditingController(text: vm.title ?? '');
+        return AlertDialog(
+          title: const Text('Edit Mind Map Title'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter title...',
+              border: OutlineInputBorder(),
+            ),
+            autofocus: true,
+            onSubmitted: (value) {
+              if (value.trim().isNotEmpty) {
+                vm.updateTitle(value);
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (controller.text.trim().isNotEmpty) {
+                  vm.updateTitle(controller.text);
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -132,60 +181,6 @@ class MindMapHeader extends StatelessWidget {
         child: MenuButton(
           decoration: BoxDecoration(color: color),
           onPressed: openDrawer,
-        ),
-      ),
-    );
-  }
-
-  Widget _imgItem({required String img}) {
-    Color color = AppTheme.coffee;
-    switch (boardTheme) {
-      case BoardTheme.plain:
-        color = AppTheme.graphite;
-        break;
-      case BoardTheme.minimalist:
-        color = AppTheme.asbestos;
-        break;
-      default:
-    }
-    return SVGImagePlaceHolder(imagePath: img, color: color, size: 16);
-  }
-
-  Widget _searchField() {
-    Color iconColor = AppTheme.coffee;
-    Color borderColor = AppTheme.burntLeather.withAlpha(0x33);
-    String fontFamily = AppTheme.fontCrimsonText;
-    switch (boardTheme) {
-      case BoardTheme.plain:
-      case BoardTheme.minimalist:
-        iconColor = AppTheme.graphite;
-        borderColor = AppTheme.lightGray;
-        fontFamily = AppTheme.fontFamily;
-        break;
-      default:
-    }
-    TextStyle style = AppTheme.text.copyWith(
-      color: iconColor,
-      fontSize: 16.0,
-      fontFamily: fontFamily,
-      height: 1.50,
-    );
-    return WidthLimiter(
-      mobile: 192,
-      child: CustomInputField(
-        prefixIcon: Icon(Icons.search, color: iconColor, size: 20),
-        hintText: 'Search...',
-        fillColor: AppTheme.white,
-        constraints: BoxConstraints(maxHeight: 34),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        style: style,
-        hintStyle: AppTheme.text.copyWith(
-          color: AppTheme.slateGray,
-          fontFamily: fontFamily,
-          height: 1.50,
         ),
       ),
     );

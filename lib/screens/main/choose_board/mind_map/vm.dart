@@ -14,12 +14,9 @@ import 'package:navinotes/settings/db_helpers.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/settings/file_utils.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
-import 'package:navinotes/settings/routes.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:share_plus/share_plus.dart';
 import 'package:uuid/uuid.dart';
 
 class MindMapVm extends ChangeNotifier {
@@ -44,8 +41,8 @@ class MindMapVm extends ChangeNotifier {
   /// Persistence state
   final int boardId;
   int? contentId; // row id in contents table for this mindmap
-Content? baseContent; // the content this mindmap is based on
-String? title;
+  Content? baseContent; // the content this mindmap is based on
+  String title = "Mind Map";
 
   /// Canvas transform state (logical coordinates)
   double scale = 1.0;
@@ -81,6 +78,13 @@ String? title;
   // Document panel toggle
   void toggleDocumentPanel() {
     isDocumentPanelVisible = !isDocumentPanelVisible;
+    notifyListeners();
+  }
+
+  updateTitle(String newTitle) {
+    if (newTitle.trim().isEmpty) return;
+    title = newTitle;
+    saveToDb();
     notifyListeners();
   }
 
@@ -976,12 +980,11 @@ String? title;
   /// Save (insert or update) the current mind map into the contents table.
   /// - If contentId is null, insert a new Content row.
   /// - Otherwise, update the existing row.
-  Future<void> saveToDb({String? newTitle}) async {
+  Future<void> saveToDb() async {
     if (_isSaving) return; // guard re-entrancy
     _suppressAutoSave = true;
     _isSaving = true;
     try {
-      title = newTitle ?? title;
       final meta = toJson();
       final now = DateTime.now().millisecondsSinceEpoch;
       final helper = DatabaseHelper.instance;
@@ -1009,7 +1012,7 @@ String? title;
           final updated = Content(
             id: existing.id,
             guid: existing.guid,
-            title: newTitle ?? existing.title,
+            title: title,
             voiceNotes: existing.voiceNotes,
             coverImage: existing.coverImage,
             type: existing.type,
@@ -1045,6 +1048,7 @@ String? title;
     contentId = content.id;
     baseContent = content;
     title = content.title;
+    debugPrint('Loaded mind map with title: $title');
     // meta_data contains our map
     final meta = content.metaData;
     loadFromJson(meta);
