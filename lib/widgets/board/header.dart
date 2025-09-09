@@ -45,11 +45,6 @@ class BoardPageMainHeader extends StatelessWidget {
                                     spacing: 15,
                                     children: [
                                       SVGImagePlaceHolder(
-                                        imagePath: Images.ques,
-                                        color: AppTheme.asbestos,
-                                        size: 16,
-                                      ),
-                                      SVGImagePlaceHolder(
                                         imagePath: Images.menu,
                                         color: AppTheme.asbestos,
                                         size: 16,
@@ -178,14 +173,6 @@ class DisplayFormatSelect extends StatelessWidget {
             child: Row(
               spacing: 15,
               children: [
-                SVGImagePlaceHolder(
-                  imagePath: Images.ques,
-                  color:
-                      theme == BoardTheme.darkAcademia
-                          ? AppTheme.vanillaDust.withAlpha(204)
-                          : params.color1,
-                  size: 16,
-                ),
                 Container(
                   decoration: params.layoutBtnContainerDecoration,
                   child: IntrinsicHeight(

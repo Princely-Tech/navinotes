@@ -95,7 +95,7 @@ class NatureNotePageMain extends StatelessWidget {
     return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return InkWell(
-          onTap: () => vm.goToNotePage(content),
+          onTap: () => NavigationHelper.navigateToContent(content),
           child: CustomCard(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -158,12 +158,6 @@ class NatureNotePageMain extends StatelessWidget {
                     ],
                   ),
                 ),
-                Row(
-                  children: [
-                    SVGImagePlaceHolder(imagePath: Images.star2, size: 18),
-                    Icon(Icons.more_vert, color: AppTheme.deepMoss),
-                  ],
-                ),
               ],
             ),
           ),
@@ -176,7 +170,7 @@ class NatureNotePageMain extends StatelessWidget {
     return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return InkWell(
-          onTap: () => vm.goToNotePage(content),
+          onTap: () => NavigationHelper.navigateToContent(content),
           child: CustomCard(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -244,12 +238,6 @@ class NatureNotePageMain extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        SVGImagePlaceHolder(imagePath: Images.star2, size: 18),
-                        Icon(Icons.more_vert, color: AppTheme.deepMoss),
-                      ],
                     ),
                   ],
                 ),

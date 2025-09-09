@@ -19,7 +19,7 @@ class NatureNotePageAside extends StatelessWidget {
                   children: [
                     _boardDetails(),
                     _recentlyViewed(),
-                    _mindMaps(),
+                    // _mindMaps(),
                     Column(
                       children: [
                         VisibleController(
