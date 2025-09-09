@@ -8,16 +8,18 @@ Future<void> goToNotePageWithContent({
     MessageDisplayService.showErrorMessage(context, 'Content ID not found!');
     return;
   }
-  if (isNotNull(content.file)) {
-    return NavigationHelper.navigateToContent(content);
-  }
-  BoardNoteTemplate template = getNoteTemplateFromString(
-    content.metaData[ContentMetadataKey.template],
-  );
-  return NavigationHelper.navigateToNoteWithTemplate(
-    template: template,
-    contentId: content.id!,
-  );
+  return NavigationHelper.navigateToContent(content);
+
+  // if (isNotNull(content.file)) {
+  //   return NavigationHelper.navigateToContent(content);
+  // // }
+  // BoardNoteTemplate template = getNoteTemplateFromString(
+  //   content.metaData[ContentMetadataKey.template],
+  // );
+  // return NavigationHelper.navigateToNoteWithTemplate(
+  //   template: template,
+  //   contentId: content.id!,
+  // );
 }
 
 Future<void> createContentInDb({
@@ -62,11 +64,12 @@ Future<void> createContentInDb({
         }
       } else {
         debugPrint('Created content $contentId');
+        return NavigationHelper.navigateToContentById(contentId, replace:true);
         // Navigate based on the template
-        return NavigationHelper.navigateToNoteWithTemplate(
-          template: template,
-          contentId: contentId,
-        );
+        //   return NavigationHelper.navigateToNoteWithTemplate(
+        //     template: template,
+        //     contentId: contentId,
+        //   );
       }
     }
   } catch (e) {

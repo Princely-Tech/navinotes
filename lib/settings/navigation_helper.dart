@@ -61,21 +61,32 @@ class NavigationHelper {
   }
 
   //Note creation
-  static navigateToNoteWithTemplate({
-    required BoardNoteTemplate template,
-    required int contentId,
-  }) async {
-    if (isNotNull(template.route)) {
-      return navigateToNoteTemplateRoute(template.route!, contentId);
-    } else {
-      return navigateToNoteCreation(template, contentId);
-    }
-  }
+  // static navigateToNoteWithTemplate({
+  //   required BoardNoteTemplate template,
+  //   required int contentId,
+  //   {bool replace = false}
+  // }) async {
+  //         return navigateToNoteCreation(template, contentId);
+
+  //   // if (isNotNull(template.route)) {
+  //   //   return navigateToNoteTemplateRoute(template.route!, contentId);
+  //   // } else {
+  //   //   return navigateToNoteCreation(template, contentId);
+  //   // }
+  // }
 
   static void navigateToNoteCreation(
     BoardNoteTemplate template,
-    int contentId,
-  ) {
+    int contentId, {
+    bool replace = false,
+  }) {
+    if (replace) {
+      pushReplacement(
+        Routes.noteCreation,
+        arguments: NoteCreationProp(template: template, contentId: contentId),
+      );
+      return;
+    }
     push(
       Routes.noteCreation,
       arguments: NoteCreationProp(template: template, contentId: contentId),
@@ -181,11 +192,12 @@ class NavigationHelper {
   static void navigateToNotification() {
     push(Routes.notifications);
   }
+
   static void navigateToProfile() {
     push(Routes.profile);
   }
 
-  static navigateToContent(Content content) async {
+  static navigateToContent(Content content, {bool replace = false}) async {
     debugPrint('Navigating to content ${content.id} - ${content.title}');
 
     //Handle file
@@ -201,10 +213,14 @@ class NavigationHelper {
       BoardNoteTemplate template = getNoteTemplateFromString(
         content.metaData[ContentMetadataKey.template],
       );
-      return NavigationHelper.navigateToNoteWithTemplate(
-        template: template,
-        contentId: content.id!,
-      );
+
+      return navigateToNoteCreation(template, content.id!, replace: replace);
+
+      // return NavigationHelper.navigateToNoteWithTemplate(
+      //   template: template,
+      //   contentId: content.id!,
+      //   replace: replace,
+      // );
     }
 
     if (content.type == AppContentType.flashcardDeck) {
@@ -242,9 +258,9 @@ class NavigationHelper {
     }
   }
 
-  static navigateToContentById(int contentId) async {
+  static navigateToContentById(int contentId, {bool replace = false}) async {
     final content = await DatabaseHelper.instance.getContentById(contentId);
-    return navigateToContent(content!);
+    return navigateToContent(content!, replace: replace);
   }
 
   static navigateToDeck(Content deck) {
