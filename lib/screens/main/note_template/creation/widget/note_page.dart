@@ -46,30 +46,22 @@ class NoteDrawingWrapperState extends State<NoteDrawingWrapper> {
                       : const BouncingScrollPhysics(),
               child: Stack(
                 children: [
-                  // Background patterns
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: widget.inputHeight,
-                        width: widget.inputWidth,
-                        child: const SquaredNoteBackground(),
-                      ),
-                      SizedBox(
-                        height: widget.inputHeight,
-                        width: widget.inputWidth,
-                        child: const LinedNoteBackground(),
-                      ),
-                      SizedBox(
-                        height: widget.inputHeight,
-                        width: widget.inputWidth,
-                        child: const DottedNoteBackground(),
-                      ),
-                      Container(
-                        width: widget.inputWidth,
-                        height: widget.inputHeight,
-                        color: widget.color,
-                      ),
-                    ],
+                  // Background pattern
+                  SizedBox(
+                    height: widget.inputHeight,
+                    width: widget.inputWidth,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: widget.inputWidth,
+                          height: widget.inputHeight,
+                          color: widget.color,
+                        ),
+                        const SquaredNoteBackground(),
+                        const LinedNoteBackground(),
+                        const DottedNoteBackground(),
+                      ],
+                    ),
                   ),
 
                   ...getWidget(vm),
