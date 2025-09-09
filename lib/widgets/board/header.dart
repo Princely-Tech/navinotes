@@ -162,61 +162,58 @@ class BoardPageMainHeader extends StatelessWidget {
   }
 }
 
-class DisplayFormatSelect extends StatefulWidget {
+class DisplayFormatSelect extends StatelessWidget {
   const DisplayFormatSelect({super.key, required this.theme});
   final BoardTheme theme;
 
   @override
-  State<DisplayFormatSelect> createState() => _DisplayFormatSelectState();
-}
-
-class _DisplayFormatSelectState extends State<DisplayFormatSelect> {
-  PageDisplayFormat pageDisplayFormat = PageDisplayFormat.list;
-
-  @override
   Widget build(BuildContext context) {
-    BordThemeValues params = widget.theme.values;
-    return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
-      child: Padding(
-        padding: EdgeInsets.all(5),
-        child: Row(
-          spacing: 15,
-          children: [
-            SVGImagePlaceHolder(
-              imagePath: Images.ques,
-              color:
-                  widget.theme == BoardTheme.darkAcademia
-                      ? AppTheme.vanillaDust.withAlpha(204)
-                      : params.color1,
-              size: 16,
-            ),
-            Container(
-              decoration: params.layoutBtnContainerDecoration,
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _layoutBtn(PageDisplayFormat.list),
-                    _layoutBtn(PageDisplayFormat.grid),
-                  ],
+    BordThemeValues params = theme.values;
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
+          child: Padding(
+            padding: EdgeInsets.all(5),
+            child: Row(
+              spacing: 15,
+              children: [
+                SVGImagePlaceHolder(
+                  imagePath: Images.ques,
+                  color:
+                      theme == BoardTheme.darkAcademia
+                          ? AppTheme.vanillaDust.withAlpha(204)
+                          : params.color1,
+                  size: 16,
                 ),
-              ),
+                Container(
+                  decoration: params.layoutBtnContainerDecoration,
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _layoutBtn(PageDisplayFormat.list, vm),
+                        _layoutBtn(PageDisplayFormat.grid, vm),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _layoutBtn(PageDisplayFormat format) {
-    BordThemeValues params = widget.theme.values;
+  Widget _layoutBtn(PageDisplayFormat format, BoardNotePageVm vm) {
+    BordThemeValues params = theme.values;
     bool isGrid = format == PageDisplayFormat.grid;
-    bool isActive = pageDisplayFormat == format;
+    bool isActive = vm.pageDisplayFormat == format;
     Color activeBgColor = AppTheme.burntLeather.withAlpha(102);
     Color inActiveBgColor = AppTheme.transparent;
     Color inActiveColor = AppTheme.vanillaDust;
-    switch (widget.theme) {
+    switch (theme) {
       case BoardTheme.nature:
         activeBgColor = AppTheme.lightSage;
         inActiveColor = params.color1;
@@ -229,7 +226,7 @@ class _DisplayFormatSelectState extends State<DisplayFormatSelect> {
       default:
     }
     return InkWell(
-      onTap: () => setState(() => pageDisplayFormat = format),
+      onTap: () => vm.updatePageDisplayFormat(format),
       child: OutlinedChild(
         size: 40,
         decoration: BoxDecoration(

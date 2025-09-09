@@ -48,10 +48,22 @@ class BoardNotePageVm extends ChangeNotifier {
     try {
       fetchingContent = true;
       notifyListeners();
-      contents = await dbHelper.getAllNotes(
-        board.id!,
-        sortType: stringToNoteSortType(sortByController.text),
-      );
+      
+      // Get all contents and sort them based on the selected sort type
+      List<Content> allContents = await dbHelper.getAllContents(board.id!);
+      NoteSortType sortType = stringToNoteSortType(sortByController.text);
+      
+      // Sort the contents based on the selected sort type
+      switch (sortType) {
+        case NoteSortType.updatedAt:
+          allContents.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+          break;
+        case NoteSortType.createdAt:
+          allContents.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          break;
+      }
+      
+      contents = allContents;
       notifyListeners();
     } catch (e) {
       debugPrint('Error ${e.toString()}');

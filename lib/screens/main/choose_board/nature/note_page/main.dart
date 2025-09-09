@@ -16,63 +16,27 @@ class NatureNotePageMain extends StatelessWidget {
               Expanded(
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.only(bottom: 30),
-                  child: CustomGrid(
-                    children: [
-                      ...vm.contents.map(
-                        (content) => _noteCard(content: content),
-                      ),
-
-                      Column(
-                        children: [
-                          InkWell(
-                            onTap: vm.gotToCreateNotePage,
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(minHeight: 220),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: DottedDecoration(
-                                  color: AppTheme.burntLeather,
-                                  shape: Shape.box,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  spacing: 15,
-                                  children: [
-                                    CustomCard(
-                                      width: 56,
-                                      height: 56,
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.lightSage.withAlpha(
-                                          0x7F,
-                                        ),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      child: Icon(
-                                        Icons.add,
-                                        color: AppTheme.coffee,
-                                        size: 30,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Create New Note Page',
-                                      style: AppTheme.text.copyWith(
-                                        color: AppTheme.coffee,
-                                        fontSize: 18.0,
-                                        fontFamily:
-                                            AppTheme.fontPlayfairDisplay,
-                                      ),
-                                    ),
-                                  ],
+                  child:
+                      vm.pageDisplayFormat == PageDisplayFormat.grid
+                          ? CustomGrid(
+                            children: [
+                              ...vm.contents.map(
+                                (content) => _noteCard(content: content),
+                              ),
+                              _createNewNoteCard(vm),
+                            ],
+                          )
+                          : Column(
+                            children: [
+                              ...vm.contents.map(
+                                (content) => Padding(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: _noteListItem(content: content),
                                 ),
                               ),
-                            ),
+                              _createNewNoteCard(vm),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
                 ),
               ),
             ],
@@ -82,10 +46,133 @@ class NatureNotePageMain extends StatelessWidget {
     );
   }
 
-  Widget _noteCard({required Content content}) {
-    BoardNoteTemplate template = getNoteTemplateFromString(
-      content.metaData[ContentMetadataKey.template],
+  Widget _createNewNoteCard(BoardNotePageVm vm) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: vm.gotToCreateNotePage,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 220),
+            child: Container(
+              width: double.infinity,
+              decoration: DottedDecoration(
+                color: AppTheme.burntLeather,
+                shape: Shape.box,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 15,
+                children: [
+                  CustomCard(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: AppTheme.lightSage.withAlpha(0x7F),
+                      shape: BoxShape.circle,
+                    ),
+                    padding: EdgeInsets.zero,
+                    child: Icon(Icons.add, color: AppTheme.coffee, size: 30),
+                  ),
+                  Text(
+                    'Create New Note Page',
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.coffee,
+                      fontSize: 18.0,
+                      fontFamily: AppTheme.fontPlayfairDisplay,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
+  }
+
+  Widget _noteListItem({required Content content}) {
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return InkWell(
+          onTap: () => vm.goToNotePage(content),
+          child: CustomCard(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.burntLeather.withAlpha(0x33)),
+            ),
+            padding: EdgeInsets.all(15),
+            child: Row(
+              spacing: 15,
+              children: [
+                CustomCard(
+                  width: 80,
+                  height: 60,
+                  addShadow: true,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: AppTheme.sageMist.withAlpha(0x4C),
+                  ),
+                  padding: EdgeInsets.zero,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: AppTheme.lightSage.withAlpha(0x80),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        content.type == AppContentType.mindmap
+                            ? Icons.account_tree
+                            : content.type == AppContentType.file
+                            ? Icons.insert_drive_file
+                            : Icons.note,
+                        color: AppTheme.deepMoss,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
+                    children: [
+                      Text(
+                        content.title,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.darkMossGreen,
+                          fontSize: 16.0,
+                          fontFamily: AppTheme.fontLibreBaskerville,
+                          height: 1.50,
+                        ),
+                      ),
+                      Text(
+                        'Last edited: ${formatUnixTimestamp(content.updatedAt)}',
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.coffee,
+                          fontSize: 12.0,
+                          fontFamily: AppTheme.fontCrimsonText,
+                          height: 1.33,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    SVGImagePlaceHolder(imagePath: Images.star2, size: 18),
+                    Icon(Icons.more_vert, color: AppTheme.deepMoss),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _noteCard({required Content content}) {
     return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return InkWell(
@@ -109,11 +196,22 @@ class NatureNotePageMain extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   child: AspectRatio(
                     aspectRatio: 5 / 2,
-                    child: ImagePlaceHolder(
-                      imagePath: template.image,
-                      isCardHeader: true,
-                      borderRadius: BorderRadius.circular(0),
-                      fit: BoxFit.fill,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: AppTheme.lightSage.withAlpha(0x80),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          content.type == AppContentType.mindmap
+                              ? Icons.account_tree
+                              : content.type == AppContentType.file
+                              ? Icons.insert_drive_file
+                              : Icons.note,
+                          color: AppTheme.deepMoss,
+                          size: 32,
+                        ),
+                      ),
                     ),
                   ),
                 ),
