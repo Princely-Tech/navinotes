@@ -25,7 +25,6 @@ class PdfViewScreen extends StatelessWidget {
             },
             child: ScaffoldFrame(
               scaffoldKey: _scaffoldKey,
-              // endDrawer: CustomDrawer(child: PdfViewAside()),
               backgroundColor: AppTheme.white,
               body: Stack(
                 children: [
@@ -34,11 +33,9 @@ class PdfViewScreen extends StatelessWidget {
                     desktop: Row(
                       children: [
                         Expanded(child: PdfViewMain()),
-                        // WidthLimiter(mobile: 288, child: PdfViewAside()),
                       ],
                     ),
                   ),
-                  //PdfViewOverlay(),
                 ],
               ),
             ),

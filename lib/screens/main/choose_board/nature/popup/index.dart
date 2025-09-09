@@ -506,35 +506,35 @@ class BoardNaturePopupScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0x339CAF88),
-                            borderRadius: BorderRadius.circular(9999),
-                          ),
-                          child: Row(
-                            spacing: 8,
-                            children: [
-                              SVGImagePlaceHolder(
-                                imagePath: Images.aiBot,
-                                size: 20,
-                                color: AppTheme.mossGreen,
-                              ),
-                              Text(
-                                'AI Organized',
-                                style: TextStyle(
-                                  color: const Color(0xFF4A7C59),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Container(
+                        //   padding: EdgeInsets.symmetric(
+                        //     horizontal: 12,
+                        //     vertical: 4,
+                        //   ),
+                        //   decoration: BoxDecoration(
+                        //     color: const Color(0x339CAF88),
+                        //     borderRadius: BorderRadius.circular(9999),
+                        //   ),
+                        //   child: Row(
+                        //     spacing: 8,
+                        //     children: [
+                        //       SVGImagePlaceHolder(
+                        //         imagePath: Images.aiBot,
+                        //         size: 20,
+                        //         color: AppTheme.mossGreen,
+                        //       ),
+                        //       Text(
+                        //         'AI Organized',
+                        //         style: TextStyle(
+                        //           color: const Color(0xFF4A7C59),
+                        //           fontSize: 14,
+                        //           fontFamily: 'Inter',
+                        //           fontWeight: FontWeight.w500,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                     SizedBox(height: 32),
@@ -652,32 +652,96 @@ class BoardNaturePopupScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Explore ${vm.board.subject}',
-                            style: TextStyle(
-                              color: const Color(0xFFF8F6F0),
-                              fontSize: getDeviceResponsiveValue(
-                                deviceType: layoutVm.deviceType,
-                                mobile: 30,
-                                tablet: 35,
-                                laptop: 40,
-                                desktop: 48,
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  'Explore ${vm.board.name}',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: const Color(0xFFF8F6F0),
+                                    fontSize: getDeviceResponsiveValue(
+                                      deviceType: layoutVm.deviceType,
+                                      mobile: 30,
+                                      tablet: 35,
+                                      laptop: 40,
+                                      desktop: 48,
+                                    ),
+                                    fontFamily: 'Crimson Text',
+                                    fontWeight: FontWeight.w400,
+                                    height: 1,
+                                  ),
+                                ),
                               ),
-                              fontFamily: 'Crimson Text',
-                              fontWeight: FontWeight.w400,
-                              height: 1,
-                            ),
+                              SizedBox(width: 12),
+                              Builder(
+                                builder:
+                                    (context) => InkWell(
+                                      onTap: () => _editBoardName(context),
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.edit,
+                                          size: 16,
+                                          color: const Color(0xFFF8F6F0),
+                                        ),
+                                      ),
+                                    ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 24),
-                          Text(
-                            getBoardDescription(vm.board),
-                            style: TextStyle(
-                              color: const Color(0xE5F8F6F0),
-                              fontSize: 20,
-                              fontFamily: 'Crimson Text',
-                              fontWeight: FontWeight.w400,
-                              height: 1.65,
-                            ),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  getBoardDescription(vm.board),
+                                  maxLines: 4,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: const Color(0xE5F8F6F0),
+                                    fontSize: 20,
+                                    fontFamily: 'Crimson Text',
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.65,
+                                    fontStyle:
+                                        getBoardDescription(vm.board) ==
+                                                'Describe your board'
+                                            ? FontStyle.italic
+                                            : FontStyle.normal,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 12),
+                              Builder(
+                                builder:
+                                    (context) => InkWell(
+                                      onTap:
+                                          () => _editBoardDescription(context),
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.edit,
+                                          size: 16,
+                                          color: const Color(0xFFF8F6F0),
+                                        ),
+                                      ),
+                                    ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -1607,6 +1671,169 @@ class BoardNaturePopupScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _editBoardName(BuildContext context) {
+    final vm = Provider.of<BoardEditVm>(context, listen: false);
+    final controller = TextEditingController(text: vm.board.name);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFFF8F6F0),
+          title: Text(
+            'Edit Board Subject',
+            style: TextStyle(
+              color: const Color(0xFF2D5016),
+              fontFamily: 'Crimson Text',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: 'Enter board name...',
+              hintStyle: TextStyle(
+                color: const Color(0xFF8B7355),
+                fontFamily: 'Crimson Text',
+              ),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: const Color(0xFF4A7C59)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: const Color(0xFF4A7C59),
+                  width: 2,
+                ),
+              ),
+            ),
+            style: TextStyle(
+              color: const Color(0xFF2D5016),
+              fontFamily: 'Crimson Text',
+            ),
+            autofocus: true,
+            onSubmitted: (value) {
+              if (value.trim().isNotEmpty) {
+                vm.updateBoardName(value.trim());
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: const Color(0xFF8B7355),
+                  fontFamily: 'Crimson Text',
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (controller.text.trim().isNotEmpty) {
+                  vm.updateBoardName(controller.text.trim());
+                  Navigator.of(context).pop();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4A7C59),
+                foregroundColor: Colors.white,
+              ),
+              child: Text(
+                'Save',
+                style: TextStyle(
+                  fontFamily: 'Crimson Text',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editBoardDescription(BuildContext context) {
+    final vm = Provider.of<BoardEditVm>(context, listen: false);
+    final controller = TextEditingController(text: vm.board.description ?? '');
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFFF8F6F0),
+          title: Text(
+            'Edit Board Description',
+            style: TextStyle(
+              color: const Color(0xFF2D5016),
+              fontFamily: 'Crimson Text',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: 'Enter board description...',
+              hintStyle: TextStyle(
+                color: const Color(0xFF8B7355),
+                fontFamily: 'Crimson Text',
+              ),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: const Color(0xFF4A7C59)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: const Color(0xFF4A7C59),
+                  width: 2,
+                ),
+              ),
+            ),
+            style: TextStyle(
+              color: const Color(0xFF2D5016),
+              fontFamily: 'Crimson Text',
+            ),
+            autofocus: true,
+            maxLines: 3,
+            onSubmitted: (value) {
+              vm.updateBoardDescription(value.trim());
+              Navigator.of(context).pop();
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: const Color(0xFF8B7355),
+                  fontFamily: 'Crimson Text',
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                vm.updateBoardDescription(controller.text.trim());
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4A7C59),
+                foregroundColor: Colors.white,
+              ),
+              child: Text(
+                'Save',
+                style: TextStyle(
+                  fontFamily: 'Crimson Text',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
