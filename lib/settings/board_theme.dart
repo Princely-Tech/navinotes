@@ -1,3 +1,4 @@
+import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/packages.dart';
 
 enum BoardTheme {
@@ -21,9 +22,15 @@ class BordThemeValues {
   final String fontFamily;
   final Color inputBorderColor;
   final Color inputBackgroundColor;
+  final Color nodeBackgroundColor;
+  final Color nodeTextColor;
+  final Color connectionColor;
+  final MindMapBorderStyle nodeBorderStyle;
 
   final BoxDecoration mainHeaderDecoration;
   final BoxDecoration layoutBtnContainerDecoration;
+
+  final Color toolBorderColor;
 
   BordThemeValues({
     required this.backgroundColor,
@@ -31,9 +38,14 @@ class BordThemeValues {
     required this.color1,
     required this.inputBorderColor,
     required this.fontFamily,
+    required this.nodeBackgroundColor,
+    required this.nodeTextColor,
+    required this.connectionColor,
+    required this.nodeBorderStyle,
     required this.inputBackgroundColor,
     required this.mainHeaderDecoration,
     required this.layoutBtnContainerDecoration,
+    required this.toolBorderColor,
   });
 }
 
@@ -41,10 +53,17 @@ extension BoardThemeExtension on BoardTheme {
   BordThemeValues get values {
     Color bgColor = AppTheme.transparent;
     Color borderColor = AppTheme.royalGold.withAlpha(0x4C);
-    Color color1 = AppTheme.royalGold;
-    Color inputBorderColor = AppTheme.royalGold;
-    String fontFamily = AppTheme.fontPlayfairDisplay;
-    Color inputBackgroundColor = AppTheme.burntLeather;
+    Color color1 = AppTheme.burntClove;
+    String fontFamily = AppTheme.fontCrimsonPro;
+    Color inputBorderColor = AppTheme.royalGold.withAlpha(0x4C);
+    Color inputBackgroundColor = AppTheme.fadedEmber;
+    Color nodeBackgroundColor = AppTheme.fadedEmber;
+    Color nodeTextColor = AppTheme.burntClove;
+    MindMapBorderStyle nodeBorderStyle = MindMapBorderStyle.border;
+    Color connectionColor = AppTheme.royalGold;
+
+    Color toolBorderColor = Colors.transparent;
+
     BoxDecoration mainHeaderDecoration = BoxDecoration();
     BoxDecoration layoutBtnContainerDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(4),
@@ -53,6 +72,8 @@ extension BoardThemeExtension on BoardTheme {
     );
     switch (this) {
       case BoardTheme.darkAcademia:
+        nodeBorderStyle = MindMapBorderStyle.shadow;
+        nodeTextColor = AppTheme.white;
         mainHeaderDecoration = BoxDecoration(
           color: AppTheme.fadedEmber,
           borderRadius: BorderRadius.circular(4),
@@ -63,6 +84,7 @@ extension BoardThemeExtension on BoardTheme {
             ),
           ),
         );
+        toolBorderColor = AppTheme.burntClove;
       case BoardTheme.nature:
         bgColor = AppTheme.mintCream;
         borderColor = AppTheme.sageMist;
@@ -70,30 +92,49 @@ extension BoardThemeExtension on BoardTheme {
         fontFamily = AppTheme.fontLibreBaskerville;
         inputBorderColor = AppTheme.burntLeather.withAlpha(0x4C);
         inputBackgroundColor = AppTheme.lightSage;
+        nodeBackgroundColor = AppTheme.lightSage;
+        nodeTextColor = AppTheme.deepMoss;
+        connectionColor = AppTheme.sageMist;
         layoutBtnContainerDecoration = layoutBtnContainerDecoration.copyWith(
           border: Border.all(color: AppTheme.sageMist.withAlpha(0x4C)),
           color: AppTheme.linen,
         );
+
+        toolBorderColor = AppTheme.amber;
 
       case BoardTheme.minimalist:
         borderColor = AppTheme.aliceBlue;
         color1 = AppTheme.wetAsphalt;
         fontFamily = AppTheme.fontFamily;
         inputBorderColor = AppTheme.lightGray;
-        inputBackgroundColor = AppTheme.transparent;
+        inputBackgroundColor = AppTheme.white;
+        nodeBackgroundColor = AppTheme.white;
+        nodeTextColor = AppTheme.wetAsphalt;
+        connectionColor = AppTheme.aliceBlue;
+
+        toolBorderColor = AppTheme.wetAsphalt;
+
       case BoardTheme.plain:
         fontFamily = AppTheme.fontFamily;
+        nodeBackgroundColor = AppTheme.white;
+        nodeTextColor = AppTheme.black;
+        nodeBorderStyle = MindMapBorderStyle.border;
+        connectionColor = AppTheme.lightGray;
       case BoardTheme.lightAcademia:
         inputBackgroundColor = AppTheme.almondCream;
         color1 = AppTheme.sepiaBrown;
         fontFamily = AppTheme.fontCrimsonText;
+        nodeBackgroundColor = AppTheme.almondCream;
+        nodeTextColor = AppTheme.sepiaBrown;
+        nodeBorderStyle = MindMapBorderStyle.shadow;
+
+        connectionColor = AppTheme.sepiaBrown.withAlpha(0x80);
         mainHeaderDecoration = BoxDecoration(
           border: Border(
             bottom: BorderSide(color: AppTheme.sepiaBrown.withAlpha(0x19)),
           ),
         );
-      // inputBorderColor = AppTheme.lightGray;
-      // inputBackgroundColor = AppTheme.transparent;
+        toolBorderColor = AppTheme.sepiaBrown;
     }
     return BordThemeValues(
       backgroundColor: bgColor,
@@ -102,8 +143,13 @@ extension BoardThemeExtension on BoardTheme {
       fontFamily: fontFamily,
       inputBorderColor: inputBorderColor,
       inputBackgroundColor: inputBackgroundColor,
+      nodeBackgroundColor: nodeBackgroundColor,
+      nodeTextColor: nodeTextColor,
+      connectionColor: connectionColor,
+      nodeBorderStyle: nodeBorderStyle,
       mainHeaderDecoration: mainHeaderDecoration,
       layoutBtnContainerDecoration: layoutBtnContainerDecoration,
+      toolBorderColor: toolBorderColor,
     );
   }
 }

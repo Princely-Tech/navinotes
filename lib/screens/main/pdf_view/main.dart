@@ -71,16 +71,15 @@ class PdfViewMain extends StatelessWidget {
     // Show PDF viewer if document is loaded
     if (isNotNull(vm.comPdfVm.document)) {
       debugPrint('Rendering PDF viewer with document: ${vm.comPdfVm.document}');
-      
+
+      debugPrint("Rendering: ${vm.comPdfVm.document?.length} ");
       // Try a simple approach first - just the widget with minimal config
       return Scaffold(
         backgroundColor: Colors.white,
         body: CPDFReaderWidget(
           document: vm.comPdfVm.document!,
           configuration: CPDFConfiguration(
-            toolbarConfig: CPDFToolbarConfig(
-              mainToolbarVisible: true,
-            ),
+            toolbarConfig: CPDFToolbarConfig(mainToolbarVisible: true),
           ),
           onSaveCallback: () {
             debugPrint('PDF Saved');

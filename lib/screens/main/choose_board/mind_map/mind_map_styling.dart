@@ -41,10 +41,11 @@ class MindMapStyling extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeValues = boardTheme.values;
-    Color bgColor = themeValues.backgroundColor == AppTheme.transparent 
-        ? AppTheme.ghostWhite 
-        : themeValues.backgroundColor;
-    
+    Color bgColor =
+        themeValues.backgroundColor == AppTheme.transparent
+            ? AppTheme.ghostWhite
+            : themeValues.backgroundColor;
+
     return Container(
       decoration: BoxDecoration(
         color: bgColor,
@@ -117,6 +118,7 @@ class MindMapStyling extends StatelessWidget {
                                 (color) => _colorDot(
                                   color: color,
                                   onTap: vm.updateSelectedEdgeColor,
+                                  vm: vm,
                                 ),
                               )
                               .toList(),
@@ -221,6 +223,8 @@ class MindMapStyling extends StatelessWidget {
                 spacing: 10,
                 children:
                     [
+                          Colors.white,
+                          AppTheme.lightSage,
                           AppTheme.steelBlue,
                           AppTheme.emerald,
                           AppTheme.mediumOrchid,
@@ -232,6 +236,7 @@ class MindMapStyling extends StatelessWidget {
                           (color) => _colorDot(
                             color: color,
                             onTap: vm.updateSelectedNodeBackgroundColor,
+                            vm: vm,
                           ),
                         )
                         .toList(),
@@ -256,6 +261,7 @@ class MindMapStyling extends StatelessWidget {
                           (color) => _colorDot(
                             color: color,
                             onTap: vm.updateSelectedNodeTextColor,
+                            vm: vm,
                           ),
                         )
                         .toList(),
@@ -385,12 +391,16 @@ class MindMapStyling extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Cooler',
-                        style: getTitleTextStyle(boardTheme).copyWith(fontSize: 12.0),
+                        style: getTitleTextStyle(
+                          boardTheme,
+                        ).copyWith(fontSize: 12.0),
                       ),
                     ),
                     Text(
                       'Warmer',
-                      style: getTitleTextStyle(boardTheme).copyWith(fontSize: 12.0),
+                      style: getTitleTextStyle(
+                        boardTheme,
+                      ).copyWith(fontSize: 12.0),
                     ),
                   ],
                 ),
@@ -444,13 +454,24 @@ class MindMapStyling extends StatelessWidget {
   }
 }
 
-Widget _colorDot({required Color color, required Function(Color) onTap}) {
+Widget _colorDot({
+  required Color color,
+  required Function(Color) onTap,
+  required MindMapVm vm,
+}) {
   return InkWell(
     onTap: () => onTap(color),
     child: Container(
       height: 24,
       width: 24,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(
+          color: vm.boardTheme.values.toolBorderColor,
+          width: 1.5,
+        ),
+      ),
     ),
   );
 }
@@ -497,11 +518,18 @@ Widget _selectItem({
   );
 }
 
-Widget _titleSection({required String title, required Widget child, BoardTheme? boardTheme}) {
+Widget _titleSection({
+  required String title,
+  required Widget child,
+  BoardTheme? boardTheme,
+}) {
   return Column(
     spacing: 10,
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [Text(title, style: getTitleTextStyle(boardTheme ?? BoardTheme.plain)), child],
+    children: [
+      Text(title, style: getTitleTextStyle(boardTheme ?? BoardTheme.plain)),
+      child,
+    ],
   );
 }
 

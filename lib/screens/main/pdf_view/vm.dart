@@ -7,14 +7,14 @@ class PdfViewVm extends ChangeNotifier {
   Content? content;
   bool isLoading = true;
   String? errorMessage;
-  
+
   PdfViewVm({
-    required this.scaffoldKey, 
+    required this.scaffoldKey,
     required this.comPdfVm,
     required this.contentId,
   });
 
-  String currentPdfPath = 'assets/example.pdf';
+  String currentPdfPath = '';
 
   // final GlobalKey<SfPdfViewerState> pdfViewerKey = GlobalKey();
   // final PdfViewerController pdfViewerController = PdfViewerController();
@@ -30,17 +30,17 @@ class PdfViewVm extends ChangeNotifier {
     try {
       isLoading = true;
       notifyListeners();
-      
+
       // Load content from database
       content = await DatabaseHelper.instance.getContentById(contentId);
-      
+
       if (content == null) {
         errorMessage = 'Content not found';
         isLoading = false;
         notifyListeners();
         return;
       }
-      
+
       // Check if content has a file path
       if (content!.file == null || content!.file!.isEmpty) {
         errorMessage = 'PDF file not found for this content';
@@ -48,7 +48,7 @@ class PdfViewVm extends ChangeNotifier {
         notifyListeners();
         return;
       }
-      
+
       // Verify file exists
       final file = File(content!.file!);
       if (!await file.exists()) {
@@ -57,14 +57,13 @@ class PdfViewVm extends ChangeNotifier {
         notifyListeners();
         return;
       }
-      
+
       // Update current PDF path and initialize ComPdfVm
       currentPdfPath = content!.file!;
       comPdfVm.initialize(context, currentPdfPath);
-      
+
       isLoading = false;
       notifyListeners();
-      
     } catch (e) {
       debugPrint('Error initializing PDF view: $e');
       errorMessage = 'Error loading PDF: $e';

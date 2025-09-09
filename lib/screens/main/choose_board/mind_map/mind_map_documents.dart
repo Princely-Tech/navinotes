@@ -40,7 +40,8 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
       final data = await DatabaseHelper.instance.getAllContents(
         vm.baseContent!.boardId,
       );
-      final decks = data.where((d) => d.type == AppContentType.flashcardDeck).toList();
+      final decks =
+          data.where((d) => d.type == AppContentType.flashcardDeck).toList();
 
       // Prefetch deck card counts once to avoid recalculating in build
       final Map<int, int> counts = {};
@@ -79,9 +80,10 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
   @override
   Widget build(BuildContext context) {
     final themeValues = widget.boardTheme.values;
-    final bgColor = themeValues.backgroundColor == AppTheme.transparent 
-        ? AppTheme.ghostWhite 
-        : themeValues.backgroundColor;
+    final bgColor =
+        themeValues.backgroundColor == AppTheme.transparent
+            ? AppTheme.ghostWhite
+            : themeValues.backgroundColor;
 
     final notes =
         _contents.where((c) => c.type == AppContentType.note).toList();
@@ -116,6 +118,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                           MindMapFilterSelect(
                             selectedFilters: _selectedFilters,
                             onToggle: _toggleFilter,
+                            boardTheme: widget.boardTheme,
                           ),
                           if (showNotes)
                             _section(
@@ -188,7 +191,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                           Text(
                             'Drag and drop a document to create a new mind map',
                             style: AppTheme.text.copyWith(
-                              color: themeValues.borderColor,
+                              color: themeValues.color1,
                               fontWeight: getFontWeight(400),
                               height: 1.43,
                               fontFamily: themeValues.fontFamily,
@@ -324,8 +327,8 @@ Widget _tappableDeckRow({
 }
 
 Widget _imgRow({
-  required String title, 
-  required String img, 
+  required String title,
+  required String img,
   String? right,
   BoardTheme? boardTheme,
 }) {
@@ -371,8 +374,8 @@ Widget _imgRow({
 }
 
 Widget _section({
-  required String title, 
-  int? count, 
+  required String title,
+  int? count,
   required Widget child,
   BoardTheme? boardTheme,
 }) {
@@ -417,15 +420,18 @@ class MindMapFilterSelect extends StatelessWidget {
     super.key,
     required this.selectedFilters,
     required this.onToggle,
+    required this.boardTheme,
   });
 
   final List<MindMapFilterType> selectedFilters;
   final void Function(MindMapFilterType) onToggle;
+  final BoardTheme boardTheme;
 
   @override
   Widget build(BuildContext context) {
     return _section(
       title: 'Filters',
+      boardTheme: boardTheme,
       child: Column(
         spacing: 10,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -439,6 +445,7 @@ class MindMapFilterSelect extends StatelessWidget {
 
   Widget _filterItem(MindMapFilterType type) {
     final isSelected = selectedFilters.contains(type);
+    final themeValues = boardTheme.values;
     return AppButton.text(
       onTap: () => onToggle(type),
       spacing: 10,
@@ -446,17 +453,20 @@ class MindMapFilterSelect extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       prefix:
           isSelected
-              ? Icon(Icons.check_box, color: AppTheme.dodgerBlue, size: 16)
+              ? Icon(Icons.check_box, color: themeValues.color1, size: 16)
               : Container(
                 width: 16,
                 height: 16,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 1, color: AppTheme.dodgerBlue),
+                    side: BorderSide(width: 1, color: themeValues.color1),
                   ),
                 ),
               ),
-      style: AppTheme.text.copyWith(color: AppTheme.wetAsphalt),
+      style: AppTheme.text.copyWith(
+        color: themeValues.color1,
+        fontFamily: themeValues.fontFamily,
+      ),
     );
   }
 }

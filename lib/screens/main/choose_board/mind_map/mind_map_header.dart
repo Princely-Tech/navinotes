@@ -23,12 +23,14 @@ class MindMapHeader extends StatelessWidget {
     final themeValues = boardTheme.values;
     return Container(
       decoration: themeValues.mainHeaderDecoration.copyWith(
-        color: themeValues.mainHeaderDecoration.color ?? 
-               (themeValues.backgroundColor == AppTheme.transparent 
-                ? AppTheme.ghostWhite 
+        color:
+            themeValues.mainHeaderDecoration.color ??
+            (themeValues.backgroundColor == AppTheme.transparent
+                ? AppTheme.ghostWhite
                 : themeValues.backgroundColor),
-        border: themeValues.mainHeaderDecoration.border ?? 
-                Border(bottom: BorderSide(color: themeValues.borderColor)),
+        border:
+            themeValues.mainHeaderDecoration.border ??
+            Border(bottom: BorderSide(color: themeValues.borderColor)),
       ),
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: LayoutBuilder(
@@ -210,6 +212,13 @@ class MindMapHeader extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             textStyle: TextStyle(fontSize: 12),
           ),
+        ),
+
+        //TODO: Remove
+        IconButton(
+          onPressed: mindMapVm.loadBoardTestTheme,
+          icon: const Icon(Icons.brush, size: 18),
+          constraints: BoxConstraints(minWidth: 32, minHeight: 32),
         ),
 
         // Zoom controls

@@ -86,64 +86,45 @@ class MindMapVm extends ChangeNotifier {
     return _cachedBoardTheme;
   }
 
-  /// Load board theme asynchronously by fetching the board
-  Future<void> _loadBoardTheme11() async {
-    if (baseContent == null) {
-      _cachedBoardTheme = BoardTheme.minimalist;
-      return;
-    }
-
-    try {
-      final board = await baseContent!.getBoard();
-      final boardType = board.boardType;
-
-      switch (boardType) {
-        case BoardTypeCodes.darkAcademia:
-          _cachedBoardTheme = BoardTheme.darkAcademia;
-          break;
-        case BoardTypeCodes.lightAcademia:
-          _cachedBoardTheme = BoardTheme.lightAcademia;
-          break;
-        case BoardTypeCodes.minimalist:
-          _cachedBoardTheme = BoardTheme.minimalist;
-          break;
-        case BoardTypeCodes.nature:
-          _cachedBoardTheme = BoardTheme.nature;
-          break;
-        case BoardTypeCodes.plain:
-        default:
-          _cachedBoardTheme = BoardTheme.plain;
-          break;
-      }
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error getting board theme: $e');
-      _cachedBoardTheme = BoardTheme.minimalist;
-    }
-  }
-
-  Future<void> _loadBoardTheme() async {
-    // switch (boardType) {
-    //   case BoardTypeCodes.darkAcademia:
-    //     _cachedBoardTheme = BoardTheme.darkAcademia;
-    //     break;
-    //   case BoardTypeCodes.lightAcademia:
-    //     _cachedBoardTheme = BoardTheme.lightAcademia;
-    //     break;
-    //   case BoardTypeCodes.minimalist:
-    //     _cachedBoardTheme = BoardTheme.minimalist;
-    //     break;
-    //   case BoardTypeCodes.nature:
-    //     _cachedBoardTheme = BoardTheme.nature;
-    //     break;
-    //   case BoardTypeCodes.plain:
-    //   default:
-    //     _cachedBoardTheme = BoardTheme.plain;
-    //     break;
-    // }
-
+  Future<void> loadBoardTestTheme() async {
     _cachedBoardTheme = BoardTheme.darkAcademia;
     notifyListeners();
+  }
+
+  /// Load board theme asynchronously by fetching the board
+  Future<void> _loadBoardTheme() async {
+    // if (baseContent == null) {
+    //   _cachedBoardTheme = BoardTheme.minimalist;
+    //   return;
+    // }
+
+    // try {
+    //   final board = await baseContent!.getBoard();
+    //   final boardType = board.boardType;
+
+    //   switch (boardType) {
+    //     case BoardTypeCodes.darkAcademia:
+    //       _cachedBoardTheme = BoardTheme.darkAcademia;
+    //       break;
+    //     case BoardTypeCodes.lightAcademia:
+    //       _cachedBoardTheme = BoardTheme.lightAcademia;
+    //       break;
+    //     case BoardTypeCodes.minimalist:
+    //       _cachedBoardTheme = BoardTheme.minimalist;
+    //       break;
+    //     case BoardTypeCodes.nature:
+    //       _cachedBoardTheme = BoardTheme.nature;
+    //       break;
+    //     case BoardTypeCodes.plain:
+    //     default:
+    //       _cachedBoardTheme = BoardTheme.plain;
+    //       break;
+    //   }
+    //   notifyListeners();
+    // } catch (e) {
+    //   debugPrint('Error getting board theme: $e');
+    //   _cachedBoardTheme = BoardTheme.minimalist;
+    // }
   }
 
   // Document panel toggle
@@ -163,13 +144,20 @@ class MindMapVm extends ChangeNotifier {
   MindMapNode addNodeAt({
     required String text,
     required Offset logicalPosition,
-    Color color = Colors.blue,
+    Color? color,
+    int? contentID,
   }) {
+    final themeValues = boardTheme.values;
+    final themeColor = color ?? themeValues.nodeBackgroundColor;
     final node = MindMapNode(
       text: text,
       position: _constrainPosition(logicalPosition),
-      color: color,
+      color: themeColor,
+      textColor: themeValues.nodeTextColor,
+      fontFamily: themeValues.fontFamily,
+      borderStyle: themeValues.nodeBorderStyle,
     );
+    node.contentID = 'content:$contentId';
     mindMap.nodes.add(node);
     notifyListeners();
     return node;
@@ -180,17 +168,14 @@ class MindMapVm extends ChangeNotifier {
     required String text,
     required Offset logicalPosition,
     required int contentId,
-    Color color = Colors.blue,
+    Color? color,
   }) {
-    final node = MindMapNode(
+    return addNodeAt(
       text: text,
-      position: _constrainPosition(logicalPosition),
+      logicalPosition: logicalPosition,
       color: color,
+      contentID: contentId,
     );
-    node.contentID = 'content:$contentId';
-    mindMap.nodes.add(node);
-    notifyListeners();
-    return node;
   }
 
   void removeNode(String nodeId) {
@@ -288,6 +273,7 @@ class MindMapVm extends ChangeNotifier {
       sourceId: sourceId,
       targetId: targetId,
       label: label,
+      color: boardTheme.values.connectionColor,
     );
     notifyListeners();
     return edge;

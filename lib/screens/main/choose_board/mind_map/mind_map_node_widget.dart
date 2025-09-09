@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navinotes/models/mind_map_node.dart';
+import 'package:navinotes/settings/board_theme.dart';
 import 'package:provider/provider.dart';
 import 'vm.dart';
 
@@ -17,6 +18,7 @@ class MindMapNodeWidget extends StatelessWidget {
     final isConnectingFrom = vm.connectingFromNodeId == node.id;
     final isAttaching = vm.attachingNodeId == node.id;
     final hasAttachment = node.contentID != null && node.contentID!.isNotEmpty;
+    final themeValues = vm.boardTheme.values;
 
     final toneColor = _applyTone(
       node.color,
@@ -137,6 +139,7 @@ class MindMapNodeWidget extends StatelessWidget {
                 borderRadius: borderRadius,
                 showBorder: showBorder,
                 glowShadow: glowShadow,
+                themeValues: themeValues,
               ),
             ),
 
@@ -396,6 +399,7 @@ class MindMapNodeWidget extends StatelessWidget {
     required BorderRadius borderRadius,
     required bool showBorder,
     required List<BoxShadow>? glowShadow,
+    required dynamic themeValues,
   }) {
     final text = Text(
       node.text,
@@ -429,7 +433,7 @@ class MindMapNodeWidget extends StatelessWidget {
             borderRadius: borderRadius,
             border:
                 isConnectingFrom || showBorder
-                    ? Border.all(color: Colors.blueAccent, width: 2.0)
+                    ? Border.all(color: themeValues.connectionColor, width: 2.0)
                     : null,
             boxShadow: glowShadow,
           ),
@@ -444,7 +448,7 @@ class MindMapNodeWidget extends StatelessWidget {
         showBorder || isConnectingFrom
             ? _ShapeBorderPainter(
               clipper: clipper,
-              borderColor: Colors.blueAccent,
+              borderColor: themeValues.connectionColor,
               strokeWidth: 2,
             )
             : null;

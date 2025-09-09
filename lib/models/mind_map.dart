@@ -62,11 +62,13 @@ class MindMap {
     required String sourceId,
     required String targetId,
     String? label,
+    Color? color,
   }) {
     final edge = MindMapEdge(
       sourceId: sourceId,
       targetId: targetId,
       label: label,
+      color: color ?? Colors.grey,
     );
     edges.add(edge);
     return edge;
