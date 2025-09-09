@@ -13,16 +13,15 @@ Widget buildEditorToolBar(NoteCreationVm vm) {
         //TODO check this didnt break stuff
         config: buildCustomToolbarConfig(
           showAlignmentButtons: true,
+          showFontSize: true,
           showBoldButton: true,
           showItalicButton: true,
           showUnderLineButton: true,
           showStrikeThrough: true,
           showListBullets: true,
           showListNumbers: true,
-          showQuote: true,
           showUndo: true,
           showRedo: true,
-          showDividers: true,
         ),
         // config: const QuillSimpleToolbarConfig(
         //   showAlignmentButtons: true,
