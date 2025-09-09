@@ -6,6 +6,11 @@ class BoardPageMainHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BordThemeValues params = theme.values;
+    var countTextColor = params.color1;
+
+    if (theme.isDarkAcademia) {
+      countTextColor = AppTheme.vanillaDust.withAlpha(0xE5);
+    }
     return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return Container(
@@ -17,7 +22,7 @@ class BoardPageMainHeader extends StatelessWidget {
               Text(
                 getNoteCountText(vm.contents),
                 style: AppTheme.text.copyWith(
-                  color: params.color1,
+                  color: countTextColor,
                   fontSize: 20.0,
                   fontFamily: params.fontFamily,
                   height: 1.40,
@@ -40,19 +45,7 @@ class BoardPageMainHeader extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               spacing: 10,
                               children: [
-                                if (theme.isMinimalist)
-                                  Row(
-                                    spacing: 15,
-                                    children: [
-                                      SVGImagePlaceHolder(
-                                        imagePath: Images.menu,
-                                        color: AppTheme.asbestos,
-                                        size: 16,
-                                      ),
-                                    ],
-                                  )
-                                else
-                                  DisplayFormatSelect(theme: theme),
+                                DisplayFormatSelect(theme: theme),
                                 _sortBy(),
                                 VisibleController(
                                   mobile: false,
@@ -76,7 +69,6 @@ class BoardPageMainHeader extends StatelessWidget {
   }
 
   Widget _sortBy() {
-    //TODO make input width follow text style
     BordThemeValues params = theme.values;
     Color txtColor = AppTheme.vanillaDust.withAlpha(0xCC);
     Color fillColor = AppTheme.burntLeather;
@@ -205,6 +197,9 @@ class DisplayFormatSelect extends StatelessWidget {
         activeBgColor = AppTheme.lightSage;
         inActiveColor = params.color1;
         break;
+      case BoardTheme.minimalist:
+        activeBgColor = AppTheme.white;
+        inActiveBgColor = AppTheme.asbestos;
       case BoardTheme.lightAcademia:
         activeBgColor = AppTheme.almondCream;
         inActiveBgColor = AppTheme.eggShell.withAlpha(0xFF);

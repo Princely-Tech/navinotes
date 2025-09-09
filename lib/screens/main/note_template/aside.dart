@@ -56,9 +56,9 @@ class NoteTemplateAside extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             spacing: 15,
                             children: [
-                              _bestFor(),
-                              _customization(vm),
-                              _brainsTip(),
+                              _bestFor(vm),
+                              // _customization(vm),
+                              // _brainsTip(),
                               // _recentlyUsed(),
                             ],
                           ),
@@ -263,7 +263,7 @@ class NoteTemplateAside extends StatelessWidget {
     );
   }
 
-  Widget _bestFor() {
+  Widget _bestFor(NoteTemplateVm vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
@@ -280,12 +280,7 @@ class NoteTemplateAside extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 5,
           children:
-              [
-                    'Lecture notes and classroom learning',
-                    'Active recall and study preparation',
-                    'Organizing complex information',
-                    'Creating effective study guides',
-                  ]
+              vm.selectedTemplate.bestFor
                   .map(
                     (str) => Row(
                       spacing: 5,
@@ -338,7 +333,7 @@ class NoteTemplateAside extends StatelessWidget {
                 ),
               ),
               Text(
-                vm.selectedTemplate.description,
+                vm.selectedTemplate.body,
                 style: TextStyle(
                   color: const Color(0xFF4B5563),
                   fontSize: 14.0,

@@ -22,29 +22,29 @@ class NoteTemplateHeader extends StatelessWidget {
                 children: [_leading(vm), _trailing(vm)],
               ),
             ),
-            Container(
-              decoration: ShapeDecoration(
-                color: AppTheme.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: AppTheme.lightGray),
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _searchBar(),
-                  VisibleController(
-                    mobile: false,
-                    tablet: true,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: _sortBy(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   decoration: ShapeDecoration(
+            //     color: AppTheme.white,
+            //     shape: RoundedRectangleBorder(
+            //       side: BorderSide(width: 1, color: AppTheme.lightGray),
+            //     ),
+            //   ),
+            //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       _searchBar(),
+            //       VisibleController(
+            //         mobile: false,
+            //         tablet: true,
+            //         child: Padding(
+            //           padding: const EdgeInsets.only(left: 15),
+            //           child: _sortBy(),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         );
       },

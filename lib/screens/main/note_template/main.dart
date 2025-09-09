@@ -22,7 +22,7 @@ class NoteTemplateMain extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _section(
-                  title: 'Basic Templates',
+                  title: 'Templates',
                   icon: Images.file,
                   children: [
                     _template(noteTemplateBlank),
@@ -32,29 +32,29 @@ class NoteTemplateMain extends StatelessWidget {
                     _template(noteTemplateDotted),
                   ],
                 ),
-                _section(
-                  icon: Images.book2,
-                  title: 'Study Templates',
-                  children: [
-                    _template(noteTemplateFlashCards),
-                    _template(noteTemplateAi),
-                    _template(noteTemplateCompareContrast),
-                    _template(noteTemplateTimeline),
-                    _template(noteTemplateKanban),
-                  ],
-                ),
-                _section(
-                  icon: Images.pen2,
-                  title: 'Essay Templates',
-                  children: [
-                    _template(noteTemplateLapReport),
-                    _template(noteTemplateApa),
-                    _template(noteTemplateResearch),
-                    _template(noteTemplateComparative),
-                    _template(noteTemplateCritical),
-                    _template(noteTemplateThesis),
-                  ],
-                ),
+                // _section(
+                //   icon: Images.book2,
+                //   title: 'Study Templates',
+                //   children: [
+                //     _template(noteTemplateFlashCards),
+                //     _template(noteTemplateAi),
+                //     _template(noteTemplateCompareContrast),
+                //     _template(noteTemplateTimeline),
+                //     _template(noteTemplateKanban),
+                //   ],
+                // ),
+                // _section(
+                //   icon: Images.pen2,
+                //   title: 'Essay Templates',
+                //   children: [
+                //     _template(noteTemplateLapReport),
+                //     _template(noteTemplateApa),
+                //     _template(noteTemplateResearch),
+                //     _template(noteTemplateComparative),
+                //     _template(noteTemplateCritical),
+                //     _template(noteTemplateThesis),
+                //   ],
+                // ),
               ],
             ),
           ),

@@ -18,8 +18,12 @@ class BoardNoteAppBar extends StatelessWidget {
     BordThemeValues params = theme.values;
     Gradient? gradient;
     Color? color = params.backgroundColor;
+    Color drawerColor = params.color1;
     switch (theme) {
       case BoardTheme.darkAcademia:
+        gradient = null;
+        color = Colors.transparent;
+        drawerColor = AppTheme.vanillaDust.withAlpha(0xE5);
       case BoardTheme.lightAcademia:
         gradient = LinearGradient(
           begin: Alignment(0.00, 0.50),
@@ -61,7 +65,7 @@ class BoardNoteAppBar extends StatelessWidget {
                   child: ResponsiveSection(
                     mobile: MenuButton(
                       onPressed: openEndDrawer,
-                      decoration: BoxDecoration(color: params.color1),
+                      decoration: BoxDecoration(color: drawerColor),
                     ),
                   ),
                 ),
@@ -110,14 +114,15 @@ class BoardNoteAppBar extends StatelessWidget {
     BordThemeValues params = theme.values;
     Color appNameColor = params.color1;
     Color subjectNameColor = params.color1;
-    bool isDarkAcademia = theme.isDarkAcademia;
-    if (isDarkAcademia) {
-      appNameColor = AppTheme.vanillaDust.withAlpha(0xE5);
-    }
+    Color backButtonColor = params.color1;
+
     switch (theme) {
       case BoardTheme.darkAcademia:
         appNameColor = AppTheme.vanillaDust.withAlpha(0xE5);
+        subjectNameColor = AppTheme.vanillaDust.withAlpha(0xE5);
+        backButtonColor = AppTheme.vanillaDust.withAlpha(0xE5);
         break;
+
       case BoardTheme.minimalist:
         subjectNameColor = AppTheme.asbestos;
         break;
@@ -133,7 +138,7 @@ class BoardNoteAppBar extends StatelessWidget {
           children: [
             InkWell(
               onTap: NavigationHelper.pop,
-              child: Icon(Icons.arrow_back, size: 24, color: params.color1),
+              child: Icon(Icons.arrow_back, size: 24, color: backButtonColor),
             ),
             VisibleController(
               mobile: false,

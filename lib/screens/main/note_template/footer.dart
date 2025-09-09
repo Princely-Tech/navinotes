@@ -47,30 +47,34 @@ class NoteTemplateFooter extends StatelessWidget {
   }
 
   Widget _sectionSelector(NoteTemplateVm vm) {
-    return Row(
-      children:
-          noteTemplatesSections.map((section) {
-            bool isSelected = vm.selectedSection == section;
-            return InkWell(
-              onTap: () {
-                vm.updateSelectedSection(section);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: isSelected ? AppTheme.vividRose : AppTheme.transparent,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
-                child: Text(
-                  section,
-                  textAlign: TextAlign.center,
-                  style: AppTheme.text.copyWith(
-                    color: isSelected ? AppTheme.white : AppTheme.stormGray,
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-    );
+    return SizedBox.shrink();
   }
+
+  // Widget _sectionSelector(NoteTemplateVm vm) {
+  //   return Row(
+  //     children:
+  //         noteTemplatesSections.map((section) {
+  //           bool isSelected = vm.selectedSection == section;
+  //           return InkWell(
+  //             onTap: () {
+  //               vm.updateSelectedSection(section);
+  //             },
+  //             child: Container(
+  //               decoration: BoxDecoration(
+  //                 color: isSelected ? AppTheme.vividRose : AppTheme.transparent,
+  //                 borderRadius: BorderRadius.circular(6),
+  //               ),
+  //               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+  //               child: Text(
+  //                 section,
+  //                 textAlign: TextAlign.center,
+  //                 style: AppTheme.text.copyWith(
+  //                   color: isSelected ? AppTheme.white : AppTheme.stormGray,
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         }).toList(),
+  //   );
+  // }
 }
