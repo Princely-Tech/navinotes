@@ -86,45 +86,40 @@ class MindMapVm extends ChangeNotifier {
     return _cachedBoardTheme;
   }
 
-  Future<void> loadBoardTestTheme() async {
-    _cachedBoardTheme = BoardTheme.darkAcademia;
-    notifyListeners();
-  }
-
   /// Load board theme asynchronously by fetching the board
   Future<void> _loadBoardTheme() async {
-    // if (baseContent == null) {
-    //   _cachedBoardTheme = BoardTheme.minimalist;
-    //   return;
-    // }
+    if (baseContent == null) {
+      _cachedBoardTheme = BoardTheme.minimalist;
+      return;
+    }
 
-    // try {
-    //   final board = await baseContent!.getBoard();
-    //   final boardType = board.boardType;
+    try {
+      final board = await baseContent!.getBoard();
+      final boardType = board.boardType;
 
-    //   switch (boardType) {
-    //     case BoardTypeCodes.darkAcademia:
-    //       _cachedBoardTheme = BoardTheme.darkAcademia;
-    //       break;
-    //     case BoardTypeCodes.lightAcademia:
-    //       _cachedBoardTheme = BoardTheme.lightAcademia;
-    //       break;
-    //     case BoardTypeCodes.minimalist:
-    //       _cachedBoardTheme = BoardTheme.minimalist;
-    //       break;
-    //     case BoardTypeCodes.nature:
-    //       _cachedBoardTheme = BoardTheme.nature;
-    //       break;
-    //     case BoardTypeCodes.plain:
-    //     default:
-    //       _cachedBoardTheme = BoardTheme.plain;
-    //       break;
-    //   }
-    //   notifyListeners();
-    // } catch (e) {
-    //   debugPrint('Error getting board theme: $e');
-    //   _cachedBoardTheme = BoardTheme.minimalist;
-    // }
+      switch (boardType) {
+        case BoardTypeCodes.darkAcademia:
+          _cachedBoardTheme = BoardTheme.darkAcademia;
+          break;
+        case BoardTypeCodes.lightAcademia:
+          _cachedBoardTheme = BoardTheme.lightAcademia;
+          break;
+        case BoardTypeCodes.minimalist:
+          _cachedBoardTheme = BoardTheme.minimalist;
+          break;
+        case BoardTypeCodes.nature:
+          _cachedBoardTheme = BoardTheme.nature;
+          break;
+        case BoardTypeCodes.plain:
+        default:
+          _cachedBoardTheme = BoardTheme.plain;
+          break;
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error getting board theme: $e');
+      _cachedBoardTheme = BoardTheme.minimalist;
+    }
   }
 
   // Document panel toggle

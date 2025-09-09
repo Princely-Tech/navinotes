@@ -214,13 +214,6 @@ class MindMapHeader extends StatelessWidget {
           ),
         ),
 
-        //TODO: Remove
-        IconButton(
-          onPressed: mindMapVm.loadBoardTestTheme,
-          icon: const Icon(Icons.brush, size: 18),
-          constraints: BoxConstraints(minWidth: 32, minHeight: 32),
-        ),
-
         // Zoom controls
         IconButton(
           tooltip: 'Zoom in',
