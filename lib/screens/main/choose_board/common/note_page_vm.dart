@@ -73,6 +73,11 @@ class BoardNotePageVm extends ChangeNotifier {
     return all.take(count).toList();
   }
 
+  Future<List<Content>> getMindMaps() async {
+    final all = await dbHelper.getAllContents(board.id!);
+    return all.where((content) => content.type == AppContentType.mindmap).toList();
+  }
+
   // void openDrawer() {
   //   scaffoldKey.currentState?.openEndDrawer();
   // }

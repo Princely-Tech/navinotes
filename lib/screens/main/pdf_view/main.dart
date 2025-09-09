@@ -13,7 +13,7 @@ class PdfViewMain extends StatelessWidget {
           canPop: false,
           onPopInvoked: (didPop) async {
             if (didPop) return;
-            
+
             final shouldExit = await vm.handleExit(context);
             if (shouldExit && context.mounted) {
               Navigator.of(context).pop();
@@ -66,18 +66,18 @@ class _AnnotationToolbar extends StatelessWidget {
             active: vm.currentMode == PdfAnnotMode.highlight,
             onTap: () => vm.setMode(PdfAnnotMode.highlight),
           ),
-          _toolButton(
-            icon: Icons.text_fields,
-            label: 'Text',
-            active: vm.currentMode == PdfAnnotMode.text,
-            onTap: () => vm.setMode(PdfAnnotMode.text),
-          ),
-          _toolButton(
-            icon: Icons.image_outlined,
-            label: 'Image',
-            active: vm.currentMode == PdfAnnotMode.image,
-            onTap: () => vm.setMode(PdfAnnotMode.image),
-          ),
+          // _toolButton(
+          //   icon: Icons.text_fields,
+          //   label: 'Text',
+          //   active: vm.currentMode == PdfAnnotMode.text,
+          //   onTap: () => vm.setMode(PdfAnnotMode.text),
+          // ),
+          // _toolButton(
+          //   icon: Icons.image_outlined,
+          //   label: 'Image',
+          //   active: vm.currentMode == PdfAnnotMode.image,
+          //   onTap: () => vm.setMode(PdfAnnotMode.image),
+          // ),
           const SizedBox(width: 8),
           IconButton(
             onPressed: vm.canUndo ? () => vm.undo() : null,

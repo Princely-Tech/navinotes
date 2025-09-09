@@ -18,13 +18,13 @@ class NatureNotePageAside extends StatelessWidget {
                   spacing: 30,
                   children: [
                     _boardDetails(),
-                    _tags(),
                     _recentlyViewed(),
+                    _mindMaps(),
                     Column(
                       children: [
                         VisibleController(
                           mobile: true,
-                          desktop: false,
+                          desktop: true,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 15),
                             child: AppButton(
@@ -50,9 +50,10 @@ class NatureNotePageAside extends StatelessWidget {
                         ),
                         AppButton(
                           onTap:
-                              () => NavigationHelper.push(
-                                Routes.boardNatureMindMap,
-                              ),
+                              () =>
+                                  NavigationHelper.createAndNavigateToNewMindMap(
+                                    vm.board,
+                                  ),
                           color: AppTheme.burntLeather.withAlpha(0xFF),
                           child: Expanded(
                             child: Padding(
@@ -66,7 +67,7 @@ class NatureNotePageAside extends StatelessWidget {
                                       spacing: 5,
                                       children: [
                                         Text(
-                                          'View Mind Map',
+                                          'Create New Mind Map',
                                           textAlign: TextAlign.center,
                                           style: AppTheme.text.copyWith(
                                             color: AppTheme.linen,
@@ -141,25 +142,30 @@ class NatureNotePageAside extends StatelessWidget {
         ),
 
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                content.title,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.darkMossGreen,
-                  fontFamily: AppTheme.fontCrimsonText,
+          child: InkWell(
+            onTap: () {
+              NavigationHelper.navigateToContent(content);
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  content.title,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.darkMossGreen,
+                    fontFamily: AppTheme.fontCrimsonText,
+                  ),
                 ),
-              ),
-              Text(
-                formatRelativeTime(content.updatedAt),
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.coffee,
-                  fontSize: 12.0,
-                  fontFamily: AppTheme.fontCrimsonText,
+                Text(
+                  formatRelativeTime(content.updatedAt),
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.coffee,
+                    fontSize: 12.0,
+                    fontFamily: AppTheme.fontCrimsonText,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -200,6 +206,88 @@ class NatureNotePageAside extends StatelessWidget {
     );
   }
 
+  Widget _mindMaps() {
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return EditHeaderSection(
+          theme: BoardTheme.nature,
+          title: 'Mind Maps',
+          child: FutureBuilder(
+            future: vm.getMindMaps(),
+            builder: (_, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text(
+                  'Failed to load mind maps',
+                  style: AppTheme.text.copyWith(color: AppTheme.coralRed),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Text('No mind maps found', style: AppTheme.text);
+              }
+              final mindMaps = snapshot.data!;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 15,
+                children: [
+                  for (final mindMap in mindMaps)
+                    _mindMapItem(content: mindMap),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _mindMapItem({required Content content}) {
+    return Row(
+      spacing: 10,
+      children: [
+        OutlinedChild(
+          size: 32,
+          decoration: BoxDecoration(
+            color: AppTheme.sageMist.withAlpha(0x33),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: SVGImagePlaceHolder(
+            imagePath: Images.share,
+            size: 14,
+            color: AppTheme.deepMoss,
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              NavigationHelper.navigateToContent(content);
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  content.title,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.darkMossGreen,
+                    fontFamily: AppTheme.fontCrimsonText,
+                  ),
+                ),
+                Text(
+                  formatRelativeTime(content.updatedAt),
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.coffee,
+                    fontSize: 12.0,
+                    fontFamily: AppTheme.fontCrimsonText,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _tagItem({
     required String text,
     required Color color,
@@ -222,44 +310,6 @@ class NatureNotePageAside extends StatelessWidget {
           color: textColor,
           fontFamily: AppTheme.fontCrimsonText,
         ),
-      ),
-    );
-  }
-
-  Widget _tags() {
-    //TODO RETURN TO this
-    return EditHeaderSection(
-      theme: BoardTheme.nature,
-      title: 'Tags',
-      child: Wrap(
-        runSpacing: 15,
-        spacing: 10,
-        children: [
-          _tagItem(
-            color: AppTheme.lightSkyBlue,
-            borderColor: AppTheme.babyBlue,
-            textColor: AppTheme.cerulean,
-            text: 'Physics',
-          ),
-          _tagItem(
-            color: AppTheme.lightSage,
-            textColor: AppTheme.deepMoss,
-            borderColor: AppTheme.deepMoss.withAlpha(0x33),
-            text: 'Science',
-          ),
-          _tagItem(
-            color: AppTheme.linen,
-            textColor: AppTheme.burntLeather.withAlpha(0xFF),
-            borderColor: AppTheme.burntLeather.withAlpha(0x33),
-            text: 'Study',
-          ),
-          _tagItem(
-            color: AppTheme.deepPeach,
-            textColor: AppTheme.deepPeach.withAlpha(0xFF),
-            borderColor: AppTheme.deepPeach.withAlpha(0x33),
-            text: 'Exam Prep',
-          ),
-        ],
       ),
     );
   }

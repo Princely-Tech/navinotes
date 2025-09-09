@@ -53,51 +53,21 @@ class BoardNoteAppBar extends StatelessWidget {
                   mobile: Expanded(child: _searchField()),
                   desktop: WidthLimiter(mobile: 512, child: _searchField()),
                 ),
-                ResponsiveSection(
-                  mobile: MenuButton(
-                    onPressed: openEndDrawer,
-                    decoration: BoxDecoration(color: params.color1),
+                VisibleController(
+                  mobile: true,
+                  desktop: false,
+                  child: ResponsiveSection(
+                    mobile: MenuButton(
+                      onPressed: openEndDrawer,
+                      decoration: BoxDecoration(color: params.color1),
+                    ),
                   ),
-                  desktop: _actions(),
                 ),
               ],
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget _actions() {
-    BordThemeValues params = theme.values;
-    Color color = params.color1;
-    if (theme.isMinimalist) {
-      color = AppTheme.asbestos;
-    }
-    return Row(
-      // spacing: 15,
-      children: [
-        AppIconButton(
-          onPressed: NavigationHelper.navigateToSettings,
-          icon: SVGImagePlaceHolder(
-            imagePath: Images.settings,
-            size: 16,
-            color: color,
-          ),
-        ),
-        AppIconButton(
-          onPressed: () {},
-          icon: SVGImagePlaceHolder(
-            imagePath: Images.filter,
-            size: 18,
-            color: color,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: ProfilePic(borderColor: color),
-        ),
-      ],
     );
   }
 
