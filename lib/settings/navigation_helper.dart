@@ -76,7 +76,7 @@ class NavigationHelper {
     BoardNoteTemplate template,
     int contentId,
   ) {
-    push(
+    pushReplacement(
       Routes.noteCreation,
       arguments: NoteCreationProp(template: template, contentId: contentId),
     );
@@ -87,7 +87,7 @@ class NavigationHelper {
   }
 
   static void navigateToNoteTemplateRoute(String route, int contentId) {
-    push(route, arguments: contentId);
+    pushReplacement(route, arguments: contentId);
   }
 
   static Future navigateToBoardNotes(Board board) {

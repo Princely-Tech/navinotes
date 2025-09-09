@@ -69,6 +69,8 @@ class NoteTemplateMain extends StatelessWidget {
       builder: (_, vm, _) {
         final isSelected = vm.selectedTemplate == template;
         return InkWell(
+          onDoubleTap:  vm.createNote,
+
           onTap: () => vm.updateSelectedTemplate(template),
           child: CustomCard(
             padding: EdgeInsets.zero,
