@@ -178,7 +178,9 @@ class NavigationHelper {
     return push(Routes.viewPdf, arguments: contentId);
   }
 
-  static void navigateToNotification() {}
+  static void navigateToNotification() {
+    push(Routes.notifications);
+  }
   static void navigateToProfile() {
     push(Routes.profile);
   }
