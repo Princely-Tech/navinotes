@@ -87,26 +87,32 @@ class NoteDrawingWrapperState extends State<NoteDrawingWrapper> {
   }
 
   List<Widget> getWidget(NoteCreationVm vm) {
-    return (vm.currentMode == NoteMode.text)?  [
-      // Text editor
-      IgnorePointer(
-          ignoring: true,
-          child: buildDrawingBoard(vm, widget.inputWidth, widget.inputHeight),
-        ),
-      // Drawing overlay
-      Positioned.fill(
-        child: buildTextEditor(vm, widget.inputWidth, widget.inputHeight),
-      ),
-    ]: [
-      // Text editor
-      buildTextEditor(vm, widget.inputWidth, widget.inputHeight),
-      // Drawing overlay
-      Positioned.fill(
-        child: IgnorePointer(
-          ignoring: false,
-          child: buildDrawingBoard(vm, widget.inputWidth, widget.inputHeight),
-        ),
-      ),
-    ];
+    return (vm.currentMode == NoteMode.text)
+        ? [
+          // Text editor
+          IgnorePointer(
+            ignoring: true,
+            child: buildDrawingBoard(vm, widget.inputWidth, widget.inputHeight),
+          ),
+          // Drawing overlay
+          Positioned.fill(
+            child: buildTextEditor(vm, widget.inputWidth, widget.inputHeight),
+          ),
+        ]
+        : [
+          // Text editor
+          buildTextEditor(vm, widget.inputWidth, widget.inputHeight),
+          // Drawing overlay
+          Positioned.fill(
+            child: IgnorePointer(
+              ignoring: false,
+              child: buildDrawingBoard(
+                vm,
+                widget.inputWidth,
+                widget.inputHeight,
+              ),
+            ),
+          ),
+        ];
   }
 }

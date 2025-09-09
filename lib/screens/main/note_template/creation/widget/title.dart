@@ -24,19 +24,14 @@ void _showTitleEditDialog(NoteCreationVm vm) {
         content: CustomInputField(
           controller: dialogController,
           hintText: 'Enter note title',
-          style: TextStyle(
-            fontSize: 16,
-            color: const Color(0xFF374151),
-          ),
+          style: TextStyle(fontSize: 16, color: const Color(0xFF374151)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
             child: Text(
               'Cancel',
-              style: TextStyle(
-                color: const Color(0xFF6B7280),
-              ),
+              style: TextStyle(color: const Color(0xFF6B7280)),
             ),
           ),
           ElevatedButton(
@@ -125,7 +120,7 @@ Widget title() {
                           mobile: isNotNull(vm.content),
                           child: FutureBuilder(
                             future: DatabaseHelper.instance.getBoard(
-                              vm.content!.boardId,
+                              vm.content?.boardId ?? 0,
                             ),
                             builder: (context, snapshot) {
                               final board = snapshot.data;
