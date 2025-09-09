@@ -1,5 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'shared.dart';
 
 class BoardPlainNotePageAppBar extends StatelessWidget {
   const BoardPlainNotePageAppBar({super.key});
@@ -34,7 +33,7 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
                   onTap: vm.openEndDrawer,
                   child: Icon(Icons.menu, color: AppTheme.stormGray),
                 ),
-                desktop: NotesAppBarActions(),
+                desktop: SizedBox.shrink(),
               ),
             ],
           ),
@@ -76,26 +75,10 @@ class BoardPlainNotePageAppBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 10,
               children: [
-                SVGImagePlaceHolder(imagePath: Images.logo, size: 32),
                 Flexible(
                   child: Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(
-                          text: AppStrings.appName,
-                          style: AppTheme.text.copyWith(
-                            color: AppTheme.vividRose,
-                            fontSize: 18.0,
-                            fontWeight: getFontWeight(500),
-                          ),
-                        ),
-                        TextSpan(
-                          text: '  /  ',
-                          style: AppTheme.text.copyWith(
-                            color: AppTheme.blueGray,
-                            fontSize: 16.0,
-                          ),
-                        ),
                         TextSpan(
                           text: getSlicedBoardName(board),
                           style: AppTheme.text.copyWith(

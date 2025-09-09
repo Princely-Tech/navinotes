@@ -66,10 +66,11 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
                             children: [
                               AppButton(
                                 onTap:
-                                    () => NavigationHelper.push(
-                                      Routes.boardDarkAcademiaMindMap,
-                                    ),
-                                text: 'View Mind Map',
+                                    () =>
+                                        NavigationHelper.createAndNavigateToNewMindMap(
+                                          vm.board,
+                                        ),
+                                text: 'Create Mind Map',
                                 color: AppTheme.fadedEmber.withAlpha(0xFF),
                                 borderColor: AppTheme.royalGold.withAlpha(0x7F),
                                 prefix: Padding(
@@ -111,43 +112,54 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
     );
   }
 
-  Widget _viewedItem({required String title, required String time}) {
-    return Row(
-      spacing: 10,
-      children: [
-        Expanded(
-          child: Row(
-            spacing: 10,
-            children: [
-              SVGImagePlaceHolder(
-                imagePath: Images.file,
-                size: 16,
-                color: AppTheme.royalGold,
-              ),
-              Expanded(
-                child: Text(
-                  title,
-                  style: AppTheme.text.copyWith(
-                    color: AppTheme.vanillaDust,
-                    fontSize: 16.0,
-                    fontFamily: AppTheme.fontCrimsonPro,
-                    height: 1.50,
+  Widget _viewedItem({required Content content}) {
+    IconData contentIcon;
+    switch (content.type) {
+      case AppContentType.mindmap:
+        contentIcon = Icons.account_tree;
+        break;
+      case AppContentType.file:
+        contentIcon = Icons.insert_drive_file;
+        break;
+      default:
+        contentIcon = Icons.note;
+    }
+
+    return GestureDetector(
+      onTap: () => NavigationHelper.navigateToContent(content),
+      child: Row(
+        spacing: 10,
+        children: [
+          Expanded(
+            child: Row(
+              spacing: 10,
+              children: [
+                Icon(contentIcon, size: 16, color: AppTheme.royalGold),
+                Expanded(
+                  child: Text(
+                    content.title,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.vanillaDust,
+                      fontSize: 16.0,
+                      fontFamily: AppTheme.fontCrimsonPro,
+                      height: 1.50,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Text(
-          time,
-          style: AppTheme.text.copyWith(
-            color: AppTheme.vanillaDust.withAlpha(0x99),
-            fontSize: 12.0,
-            fontFamily: AppTheme.fontCrimsonPro,
-            height: 1.33,
+          Text(
+            formatRelativeTime(content.updatedAt),
+            style: AppTheme.text.copyWith(
+              color: AppTheme.vanillaDust.withAlpha(0x99),
+              fontSize: 12.0,
+              fontFamily: AppTheme.fontCrimsonPro,
+              height: 1.33,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -178,11 +190,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 15,
                 children: [
-                  for (final note in recentNotes)
-                    _viewedItem(
-                      title: note.title,
-                      time: formatRelativeTime(note.updatedAt),
-                    ),
+                  for (final note in recentNotes) _viewedItem(content: note),
                 ],
               );
             },

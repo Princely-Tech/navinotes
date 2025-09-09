@@ -12,24 +12,36 @@ class BoardPlainNotePageMain extends StatelessWidget {
           children: [
             _header(vm),
             Expanded(
-              child:
-                  vm.fetchingContent
-                      ? Center(child: CircularProgressIndicator())
-                      : ScrollableController(
-                        mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
-                        child: CustomGrid(
-                          children: [
-                            ...vm.contents.map(
-                              (content) => _noteCard(content: content),
+              child: vm.fetchingContent
+                  ? Center(child: CircularProgressIndicator())
+                  : ScrollableController(
+                      mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
+                      child: vm.pageDisplayFormat == PageDisplayFormat.grid
+                          ? CustomGrid(
+                              children: [
+                                ...vm.contents.map(
+                                  (content) => _noteCard(content: content),
+                                ),
+                                CreateCard(
+                                  width: double.infinity,
+                                  onTap: () => vm.gotToCreateNotePage(),
+                                  text: 'Create New Note Page',
+                                ),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                ...vm.contents.map(
+                                  (content) => _noteListItem(content: content),
+                                ),
+                                CreateCard(
+                                  width: double.infinity,
+                                  onTap: () => vm.gotToCreateNotePage(),
+                                  text: 'Create New Note Page',
+                                ),
+                              ],
                             ),
-                            CreateCard(
-                              width: double.infinity,
-                              onTap: () => vm.gotToCreateNotePage(),
-                              text: 'Create New Note Page',
-                            ),
-                          ],
-                        ),
-                      ),
+                    ),
             ),
           ],
         );
@@ -37,40 +49,25 @@ class BoardPlainNotePageMain extends StatelessWidget {
     );
   }
 
-  Widget _outline({
-    String image = Images.hook,
-    Color color = AppTheme.pastelBlue,
-  }) {
-    return OutlinedChild(
-      size: 20,
-      decoration: BoxDecoration(
-        color: color,
-        border: Border(),
-        shape: BoxShape.circle,
-      ),
-      child: SVGImagePlaceHolder(imagePath: image, size: 12),
-    );
-  }
-
-  Widget _outlineRow({required Widget outline1, required Widget outline2}) {
-    return Stack(
-      children: [
-        SizedBox(width: 35, height: 20),
-        Positioned(left: 0, bottom: 0, child: outline1),
-        Positioned(right: 0, bottom: 0, child: outline2),
-      ],
-    );
-  }
 
   Widget _noteCard({required Content content}) {
-    BoardNoteTemplate template = getNoteTemplateFromString(
-      content.metaData[ContentMetadataKey.template],
-    );
+    IconData contentIcon;
+    switch (content.type) {
+      case AppContentType.mindmap:
+        contentIcon = Icons.account_tree;
+        break;
+      case AppContentType.file:
+        contentIcon = Icons.insert_drive_file;
+        break;
+      default:
+        contentIcon = Icons.note;
+    }
+
     return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         Radius radius = Radius.circular(12);
         return InkWell(
-          onTap: () => vm.goToNotePage(content),
+          onTap: () => NavigationHelper.navigateToContent(content),
           child: CustomCard(
             addBorder: true,
             addCardShadow: true,
@@ -88,10 +85,12 @@ class BoardPlainNotePageMain extends StatelessWidget {
                   padding: EdgeInsets.all(20),
                   child: AspectRatio(
                     aspectRatio: 5 / 2,
-                    child: ImagePlaceHolder(
-                      imagePath: template.image,
-                      isCardHeader: true,
-                      borderRadius: BorderRadius.circular(0),
+                    child: Center(
+                      child: Icon(
+                        contentIcon,
+                        size: 48,
+                        color: AppTheme.charcoalBlue,
+                      ),
                     ),
                   ),
                 ),
@@ -121,19 +120,83 @@ class BoardPlainNotePageMain extends StatelessWidget {
                               ),
                             ),
                           ),
-                          _outlineRow(
-                            outline1: _outline(),
-                            outline2: _outline(
-                              image: Images.img,
-                              color: AppTheme.paleJade,
-                            ),
-                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
               ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _noteListItem({required Content content}) {
+    IconData contentIcon;
+    switch (content.type) {
+      case AppContentType.mindmap:
+        contentIcon = Icons.account_tree;
+        break;
+      case AppContentType.file:
+        contentIcon = Icons.insert_drive_file;
+        break;
+      default:
+        contentIcon = Icons.note;
+    }
+
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return InkWell(
+          onTap: () => NavigationHelper.navigateToContent(content),
+          child: Container(
+            margin: EdgeInsets.only(bottom: 10),
+            child: CustomCard(
+              addBorder: true,
+              addCardShadow: true,
+              padding: EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppTheme.iceBlue,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      contentIcon,
+                      size: 24,
+                      color: AppTheme.charcoalBlue,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          content.title,
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.charcoalBlue,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Last edited: ${formatUnixTimestamp(content.updatedAt)}',
+                          style: AppTheme.text.copyWith(
+                            color: AppTheme.steelMist,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -172,37 +235,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   spacing: 10,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppTheme.lightAsh,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Row(
-                          spacing: 5,
-                          children: [
-                            OutlinedChild(
-                              size: 32,
-                              decoration: BoxDecoration(color: AppTheme.white),
-                              child: SVGImagePlaceHolder(
-                                imagePath: Images.ques2,
-                                size: 16,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 5,
-                              ),
-                              child: SVGImagePlaceHolder(
-                                imagePath: Images.menu,
-                                size: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    DisplayFormatSelect(theme: BoardTheme.plain),
                     _sortBy(),
                     NewNotesButton(isAside: false),
                   ],

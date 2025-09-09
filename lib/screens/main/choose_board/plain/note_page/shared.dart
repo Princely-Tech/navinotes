@@ -1,16 +1,6 @@
 import 'package:navinotes/packages.dart';
 
-class NotesAppBarActions extends StatelessWidget {
-  const NotesAppBarActions({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      spacing: 5,
-      children: [SVGImagePlaceHolder(imagePath: Images.pref, size: 16)],
-    );
-  }
-}
 
 class NewNotesButton extends StatelessWidget {
   const NewNotesButton({super.key, required this.isAside});

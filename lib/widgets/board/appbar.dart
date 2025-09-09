@@ -19,6 +19,7 @@ class BoardNoteAppBar extends StatelessWidget {
     Gradient? gradient;
     Color? color = params.backgroundColor;
     switch (theme) {
+      case BoardTheme.darkAcademia:
       case BoardTheme.lightAcademia:
         gradient = LinearGradient(
           begin: Alignment(0.00, 0.50),
@@ -29,6 +30,7 @@ class BoardNoteAppBar extends StatelessWidget {
             AppTheme.ivoryCream.withAlpha(0xCC),
           ],
         );
+
       default:
     }
     return Consumer<BoardNotePageVm>(

@@ -33,8 +33,8 @@ class BoardPlainNotePageAside extends StatelessWidget {
                             ),
                           ),
                           _boardDetails(),
-                          _divider(),
-                          _tags(),
+                          // _divider(),
+                          // _tags(),
                           _divider(),
                           _recentlyViewed(),
                         ],
@@ -55,62 +55,83 @@ class BoardPlainNotePageAside extends StatelessWidget {
     return Row(
       spacing: 10,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [NewNotesButton(isAside: true), NotesAppBarActions()],
+      children: [NewNotesButton(isAside: true)],
     );
   }
 
   Widget _footer() {
-    return Column(
-      spacing: 10,
-      children: [
-        AppButton(
-          onTap: () => NavigationHelper.push(Routes.boardPlainMindMap),
-          text: 'View Mind Map',
-          minHeight: 40,
-          prefix: SVGImagePlaceHolder(
-            imagePath: Images.logo,
-            size: 16,
-            color: AppTheme.white,
-          ),
-        ),
-        Text(
-          'See how your notes are connected',
-          textAlign: TextAlign.center,
-          style: AppTheme.text.copyWith(
-            color: AppTheme.steelMist,
-            fontSize: 12.0,
-          ),
-        ),
-      ],
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return Column(
+          spacing: 10,
+          children: [
+            AppButton(
+              onTap:
+                  () =>
+                      NavigationHelper.createAndNavigateToNewMindMap(vm.board),
+              text: 'Create Mind Map',
+              minHeight: 40,
+              prefix: SVGImagePlaceHolder(
+                imagePath: Images.logo,
+                size: 16,
+                color: AppTheme.white,
+              ),
+            ),
+            Text(
+              'See how your notes are connected',
+              textAlign: TextAlign.center,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.steelMist,
+                fontSize: 12.0,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _recentItem({required String title, required String lastEdited}) {
-    return Row(
-      spacing: 15,
-      children: [
-        OutlinedChild(
-          size: 32,
-          decoration: BoxDecoration(color: AppTheme.paleBlue),
-          child: SVGImagePlaceHolder(imagePath: Images.file, size: 16),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 4,
-            children: [
-              Text(title, style: AppTheme.text),
-              Text(
-                lastEdited,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.steelMist,
-                  fontSize: 12.0,
-                ),
-              ),
-            ],
+  Widget _recentItem({required Content content}) {
+    IconData contentIcon;
+    switch (content.type) {
+      case AppContentType.mindmap:
+        contentIcon = Icons.account_tree;
+        break;
+      case AppContentType.file:
+        contentIcon = Icons.insert_drive_file;
+        break;
+      default:
+        contentIcon = Icons.note;
+    }
+
+    return GestureDetector(
+      onTap: () => NavigationHelper.navigateToContent(content),
+      child: Row(
+        spacing: 15,
+        children: [
+          OutlinedChild(
+            size: 32,
+            decoration: BoxDecoration(color: AppTheme.paleBlue),
+            child: Icon(contentIcon, size: 16, color: AppTheme.charcoalBlue),
           ),
-        ),
-      ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                Text(content.title, style: AppTheme.text),
+                Text(
+                  formatRelativeTime(content.updatedAt),
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.steelMist,
+                    fontSize: 12.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -140,11 +161,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 15,
                   children: [
-                    for (final note in recentNotes)
-                      _recentItem(
-                        title: note.title,
-                        lastEdited: formatRelativeTime(note.updatedAt),
-                      ),
+                    for (final note in recentNotes) _recentItem(content: note),
                   ],
                 );
               },
