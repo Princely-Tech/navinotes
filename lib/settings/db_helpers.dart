@@ -119,59 +119,7 @@ class DatabaseHelper {
 
   // Add this new method to handle database upgrades
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // if (oldVersion < 2) {
-    //   // Add the guid column to the boards table
-    //   await db.execute('ALTER TABLE boards ADD COLUMN guid TEXT');
-
-    //   // get all boards with null guid and update it
-    //   final boards = await db.query('boards', where: 'guid IS NULL');
-    //   for (var board in boards) {
-    //     final guid = "0${board['user_id']}0_${Uuid().v4()}";
-    //     await db.update(
-    //       'boards',
-    //       {'guid': guid},
-    //       where: 'id = ?',
-    //       whereArgs: [board['id']],
-    //     );
-    //   }
-    // }
-
-    // if (oldVersion < 3) {
-    //   await db.execute('ALTER TABLE contents ADD COLUMN title TEXT');
-    //   await db.execute('ALTER TABLE contents ADD COLUMN cover_image TEXT');
-    // }
-
-    // if (oldVersion < 4) {
-    //   await db.execute(
-    //     'ALTER TABLE boards ADD COLUMN cover_image_need_sync INTEGER DEFAULT 0',
-    //   );
-    //   await db.execute(
-    //     'ALTER TABLE contents ADD COLUMN cover_image_need_sync INTEGER DEFAULT 0',
-    //   );
-    //   await db.execute(
-    //     'ALTER TABLE contents ADD COLUMN file_need_sync INTEGER DEFAULT 0',
-    //   );
-    // }
-
-    // if (oldVersion < 5) {
-    //   await db.execute('ALTER TABLE boards ADD COLUMN course_info TEXT');
-    //   await db.execute('ALTER TABLE boards ADD COLUMN course_timelines TEXT');
-    // }
-
-    // if (oldVersion < 6) {
-    //   await db.execute(
-    //     'ALTER TABLE boards ADD COLUMN syllabus_content_id INTEGER DEFAULT NULL',
-    //   );
-    // }
-    // if (oldVersion < 7) {
-    //   await db.execute('ALTER TABLE contents ADD COLUMN drawing TEXT');
-    // }
-    // if (oldVersion < 8) {
-    //   await db.execute('ALTER TABLE contents ADD COLUMN voice_notes TEXT');
-    // }
-    // if (oldVersion < 9) {
-    //   // nothing.
-    // }
+    
   }
 
   // Example CRUD for Boards
