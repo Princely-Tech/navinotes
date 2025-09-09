@@ -18,59 +18,150 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                 Expanded(
                   child: ScrollableController(
                     mobilePadding: EdgeInsets.only(bottom: 30, top: 20),
-                    child: CustomGrid(
-                      wrapWithIntrinsicHeight: false,
-                      children: [
-                        ...vm.contents.map((content) => _noteCard(content)),
-                        
-                        Column(
-                          children: [
-                            InkWell(
-                              onTap: vm.gotToCreateNotePage,
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(minHeight: 200),
-                                child: CustomCard(
-                                  addBorder: true,
-                                  addCardShadow: true,
-                                  decoration: BoxDecoration(
-                                    color: AppTheme.almondCream,
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    spacing: 15,
-                                    children: [
-                                      OutlinedChild(
-                                        size: 48,
-                                        decoration: BoxDecoration(
-                                          color: AppTheme.royalGold.withAlpha(
-                                            0x19,
-                                          ),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(
-                                          Icons.add,
-                                          color: AppTheme.royalGold,
-                                          size: 20,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Create New Note Page',
-                                        style: TextStyle(
-                                          color: const Color(0xFF654321),
-                                          fontSize: 16.0,
-                                          fontFamily: 'Crimson Text',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                    child: vm.pageDisplayFormat == PageDisplayFormat.grid
+                        ? CustomGrid(
+                            wrapWithIntrinsicHeight: false,
+                            children: [
+                              ...vm.contents.map((content) => _noteCard(content)),
+                              _createNewNoteCard(vm),
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              ...vm.contents.map(
+                                (content) => Padding(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: _noteListItem(content: content),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                              _createNewNoteCard(vm),
+                            ],
+                          ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _createNewNoteCard(BoardNotePageVm vm) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: vm.gotToCreateNotePage,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 200),
+            child: CustomCard(
+              addBorder: true,
+              addCardShadow: true,
+              decoration: BoxDecoration(
+                color: AppTheme.almondCream,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 15,
+                children: [
+                  OutlinedChild(
+                    size: 48,
+                    decoration: BoxDecoration(
+                      color: AppTheme.royalGold.withAlpha(0x19),
+                      shape: BoxShape.circle,
                     ),
+                    child: Icon(
+                      Icons.add,
+                      color: AppTheme.royalGold,
+                      size: 20,
+                    ),
+                  ),
+                  Text(
+                    'Create New Note Page',
+                    style: TextStyle(
+                      color: const Color(0xFF654321),
+                      fontSize: 16.0,
+                      fontFamily: 'Crimson Text',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _noteListItem({required Content content}) {
+    return Consumer<BoardNotePageVm>(
+      builder: (_, vm, _) {
+        return InkWell(
+          onTap: () => NavigationHelper.navigateToContent(content),
+          child: CustomCard(
+            addCardShadow: true,
+            addBorder: true,
+            decoration: BoxDecoration(
+              color: AppTheme.almondCream,
+            ),
+            padding: EdgeInsets.all(15),
+            child: Row(
+              spacing: 15,
+              children: [
+                CustomCard(
+                  width: 80,
+                  height: 60,
+                  addCardShadow: true,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: AppTheme.royalGold.withAlpha(0x33),
+                  ),
+                  padding: EdgeInsets.zero,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: AppTheme.royalGold.withAlpha(0x80),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        content.type == AppContentType.mindmap
+                            ? Icons.account_tree
+                            : content.type == AppContentType.file
+                                ? Icons.insert_drive_file
+                                : Icons.note,
+                        color: const Color(0xFF654321),
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 8,
+                    children: [
+                      Text(
+                        content.title,
+                        style: TextStyle(
+                          color: const Color(0xFF654321),
+                          fontSize: 16.0,
+                          fontFamily: 'Crimson Text',
+                          fontWeight: FontWeight.w400,
+                          height: 1.50,
+                        ),
+                      ),
+                      Text(
+                        'Last edited: ${formatUnixTimestamp(content.updatedAt)}',
+                        style: TextStyle(
+                          color: const Color(0xB2654321),
+                          fontSize: 12.0,
+                          fontFamily: 'Crimson Text',
+                          fontWeight: FontWeight.w400,
+                          height: 1.33,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -84,11 +175,8 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
   Widget _noteCard(Content content) {
     return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
-        BoardNoteTemplate template = getNoteTemplateFromString(
-          content.metaData[ContentMetadataKey.template],
-        );
         return InkWell(
-          onTap: () => vm.goToNotePage(content),
+          onTap: () => NavigationHelper.navigateToContent(content),
           child: Stack(
             children: [
               CustomCard(
@@ -107,9 +195,22 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       child: AspectRatio(
                         aspectRatio: 5 / 2,
-                        child: ImagePlaceHolder(
-                          imagePath: template.image,
-                          borderRadius: BorderRadius.zero,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.zero,
+                            color: AppTheme.royalGold.withAlpha(0x80),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              content.type == AppContentType.mindmap
+                                  ? Icons.account_tree
+                                  : content.type == AppContentType.file
+                                      ? Icons.insert_drive_file
+                                      : Icons.note,
+                              color: const Color(0xFF654321),
+                              size: 32,
+                            ),
+                          ),
                         ),
                       ),
                     ),

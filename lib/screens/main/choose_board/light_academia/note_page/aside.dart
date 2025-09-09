@@ -75,35 +75,42 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
                                       size: 18,
                                     ),
                                     Flexible(
-                                      child: Column(
-                                        spacing: 5,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'View Mind Map',
-                                            textAlign: TextAlign.center,
-                                            style: AppTheme.text.copyWith(
-                                              color: AppTheme.sepiaBrown,
-                                              fontSize: 16.0,
-                                              fontFamily:
-                                                  AppTheme.fontCrimsonText,
-                                              height: 1.50,
+                                      child: InkWell(
+                                        onTap: () {
+                                          NavigationHelper.createAndNavigateToNewMindMap(
+                                            vm.board,
+                                          );
+                                        },
+                                        child: Column(
+                                          spacing: 5,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Create Mind Map',
+                                              textAlign: TextAlign.center,
+                                              style: AppTheme.text.copyWith(
+                                                color: AppTheme.sepiaBrown,
+                                                fontSize: 16.0,
+                                                fontFamily:
+                                                    AppTheme.fontCrimsonText,
+                                                height: 1.50,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            'See connections between notes',
-                                            textAlign: TextAlign.center,
-                                            style: AppTheme.text.copyWith(
-                                              color: AppTheme.sepiaBrown
-                                                  .withAlpha(0x99),
-                                              fontSize: 12.0,
-                                              fontFamily:
-                                                  AppTheme.fontCrimsonText,
-                                              height: 1.33,
+                                            Text(
+                                              'See connections between notes',
+                                              textAlign: TextAlign.center,
+                                              style: AppTheme.text.copyWith(
+                                                color: AppTheme.sepiaBrown
+                                                    .withAlpha(0x99),
+                                                fontSize: 12.0,
+                                                fontFamily:
+                                                    AppTheme.fontCrimsonText,
+                                                height: 1.33,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -124,11 +131,7 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
     );
   }
 
-  Widget _viewedItem({
-    required String title,
-    required String time,
-    required String icon,
-  }) {
+  Widget _viewedItem({required Content content}) {
     return Row(
       spacing: 10,
       children: [
@@ -138,35 +141,44 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
             color: AppTheme.royalGold.withAlpha(0x19),
             borderRadius: BorderRadius.circular(4),
           ),
-          child: SVGImagePlaceHolder(
-            imagePath: icon,
-            size: 16,
+          child: Icon(
+            content.type == AppContentType.mindmap
+                ? Icons.account_tree
+                : content.type == AppContentType.file
+                ? Icons.insert_drive_file
+                : Icons.note,
             color: AppTheme.royalGold,
+            size: 16,
           ),
         ),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.sepiaBrown,
-                  fontSize: 16.0,
-                  fontFamily: AppTheme.fontCrimsonText,
-                  height: 1.50,
+          child: InkWell(
+            onTap: () {
+              NavigationHelper.navigateToContent(content);
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  content.title,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.sepiaBrown,
+                    fontSize: 16.0,
+                    fontFamily: AppTheme.fontCrimsonText,
+                    height: 1.50,
+                  ),
                 ),
-              ),
-              Text(
-                time,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.sepiaBrown.withAlpha(0x99),
-                  fontSize: 12.0,
-                  fontFamily: AppTheme.fontCrimsonText,
-                  height: 1.33,
+                Text(
+                  formatRelativeTime(content.updatedAt),
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.sepiaBrown.withAlpha(0x99),
+                    fontSize: 12.0,
+                    fontFamily: AppTheme.fontCrimsonText,
+                    height: 1.33,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -197,16 +209,7 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 15,
                 children: [
-                  for (final note in recentNotes)
-                    _viewedItem(
-                      title: note.title,
-                      time: formatRelativeTime(note.updatedAt),
-                      icon: getRandomListElement([
-                        Images.boardNatureWaveLine,
-                        Images.boardNatureQuantumIcon,
-                        Images.flash,
-                      ]),
-                    ),
+                  for (final note in recentNotes) _viewedItem(content: note),
                 ],
               );
             },
