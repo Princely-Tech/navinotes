@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 import 'package:provider/provider.dart';
 import 'package:navinotes/models/content.dart';
 import 'package:navinotes/settings/db_helpers.dart';
+import 'package:navinotes/settings/board_theme.dart';
 import 'vm.dart';
 
 class MindMapDocuments extends StatefulWidget {
@@ -77,13 +78,10 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = AppTheme.transparent;
-    switch (widget.boardTheme) {
-      case BoardTheme.plain:
-        bgColor = AppTheme.ghostWhite;
-        break;
-      default:
-    }
+    final themeValues = widget.boardTheme.values;
+    final bgColor = themeValues.backgroundColor == AppTheme.transparent 
+        ? AppTheme.ghostWhite 
+        : themeValues.backgroundColor;
 
     final notes =
         _contents.where((c) => c.type == AppContentType.note).toList();
@@ -100,7 +98,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
     return Container(
       decoration: BoxDecoration(
         color: bgColor,
-        border: Border(right: BorderSide(color: AppTheme.lightGray)),
+        border: Border(right: BorderSide(color: themeValues.borderColor)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,6 +121,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                             _section(
                               title: 'Notes',
                               count: notes.length,
+                              boardTheme: widget.boardTheme,
                               child: Column(
                                 spacing: 10,
                                 children:
@@ -143,6 +142,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                               count:
                                   (showPdfs ? pdfs.length : 0) +
                                   (showImages ? images.length : 0),
+                              boardTheme: widget.boardTheme,
                               child: Column(
                                 spacing: 10,
                                 children: [
@@ -169,6 +169,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                             _section(
                               title: 'Flashcard Decks',
                               count: _decks.length,
+                              boardTheme: widget.boardTheme,
                               child: Column(
                                 spacing: 10,
                                 children:
@@ -178,6 +179,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                                             context: context,
                                             deck: d,
                                             count: _deckCardCounts[d.id] ?? 0,
+                                            boardTheme: widget.boardTheme,
                                           ),
                                         )
                                         .toList(),
@@ -186,9 +188,10 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
                           Text(
                             'Drag and drop a document to create a new mind map',
                             style: AppTheme.text.copyWith(
-                              color: AppTheme.asbestos,
+                              color: themeValues.borderColor,
                               fontWeight: getFontWeight(400),
                               height: 1.43,
+                              fontFamily: themeValues.fontFamily,
                             ),
                           ),
                         ],
@@ -220,12 +223,12 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: AppTheme.dodgerBlue, width: 2),
           ),
-          child: _imgRow(title: title, img: img),
+          child: _imgRow(title: title, img: img, boardTheme: widget.boardTheme),
         ),
       ),
       childWhenDragging: Opacity(
         opacity: 0.5,
-        child: _imgRow(title: title, img: img),
+        child: _imgRow(title: title, img: img, boardTheme: widget.boardTheme),
       ),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -240,7 +243,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
             vm.cancelAttachMode();
           }
         },
-        child: _imgRow(title: title, img: img),
+        child: _imgRow(title: title, img: img, boardTheme: widget.boardTheme),
       ),
     );
   }
@@ -266,6 +269,7 @@ Widget _tappableDeckRow({
   required BuildContext context,
   required Content deck,
   required int count,
+  required BoardTheme boardTheme,
 }) {
   return Draggable<Content>(
     data: deck,
@@ -284,6 +288,7 @@ Widget _tappableDeckRow({
           title: deck.title,
           img: Images.flashCards,
           right: '$count cards',
+          boardTheme: boardTheme,
         ),
       ),
     ),
@@ -293,6 +298,7 @@ Widget _tappableDeckRow({
         title: deck.title,
         img: Images.flashCards,
         right: '$count cards',
+        boardTheme: boardTheme,
       ),
     ),
     child: GestureDetector(
@@ -311,13 +317,21 @@ Widget _tappableDeckRow({
         title: deck.title,
         img: Images.flashCards,
         right: '$count cards',
+        boardTheme: boardTheme,
       ),
     ),
   );
 }
 
-Widget _imgRow({required String title, String? img, String? right}) {
+Widget _imgRow({
+  required String title, 
+  required String img, 
+  String? right,
+  BoardTheme? boardTheme,
+}) {
+  final themeValues = boardTheme?.values;
   return Row(
+    spacing: 10,
     children: [
       Expanded(
         child: Row(
@@ -325,16 +339,17 @@ Widget _imgRow({required String title, String? img, String? right}) {
           children: [
             if (isNotNull(img))
               SVGImagePlaceHolder(
-                imagePath: img!,
+                imagePath: img,
                 size: 14,
-                color: AppTheme.steelBlue,
+                color: themeValues?.color1 ?? AppTheme.steelBlue,
               ),
             Expanded(
               child: Text(
                 title,
                 style: AppTheme.text.copyWith(
-                  color: AppTheme.wetAsphalt,
+                  color: themeValues?.color1 ?? AppTheme.wetAsphalt,
                   height: 1.43,
+                  fontFamily: themeValues?.fontFamily,
                 ),
               ),
             ),
@@ -345,16 +360,23 @@ Widget _imgRow({required String title, String? img, String? right}) {
         Text(
           right!,
           style: AppTheme.text.copyWith(
-            color: AppTheme.asbestos,
+            color: themeValues?.borderColor ?? AppTheme.asbestos,
             fontSize: 12.0,
             height: 1.33,
+            fontFamily: themeValues?.fontFamily,
           ),
         ),
     ],
   );
 }
 
-Widget _section({required String title, int? count, required Widget child}) {
+Widget _section({
+  required String title, 
+  int? count, 
+  required Widget child,
+  BoardTheme? boardTheme,
+}) {
+  final themeValues = boardTheme?.values;
   return Column(
     spacing: 20,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,9 +388,10 @@ Widget _section({required String title, int? count, required Widget child}) {
             child: Text(
               title,
               style: AppTheme.text.copyWith(
-                color: AppTheme.wetAsphalt,
+                color: themeValues?.color1 ?? AppTheme.wetAsphalt,
                 fontWeight: getFontWeight(500),
                 height: 1.43,
+                fontFamily: themeValues?.fontFamily,
               ),
             ),
           ),
@@ -376,9 +399,10 @@ Widget _section({required String title, int? count, required Widget child}) {
             Text(
               count.toString(),
               style: AppTheme.text.copyWith(
-                color: AppTheme.asbestos,
+                color: themeValues?.borderColor ?? AppTheme.asbestos,
                 fontSize: 12.0,
                 height: 1.33,
+                fontFamily: themeValues?.fontFamily,
               ),
             ),
         ],

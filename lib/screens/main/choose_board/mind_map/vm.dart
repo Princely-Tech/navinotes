@@ -10,15 +10,16 @@ import 'package:navinotes/models/mind_map.dart';
 import 'package:navinotes/models/mind_map_edge.dart';
 import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/models/content.dart';
+import 'package:navinotes/models/board.dart';
 import 'package:navinotes/settings/db_helpers.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/settings/file_utils.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/settings/time_helpers.dart';
+import 'package:navinotes/settings/board_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:uuid/uuid.dart';
 
 class MindMapVm extends ChangeNotifier {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -43,6 +44,7 @@ class MindMapVm extends ChangeNotifier {
   int? contentId; // row id in contents table for this mindmap
   Content? baseContent; // the content this mindmap is based on
   String title = "Mind Map";
+  BoardTheme _cachedBoardTheme = BoardTheme.plain;
 
   /// Canvas transform state (logical coordinates)
   double scale = 1.0;
@@ -77,6 +79,47 @@ class MindMapVm extends ChangeNotifier {
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  /// Get the board theme based on the baseContent's board
+  BoardTheme get boardTheme {
+    return _cachedBoardTheme;
+  }
+
+  /// Load board theme asynchronously by fetching the board
+  Future<void> _loadBoardTheme() async {
+    if (baseContent == null) {
+      _cachedBoardTheme = BoardTheme.plain;
+      return;
+    }
+    
+    try {
+      final board = await baseContent!.getBoard();
+      final boardType = board.boardType;
+      
+      switch (boardType) {
+        case BoardTypeCodes.darkAcademia:
+          _cachedBoardTheme = BoardTheme.darkAcademia;
+          break;
+        case BoardTypeCodes.lightAcademia:
+          _cachedBoardTheme = BoardTheme.lightAcademia;
+          break;
+        case BoardTypeCodes.minimalist:
+          _cachedBoardTheme = BoardTheme.minimalist;
+          break;
+        case BoardTypeCodes.nature:
+          _cachedBoardTheme = BoardTheme.nature;
+          break;
+        case BoardTypeCodes.plain:
+        default:
+          _cachedBoardTheme = BoardTheme.plain;
+          break;
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error getting board theme: $e');
+      _cachedBoardTheme = BoardTheme.plain;
+    }
   }
 
   // Document panel toggle
@@ -1008,6 +1051,10 @@ class MindMapVm extends ChangeNotifier {
     baseContent = content;
     title = content.title;
     debugPrint('Loaded mind map with title: $title');
+    
+    // Load board theme
+    _loadBoardTheme();
+    
     // meta_data contains our map
     final meta = content.metaData;
     loadFromJson(meta);

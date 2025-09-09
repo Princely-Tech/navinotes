@@ -25,10 +25,14 @@ enum MindMapBorderStyleItem {
   }
 }
 
-final titleTextStyle = AppTheme.text.copyWith(
-  color: AppTheme.asbestos,
-  fontSize: 12.0,
-);
+TextStyle getTitleTextStyle(BoardTheme boardTheme) {
+  final themeValues = boardTheme.values;
+  return AppTheme.text.copyWith(
+    color: themeValues.color1,
+    fontSize: 12.0,
+    fontFamily: themeValues.fontFamily,
+  );
+}
 
 class MindMapStyling extends StatelessWidget {
   const MindMapStyling({super.key, required this.boardTheme, required this.vm});
@@ -36,17 +40,15 @@ class MindMapStyling extends StatelessWidget {
   final MindMapVm vm;
   @override
   Widget build(BuildContext context) {
-    Color bgColor = AppTheme.transparent;
-    switch (boardTheme) {
-      case BoardTheme.plain:
-        bgColor = AppTheme.ghostWhite;
-        break;
-      default:
-    }
+    final themeValues = boardTheme.values;
+    Color bgColor = themeValues.backgroundColor == AppTheme.transparent 
+        ? AppTheme.ghostWhite 
+        : themeValues.backgroundColor;
+    
     return Container(
       decoration: BoxDecoration(
         color: bgColor,
-        border: Border(left: BorderSide(color: AppTheme.lightGray)),
+        border: Border(left: BorderSide(color: themeValues.borderColor)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,6 +97,7 @@ class MindMapStyling extends StatelessWidget {
             LineTypeSelect(),
             _titleSection(
               title: 'Connection Color',
+              boardTheme: boardTheme,
               child: ScrollableController(
                 scrollDirection: Axis.horizontal,
                 child: Consumer<MindMapVm>(
@@ -124,6 +127,7 @@ class MindMapStyling extends StatelessWidget {
             ),
             _titleSection(
               title: 'Line Thickness',
+              boardTheme: boardTheme,
               child: Consumer<MindMapVm>(
                 builder: (_, vm, __) {
                   final edge =
@@ -144,6 +148,7 @@ class MindMapStyling extends StatelessWidget {
             ),
             _titleSection(
               title: 'Line Opacity',
+              boardTheme: boardTheme,
               child: Consumer<MindMapVm>(
                 builder: (_, vm, __) {
                   final edge =
@@ -165,6 +170,7 @@ class MindMapStyling extends StatelessWidget {
             // Delete edge button
             _titleSection(
               title: 'Actions',
+              boardTheme: boardTheme,
               child: Consumer<MindMapVm>(
                 builder: (_, vm, __) {
                   return SizedBox(
@@ -379,12 +385,12 @@ class MindMapStyling extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Cooler',
-                        style: titleTextStyle.copyWith(fontSize: 12.0),
+                        style: getTitleTextStyle(boardTheme).copyWith(fontSize: 12.0),
                       ),
                     ),
                     Text(
                       'Warmer',
-                      style: titleTextStyle.copyWith(fontSize: 12.0),
+                      style: getTitleTextStyle(boardTheme).copyWith(fontSize: 12.0),
                     ),
                   ],
                 ),
@@ -491,11 +497,11 @@ Widget _selectItem({
   );
 }
 
-Widget _titleSection({required String title, required Widget child}) {
+Widget _titleSection({required String title, required Widget child, BoardTheme? boardTheme}) {
   return Column(
     spacing: 10,
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [Text(title, style: titleTextStyle), child],
+    children: [Text(title, style: getTitleTextStyle(boardTheme ?? BoardTheme.plain)), child],
   );
 }
 

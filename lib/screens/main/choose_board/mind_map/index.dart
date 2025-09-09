@@ -74,18 +74,20 @@ class MindMapScreen extends StatelessWidget {
 
           return ScaffoldFrame(
             scaffoldKey: _scaffoldKey,
-            backgroundColor: AppTheme.white,
+            backgroundColor: vm.boardTheme.values.backgroundColor == AppTheme.transparent 
+                ? AppTheme.white 
+                : vm.boardTheme.values.backgroundColor,
             endDrawer: CustomDrawer(
-              child: MindMapStyling(boardTheme: BoardTheme.minimalist, vm: vm),
+              child: MindMapStyling(boardTheme: vm.boardTheme, vm: vm),
             ),
             drawer: CustomDrawer(
-              child: MindMapDocuments(boardTheme: BoardTheme.minimalist),
+              child: MindMapDocuments(boardTheme: vm.boardTheme),
             ),
             body: Column(
               children: [
                 MindMapHeader(
                   openDrawer: vm.openDrawer,
-                  boardTheme: BoardTheme.plain,
+                  boardTheme: vm.boardTheme,
                   openEndDrawer: vm.openEndDrawer,
                   toggleDocumentPanel: vm.toggleDocumentPanel,
                   isDocumentPanelVisible: vm.isDocumentPanelVisible,
@@ -101,7 +103,7 @@ class MindMapScreen extends StatelessWidget {
                           child: WidthLimiter(
                             mobile: 256,
                             child: MindMapDocuments(
-                              boardTheme: BoardTheme.plain,
+                              boardTheme: vm.boardTheme,
                             ),
                           ),
                         ),
@@ -112,7 +114,7 @@ class MindMapScreen extends StatelessWidget {
                         child: WidthLimiter(
                           mobile: 256,
                           child: MindMapStyling(
-                            boardTheme: BoardTheme.plain,
+                            boardTheme: vm.boardTheme,
                             vm: vm,
                           ),
                         ),

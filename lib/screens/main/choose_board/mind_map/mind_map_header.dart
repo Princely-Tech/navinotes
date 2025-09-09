@@ -20,21 +20,15 @@ class MindMapHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color bgColor = AppTheme.sageMist;
-    Color borderColor = AppTheme.deepMoss.withAlpha(0x19);
-    switch (boardTheme) {
-      case BoardTheme.plain:
-        bgColor = AppTheme.ghostWhite;
-        break;
-      case BoardTheme.minimalist:
-        bgColor = AppTheme.white;
-        break;
-      default:
-    }
+    final themeValues = boardTheme.values;
     return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
-        border: Border(bottom: BorderSide(color: borderColor)),
+      decoration: themeValues.mainHeaderDecoration.copyWith(
+        color: themeValues.mainHeaderDecoration.color ?? 
+               (themeValues.backgroundColor == AppTheme.transparent 
+                ? AppTheme.ghostWhite 
+                : themeValues.backgroundColor),
+        border: themeValues.mainHeaderDecoration.border ?? 
+                Border(bottom: BorderSide(color: themeValues.borderColor)),
       ),
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: LayoutBuilder(
@@ -56,7 +50,7 @@ class MindMapHeader extends StatelessWidget {
                         onTap: NavigationHelper.pop,
                         child: Icon(
                           Icons.arrow_back,
-                          color: AppTheme.vividRose,
+                          color: themeValues.color1,
                         ),
                       ),
                       SizedBox(width: 10),
@@ -65,7 +59,7 @@ class MindMapHeader extends StatelessWidget {
                         icon: Icon(
                           Icons.edit,
                           size: 16,
-                          color: AppTheme.vividRose,
+                          color: themeValues.color1,
                         ),
                         onPressed: () => _editTitle(context, mindMapVm),
                       ),
@@ -100,26 +94,14 @@ class MindMapHeader extends StatelessWidget {
   }
 
   Widget _title(MindMapVm vm) {
-    BordThemeValues params = boardTheme.values;
-    Color color = AppTheme.darkMossGreen;
-    FontWeight? fontWeight;
-    switch (boardTheme) {
-      case BoardTheme.plain:
-        color = AppTheme.black;
-        break;
-      case BoardTheme.minimalist:
-        color = AppTheme.wetAsphalt;
-        fontWeight = getFontWeight(500);
-        break;
-      default:
-    }
+    final themeValues = boardTheme.values;
     return Text(
       vm.title ?? 'Untitled',
       style: AppTheme.text.copyWith(
-        color: color,
+        color: themeValues.color1,
         fontSize: 20.0,
-        fontFamily: params.fontFamily,
-        fontWeight: fontWeight,
+        fontFamily: themeValues.fontFamily,
+        fontWeight: getFontWeight(500),
       ),
     );
   }
