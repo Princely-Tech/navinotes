@@ -422,16 +422,4 @@ List<BoardType> boardTypes = [
     route: Routes.boardNature,
     body: 'Some description',
   ),
-  // BoardType(
-  //   name: 'Pastel',
-  //   image: Images.boardPastel,
-  //   description: 'Soft, muted color palette',
-  //   route: '',
-  // ),
-  // BoardType(
-  //   name: 'Tech/Neon',
-  //   image: Images.boardNeon,
-  //   description: 'Digital, vibrant highlights',
-  //   route: '',
-  // ), //TODO uncoment this
 ];

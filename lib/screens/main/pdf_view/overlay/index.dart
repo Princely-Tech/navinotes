@@ -195,7 +195,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
             spacing: 5,
             children: [
               Text(
-                'Add to Mind Map',
+                title,
                 style: TextStyle(
                   color: const Color(0xFF111827),
                   fontSize: 16.0,
@@ -204,7 +204,7 @@ class _PdfOverlayBodyState extends State<PdfOverlayBody> {
                 ),
               ),
               Text(
-                'Connect key concepts to your mind map for visual learning and better understanding',
+                body,
                 style: TextStyle(
                   color: const Color(0xFF4B5563),
                   fontSize: 14.0,

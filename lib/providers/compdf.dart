@@ -3,36 +3,33 @@ import 'package:navinotes/packages.dart';
 class ComPdfVm extends ChangeNotifier {
   String? document;
 
-  void initialize(BuildContext context, String documentPath) {
+  Future<void> initialize(BuildContext context, String documentPath) async {
     try {
       debugPrint('ComPdfVm: Initializing ComPDFKit...');
-      ComPDFKit.init(EnvKeys.comPdfKey);
+      final key = EnvKeys.comPdfKey;
+      debugPrint('ComPdfVm: License key length: ${key.length}');
+      ComPDFKit.init(key); // Note: init returns void in current SDK
+      debugPrint('ComPdfVm: ComPDFKit init invoked');
 
-      // Add a small delay before processing the document
-      Future.delayed(Duration(milliseconds: 200), () {
-        _getDocumentPath(context, documentPath)
-            .then((value) {
-              document = value;
-              debugPrint('ComPdfVm: Document loaded at path: $value');
-              // Verify the file exists at the final path
-              final file = File(value);
-              if (file.existsSync()) {
-                debugPrint(
-                  'ComPdfVm: Final document file verified, size: ${file.lengthSync()} bytes',
-                );
-              } else {
-                debugPrint(
-                  'ComPdfVm: ERROR - Final document file does not exist!',
-                );
-              }
-              notifyListeners();
-            })
-            .catchError((error) {
-              debugPrint('ComPdfVm: Error loading document: $error');
-            });
-      });
-    } catch (err) {
+      final value = await _getDocumentPath(context, documentPath);
+      document = value;
+      debugPrint('ComPdfVm: Document loaded at path: $value');
+      // Verify the file exists at the final path
+      final file = File(value);
+      if (file.existsSync()) {
+        debugPrint(
+          'ComPdfVm: Final document file verified, size: ${file.lengthSync()} bytes',
+        );
+      } else {
+        debugPrint(
+          'ComPdfVm: ERROR - Final document file does not exist!',
+        );
+      }
+      notifyListeners();
+    } catch (err, st) {
       debugPrint('ComPdfVm: Initialization error: $err');
+      debugPrint('$st');
+      rethrow;
     }
   }
 
@@ -52,7 +49,8 @@ class ComPdfVm extends ChangeNotifier {
   }
 
   Future<String> _loadFromAssets(BuildContext context, String assetPath) async {
-    final bytes = await DefaultAssetBundle.of(context).load(assetPath);
+    // Use rootBundle to decouple from BuildContext timing
+    final bytes = await rootBundle.load(assetPath);
     final list = bytes.buffer.asUint8List();
     final tempDir = await ComPDFKit.getTemporaryDirectory();
     var pdfsDir = Directory('${tempDir.path}/pdfs');

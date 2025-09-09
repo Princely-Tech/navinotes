@@ -40,7 +40,7 @@ class PdfViewHeader extends StatelessWidget {
                           ),
                           Flexible(
                             child: Text(
-                              'Cellular Biology - Chapter 4',
+                              vm.content?.title ?? 'PDF Document',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: AppTheme.text.copyWith(

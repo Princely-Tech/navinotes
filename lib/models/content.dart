@@ -156,6 +156,40 @@ class Content {
     );
   }
 
+  Content getUpdatedContentWithMeta({
+    String? title,
+    String? coverImage,
+    String? content,
+    String? drawing,
+    String? file,
+    List<VoiceNote>? voiceNotes,
+    int? updatedAt,
+    int? syncedAt,
+    bool? coverImageNeedSync,
+    bool? fileNeedSync,
+    Map<String, dynamic>? metaData,
+  }) {
+    return Content(
+      id: id,
+      guid: guid,
+      title: title ?? this.title,
+      coverImage: coverImage ?? this.coverImage,
+      type: type,
+      metaData: metaData ?? this.metaData,
+      boardId: boardId,
+      tags: tags,
+      content: content ?? this.content,
+      drawing: drawing ?? this.drawing,
+      file: file ?? this.file,
+      voiceNotes: voiceNotes ?? this.voiceNotes,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      coverImageNeedSync: coverImageNeedSync ?? this.coverImageNeedSync,
+      fileNeedSync: fileNeedSync ?? this.fileNeedSync,
+    );
+  }
+
   Future<int>? updateTitle({String? newTitle}) {
     try {
       Content updatedContent = getUpdatedContent(title: newTitle);
