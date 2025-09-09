@@ -87,16 +87,16 @@ class MindMapVm extends ChangeNotifier {
   }
 
   /// Load board theme asynchronously by fetching the board
-  Future<void> _loadBoardTheme() async {
+  Future<void> _loadBoardTheme11() async {
     if (baseContent == null) {
-      _cachedBoardTheme = BoardTheme.plain;
+      _cachedBoardTheme = BoardTheme.minimalist;
       return;
     }
-    
+
     try {
       final board = await baseContent!.getBoard();
       final boardType = board.boardType;
-      
+
       switch (boardType) {
         case BoardTypeCodes.darkAcademia:
           _cachedBoardTheme = BoardTheme.darkAcademia;
@@ -118,8 +118,32 @@ class MindMapVm extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Error getting board theme: $e');
-      _cachedBoardTheme = BoardTheme.plain;
+      _cachedBoardTheme = BoardTheme.minimalist;
     }
+  }
+
+  Future<void> _loadBoardTheme() async {
+    // switch (boardType) {
+    //   case BoardTypeCodes.darkAcademia:
+    //     _cachedBoardTheme = BoardTheme.darkAcademia;
+    //     break;
+    //   case BoardTypeCodes.lightAcademia:
+    //     _cachedBoardTheme = BoardTheme.lightAcademia;
+    //     break;
+    //   case BoardTypeCodes.minimalist:
+    //     _cachedBoardTheme = BoardTheme.minimalist;
+    //     break;
+    //   case BoardTypeCodes.nature:
+    //     _cachedBoardTheme = BoardTheme.nature;
+    //     break;
+    //   case BoardTypeCodes.plain:
+    //   default:
+    //     _cachedBoardTheme = BoardTheme.plain;
+    //     break;
+    // }
+
+    _cachedBoardTheme = BoardTheme.darkAcademia;
+    notifyListeners();
   }
 
   // Document panel toggle
@@ -168,7 +192,6 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
     return node;
   }
-
 
   void removeNode(String nodeId) {
     mindMap.removeNode(nodeId);
@@ -983,7 +1006,6 @@ class MindMapVm extends ChangeNotifier {
     final id = parsed.$2;
     if (id == null) return;
 
-  
     // Default: content
     final content = await DatabaseHelper.instance.getContentById(id);
     if (content == null) return;
@@ -1051,10 +1073,10 @@ class MindMapVm extends ChangeNotifier {
     baseContent = content;
     title = content.title;
     debugPrint('Loaded mind map with title: $title');
-    
+
     // Load board theme
     _loadBoardTheme();
-    
+
     // meta_data contains our map
     final meta = content.metaData;
     loadFromJson(meta);
