@@ -964,13 +964,14 @@ class SettingsButton extends StatelessWidget {
   const SettingsButton({super.key});
   @override
   Widget build(BuildContext context) {
-    return AppIconButton(
-      onPressed: NavigationHelper.navigateToSettings,
-      icon: SVGImagePlaceHolder(
-        imagePath: Images.settings,
-        size: 16,
-        color: AppTheme.steelMist,
-      ),
-    );
+    return SizedBox.shrink();
+    // return AppIconButton(
+    //   onPressed: NavigationHelper.navigateToSettings,
+    //   icon: SVGImagePlaceHolder(
+    //     imagePath: Images.settings,
+    //     size: 16,
+    //     color: AppTheme.steelMist,
+    //   ),
+    // );
   }
 }

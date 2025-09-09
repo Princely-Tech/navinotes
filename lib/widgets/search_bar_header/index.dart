@@ -56,7 +56,7 @@ class SearchBarHeader extends StatelessWidget {
                 Row(
                   children: [
                     NotificationButton(),
-                    SettingsButton(),
+                    // SettingsButton(),
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: ProfilePic(),

@@ -89,13 +89,13 @@ class FlashCardStudyHeader extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 15),
                   child: Row(
                     children: [
-                      AppIconButton(
-                        onPressed: NavigationHelper.navigateToSettings,
-                        icon: SVGImagePlaceHolder(
-                          imagePath: Images.settings,
-                          size: 16,
-                        ),
-                      ),
+                      // AppIconButton(
+                      //   onPressed: NavigationHelper.navigateToSettings,
+                      //   icon: SVGImagePlaceHolder(
+                      //     imagePath: Images.settings,
+                      //     size: 16,
+                      //   ),
+                      // ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: ProfilePic(),

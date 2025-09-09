@@ -68,14 +68,14 @@ class FlashCardsAppBar extends StatelessWidget {
       children: [
         Row(
           children: [
-            AppIconButton(
-              onPressed: NavigationHelper.navigateToSettings,
-              icon: SVGImagePlaceHolder(
-                imagePath: Images.settings,
-                color: AppTheme.stormGray,
-                size: 16,
-              ),
-            ),
+            // AppIconButton(
+            //   onPressed: NavigationHelper.navigateToSettings,
+            //   icon: SVGImagePlaceHolder(
+            //     imagePath: Images.settings,
+            //     color: AppTheme.stormGray,
+            //     size: 16,
+            //   ),
+            // ),
             AppIconButton(
               onPressed: NavigationHelper.navigateToTutorial,
               icon: SVGImagePlaceHolder(

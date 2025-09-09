@@ -3,6 +3,7 @@ import 'package:navinotes/screens/main/choose_board/mind_map/index.dart';
 import 'package:navinotes/screens/main/flashcards/ai/index.dart';
 import 'package:navinotes/screens/main/flashcards/index.dart';
 import 'package:navinotes/screens/pomodora/index.dart';
+import 'package:navinotes/screens/profile/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
 Map<String, WidgetBuilder> routes = {
@@ -61,6 +62,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.flashCardAiCreation: (context) => FlashCardAiCreationScreen(),
   Routes.flashCards: (context) => FlashCardScreen(),
   Routes.pomodoroTimer: (context) => PomodoroTimerScreen(),
+  Routes.profile: (context) => ProfileScreen(),
 
   // NavigationHelper.push(
   //                       Routes.mindMap,
@@ -142,6 +144,7 @@ class Routes {
   static const flashCardAiCreation = 'flashCardAiCreation';
   static const flashCards = 'flashCards';
   static const mindMap = 'mindMap';
+  static const profile = 'profile';
   // static const flashCards = 'flashCards';
   // static const flashCards = 'flashCards';
 }
