@@ -17,7 +17,7 @@ class MinimalistNotePageAside extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _boardDetails(),
-                    _tags(),
+                    // _tags(),
                     _recentlyViewed(),
                     Column(
                       children: [
@@ -47,52 +47,57 @@ class MinimalistNotePageAside extends StatelessWidget {
                             ),
                           ),
                         ),
-                        AppButton(
-                          onTap:
-                              () => NavigationHelper.push(
-                                Routes.boardMinimalistMindMap,
-                              ),
-                          color: AppTheme.steelBlue.withAlpha(0x19),
-                          child: Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(5),
-                              child: Row(
-                                spacing: 15,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SVGImagePlaceHolder(
-                                    imagePath: Images.share,
-                                    color: AppTheme.steelBlue,
-                                    size: 18,
-                                  ),
-                                  Flexible(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'View Mind Map',
-                                          textAlign: TextAlign.center,
-                                          style: AppTheme.text.copyWith(
-                                            color: AppTheme.steelBlue,
-                                            fontWeight: getFontWeight(500),
-                                          ),
+                        Consumer<BoardNotePageVm>(
+                          builder: (_, vm, _) {
+                            return AppButton(
+                              onTap:
+                                  () =>
+                                      NavigationHelper.createAndNavigateToNewMindMap(
+                                        vm.board,
+                                      ),
+                              color: AppTheme.steelBlue.withAlpha(0x19),
+                              child: Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Row(
+                                    spacing: 15,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SVGImagePlaceHolder(
+                                        imagePath: Images.share,
+                                        color: AppTheme.steelBlue,
+                                        size: 18,
+                                      ),
+                                      Flexible(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Create Mind Map',
+                                              textAlign: TextAlign.center,
+                                              style: AppTheme.text.copyWith(
+                                                color: AppTheme.steelBlue,
+                                                fontWeight: getFontWeight(500),
+                                              ),
+                                            ),
+                                            Text(
+                                              'See connections',
+                                              textAlign: TextAlign.center,
+                                              style: AppTheme.text.copyWith(
+                                                color: AppTheme.steelBlue,
+                                                fontSize: 12.0,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          'See connections',
-                                          textAlign: TextAlign.center,
-                                          style: AppTheme.text.copyWith(
-                                            color: AppTheme.steelBlue,
-                                            fontSize: 12.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -106,45 +111,56 @@ class MinimalistNotePageAside extends StatelessWidget {
     );
   }
 
-  Widget _viewedItem({required String title, required String time}) {
-    return Row(
-      spacing: 10,
-      children: [
-        OutlinedChild(
-          size: 32,
-          decoration: BoxDecoration(
-            color: AppTheme.steelBlue.withAlpha(0x19),
-            borderRadius: BorderRadius.circular(6),
+  Widget _viewedItem({required Content content}) {
+    IconData contentIcon;
+    switch (content.type) {
+      case AppContentType.mindmap:
+        contentIcon = Icons.account_tree;
+        break;
+      case AppContentType.file:
+        contentIcon = Icons.insert_drive_file;
+        break;
+      default:
+        contentIcon = Icons.note;
+    }
+
+    return GestureDetector(
+      onTap: () => NavigationHelper.navigateToContent(content),
+      child: Row(
+        spacing: 10,
+        children: [
+          OutlinedChild(
+            size: 32,
+            decoration: BoxDecoration(
+              color: AppTheme.steelBlue.withAlpha(0x19),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Icon(contentIcon, size: 16, color: AppTheme.steelBlue),
           ),
-          child: SVGImagePlaceHolder(
-            imagePath: Images.file2,
-            size: 16,
-            color: AppTheme.steelBlue,
-          ),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.wetAsphalt,
-                  fontSize: 12.0,
-                  fontWeight: getFontWeight(500),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  content.title,
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.wetAsphalt,
+                    fontSize: 12.0,
+                    fontWeight: getFontWeight(500),
+                  ),
                 ),
-              ),
-              Text(
-                time,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.asbestos,
-                  fontSize: 12.0,
+                Text(
+                  formatRelativeTime(content.updatedAt),
+                  style: AppTheme.text.copyWith(
+                    color: AppTheme.asbestos,
+                    fontSize: 12.0,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -171,11 +187,7 @@ class MinimalistNotePageAside extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 15,
                 children: [
-                  for (final note in recentNotes)
-                    _viewedItem(
-                      title: note.title,
-                      time: formatRelativeTime(note.updatedAt),
-                    ),
+                  for (final note in recentNotes) _viewedItem(content: note),
                 ],
               );
             },

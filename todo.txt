@@ -1,8 +1,6 @@
 
 pdf editor
-each board note list
 note templates
-mind map theme for other boards
 
 settings
 profile
