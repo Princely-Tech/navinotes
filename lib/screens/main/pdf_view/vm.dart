@@ -33,7 +33,7 @@ class PdfViewVm extends ChangeNotifier {
   final Map<int, List<List<Offset>>> pageStrokes = {};
   // Map of pageNumber -> list of highlight rectangles
   final Map<int, List<Rect>> pageHighlights = {};
-  
+
   // Undo/Redo functionality
   final List<Map<String, dynamic>> _annotationHistory = [];
   int _historyIndex = -1;
@@ -87,14 +87,14 @@ class PdfViewVm extends ChangeNotifier {
         // Update current PDF path and initialize ComPdfVm
         currentPdfPath = content!.file!;
         comPdfVm.initialize(context, currentPdfPath);
-        
+
         // Skip loading annotations from metadata to avoid conflicts with PDF-embedded annotations
         // _loadAnnotationsFromMetadata();
       }
 
       // Initialize undo/redo history with empty state
       _saveAnnotationState();
-      
+
       isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -138,7 +138,7 @@ class PdfViewVm extends ChangeNotifier {
     if (size.width == 0 || size.height == 0) return;
     final strokes = pageStrokes[currentPageNumber];
     if (strokes == null || strokes.isEmpty) return;
-    
+
     // Transform screen coordinates to PDF document coordinates
     final pdfPoint = _screenToPdfCoordinates(p, size);
     strokes.last.add(pdfPoint);
@@ -168,20 +168,23 @@ class PdfViewVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get hasAnnotations => pageStrokes.isNotEmpty || pageHighlights.isNotEmpty;
-  bool get hasCurrentPageAnnotations => 
-      (pageStrokes.containsKey(currentPageNumber) && pageStrokes[currentPageNumber]!.isNotEmpty) ||
-      (pageHighlights.containsKey(currentPageNumber) && pageHighlights[currentPageNumber]!.isNotEmpty);
-  
+  bool get hasAnnotations =>
+      pageStrokes.isNotEmpty || pageHighlights.isNotEmpty;
+  bool get hasCurrentPageAnnotations =>
+      (pageStrokes.containsKey(currentPageNumber) &&
+          pageStrokes[currentPageNumber]!.isNotEmpty) ||
+      (pageHighlights.containsKey(currentPageNumber) &&
+          pageHighlights[currentPageNumber]!.isNotEmpty);
+
   // Track if there are unsaved changes
   bool _hasUnsavedChanges = false;
   bool get hasUnsavedChanges => _hasUnsavedChanges;
-  
+
   void markAsUnsaved() {
     _hasUnsavedChanges = true;
     notifyListeners();
   }
-  
+
   void markAsSaved() {
     _hasUnsavedChanges = false;
     notifyListeners();
@@ -189,17 +192,17 @@ class PdfViewVm extends ChangeNotifier {
 
   // Highlight annotation methods
   Offset? _highlightStart;
-  
+
   // Selection state for annotation deletion
   int? _selectedStrokeIndex;
   int? _selectedHighlightIndex;
   int? _selectedAnnotationPage;
-  
+
   void startHighlight(Offset position, Size size) {
     if (size.width == 0 || size.height == 0) return;
     _highlightStart = _screenToPdfCoordinates(position, size);
   }
-  
+
   void updateHighlight(Offset position, Size size) {
     // Live preview of highlight rectangle during drag
     if (_highlightStart != null && size.width > 0 && size.height > 0) {
@@ -209,19 +212,20 @@ class PdfViewVm extends ChangeNotifier {
 
   void endHighlight(Offset position, Size size) {
     if (_highlightStart == null || size.width == 0 || size.height == 0) return;
-    
+
     final pdfEnd = _screenToPdfCoordinates(position, size);
     final rect = Rect.fromPoints(_highlightStart!, pdfEnd);
-    
+
     // Only add highlight if it has meaningful size
-    if (rect.width > 0.005 && rect.height > 0.005) { // Reduced threshold for better responsiveness
+    if (rect.width > 0.005 && rect.height > 0.005) {
+      // Reduced threshold for better responsiveness
       pageHighlights.putIfAbsent(currentPageNumber, () => []);
       pageHighlights[currentPageNumber]!.add(rect);
       _saveAnnotationState();
       markAsUnsaved();
       notifyListeners();
     }
-    
+
     _highlightStart = null;
   }
 
@@ -229,107 +233,117 @@ class PdfViewVm extends ChangeNotifier {
   void _saveAnnotationState() {
     final state = {
       'strokes': Map<int, List<List<Offset>>>.from(
-        pageStrokes.map((k, v) => MapEntry(k, v.map((stroke) => List<Offset>.from(stroke)).toList()))
+        pageStrokes.map(
+          (k, v) => MapEntry(
+            k,
+            v.map((stroke) => List<Offset>.from(stroke)).toList(),
+          ),
+        ),
       ),
       'highlights': Map<int, List<Rect>>.from(
-        pageHighlights.map((k, v) => MapEntry(k, List<Rect>.from(v)))
+        pageHighlights.map((k, v) => MapEntry(k, List<Rect>.from(v))),
       ),
       'timestamp': DateTime.now().millisecondsSinceEpoch,
     };
-    
+
     // Remove any history after current index (when undoing then making new changes)
     if (_historyIndex < _annotationHistory.length - 1) {
-      _annotationHistory.removeRange(_historyIndex + 1, _annotationHistory.length);
+      _annotationHistory.removeRange(
+        _historyIndex + 1,
+        _annotationHistory.length,
+      );
     }
-    
+
     _annotationHistory.add(state);
     _historyIndex = _annotationHistory.length - 1;
-    
+
     // Limit history size
     if (_annotationHistory.length > _maxHistorySize) {
       _annotationHistory.removeAt(0);
       _historyIndex--;
     }
   }
-  
+
   void _restoreAnnotationState(Map<String, dynamic> state) {
     pageStrokes.clear();
     pageHighlights.clear();
-    
+
     if (state['strokes'] != null) {
       final strokesData = state['strokes'] as Map<dynamic, dynamic>;
       strokesData.forEach((key, value) {
         final pageNum = key is int ? key : int.tryParse(key.toString());
         if (pageNum != null && value is List) {
-          pageStrokes[pageNum] = (value as List).map((stroke) {
-            if (stroke is List) {
-              return stroke.map((point) {
-                if (point is Offset) return point;
-                if (point is Map) {
-                  return Offset(
-                    (point['dx'] ?? point['x'] ?? 0.0).toDouble(),
-                    (point['dy'] ?? point['y'] ?? 0.0).toDouble(),
-                  );
+          pageStrokes[pageNum] =
+              (value as List).map((stroke) {
+                if (stroke is List) {
+                  return stroke.map((point) {
+                    if (point is Offset) return point;
+                    if (point is Map) {
+                      return Offset(
+                        (point['dx'] ?? point['x'] ?? 0.0).toDouble(),
+                        (point['dy'] ?? point['y'] ?? 0.0).toDouble(),
+                      );
+                    }
+                    return Offset.zero;
+                  }).toList();
                 }
-                return Offset.zero;
+                return <Offset>[];
               }).toList();
-            }
-            return <Offset>[];
-          }).toList();
         }
       });
     }
-    
+
     if (state['highlights'] != null) {
       final highlightsData = state['highlights'] as Map<dynamic, dynamic>;
       highlightsData.forEach((key, value) {
         final pageNum = key is int ? key : int.tryParse(key.toString());
         if (pageNum != null && value is List) {
-          pageHighlights[pageNum] = (value as List).map((highlight) {
-            if (highlight is Rect) return highlight;
-            if (highlight is Map) {
-              return Rect.fromLTWH(
-                (highlight['left'] ?? 0.0).toDouble(),
-                (highlight['top'] ?? 0.0).toDouble(),
-                (highlight['width'] ?? 0.0).toDouble(),
-                (highlight['height'] ?? 0.0).toDouble(),
-              );
-            }
-            return Rect.zero;
-          }).toList();
+          pageHighlights[pageNum] =
+              (value as List).map((highlight) {
+                if (highlight is Rect) return highlight;
+                if (highlight is Map) {
+                  return Rect.fromLTWH(
+                    (highlight['left'] ?? 0.0).toDouble(),
+                    (highlight['top'] ?? 0.0).toDouble(),
+                    (highlight['width'] ?? 0.0).toDouble(),
+                    (highlight['height'] ?? 0.0).toDouble(),
+                  );
+                }
+                return Rect.zero;
+              }).toList();
         }
       });
     }
-    
+
     notifyListeners();
   }
-  
+
   bool get canUndo => _historyIndex > 0;
   bool get canRedo => _historyIndex < _annotationHistory.length - 1;
-  
+
   void undo() {
     if (canUndo) {
       _historyIndex--;
       _restoreAnnotationState(_annotationHistory[_historyIndex]);
     }
   }
-  
+
   void redo() {
     if (canRedo) {
       _historyIndex++;
       _restoreAnnotationState(_annotationHistory[_historyIndex]);
     }
   }
-  
+
   // Selective annotation deletion
   void selectAnnotationAt(Offset position, Size size) {
     final pdfPos = _screenToPdfCoordinates(position, size);
-    
+
     // Clear previous selection
     _selectedStrokeIndex = null;
     _selectedHighlightIndex = null;
     _selectedAnnotationPage = null;
-    
+
     // Check highlights first (they're usually larger and easier to select)
     final highlights = pageHighlights[currentPageNumber];
     if (highlights != null) {
@@ -342,7 +356,7 @@ class PdfViewVm extends ChangeNotifier {
         }
       }
     }
-    
+
     // Check strokes
     final strokes = pageStrokes[currentPageNumber];
     if (strokes != null) {
@@ -350,7 +364,8 @@ class PdfViewVm extends ChangeNotifier {
         final stroke = strokes[i];
         for (final point in stroke) {
           final distance = (point - pdfPos).distance;
-          if (distance < 0.02) { // 2% tolerance
+          if (distance < 0.02) {
+            // 2% tolerance
             _selectedStrokeIndex = i;
             _selectedAnnotationPage = currentPageNumber;
             notifyListeners();
@@ -359,15 +374,15 @@ class PdfViewVm extends ChangeNotifier {
         }
       }
     }
-    
+
     notifyListeners();
   }
-  
+
   void deleteSelectedAnnotation() {
     if (_selectedAnnotationPage == null) return;
-    
+
     bool deleted = false;
-    
+
     if (_selectedHighlightIndex != null) {
       final highlights = pageHighlights[_selectedAnnotationPage!];
       if (highlights != null && _selectedHighlightIndex! < highlights.length) {
@@ -387,7 +402,7 @@ class PdfViewVm extends ChangeNotifier {
         deleted = true;
       }
     }
-    
+
     if (deleted) {
       _saveAnnotationState();
       markAsUnsaved();
@@ -397,48 +412,49 @@ class PdfViewVm extends ChangeNotifier {
       notifyListeners();
     }
   }
-  
-  bool get hasSelectedAnnotation => _selectedStrokeIndex != null || _selectedHighlightIndex != null;
-  
+
+  bool get hasSelectedAnnotation =>
+      _selectedStrokeIndex != null || _selectedHighlightIndex != null;
+
   // Transform screen coordinates to PDF document coordinates
   Offset _screenToPdfCoordinates(Offset screenPoint, Size viewerSize) {
     if (viewerSize.width == 0 || viewerSize.height == 0) return Offset.zero;
-    
+
     // Get current scroll offset and zoom from Syncfusion controller
     final scrollOffset = sfController.scrollOffset;
     final zoomLevel = sfController.zoomLevel;
-    
+
     // Transform screen point to PDF document coordinates
     // Account for scroll offset and zoom level
     final adjustedX = (screenPoint.dx + scrollOffset.dx) / zoomLevel;
     final adjustedY = (screenPoint.dy + scrollOffset.dy) / zoomLevel;
-    
+
     // Normalize to 0-1 range based on the actual PDF page size
     // Note: This assumes the PDF viewer fills the available space
     final normalizedX = adjustedX / viewerSize.width;
     final normalizedY = adjustedY / viewerSize.height;
-    
+
     return Offset(normalizedX, normalizedY);
   }
-  
+
   // Transform PDF document coordinates back to screen coordinates for rendering
   Offset pdfToScreenCoordinates(Offset pdfPoint, Size viewerSize) {
     if (viewerSize.width == 0 || viewerSize.height == 0) return Offset.zero;
-    
+
     final scrollOffset = sfController.scrollOffset;
     final zoomLevel = sfController.zoomLevel;
-    
+
     // Denormalize from 0-1 range to actual pixel coordinates
     final pixelX = pdfPoint.dx * viewerSize.width;
     final pixelY = pdfPoint.dy * viewerSize.height;
-    
+
     // Apply zoom and subtract scroll offset to get screen coordinates
     final screenX = (pixelX * zoomLevel) - scrollOffset.dx;
     final screenY = (pixelY * zoomLevel) - scrollOffset.dy;
-    
+
     return Offset(screenX, screenY);
   }
-  
+
   // Getters for accessing private selection state
   int? get selectedStrokeIndex => _selectedStrokeIndex;
   int? get selectedHighlightIndex => _selectedHighlightIndex;
@@ -447,7 +463,8 @@ class PdfViewVm extends ChangeNotifier {
   void _loadAnnotationsFromMetadata() {
     try {
       if (content?.metaData['pdf_annotations'] != null) {
-        final annotations = content!.metaData['pdf_annotations'] as Map<String, dynamic>;
+        final annotations =
+            content!.metaData['pdf_annotations'] as Map<String, dynamic>;
         // Load strokes
         if (annotations['strokes'] != null) {
           final strokesData = annotations['strokes'] as Map<String, dynamic>;
@@ -455,37 +472,51 @@ class PdfViewVm extends ChangeNotifier {
           strokesData.forEach((pageStr, strokeList) {
             final pageNum = int.tryParse(pageStr);
             if (pageNum != null && strokeList is List) {
-              pageStrokes[pageNum] = strokeList
-                  .map((stroke) => (stroke as List)
-                      .map((point) => Offset(
-                          (point['x'] as num).toDouble(),
-                          (point['y'] as num).toDouble()))
-                      .toList())
-                  .toList();
+              pageStrokes[pageNum] =
+                  strokeList
+                      .map(
+                        (stroke) =>
+                            (stroke as List)
+                                .map(
+                                  (point) => Offset(
+                                    (point['x'] as num).toDouble(),
+                                    (point['y'] as num).toDouble(),
+                                  ),
+                                )
+                                .toList(),
+                      )
+                      .toList();
             }
           });
         }
-        
+
         // Load highlights
         if (annotations['highlights'] != null) {
-          final highlightsData = annotations['highlights'] as Map<String, dynamic>;
+          final highlightsData =
+              annotations['highlights'] as Map<String, dynamic>;
           pageHighlights.clear();
           highlightsData.forEach((pageStr, highlightList) {
             final pageNum = int.tryParse(pageStr);
             if (pageNum != null && highlightList is List) {
-              pageHighlights[pageNum] = highlightList
-                  .map((highlight) => Rect.fromLTWH(
-                      (highlight['left'] as num).toDouble(),
-                      (highlight['top'] as num).toDouble(),
-                      (highlight['width'] as num).toDouble(),
-                      (highlight['height'] as num).toDouble()))
-                  .toList();
+              pageHighlights[pageNum] =
+                  highlightList
+                      .map(
+                        (highlight) => Rect.fromLTWH(
+                          (highlight['left'] as num).toDouble(),
+                          (highlight['top'] as num).toDouble(),
+                          (highlight['width'] as num).toDouble(),
+                          (highlight['height'] as num).toDouble(),
+                        ),
+                      )
+                      .toList();
             }
           });
         }
-        
-        debugPrint('PdfViewVm: Loaded ${pageStrokes.length} pages of strokes and ${pageHighlights.length} pages of highlights');
-        
+
+        debugPrint(
+          'PdfViewVm: Loaded ${pageStrokes.length} pages of strokes and ${pageHighlights.length} pages of highlights',
+        );
+
         // Initialize history with loaded state
         _saveAnnotationState();
       }
@@ -530,8 +561,14 @@ class PdfViewVm extends ChangeNotifier {
           if (stroke.length < 2) continue;
           // Draw as polyline using denormalized coordinates
           for (int i = 1; i < stroke.length; i++) {
-            final p1 = Offset(stroke[i - 1].dx * size.width, stroke[i - 1].dy * size.height);
-            final p2 = Offset(stroke[i].dx * size.width, stroke[i].dy * size.height);
+            final p1 = Offset(
+              stroke[i - 1].dx * size.width,
+              stroke[i - 1].dy * size.height,
+            );
+            final p2 = Offset(
+              stroke[i].dx * size.width,
+              stroke[i].dy * size.height,
+            );
             page.graphics.drawLine(pen, p1, p2);
           }
         }
@@ -543,10 +580,10 @@ class PdfViewVm extends ChangeNotifier {
 
       // Preserve current page before reload
       final currentPage = currentPageNumber;
-      
+
       // Ask viewer to reload by changing a key source
       viewerReloadTick++;
-      
+
       // Restore page position after reload
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (currentPage > 1) {
@@ -557,36 +594,44 @@ class PdfViewVm extends ChangeNotifier {
       // 2) Sidecar JSON in Content.metaData (ink only for now)
       if (content != null) {
         final ann = {
-          'strokes': pageStrokes.map((k, v) => MapEntry(
+          'strokes': pageStrokes.map(
+            (k, v) => MapEntry(
               k.toString(),
               v
-                  .map((stroke) => stroke
-                      .map((p) => {'x': p.dx, 'y': p.dy})
-                      .toList())
-                  .toList())),
-          'highlights': pageHighlights.map((k, v) => MapEntry(
+                  .map(
+                    (stroke) =>
+                        stroke.map((p) => {'x': p.dx, 'y': p.dy}).toList(),
+                  )
+                  .toList(),
+            ),
+          ),
+          'highlights': pageHighlights.map(
+            (k, v) => MapEntry(
               k.toString(),
               v
-                  .map((rect) => {
-                        'left': rect.left,
-                        'top': rect.top,
-                        'width': rect.width,
-                        'height': rect.height,
-                      })
-                  .toList())),
+                  .map(
+                    (rect) => {
+                      'left': rect.left,
+                      'top': rect.top,
+                      'width': rect.width,
+                      'height': rect.height,
+                    },
+                  )
+                  .toList(),
+            ),
+          ),
           'saved_at': DateTime.now().toIso8601String(),
         };
-        final updated = content!.getUpdatedContentWithMeta(metaData: {
-          ...content!.metaData,
-          'pdf_annotations': ann,
-        });
+        final updated = content!.getUpdatedContentWithMeta(
+          metaData: {...content!.metaData, 'pdf_annotations': ann},
+        );
         await DatabaseHelper.instance.updateContent(updated);
         debugPrint('PdfViewVm: Annotations saved successfully');
       }
 
       // Mark as saved after successful save
       markAsSaved();
-      
+
       // Restore loading state
       if (!wasLoading) {
         isLoading = false;
@@ -598,9 +643,73 @@ class PdfViewVm extends ChangeNotifier {
       errorMessage = 'Failed to save annotations: $e';
       isLoading = false;
       notifyListeners();
-      
+
       // Show error to user
       rethrow;
+    }
+  }
+
+  /// Handles exit with unsaved changes check
+  Future<bool> handleExit(BuildContext context) async {
+    if (!hasUnsavedChanges) {
+      return true; // Allow exit if no unsaved changes
+    }
+
+    // Check if context is still mounted before showing dialog
+    if (!context.mounted) {
+      return true; // Allow exit if context is no longer valid
+    }
+
+    // Show save confirmation dialog
+    final result = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Unsaved Changes'),
+          content: const Text(
+            'You have unsaved annotations. What would you like to do?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('discard'),
+              child: const Text('Discard', style: TextStyle(color: Colors.red)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('cancel'),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop('save'),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+
+    switch (result) {
+      case 'save':
+        try {
+          await saveAnnotations();
+          return true; // Allow exit after successful save
+        } catch (e) {
+          // Show error and don't exit - use a separate context check
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to save annotations: $e'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          return false;
+        }
+      case 'discard':
+        return true; // Allow exit without saving
+      case 'cancel':
+      default:
+        return false; // Don't exit
     }
   }
 }

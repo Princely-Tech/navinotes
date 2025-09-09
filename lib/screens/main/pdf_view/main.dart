@@ -9,8 +9,19 @@ class PdfViewMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<PdfViewVm>(
       builder: (_, vm, _) {
-        return Column(
-          children: [PdfViewHeader(), Expanded(child: _buildContent(vm))],
+        return PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) async {
+            if (didPop) return;
+            
+            final shouldExit = await vm.handleExit(context);
+            if (shouldExit && context.mounted) {
+              Navigator.of(context).pop();
+            }
+          },
+          child: Column(
+            children: [PdfViewHeader(), Expanded(child: _buildContent(vm))],
+          ),
         );
       },
     );

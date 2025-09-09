@@ -28,7 +28,12 @@ class PdfViewHeader extends StatelessWidget {
                 children: [
                   Flexible(
                     child: InkWell(
-                      onTap: NavigationHelper.pop,
+                      onTap: () async {
+                        final shouldExit = await vm.handleExit(context);
+                        if (shouldExit) {
+                          NavigationHelper.pop();
+                        }
+                      },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         spacing: 10,
