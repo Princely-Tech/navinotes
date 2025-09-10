@@ -25,7 +25,7 @@ class BoardEditVm extends ChangeNotifier {
 
   Future<void> createNoteHandler() async {
     await NavigationHelper.gotToNewNoteTemplate(board);
-    loadFiles(board.id!);
+    loadFiles(board.id);
   }
 
   EditBoardTab selectedTab = EditBoardTab.overview;
@@ -39,7 +39,7 @@ class BoardEditVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadFiles(int boardId, {BuildContext? context}) async {
+  Future<void> loadFiles(String boardId, {BuildContext? context}) async {
     fetchingFiles = true;
     notifyListeners();
     try {
@@ -94,13 +94,13 @@ class BoardEditVm extends ChangeNotifier {
 
   Future<void> goToBoardNotes() async {
     await NavigationHelper.navigateToBoardNotes(board);
-    loadFiles(board.id!);
+    loadFiles(board.id);
   }
 
   // Future<void> goToNewNoteTemplate() async {
   //   if (isNotNull(board)) {
   //     await NavigationHelper.gotToNewNoteTemplate(board);
-  //     loadFiles(board.id!);
+  //     loadFiles(board.id);
   //   }
   // }
 
@@ -122,7 +122,7 @@ class BoardEditVm extends ChangeNotifier {
   // Initialize the ViewModel with board data
   Future<void> initialize() async {
     debugPrint('Initializing board with ID: ${board.id}');
-    loadFiles(board.id!);
+    loadFiles(board.id);
     loadSyllabusContent(board);
   }
 
@@ -213,12 +213,12 @@ class BoardEditVm extends ChangeNotifier {
             await saveFileToDb(
               pickedFile: pickedFile,
               context: context,
-              boardId: board.id!,
+              boardId: board.id,
             );
             successCount++;
           }
 
-          loadFiles(board.id!);
+          loadFiles(board.id);
           if (context.mounted) {
             if (successCount > 0) {
               MessageDisplayService.showMessage(
@@ -304,16 +304,16 @@ class BoardEditVm extends ChangeNotifier {
           if (isNotNull(board)) {
             // save to db
 
-            int? contentID;
+            String? contentID;
+
             try {
               Content? content = await saveFileToDb(
                 pickedFile: result.files.first,
                 context: context,
-                boardId: board.id!,
+                boardId: board.id,
                 title: "Syllabus",
               );
 
-              print("content $content");
               contentID = content?.id;
             } catch (e) {
               debugPrint("Error saving file to db: $e");
@@ -343,7 +343,7 @@ class BoardEditVm extends ChangeNotifier {
           }
         }
       }
-      loadFiles(board.id!);
+      loadFiles(board.id);
     } catch (e) {
       debugPrint('Error Uploading syllabus $e');
       if (context.mounted) {

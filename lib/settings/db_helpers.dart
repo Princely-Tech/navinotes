@@ -2,7 +2,6 @@ import 'package:navinotes/models/tag.dart';
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:uuid/uuid.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
@@ -42,11 +41,11 @@ class DatabaseHelper {
     }
   }
 
+  // all id are gui. Generated when creating the models.
   Future _createDB(Database db, int version) async {
     await db.execute('''
     CREATE TABLE boards (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      guid TEXT,
+      id INTEGER PRIMARY KEY,
       user_id INTEGER,
       type TEXT,
       name TEXT,
@@ -69,8 +68,7 @@ class DatabaseHelper {
 
     await db.execute('''
    CREATE TABLE flashcards (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  guid TEXT,
+  id INTEGER PRIMARY KEY,
   difficulty TEXT,
   deck_id INTEGER,
   front TEXT,
@@ -83,8 +81,7 @@ class DatabaseHelper {
 
     await db.execute('''
     CREATE TABLE contents (
-      guid TEXT,
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER PRIMARY KEY,
       type TEXT,
       meta_data TEXT,
       board_id INTEGER,
@@ -107,7 +104,7 @@ class DatabaseHelper {
 
     await db.execute('''
     CREATE TABLE tags (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id INTEGER PRIMARY KEY,
       user_id INTEGER,
       name TEXT,
       created_at INTEGER,
@@ -118,25 +115,23 @@ class DatabaseHelper {
   }
 
   // Add this new method to handle database upgrades
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    
-  }
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {}
 
   // Example CRUD for Boards
-  Future<int> insertBoard(Board board) async {
+  Future<bool> insertBoard(Board board) async {
     final db = await instance.database;
-    return await db.insert('boards', board.toMap());
+    return 0 != await db.insert('boards', board.toMap());
   }
 
-  Future<int> insertContent(Content content) async {
+  Future<bool> insertContent(Content content) async {
     final db = await instance.database;
     // content.syncToBackend(apiServiceProvider); //TODO Work on synching created files to backend
-    return await db.insert('contents', content.toMap());
+    return 0 != await db.insert('contents', content.toMap());
   }
 
-  Future<int> insertTags(Tag tag) async {
+  Future<bool> insertTags(Tag tag) async {
     final db = await instance.database;
-    return await db.insert('tags', tag.toMap());
+    return 0 != await db.insert('tags', tag.toMap());
   }
 
   Future<List<Board>> getAllBoards() async {
@@ -149,7 +144,7 @@ class DatabaseHelper {
     return result.map((json) => Board.fromMap(json)).toList();
   }
 
-  Future<Board> getBoard(int boardId) async {
+  Future<Board> getBoard(String boardId) async {
     final db = await instance.database;
     final result = await db.query(
       'boards',
@@ -161,7 +156,7 @@ class DatabaseHelper {
     return result.map((json) => Board.fromMap(json)).first;
   }
 
-  Future<List<Content>> getAllContents(int boardId) async {
+  Future<List<Content>> getAllContents(String boardId) async {
     final db = await instance.database;
     debugPrint('Getting contents of $boardId');
     final result = await db.query(
@@ -173,20 +168,20 @@ class DatabaseHelper {
     return result.map((json) => Content.fromMap(json)).toList();
   }
 
-  Future<List<Content>> getAllFiles(int boardId) async {
+  Future<List<Content>> getAllFiles(String boardId) async {
     final contents = await getAllContents(boardId);
     return contents.where((c) => c.type == AppContentType.file).toList();
   }
 
   Future<List<Content>> getAllNotes(
-    int boardId, {
+    String boardId, {
     NoteSortType sortType = NoteSortType.updatedAt,
   }) async {
     List<Content> notes = await getAllContents(boardId);
     return notes.where((note) => note.type == AppContentType.note).toList();
   }
 
-  Future<Content?> getContentById(int contentId) async {
+  Future<Content?> getContentById(String contentId) async {
     final db = await instance.database;
     final result = await db.query(
       'contents',
@@ -202,9 +197,10 @@ class DatabaseHelper {
     }
   }
 
-  Future<int> deleteContent(int contentId) async {
+  Future<bool> deleteContent(String contentId) async {
     final db = await instance.database;
-    return await db.delete('contents', where: 'id = ?', whereArgs: [contentId]);
+    return 0 !=
+        await db.delete('contents', where: 'id = ?', whereArgs: [contentId]);
   }
 
   Future<List<Content>> getRecentContentsAcrossAllBoards({
@@ -219,26 +215,28 @@ class DatabaseHelper {
     return result.map((map) => Content.fromMap(map)).toList();
   }
 
-  Future<int> updateContent(Content content) async {
+  Future<bool> updateContent(Content content) async {
     final db = await instance.database;
     debugPrint('Updating content ${content.id}');
-    return await db.update(
-      'contents',
-      content.toMap(),
-      where: 'id = ?',
-      whereArgs: [content.id],
-    );
+    return 0 !=
+        await db.update(
+          'contents',
+          content.toMap(),
+          where: 'id = ?',
+          whereArgs: [content.id],
+        );
   }
 
-  Future<int> updateBoard(Board board) async {
+  Future<bool> updateBoard(Board board) async {
     final db = await instance.database;
     debugPrint('Updating board ${board.id}');
-    return await db.update(
-      'boards',
-      board.toMap(),
-      where: 'id = ?',
-      whereArgs: [board.id],
-    );
+    return 0 !=
+        await db.update(
+          'boards',
+          board.toMap(),
+          where: 'id = ?',
+          whereArgs: [board.id],
+        );
   }
 
   Future<List<Tag>> getAllTags() async {
@@ -248,11 +246,10 @@ class DatabaseHelper {
   }
 
   // Insert flashcard
-  Future<int> insertFlashCard(FlashCard flashcard) async {
+  Future<bool> insertFlashCard(FlashCard flashcard) async {
     final db = await instance.database;
     final id = await db.insert('flashcards', flashcard.toMap());
-    flashcard.setIDAfterCreate(id);
-    return id;
+    return 0 != id;
   }
 
   // Get all flashcards for a deck
@@ -281,23 +278,24 @@ class DatabaseHelper {
   }
 
   // Update a flashcard
-  Future<int> updateFlashCard(FlashCard flashcard) async {
+  Future<bool> updateFlashCard(FlashCard flashcard) async {
     final db = await instance.database;
-    return await db.update(
-      'flashcards',
-      flashcard.toMap(),
-      where: 'id = ?',
-      whereArgs: [flashcard.id],
-    );
+    return 0 !=
+        await db.update(
+          'flashcards',
+          flashcard.toMap(),
+          where: 'id = ?',
+          whereArgs: [flashcard.id],
+        );
   }
 
   // Delete a flashcard
-  Future<int> deleteFlashCard(int id) async {
+  Future<bool> deleteFlashCard(int id) async {
     final db = await instance.database;
-    return await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
+    return 0 != await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
   }
 
-  Future<List<Content>> getBoardDecks(int boardId) async {
+  Future<List<Content>> getBoardDecks(String boardId) async {
     final db = await instance.database;
 
     final List<Map<String, dynamic>> maps = await db.query(

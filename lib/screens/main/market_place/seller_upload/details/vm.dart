@@ -335,7 +335,7 @@ class SellerUploadVm extends ChangeNotifier {
     // sync content
     board.getContents(forceRefresh: true).then((contents) {
       for (var content in contents) {
-        content.syncToBackend(apiServiceProvider, boardGuid: board.guid);
+        content.syncToBackend(apiServiceProvider, boardGuid: board.id);
       }
     });
   }
@@ -360,7 +360,7 @@ class SellerUploadVm extends ChangeNotifier {
     final body = FormDataRequest.post(
       ApiEndpoints.marketPlaceSubmit,
       body: {
-        'board_guid': board.guid,
+        'board_guid': board.id,
         'title': titleController.text,
         'description': descriptionController.text,
         'category': categoryController.text,

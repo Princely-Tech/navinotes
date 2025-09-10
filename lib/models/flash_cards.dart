@@ -1,10 +1,8 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/settings/packages.dart';
 
 class FlashCard {
-  int? id;
-  String guid;
-  int deckId;
+  String id;
+  String deckId;
   List<Map<String, dynamic>> front;
   List<Map<String, dynamic>> back;
   String? tags;
@@ -13,8 +11,7 @@ class FlashCard {
   int updatedAt;
 
   FlashCard({
-    this.id,
-    required this.guid,
+    String? id,
     required this.deckId,
     required this.front,
     required this.back,
@@ -22,11 +19,10 @@ class FlashCard {
     this.tags,
     required this.createdAt,
     required this.updatedAt,
-  });
+  }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toMap() => {
     'id': id,
-    'guid': guid,
     'deck_id': deckId,
     'front': jsonEncode(front),
     'back': jsonEncode(back),
@@ -49,7 +45,6 @@ class FlashCard {
     return FlashCard(
       difficulty: stringToEnum(map['difficulty'], FlashcardDifficulty.values),
       id: map['id'],
-      guid: map['guid'],
       deckId: map['deck_id'],
       front: front,
       back: back,
@@ -60,8 +55,7 @@ class FlashCard {
   }
 
   FlashCard copyWith({
-    int? id,
-    String? guid,
+    String? id,
     int? deckId,
     List<Map<String, dynamic>>? front,
     List<Map<String, dynamic>>? back,
@@ -72,7 +66,6 @@ class FlashCard {
     return FlashCard(
       difficulty: difficulty ?? this.difficulty,
       id: id ?? this.id,
-      guid: guid ?? this.guid,
       deckId: deckId ?? this.deckId,
       front: front ?? this.front,
       back: back ?? this.back,
@@ -82,11 +75,7 @@ class FlashCard {
     );
   }
 
-  void setIDAfterCreate(int id) {
-    this.id = id;
-  }
-
-  Future<int>? update({
+  Future<bool>? update({
     List<Map<String, dynamic>>? front,
     List<Map<String, dynamic>>? back,
     int? deckId,
@@ -113,8 +102,8 @@ class FlashCard {
     String? tags,
   }) {
     return FlashCard(
+      id: generateGUID(),
       difficulty: FlashcardDifficulty.easy,
-      guid: 'flashcard_${DateTime.now().millisecondsSinceEpoch}',
       deckId: deckId,
       front: front,
       back: back,

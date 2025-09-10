@@ -28,8 +28,8 @@ T stringToEnum<T extends Enum>(String value, List<T> values) {
   );
 }
 
-generateGUID(int userId) {
-  return "0${userId}0_${Uuid().v4()}";
+generateGUID() {
+  return Uuid().v4();
 }
 
 QuillSimpleToolbarConfig buildCustomToolbarConfig({

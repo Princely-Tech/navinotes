@@ -41,7 +41,7 @@ class MindMapVm extends ChangeNotifier {
   bool isDocumentPanelVisible = true;
 
   /// Persistence state
-  int? contentId; // row id in contents table for this mindmap
+  String? contentId; // row id in contents table for this mindmap
   Content? baseContent; // the content this mindmap is based on
   String title = "Mind Map";
   BoardTheme _cachedBoardTheme = BoardTheme.plain;
@@ -1009,7 +1009,6 @@ class MindMapVm extends ChangeNotifier {
       if (existing != null) {
         final updated = Content(
           id: existing.id,
-          guid: existing.guid,
           title: title,
           voiceNotes: existing.voiceNotes,
           coverImage: existing.coverImage,
@@ -1037,7 +1036,7 @@ class MindMapVm extends ChangeNotifier {
   }
 
   /// Load a mind map from DB by contentId (row id) and set internal state.
-  Future<void> loadFromDb(int id) async {
+  Future<void> loadFromDb(String id) async {
     final helper = DatabaseHelper.instance;
     final content = await helper.getContentById(id);
     if (content == null) {

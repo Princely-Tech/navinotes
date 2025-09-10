@@ -298,13 +298,12 @@ class NavigationHelper {
     return navigateToDeckById(id);
   }
 
-  static Future<int> _createNewContent(
+  static Future<String> _createNewContent(
     AppContentType type,
     Board board,
     String title,
   ) async {
     final content = Content(
-      guid: const Uuid().v4(),
       title: title,
       type: type,
       boardId: board.id!,
@@ -316,7 +315,7 @@ class NavigationHelper {
       drawing: null,
       file: null,
     );
-    final id = await DatabaseHelper.instance.insertContent(content);
-    return id;
+    await DatabaseHelper.instance.insertContent(content);
+    return content.id;
   }
 }

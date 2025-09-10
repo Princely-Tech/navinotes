@@ -79,4 +79,6 @@ export 'package:flutter_flip_card/flutter_flip_card.dart';
 export 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 export 'package:flutter_image_compress/flutter_image_compress.dart';
 export 'package:flutter_quill_delta_from_html/flutter_quill_delta_from_html.dart';
+export 'package:uuid/uuid.dart';
+
 

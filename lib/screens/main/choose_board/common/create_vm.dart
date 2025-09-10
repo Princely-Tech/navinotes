@@ -58,7 +58,6 @@ class BoardCreateVm extends ChangeNotifier {
 
       // Create a new board
       final newBoard = Board(
-        guid: generateGUID(currentUser.id!),
         userId: currentUser.id!,
         type: boardType.name,
         name: titleController.text.trim(),
@@ -91,8 +90,6 @@ class BoardCreateVm extends ChangeNotifier {
       if (boardId == 0) {
         throw Exception('Failed to save board to database');
       }
-
-      newBoard.setIDAfterCreate(boardId);
 
       // Navigate to edit screen with the new board ID
       if (NavigationHelper.navigatorKey.currentContext != null) {

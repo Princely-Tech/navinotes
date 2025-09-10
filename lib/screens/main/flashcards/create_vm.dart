@@ -169,7 +169,6 @@ class FlashCardCreationVm extends ChangeNotifier {
       if (isNotNull(currentUser)) {
         final currentTimestamp = generateUnixTimestamp();
         FlashCard card = FlashCard(
-          guid: generateGUID(currentUser!.id!),
           deckId: deck.id!,
           front: defaultContent,
           back: defaultContent,
@@ -178,9 +177,8 @@ class FlashCardCreationVm extends ChangeNotifier {
           updatedAt: currentTimestamp,
         );
         // Save to database
-        int id = await DatabaseHelper.instance.insertFlashCard(card);
-        card.setIDAfterCreate(id);
-        // currentFlashCard = card;
+        await DatabaseHelper.instance.insertFlashCard(card);
+       
         selectFlashCard(card, 1);
         loadDeckFlashCards();
       }

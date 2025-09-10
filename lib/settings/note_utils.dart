@@ -42,7 +42,6 @@ Future<void> createContentInDb({
       final currentTimestamp = generateUnixTimestamp();
       // Create a new Content object with default values
       final content = Content(
-        guid: generateGUID(currentUser!.id!),
         type: AppContentType.note,
         metaData: {ContentMetadataKey.template: template.type.toString()},
         boardId: boardId,

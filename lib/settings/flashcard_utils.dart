@@ -134,7 +134,7 @@ List<Map<String, dynamic>> htmlToDelta(String html) {
 
 Future<FlashCard> createFlashcard({
   required BuildContext context,
-  required int deckId,
+  required String deckId,
   required List<Map<String, dynamic>> front,
   required List<Map<String, dynamic>> back,
   required FlashcardDifficulty difficulty,
@@ -144,7 +144,6 @@ Future<FlashCard> createFlashcard({
   if (isNotNull(currentUser)) {
     final currentTimestamp = generateUnixTimestamp();
     FlashCard card = FlashCard(
-      guid: generateGUID(currentUser!.id!),
       deckId: deckId,
       front: front,
       back: back,
@@ -152,8 +151,7 @@ Future<FlashCard> createFlashcard({
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
     );
-    int id = await DatabaseHelper.instance.insertFlashCard(card);
-    card.setIDAfterCreate(id);
+    await DatabaseHelper.instance.insertFlashCard(card);
     return card;
   } else {
     throw 'User not found';

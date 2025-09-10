@@ -16,11 +16,10 @@ final contentFileAllowedExtensions = [
 ];
 
 class Content {
-  int? id;
-  final String guid;
+  final String id;
   final AppContentType type; // note, mindmap, syllabus, etc.
   final Map<String, dynamic> metaData; // JSON as Map
-  final int boardId;
+  final String boardId;
   final String? tags; // Comma-separated tags
   final String? content; // Large text
   final String? drawing; // Large text
@@ -38,8 +37,7 @@ class Content {
   fileNeedSync; // set this to true any time file is changed. The syncToBackend method will handle the rest.
 
   Content({
-    this.id,
-    required this.guid,
+    String? id,
     required this.title,
     this.voiceNotes = const [],
     this.coverImage,
@@ -55,11 +53,10 @@ class Content {
     this.syncedAt,
     this.coverImageNeedSync = false,
     this.fileNeedSync = false,
-  });
+  }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toMap() => {
     'id': id,
-    'guid': guid,
     'title': title,
     'voice_notes': jsonEncode(voiceNotes.map((x) => x.toMap()).toList()),
     'cover_image': coverImage,
@@ -104,7 +101,6 @@ class Content {
 
     return Content(
       id: map['id'],
-      guid: map['guid'],
       voiceNotes: parseVoiceNotes(map['voice_notes']),
       title: map['title'],
       coverImage: map['cover_image'],
@@ -137,7 +133,6 @@ class Content {
   }) {
     return Content(
       id: id,
-      guid: guid,
       title: title ?? this.title,
       coverImage: coverImage ?? this.coverImage,
       type: type,
@@ -171,7 +166,6 @@ class Content {
   }) {
     return Content(
       id: id,
-      guid: guid,
       title: title ?? this.title,
       coverImage: coverImage ?? this.coverImage,
       type: type,
@@ -190,7 +184,7 @@ class Content {
     );
   }
 
-  Future<int>? updateTitle({String? newTitle}) {
+  Future<bool>? updateTitle({String? newTitle}) {
     try {
       Content updatedContent = getUpdatedContent(title: newTitle);
       return DatabaseHelper.instance.updateContent(updatedContent);
@@ -258,13 +252,13 @@ class Content {
 
     if (boardGuid == null) {
       final board = await getBoard();
-      boardGuid = board.guid;
+      boardGuid = board.id;
     }
-    //TODO add synching voice notes
+
     final body = FormDataRequest.post(
       ApiEndpoints.contentSync,
       body: {
-        'guid': guid,
+        'id': id,
         'board_guid': boardGuid,
         'title': title,
         'cover_image': coverImage,
@@ -293,7 +287,7 @@ class Content {
     return response;
   }
 
-  getMeta(key){
+  getMeta(key) {
     return metaData[key];
   }
 }

@@ -2,8 +2,7 @@ import 'package:navinotes/models/content.dart';
 import 'package:navinotes/packages.dart';
 
 class Board {
-  int? id;
-  final String guid;
+  final String id;
   final int userId;
   final String type;
   String name;
@@ -25,8 +24,7 @@ class Board {
   coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
 
   Board({
-    this.id,
-    required this.guid,
+    String? id,
     required this.userId,
     required this.type,
     required this.name,
@@ -44,11 +42,10 @@ class Board {
     this.syncedAt,
     this.coverImageNeedSync = false,
     this.syllabusContentId,
-  });
+  }) : id = id ?? const Uuid().v4();
 
   Board copyWith({
-    int? id,
-    String? guid,
+    String? id,
     int? userId,
     String? type,
     String? name,
@@ -66,11 +63,10 @@ class Board {
     CourseInfo? courseInfo,
 
     bool? coverImageNeedSync,
-    int? syllabusContentId,
+    String? syllabusContentId,
   }) {
     return Board(
       id: id ?? this.id,
-      guid: guid ?? this.guid,
       userId: userId ?? this.userId,
       type: type ?? this.type,
       name: name ?? this.name,
@@ -104,10 +100,6 @@ class Board {
     return description != null && description!.isNotEmpty;
   }
 
-  setIDAfterCreate(int id) {
-    this.id = id;
-  }
-
   String getImage() {
     return getBoardTypeImage();
   }
@@ -132,7 +124,6 @@ class Board {
 
   Map<String, dynamic> toMap() => {
     'id': id,
-    'guid': guid,
     'user_id': userId,
     'type': type,
     'name': name,
@@ -197,7 +188,6 @@ class Board {
 
     return Board(
       id: map['id'],
-      guid: map['guid'],
       userId: map['user_id'],
       type: map['type'],
       name: map['name'],
@@ -313,7 +303,7 @@ class Board {
     final body = FormDataRequest.post(
       ApiEndpoints.boardSync,
       body: {
-        'guid': guid,
+        'id': id,
         'user_id': userId,
         'type': type,
         'name': name,

@@ -260,7 +260,7 @@ Future<Directory> getFilesDirectory() async {
 Future<Content?> saveFileToDb({
   required PlatformFile pickedFile,
   required BuildContext context,
-  required int boardId,
+  required String boardId,
   String? title,
 }) async {
   debugPrint('Save File to DB');
@@ -273,7 +273,6 @@ Future<Content?> saveFileToDb({
   try {
     final dbHelper = DatabaseHelper.instance;
     final filesDir = await getFilesDirectory();
-    final currentUser = getCurrentUser();
     final file = File(pickedFile.path!);
     final fileName =
         '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
@@ -282,7 +281,6 @@ Future<Content?> saveFileToDb({
     // Create content entry for the file
 
     var content = Content(
-      guid: generateGUID(currentUser?.id ?? 0),
       type: AppContentType.file,
       metaData: {
         ContentMetadataKey.originalFileName: pickedFile.name,
@@ -297,8 +295,7 @@ Future<Content?> saveFileToDb({
       fileNeedSync: true,
     );
 
-    final id = await dbHelper.insertContent(content);
-    content.id = id;
+  await dbHelper.insertContent(content);
     return content;
   } catch (e) {
     debugPrint('Error saving file ${pickedFile.name}: $e');

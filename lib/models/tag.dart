@@ -1,6 +1,8 @@
 
+import 'package:uuid/uuid.dart';
+
 class Tag {
-  final int? id;
+  final String id;
   final int userId;
   final String name;
   final int createdAt; // Unix timestamp
@@ -8,13 +10,13 @@ class Tag {
   final int? syncedAt; // Nullable
 
   Tag({
-    this.id,
+    String? id,
     required this.userId,
     required this.name,
     required this.createdAt,
     required this.updatedAt,
     this.syncedAt,
-  });
+  }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toMap() => {
     'id': id,
