@@ -63,12 +63,13 @@ class _NotePageContentState extends State<NotePageContent> {
                     child: _buildTemplateBackground(),
                   ),
 
-                  // Page content based on mode (clipped to page boundaries)
-                  ClipRect(
-                    child: SizedBox(
-                      width: widget.inputWidth,
-                      height: widget.inputHeight,
-                      child: Stack(children: getPageContent(vm)),
+                  // Page content based on mode (expandable to show all content)
+                  Container(
+                    width: widget.inputWidth,
+                    height: widget.inputHeight,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: getPageContent(vm),
                     ),
                   ),
                 ],
@@ -143,9 +144,9 @@ class _NotePageContentState extends State<NotePageContent> {
               child: buildDrawingBoard(vm, validWidth, validHeight),
             ),
           ),
-          // Text editor (interactive) - full page coverage
+          // Text editor (interactive) - expandable to show all content
           Positioned.fill(
-            child: SizedBox(
+            child: Container(
               width: validWidth,
               height: validHeight,
               child: buildTextEditor(vm, validWidth, validHeight),
@@ -166,17 +167,17 @@ class _NotePageContentState extends State<NotePageContent> {
         return [
           // Text editor (non-interactive in drawing mode)
           Positioned.fill(
-            child: SizedBox(
+            child: Container(
               width: validWidth,
               height: validHeight,
               child: buildTextEditor(vm, validWidth, validHeight),
             ),
           ),
-          // Drawing layer (interactive)
+          // Drawing layer (interactive) - expandable for drawing
           Positioned.fill(
             child: IgnorePointer(
               ignoring: false,
-              child: SizedBox(
+              child: Container(
                 width: validWidth,
                 height: validHeight,
                 child: buildDrawingBoard(vm, validWidth, validHeight),

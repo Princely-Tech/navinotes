@@ -233,6 +233,9 @@ class _MultiPageViewerState extends State<MultiPageViewer>
             minScale: 0.5,
             maxScale: 3.0,
             constrained: false,
+            clipBehavior: Clip.none,
+            panEnabled: true,
+            scaleEnabled: true,
             child: Container(
               width: displayWidth,
               height: displayHeight,
