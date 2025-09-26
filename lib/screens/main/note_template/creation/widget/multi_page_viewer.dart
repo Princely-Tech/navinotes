@@ -213,8 +213,9 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     // Ensure minimum readable scale
     displayScale = math.max(displayScale, 0.3);
 
-    final displayWidth = pageDimensions.width * displayScale;
-    final displayHeight = pageDimensions.height * displayScale;
+    // Use actual page dimensions (the red container IS the page)
+    final displayWidth = pageDimensions.width;
+    final displayHeight = pageDimensions.height;
 
     // Canvas background (carton/desk color)
     return Container(
@@ -238,6 +239,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red, width: 2.0),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.15),

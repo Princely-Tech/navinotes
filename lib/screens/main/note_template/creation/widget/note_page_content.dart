@@ -52,25 +52,26 @@ class _NotePageContentState extends State<NotePageContent> {
               ),
           child: Stack(
             children: [
-              // Scrollable background + content
-              SingleChildScrollView(
-                physics: vm.currentMode == NoteMode.drawing
-                    ? const NeverScrollableScrollPhysics()
-                    : const BouncingScrollPhysics(),
-                child: Stack(
-                  children: [
-                    // Background pattern based on page template
-                    Container(
+              // Fixed page content (no scrolling - like real paper)
+              Stack(
+                children: [
+                  // Background pattern based on page template
+                  Container(
+                    width: widget.inputWidth,
+                    height: widget.inputHeight,
+                    color: widget.backgroundColor,
+                    child: _buildTemplateBackground(),
+                  ),
+
+                  // Page content based on mode (clipped to page boundaries)
+                  ClipRect(
+                    child: SizedBox(
                       width: widget.inputWidth,
                       height: widget.inputHeight,
-                      color: widget.backgroundColor,
-                      child: _buildTemplateBackground(),
+                      child: Stack(children: getPageContent(vm)),
                     ),
-
-                    // Page content based on mode
-                    ...getPageContent(vm),
-                  ],
-                ),
+                  ),
+                ],
               ),
 
               // Page number indicator
@@ -123,9 +124,15 @@ class _NotePageContentState extends State<NotePageContent> {
     switch (vm.currentMode) {
       case NoteMode.text:
         // Validate dimensions to prevent "Invalid image dimensions" error
-        final validWidth = widget.inputWidth.isFinite && widget.inputWidth > 0 ? widget.inputWidth : 595.0;
-        final validHeight = widget.inputHeight.isFinite && widget.inputHeight > 0 ? widget.inputHeight : 842.0;
-        
+        final validWidth =
+            widget.inputWidth.isFinite && widget.inputWidth > 0
+                ? widget.inputWidth
+                : 595.0;
+        final validHeight =
+            widget.inputHeight.isFinite && widget.inputHeight > 0
+                ? widget.inputHeight
+                : 842.0;
+
         return [
           // Drawing layer (non-interactive in text mode)
           IgnorePointer(
@@ -133,11 +140,7 @@ class _NotePageContentState extends State<NotePageContent> {
             child: SizedBox(
               width: validWidth,
               height: validHeight,
-              child: buildDrawingBoard(
-                vm,
-                validWidth,
-                validHeight,
-              ),
+              child: buildDrawingBoard(vm, validWidth, validHeight),
             ),
           ),
           // Text editor (interactive) - full page coverage
@@ -151,9 +154,15 @@ class _NotePageContentState extends State<NotePageContent> {
         ];
       case NoteMode.drawing:
         // Validate dimensions to prevent "Invalid image dimensions" error
-        final validWidth = widget.inputWidth.isFinite && widget.inputWidth > 0 ? widget.inputWidth : 595.0;
-        final validHeight = widget.inputHeight.isFinite && widget.inputHeight > 0 ? widget.inputHeight : 842.0;
-        
+        final validWidth =
+            widget.inputWidth.isFinite && widget.inputWidth > 0
+                ? widget.inputWidth
+                : 595.0;
+        final validHeight =
+            widget.inputHeight.isFinite && widget.inputHeight > 0
+                ? widget.inputHeight
+                : 842.0;
+
         return [
           // Text editor (non-interactive in drawing mode)
           Positioned.fill(
@@ -170,11 +179,7 @@ class _NotePageContentState extends State<NotePageContent> {
               child: SizedBox(
                 width: validWidth,
                 height: validHeight,
-                child: buildDrawingBoard(
-                  vm,
-                  validWidth,
-                  validHeight,
-                ),
+                child: buildDrawingBoard(vm, validWidth, validHeight),
               ),
             ),
           ),
@@ -221,8 +226,14 @@ class _NotePageContentState extends State<NotePageContent> {
     }
 
     // Validate dimensions to prevent "Invalid image dimensions" error
-    final validWidth = widget.inputWidth.isFinite && widget.inputWidth > 0 ? widget.inputWidth : 595.0;
-    final validHeight = widget.inputHeight.isFinite && widget.inputHeight > 0 ? widget.inputHeight : 842.0;
+    final validWidth =
+        widget.inputWidth.isFinite && widget.inputWidth > 0
+            ? widget.inputWidth
+            : 595.0;
+    final validHeight =
+        widget.inputHeight.isFinite && widget.inputHeight > 0
+            ? widget.inputHeight
+            : 842.0;
 
     try {
       // Create a read-only DrawingController for this page
@@ -305,7 +316,7 @@ class _NotePageContentState extends State<NotePageContent> {
           (page) => page.id == widget.page.id,
           orElse: () => widget.page,
         );
-        
+
         switch (currentPage.template.type) {
           case NoteTemplateType.lined:
             return ClipRect(
