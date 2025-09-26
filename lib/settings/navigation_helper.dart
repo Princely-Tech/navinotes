@@ -173,10 +173,18 @@ class NavigationHelper {
     debugPrint('Navigating to content ${content.id} - ${content.title}');
 
     if (content.type == AppContentType.note) {
-      final boardId = content.boardId;
-      final board = await DatabaseHelper.instance.getBoard(boardId);
-      final route = NoteUtils.getNoteCreationRoute(board.type);
-      push(route, arguments: {'content': content});
+      // final boardId = content.boardId;
+      // final board = await DatabaseHelper.instance.getBoard(boardId);
+      // final route = NoteUtils.getNoteCreationRoute(board.type);
+      // push(route, arguments: {'content': content});
+
+
+       BoardNoteTemplate template = getNoteTemplateFromString(
+        content.metaData[ContentMetadataKey.template],
+      );
+
+      return navigateToNoteCreation(template, content.id, replace: replace);
+
     } else if (content.type == AppContentType.notebook) {
       final notebook = await DatabaseHelper.instance.getNotebook(content.id);
       if (notebook != null) {
