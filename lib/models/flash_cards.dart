@@ -56,7 +56,7 @@ class FlashCard {
 
   FlashCard copyWith({
     String? id,
-    int? deckId,
+    String? deckId,
     List<Map<String, dynamic>>? front,
     List<Map<String, dynamic>>? back,
     String? tags,
@@ -78,7 +78,7 @@ class FlashCard {
   Future<bool>? update({
     List<Map<String, dynamic>>? front,
     List<Map<String, dynamic>>? back,
-    int? deckId,
+    String? deckId,
     FlashcardDifficulty? difficulty,
   }) {
     try {
@@ -96,7 +96,7 @@ class FlashCard {
   }
 
   factory FlashCard.createNew({
-    required int deckId,
+    required String deckId,
     required List<Map<String, dynamic>> front,
     required List<Map<String, dynamic>> back,
     String? tags,

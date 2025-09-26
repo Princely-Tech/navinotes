@@ -140,7 +140,7 @@ class MindMapVm extends ChangeNotifier {
     required String text,
     required Offset logicalPosition,
     Color? color,
-    int? contentID,
+    String? contentID,
   }) {
     final themeValues = boardTheme.values;
     final themeColor = color ?? themeValues.nodeBackgroundColor;
@@ -162,7 +162,7 @@ class MindMapVm extends ChangeNotifier {
   MindMapNode addNodeWithContent({
     required String text,
     required Offset logicalPosition,
-    required int contentId,
+    required String contentId,
     Color? color,
   }) {
     return addNodeAt(
@@ -935,7 +935,7 @@ class MindMapVm extends ChangeNotifier {
 
   bool isAttachModeFor(String nodeId) => attachingNodeId == nodeId;
 
-  void attachContentToNodeById(String nodeId, int contentId) {
+  void attachContentToNodeById(String nodeId, String contentId) {
     final node = mindMap.findNode(nodeId);
     if (node == null) return;
     node.contentID = 'content:$contentId';
@@ -951,18 +951,18 @@ class MindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  (String type, int? id)? _parseAttachment(String? raw) {
+  (String type, String? id)? _parseAttachment(String? raw) {
     if (raw == null || raw.isEmpty) return null;
     if (raw.contains(':')) {
       final parts = raw.split(':');
       if (parts.length == 2) {
-        final id = int.tryParse(parts[1]);
+        final id = parts[1];
         return (parts[0], id);
       }
       return null;
     }
     // Backward compatibility: plain numeric means content
-    final legacyId = int.tryParse(raw);
+    final legacyId = raw;
     return ('content', legacyId);
   }
 

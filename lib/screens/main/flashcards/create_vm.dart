@@ -86,9 +86,9 @@ class FlashCardCreationVm extends ChangeNotifier {
 
   bool loading = true;
 
-  int? deletingCardId;
+  String? deletingCardId;
 
-  void updateDeletingCardId(int? id) {
+  void updateDeletingCardId(String? id) {
     deletingCardId = id;
     notifyListeners();
   }

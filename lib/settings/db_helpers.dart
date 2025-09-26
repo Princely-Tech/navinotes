@@ -14,7 +14,7 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('navinotes.db');
+    _database = await _initDB('navi_notes_db_dev.db');
     return _database!;
   }
 
@@ -46,7 +46,7 @@ class DatabaseHelper {
   Future _createDB(Database db, int version) async {
     await db.execute('''
     CREATE TABLE boards (
-      id INTEGER PRIMARY KEY,
+      id TEXT,
       user_id INTEGER,
       type TEXT,
       name TEXT,
@@ -60,7 +60,7 @@ class DatabaseHelper {
       cover_image TEXT,
       course_info TEXT,
       course_timelines TEXT,
-      syllabus_content_id INTEGER DEFAULT NULL,
+      syllabus_content_id TEXT DEFAULT NULL,
       created_at INTEGER,
       updated_at INTEGER,
       synced_at INTEGER
@@ -69,9 +69,9 @@ class DatabaseHelper {
 
     await db.execute('''
    CREATE TABLE flashcards (
-  id INTEGER PRIMARY KEY,
+  id TEXT,
   difficulty TEXT,
-  deck_id INTEGER,
+  deck_id TEXT,
   front TEXT,
   back TEXT,
   tags TEXT,            -- optional
@@ -82,10 +82,10 @@ class DatabaseHelper {
 
     await db.execute('''
     CREATE TABLE contents (
-      id INTEGER PRIMARY KEY,
+      id TEXT,
       type TEXT,
       meta_data TEXT,
-      board_id INTEGER,
+      board_id TEXT,
       title TEXT,
       cover_image TEXT,
       tags TEXT,
@@ -105,7 +105,7 @@ class DatabaseHelper {
 
     await db.execute('''
     CREATE TABLE tags (
-      id INTEGER PRIMARY KEY,
+      id TEXT,
       user_id INTEGER,
       name TEXT,
       created_at INTEGER,
@@ -304,7 +304,7 @@ class DatabaseHelper {
   }
 
   // Get all flashcards for a deck
-  Future<List<FlashCard>> getDeckFlashCards(int deckId) async {
+  Future<List<FlashCard>> getDeckFlashCards(String deckId) async {
     final db = await instance.database;
 
     final List<Map<String, dynamic>> maps = await db.query(
@@ -318,7 +318,7 @@ class DatabaseHelper {
   }
 
   // Get all flashcards for a deck
-  Future<int> getDeckCardsCount(int deckId) async {
+  Future<int> getDeckCardsCount(String deckId) async {
     final db = await instance.database;
     final result = await db.query(
       'flashcards',
@@ -341,7 +341,7 @@ class DatabaseHelper {
   }
 
   // Delete a flashcard
-  Future<bool> deleteFlashCard(int id) async {
+  Future<bool> deleteFlashCard(String id) async {
     final db = await instance.database;
     return 0 != await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
   }
@@ -361,7 +361,7 @@ class DatabaseHelper {
     });
   }
 
-  Future<Content?> getDeck(int id) async {
+  Future<Content?> getDeck(String id) async {
     final db = await instance.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'contents',

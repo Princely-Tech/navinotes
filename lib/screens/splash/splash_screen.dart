@@ -75,10 +75,10 @@ class _SplashScreenState extends State<SplashScreen>
     // Board board = boards[3];
     Board board = boards.first;
     // List<Content> contents = await DatabaseHelper.instance.getAllContents(
-    //   board.id!,
+    //   board.id,
     // );
     //  List<Content> allFiles = await DatabaseHelper.instance.getAllFiles(
-    //   board.id!,
+    //   board.id,
     // );
     NavigationHelper.navigateToBoard(board);
     // NavigationHelper.navigateToBoardPopup(board);

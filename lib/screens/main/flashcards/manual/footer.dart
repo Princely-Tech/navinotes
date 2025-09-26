@@ -104,7 +104,7 @@ class FlashCardsManualCreationFooter extends StatelessWidget {
     );
   }
 
-  Widget _item({
+  Widget item({
     required String name,
     required String imagePath,
     bool isCurrent = false,

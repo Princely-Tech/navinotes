@@ -21,7 +21,8 @@ class _RecentActivityState extends State<RecentActivity> {
   Future<void> _loadRecentContents() async {
     try {
       // Get 8 most recent contents of any type
-      recentContents = await DatabaseHelper.instance.getRecentContentsAcrossAllBoards(limit: 8);
+      recentContents = await DatabaseHelper.instance
+          .getRecentContentsAcrossAllBoards(limit: 8);
     } catch (e) {
       debugPrint('Error loading recent contents: $e');
       recentContents = [];
@@ -57,10 +58,7 @@ class _RecentActivityState extends State<RecentActivity> {
                   SizedBox(height: 16),
                   Text(
                     'Loading recent activity...',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14.0,
-                    ),
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14.0),
                   ),
                 ],
               ),
@@ -72,11 +70,7 @@ class _RecentActivityState extends State<RecentActivity> {
             child: Center(
               child: Column(
                 children: [
-                  Icon(
-                    Icons.history,
-                    size: 48,
-                    color: Colors.grey[400],
-                  ),
+                  Icon(Icons.history, size: 48, color: Colors.grey[400]),
                   SizedBox(height: 16),
                   Text(
                     'No recent activity',
@@ -117,17 +111,20 @@ class _RecentActivityState extends State<RecentActivity> {
 
   Widget _buildContentCard(Content content) {
     // Get content type and appropriate icon/color
-    final contentTitle = content.title.isNotEmpty ? content.title : 'Untitled ${content.type.name}';
+    final contentTitle =
+        content.title.isNotEmpty
+            ? content.title
+            : 'Untitled ${content.type.name}';
     final iconData = _getContentIcon(content.type);
     final iconColor = _getContentColor(content.type);
     final contentType = _getContentTypeLabel(content.type);
-    
+
     // Format the updated date
     final updatedDate = DateTime.fromMillisecondsSinceEpoch(
       content.updatedAt * 1000,
     );
     final formattedDate = _formatDate(updatedDate);
-    
+
     // Get board name if available
     final boardName = _getBoardName(content.boardId);
 
@@ -152,11 +149,7 @@ class _RecentActivityState extends State<RecentActivity> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: Icon(
-                      iconData,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                    child: Icon(iconData, color: Colors.white, size: 20),
                   ),
                   Expanded(
                     child: Column(
@@ -259,7 +252,7 @@ class _RecentActivityState extends State<RecentActivity> {
     }
   }
 
-  String _getBoardName(int boardId) {
+  String _getBoardName(String boardId) {
     // This would ideally come from a cached boards list or be passed down
     // For now, return empty string as board name lookup would require additional database call
     return '';

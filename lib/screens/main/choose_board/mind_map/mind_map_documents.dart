@@ -1,8 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:provider/provider.dart';
-import 'package:navinotes/models/content.dart';
-import 'package:navinotes/settings/db_helpers.dart';
-import 'package:navinotes/settings/board_theme.dart';
 import 'vm.dart';
 
 class MindMapDocuments extends StatefulWidget {
@@ -16,7 +12,7 @@ class MindMapDocuments extends StatefulWidget {
 class _MindMapDocumentsState extends State<MindMapDocuments> {
   List<Content> _contents = const [];
   List<Content> _decks = const [];
-  final Map<int, int> _deckCardCounts = {};
+  final Map<String, int> _deckCardCounts = {};
   bool _loading = true;
   List<MindMapFilterType> _selectedFilters = const [
     MindMapFilterType.showPdf,
@@ -44,11 +40,11 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
           data.where((d) => d.type == AppContentType.flashcardDeck).toList();
 
       // Prefetch deck card counts once to avoid recalculating in build
-      final Map<int, int> counts = {};
+      final Map<String, int> counts = {};
       await Future.wait(
-        decks.where((d) => d.id != null).map((d) async {
-          final c = await DatabaseHelper.instance.getDeckCardsCount(d.id!);
-          counts[d.id!] = c;
+        decks.where((d) => d.id.isNotEmpty).map((d) async {
+          final c = await DatabaseHelper.instance.getDeckCardsCount(d.id);
+          counts[d.id] = c;
         }),
       );
       if (!mounted) return;
@@ -238,8 +234,8 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
         onTap: () {
           final vm = Provider.of<MindMapVm>(context, listen: false);
           final targetNodeId = vm.attachingNodeId;
-          if (targetNodeId != null && content.id != null) {
-            vm.attachContentToNodeById(targetNodeId, content.id!);
+          if (targetNodeId != null && content.id.isNotEmpty) {
+            vm.attachContentToNodeById(targetNodeId, content.id);
             MessageDisplayService.showMessage(context, 'Attachment added');
           } else {
             // Not in attach mode: ensure any stale mode is cleared
@@ -309,8 +305,8 @@ Widget _tappableDeckRow({
       onTap: () {
         final vm = Provider.of<MindMapVm>(context, listen: false);
         final targetNodeId = vm.attachingNodeId;
-        if (targetNodeId != null && deck.id != null) {
-          vm.attachContentToNodeById(targetNodeId, deck.id!);
+        if (targetNodeId != null && deck.id.isNotEmpty) {
+          vm.attachContentToNodeById(targetNodeId, deck.id);
           MessageDisplayService.showMessage(context, 'Attachment added');
         } else {
           vm.cancelAttachMode();

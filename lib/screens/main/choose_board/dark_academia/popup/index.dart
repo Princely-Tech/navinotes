@@ -38,7 +38,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                         child: ScrollableController(
                           child: vm.returnSelectedTabItem(
                             FutureBuilder<List<Content>>(
-                              future: _getAllContents(vm.board.id!),
+                              future: _getAllContents(vm.board.id),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
@@ -1358,7 +1358,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     );
   }
 
-  Future<List<Content>> _getAllContents(int boardId) async {
+  Future<List<Content>> _getAllContents(String boardId) async {
     try {
       return await DatabaseHelper.instance.getAllContents(boardId);
     } catch (e) {
@@ -1367,7 +1367,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
     }
   }
 
-  Future<List<Content>> _getFlashCardDecks(int boardId) async {
+  Future<List<Content>> _getFlashCardDecks(String boardId) async {
     try {
       return await DatabaseHelper.instance.getBoardDecks(boardId);
     } catch (e) {
@@ -1591,7 +1591,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 64),
           child: FutureBuilder<List<Content>>(
-            future: _getFlashCardDecks(vm.board.id!),
+            future: _getFlashCardDecks(vm.board.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Container(

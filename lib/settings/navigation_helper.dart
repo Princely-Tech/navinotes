@@ -243,7 +243,7 @@ class NavigationHelper {
   }
 
   static navigateToDeckById(String deckId) async {
-    final deck = await DatabaseHelper.instance.getDeck(int.parse(deckId));
+    final deck = await DatabaseHelper.instance.getDeck(deckId);
     return navigateToDeck(deck!);
   }
 

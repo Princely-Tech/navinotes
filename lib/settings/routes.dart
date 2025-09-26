@@ -93,7 +93,7 @@ Map<String, WidgetBuilder> routes = {
   Routes.mindMap: (context) {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map<String, dynamic>) {
-      final int? contentId = args['contentId'] as int?;
+      final String? contentId = args['contentId'] as String?;
       debugPrint('Route to Mind map contentId: $contentId');
       if (contentId != null) {
         return MindMapScreen(contentId: contentId);

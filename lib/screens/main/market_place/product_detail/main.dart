@@ -25,7 +25,7 @@ class ProductDetailMain extends StatelessWidget {
     );
   }
 
-  Widget _customerReview() {
+  Widget customerReview() {
     return _section(
       title: 'Customer Reviews',
       titleRight: AppButton(
@@ -279,7 +279,7 @@ Widget _customerReviewNone() {
     );
   }
 
-  Widget _creatorMoreItem() {
+  Widget creatorMoreItem() {
     return CustomCard(
       width: null,
       addBorder: true,

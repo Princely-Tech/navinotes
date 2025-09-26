@@ -409,7 +409,7 @@ class NoteCreationVm extends ChangeNotifier {
     final List<Content> contents = [];
     final boards = await dbHelper.getAllBoards();
     for (var board in boards) {
-      contents.addAll(await dbHelper.getAllContents(board.id!));
+      contents.addAll(await dbHelper.getAllContents(board.id));
     }
     return contents;
   }

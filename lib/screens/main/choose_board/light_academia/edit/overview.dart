@@ -7,7 +7,7 @@ class BoardLightAcademiaEditOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<BoardEditVm>(
       builder: (_, vm, _) {
-        final board = vm.board!;
+        final board = vm.board;
         return Consumer<ApiServiceProvider>(
           builder: (_, apiServiceProvider, _) {
             return Column(

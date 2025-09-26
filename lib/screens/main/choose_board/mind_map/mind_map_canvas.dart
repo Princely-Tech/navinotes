@@ -143,13 +143,13 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
     final dropPosition = Offset(transformedPoint.x, transformedPoint.y);
 
     if (data is Content) {
-      if (data.id != null) {
+      if (data.id.isNotEmpty) {
         final title =
             data.title.isNotEmpty ? data.title : (data.file ?? 'Untitled');
         vm.addNodeWithContent(
           text: title,
           logicalPosition: dropPosition,
-          contentId: data.id!,
+          contentId: data.id,
         );
       }
     }

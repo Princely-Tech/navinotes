@@ -25,7 +25,7 @@ class _SearchBarOneState extends State<SearchBarOne> {
         items = boards.map(boardToItem).toList();
       });
       for (var board in boards) {
-        final contents = await dbHelper.getAllContents(board.id!);
+        final contents = await dbHelper.getAllContents(board.id);
         setState(() {
           items.addAll(contents.map(contentToItem).toList());
         });

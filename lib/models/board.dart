@@ -1,4 +1,3 @@
-import 'package:navinotes/models/content.dart';
 import 'package:navinotes/packages.dart';
 
 class Board {
@@ -18,7 +17,7 @@ class Board {
   final int? syncedAt;
   final List<CourseTimeline>? courseTimeLines;
   final CourseInfo? courseInfo;
-  final int? syllabusContentId;
+  final String? syllabusContentId;
 
   final bool
   coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
@@ -225,7 +224,7 @@ class Board {
     if (syllabusContentId == null) {
       return null;
     }
-    print("syllabusContentId: $syllabusContentId");
+    debugPrint("syllabusContentId: $syllabusContentId");
 
     syllabusContent = await DatabaseHelper.instance.getContentById(
       syllabusContentId!,
@@ -241,8 +240,8 @@ class Board {
       return _cachedContents!;
     }
 
-    final db = await DatabaseHelper.instance;
-    _cachedContents = await db.getAllContents(id ?? 0);
+    final db =  DatabaseHelper.instance;
+    _cachedContents = await db.getAllContents(id);
 
     _hasFetchedContents = true;
 

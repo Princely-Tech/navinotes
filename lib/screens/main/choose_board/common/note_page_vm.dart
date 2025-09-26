@@ -50,7 +50,7 @@ class BoardNotePageVm extends ChangeNotifier {
       notifyListeners();
       
       // Get all contents and sort them based on the selected sort type
-      List<Content> allContents = await dbHelper.getAllContents(board.id!);
+      List<Content> allContents = await dbHelper.getAllContents(board.id);
       NoteSortType sortType = stringToNoteSortType(sortByController.text);
       
       // Sort the contents based on the selected sort type
@@ -80,13 +80,12 @@ class BoardNotePageVm extends ChangeNotifier {
   }
 
   Future<List<Content>> getRecentContents(int count) async {
-    //TODO check the recentViewedLogic
-    final all = await dbHelper.getAllContents(board.id!);
+    final all = await dbHelper.getAllContents(board.id);
     return all.take(count).toList();
   }
 
   Future<List<Content>> getMindMaps() async {
-    final all = await dbHelper.getAllContents(board.id!);
+    final all = await dbHelper.getAllContents(board.id);
     return all.where((content) => content.type == AppContentType.mindmap).toList();
   }
 

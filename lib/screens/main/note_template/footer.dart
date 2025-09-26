@@ -1,5 +1,4 @@
 import 'vm.dart';
-import 'util.dart';
 import 'package:navinotes/packages.dart';
 
 class NoteTemplateFooter extends StatelessWidget {

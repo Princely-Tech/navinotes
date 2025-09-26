@@ -25,7 +25,7 @@ Future<void> goToNotePageWithContent({
 Future<void> createContentInDb({
   required BoardNoteTemplate template,
   required BuildContext context,
-  required int boardId,
+  required String boardId,
   required Function(bool) setLoading,
   String? title,
   String? contentBody,

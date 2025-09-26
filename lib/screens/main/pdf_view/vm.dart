@@ -5,7 +5,7 @@ enum PdfAnnotMode { none, drawing, highlight, text, image }
 class PdfViewVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
   ComPdfVm comPdfVm;
-  int contentId;
+  String contentId;
   Content? content;
   bool isLoading = true;
   String? errorMessage;

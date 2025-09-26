@@ -247,7 +247,7 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
     );
   }
 
-  Widget _tags() {
+  Widget tags() {
     return EditHeaderSection(
       theme: BoardTheme.lightAcademia,
       title: 'Tags',

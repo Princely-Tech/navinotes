@@ -12,12 +12,10 @@ class RichTextProp {
 }
 
 class NoteCreationProp {
-  final int contentId;
-  // final int boardId;
+  final String contentId;
   final BoardNoteTemplate template;
   NoteCreationProp({
     required this.contentId,
-    // required this.boardId,
     required this.template,
   });
 }

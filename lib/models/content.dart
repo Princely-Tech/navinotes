@@ -198,7 +198,7 @@ class Content {
     if (type != AppContentType.flashcardDeck) {
       debugPrint('Getting deck cards count for deck $id');
       try {
-        return DatabaseHelper.instance.getDeckCardsCount(id!);
+        return DatabaseHelper.instance.getDeckCardsCount(id);
       } catch (err) {
         debugPrint('Error getting deck cards count: $err');
         return null;

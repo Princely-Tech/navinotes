@@ -16,7 +16,7 @@ class FlashCardVm extends ChangeNotifier {
   Future<List<Content>> fetchDecks(Board board) async {
     final dbHelper = DatabaseHelper.instance;
     try {
-      return dbHelper.getBoardDecks(board.id!);
+      return dbHelper.getBoardDecks(board.id);
     } catch (err) {
       debugPrint('Error fetching decks: $err');
       return [];

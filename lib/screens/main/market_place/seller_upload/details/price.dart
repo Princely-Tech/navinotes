@@ -131,7 +131,7 @@ class SellerUploadPrice extends StatelessWidget {
                   label: 'Discount %',
                   hintText: '0',
                   keyboardType: TextInputType.number,
-                  onChanged: (value) => vm.notifyListeners(),
+                  onChanged: (value) => vm.notifyChange(),
                   suffixIcon: Text(
                     '%',
                     style: AppTheme.text.copyWith(
@@ -208,7 +208,7 @@ class SellerUploadPrice extends StatelessWidget {
           ),
           CustomCheckBoxItem(
             value: vm.agreeToCopyrightPolicy,
-            onChanged: (value) => vm.setAgreeToCopyrightPolicy(value ?? false),
+            onChanged: (value) => vm.setAgreeToCopyrightPolicy(value),
             title: 'I confirm that I have the right to sell this content',
           ),
         ],

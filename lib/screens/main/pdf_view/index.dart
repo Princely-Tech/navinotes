@@ -7,7 +7,7 @@ class PdfViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get contentId from route arguments
-    final int contentId = ModalRoute.of(context)?.settings.arguments as int;
+    final String contentId = ModalRoute.of(context)?.settings.arguments as String;
 
     return ChangeNotifierProvider(
       create: (_) => ComPdfVm(),

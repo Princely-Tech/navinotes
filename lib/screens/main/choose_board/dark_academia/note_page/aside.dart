@@ -231,8 +231,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
     );
   }
 
-  Widget _tags() {
-    //TODO return to this
+  Widget tags() {
     return EditHeaderSection(
       theme: BoardTheme.darkAcademia,
       title: 'Tags',

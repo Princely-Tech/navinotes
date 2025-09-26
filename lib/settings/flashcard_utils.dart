@@ -46,7 +46,7 @@ Future<void> deleteFlashCard({
     );
 
     if (confirmed == true) {
-      await DatabaseHelper.instance.deleteFlashCard(card.id!);
+      await DatabaseHelper.instance.deleteFlashCard(card.id);
       if (context.mounted) {
         MessageDisplayService.showMessage(context, 'Card deleted');
       }
@@ -64,7 +64,7 @@ Future<List<FlashCard>> fetchDeckFlashCards({
   required Content deck,
 }) async {
   try {
-    return DatabaseHelper.instance.getDeckFlashCards(deck.id!);
+    return DatabaseHelper.instance.getDeckFlashCards(deck.id);
   } catch (e) {
     debugPrint('Error loading flashcards: $e');
     if (context.mounted) {
@@ -107,7 +107,7 @@ String getPlainTextFromDelta(String jsonContent) {
 Future<List<FlashCard>> parseResponseFlashCards({
   required Map<String, dynamic> response,
   required BuildContext context,
-  required int deckId,
+  required String deckId,
 }) async {
   final List<FlashCard> flashCards = [];
   final cards = response['cards'] as List<dynamic>;

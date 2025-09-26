@@ -35,7 +35,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
                         Consumer<BoardEditVm>(
                           builder: (_, vm, _) {
                             return FutureBuilder<List<Content>>(
-                              future: _getAllContents(vm.board.id!),
+                              future: _getAllContents(vm.board.id),
                               builder: (context, snapshot) {
                                 if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
@@ -1516,7 +1516,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
   }
 
   // Helper method for data fetching
-  Future<List<Content>> _getAllContents(int boardId) async {
+  Future<List<Content>> _getAllContents(String boardId) async {
     try {
       return await DatabaseHelper.instance.getAllContents(boardId);
     } catch (e) {

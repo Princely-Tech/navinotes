@@ -120,7 +120,7 @@ Widget title() {
                           mobile: isNotNull(vm.content),
                           child: FutureBuilder(
                             future: DatabaseHelper.instance.getBoard(
-                              vm.content?.boardId ?? 0,
+                              vm.content?.boardId ?? '',
                             ),
                             builder: (context, snapshot) {
                               final board = snapshot.data;

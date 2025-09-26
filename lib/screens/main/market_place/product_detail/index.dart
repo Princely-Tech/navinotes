@@ -3,7 +3,6 @@ import 'package:navinotes/packages.dart';
 import 'package:navinotes/widgets/empty_state.dart';
 import 'main.dart';
 import 'appbar.dart';
-import 'aside.dart';
 import 'vm.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -31,7 +30,7 @@ class ProductDetailScreen extends StatelessWidget {
       );
     }
 
-    final product = args as MarketItem;
+    final product = args;
 
     return ApiServiceComponent(
       child: Consumer<ApiServiceProvider>(

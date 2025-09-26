@@ -1,5 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/settings/date_utils.dart';
 
 class BoardLightAcadPopupOverview extends StatelessWidget {
   const BoardLightAcadPopupOverview({super.key});
@@ -23,7 +22,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                   Consumer<BoardEditVm>(
                     builder: (_, vm, _) {
                       return FutureBuilder<List<Content>>(
-                        future: _getAllContents(vm.board.id!),
+                        future: _getAllContents(vm.board.id),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -372,7 +371,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _studyTemplates() {
+  Widget studyTemplates() {
     return _section(
       title: 'Study Templates',
       subTitle: 'Pre-designed formats for effective studying',
@@ -1275,7 +1274,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
   }
 
   // Helper method for data fetching
-  Future<List<Content>> _getAllContents(int boardId) async {
+  Future<List<Content>> _getAllContents(String boardId) async {
     try {
       return await DatabaseHelper.instance.getAllContents(boardId);
     } catch (e) {

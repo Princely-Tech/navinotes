@@ -98,7 +98,7 @@ class MindMapHeader extends StatelessWidget {
   Widget _title(MindMapVm vm) {
     final themeValues = boardTheme.values;
     return Text(
-      vm.title ?? 'Untitled',
+      vm.title,
       style: AppTheme.text.copyWith(
         color: themeValues.color1,
         fontSize: 20.0,
@@ -112,7 +112,7 @@ class MindMapHeader extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final controller = TextEditingController(text: vm.title ?? '');
+        final controller = TextEditingController(text: vm.title);
         return AlertDialog(
           title: const Text('Edit Mind Map Title'),
           content: TextField(

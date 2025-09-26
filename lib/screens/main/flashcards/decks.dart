@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/flashcards/vm.dart';
 

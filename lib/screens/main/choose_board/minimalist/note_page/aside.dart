@@ -226,8 +226,7 @@ class MinimalistNotePageAside extends StatelessWidget {
     );
   }
 
-  Widget _tags() {
-    //TODO Return to this
+  Widget tags() {
     return _section(
       title: 'Tags',
       child: Wrap(

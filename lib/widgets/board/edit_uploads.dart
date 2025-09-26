@@ -101,7 +101,7 @@ class BoardEditUploads extends StatelessWidget {
                                           file: file,
                                           context: context,
                                           onSuccess:
-                                              () => vm.loadFiles(vm.board.id!),
+                                              () => vm.loadFiles(vm.board.id),
                                         );
                                       },
                                     ),

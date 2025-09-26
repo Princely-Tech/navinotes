@@ -359,7 +359,7 @@ class BoardMinimalistEditOverview extends StatelessWidget {
   Widget _welcome() {
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
-        final board = vm.board!;
+        final board = vm.board;
         return Consumer<ApiServiceProvider>(
           builder: (_, apiServiceProvider, _) {
             return Consumer<LayoutProviderVm>(

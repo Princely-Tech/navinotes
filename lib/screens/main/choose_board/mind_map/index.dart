@@ -9,7 +9,7 @@ import 'package:navinotes/packages.dart';
 class MindMapScreen extends StatelessWidget {
   MindMapScreen({super.key, required this.contentId});
 
-  final int contentId;
+  final String contentId;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 

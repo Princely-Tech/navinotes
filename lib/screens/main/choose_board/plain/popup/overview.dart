@@ -10,7 +10,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
         return Consumer<BoardEditVm>(
           builder: (context, vm, _) {
             return FutureBuilder<List<Content>>(
-              future: _getAllContents(vm.board.id!),
+              future: _getAllContents(vm.board.id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
@@ -435,7 +435,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
   }) {
     var btnText = "Upload syllabus to get AI analysis";
     var desc =
-        "After uploading your syllabus, we\'ll automatically generate course details, a timeline of important dates, and assignments for your semester";
+        "After uploading your syllabus, we'll automatically generate course details, a timeline of important dates, and assignments for your semester";
     if (vm.board.courseTimeLines != null) {
       btnText = "Change syllabus";
       desc =
@@ -1460,7 +1460,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
   Widget _flashCardsDeckSection(BoardEditVm vm) {
     return _section(
       child: FutureBuilder<List<Content>>(
-        future: _getFlashCardDecks(vm.board.id!),
+        future: _getFlashCardDecks(vm.board.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Container(
@@ -1583,7 +1583,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Future<List<Content>> _getAllContents(int boardId) async {
+  Future<List<Content>> _getAllContents(String boardId) async {
     try {
       return await DatabaseHelper.instance.getAllContents(boardId);
     } catch (e) {
@@ -1592,7 +1592,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     }
   }
 
-  Future<List<Content>> _getFlashCardDecks(int boardId) async {
+  Future<List<Content>> _getFlashCardDecks(String boardId) async {
     try {
       return await DatabaseHelper.instance.getBoardDecks(boardId);
     } catch (e) {

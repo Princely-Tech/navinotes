@@ -766,7 +766,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
         return FutureBuilder<List<Content>>(
-          future: _getAllContents(vm.board.id!),
+          future: _getAllContents(vm.board.id),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox.shrink();
@@ -783,9 +783,10 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
 
             return _section(
               title: 'Recent Notes',
-              subTitle: notes.isEmpty
-                  ? 'No notes yet. Create your first note to get started.'
-                  : 'Your latest notes and insights',
+              subTitle:
+                  notes.isEmpty
+                      ? 'No notes yet. Create your first note to get started.'
+                      : 'Your latest notes and insights',
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 16,
@@ -808,7 +809,8 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                   if (notes.isNotEmpty)
                     Column(
                       spacing: 12,
-                      children: notes.take(3).map((note) => _noteItem(note)).toList(),
+                      children:
+                          notes.take(3).map((note) => _noteItem(note)).toList(),
                     ),
                 ],
               ),
@@ -823,7 +825,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
         return FutureBuilder<List<Content>>(
-          future: _getAllContents(vm.board.id!),
+          future: _getAllContents(vm.board.id),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox.shrink();
@@ -840,9 +842,10 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
 
             return _section(
               title: 'Mind Maps',
-              subTitle: mindMaps.isEmpty
-                  ? 'No mind maps yet. Create your first mind map to get started.'
-                  : 'Visual representations of your knowledge',
+              subTitle:
+                  mindMaps.isEmpty
+                      ? 'No mind maps yet. Create your first mind map to get started.'
+                      : 'Visual representations of your knowledge',
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 16,
@@ -884,7 +887,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
         return FutureBuilder<List<Content>>(
-          future: _getFlashCardDecks(vm.board.id!),
+          future: _getFlashCardDecks(vm.board.id),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return SizedBox.shrink();
@@ -894,9 +897,10 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
 
             return _section(
               title: 'Flashcard Decks',
-              subTitle: flashCardDecks.isEmpty
-                  ? 'No flashcard decks yet. Create your first deck to get started.'
-                  : 'Practice and memorize key concepts',
+              subTitle:
+                  flashCardDecks.isEmpty
+                      ? 'No flashcard decks yet. Create your first deck to get started.'
+                      : 'Practice and memorize key concepts',
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 16,
@@ -1190,7 +1194,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
     );
   }
 
-  Future<List<Content>> _getAllContents(int boardId) async {
+  Future<List<Content>> _getAllContents(String boardId) async {
     try {
       return await DatabaseHelper.instance.getAllContents(boardId);
     } catch (e) {
@@ -1199,7 +1203,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
     }
   }
 
-  Future<List<Content>> _getFlashCardDecks(int boardId) async {
+  Future<List<Content>> _getFlashCardDecks(String boardId) async {
     try {
       return await DatabaseHelper.instance.getBoardDecks(boardId);
     } catch (e) {
