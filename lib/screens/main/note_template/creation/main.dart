@@ -4,6 +4,7 @@ import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/title.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/voice.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/multi_page_viewer.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/page_settings_dialog.dart';
 import 'vm.dart';
 
 class NoteCreationMain extends StatelessWidget {
@@ -144,6 +145,29 @@ class NoteCreationMain extends StatelessWidget {
                 isActive: vm.currentMode == NoteMode.voice,
                 onTap: () => vm.setMode(NoteMode.voice),
               ),
+              // Divider
+              Container(
+                height: 30,
+                width: 1,
+                color: Colors.grey[300],
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+              ),
+              // Page Settings Button
+              _buildModeButton(
+                context,
+                icon: Icons.settings,
+                label: 'Settings',
+                isActive: false,
+                onTap: () => _showPageSettings(context, vm),
+              ),
+              // Add Page Button
+              _buildModeButton(
+                context,
+                icon: Icons.add,
+                label: 'Add Page',
+                isActive: false,
+                onTap: () => vm.addNewPage(),
+              ),
             ],
           ),
         );
@@ -244,6 +268,21 @@ class NoteCreationMain extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void _showPageSettings(BuildContext context, NoteCreationVm vm) {
+    if (vm.currentPage == null) return;
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => PageSettingsDialog(
+            currentFormat: vm.currentPage!.format,
+            onFormatChanged: (newFormat) {
+              vm.updateCurrentPageFormat(newFormat);
+            },
+          ),
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import 'package:navinotes/models/note_page.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/note_template/creation/vm.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/note_page_content.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/page_settings_dialog.dart';
 
 class MultiPageViewer extends StatefulWidget {
   final NoteCreationVm vm;
@@ -98,6 +100,31 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   }
 
   Widget _buildPageWithZoomAndPan(NotePage page, NoteCreationVm vm) {
+    // Calculate page dimensions based on format
+    final displaySize = page.format.getDisplayDimensions(scale: 0.6);
+    final aspectRatio = page.format.aspectRatio;
+    
+    // Ensure minimum size for usability
+    final minWidth = 300.0;
+    final minHeight = 400.0;
+    
+    double pageWidth = math.max(displaySize.width, minWidth);
+    double pageHeight = math.max(displaySize.height, minHeight);
+    
+    // Adjust for container constraints
+    final containerWidth = MediaQuery.of(context).size.width * 0.9;
+    final containerHeight = MediaQuery.of(context).size.height * 0.7;
+    
+    if (pageWidth > containerWidth) {
+      pageWidth = containerWidth;
+      pageHeight = pageWidth / aspectRatio;
+    }
+    
+    if (pageHeight > containerHeight) {
+      pageHeight = containerHeight;
+      pageWidth = pageHeight * aspectRatio;
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -117,14 +144,14 @@ class _MultiPageViewerState extends State<MultiPageViewer>
           maxScale: 3.0,
           constrained: false,
           child: Container(
-            width: widget.inputWidth,
-            height: widget.inputHeight,
+            width: pageWidth,
+            height: pageHeight,
             child: NotePageContent(
               page: page,
               vm: vm,
               backgroundColor: widget.backgroundColor,
-              inputWidth: widget.inputWidth,
-              inputHeight: widget.inputHeight,
+              inputWidth: pageWidth,
+              inputHeight: pageHeight,
             ),
           ),
         ),
@@ -200,12 +227,24 @@ class _MultiPageViewerState extends State<MultiPageViewer>
           else
             const SizedBox(width: 40),
           
-          // Add page button
-          FloatingActionButton.small(
-            heroTag: "add_page",
-            onPressed: () => vm.addNewPage(),
-            backgroundColor: Theme.of(context).primaryColor,
-            child: const Icon(Icons.add, color: Colors.white),
+          // Page settings and add page buttons
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FloatingActionButton.small(
+                heroTag: "page_settings",
+                onPressed: () => _showPageSettings(vm),
+                backgroundColor: Colors.white.withOpacity(0.9),
+                child: const Icon(Icons.settings),
+              ),
+              const SizedBox(width: 8),
+              FloatingActionButton.small(
+                heroTag: "add_page",
+                onPressed: () => vm.addNewPage(),
+                backgroundColor: Theme.of(context).primaryColor,
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
+            ],
           ),
           
           // Next page button
@@ -251,6 +290,16 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                   fontWeight: FontWeight.w500,
                 ),
               ),
+              if (vm.currentPage != null) ...[
+                const SizedBox(width: 8),
+                Text(
+                  '• ${vm.currentPage!.format}',
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
               const SizedBox(width: 12),
               ...List.generate(
                 vm.notePages.length.clamp(0, 5), // Show max 5 dots
@@ -282,5 +331,18 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     );
   }
 
+  void _showPageSettings(NoteCreationVm vm) {
+    if (vm.currentPage == null) return;
+    
+    showDialog(
+      context: context,
+      builder: (context) => PageSettingsDialog(
+        currentFormat: vm.currentPage!.format,
+        onFormatChanged: (newFormat) {
+          vm.updateCurrentPageFormat(newFormat);
+        },
+      ),
+    );
+  }
 
 }

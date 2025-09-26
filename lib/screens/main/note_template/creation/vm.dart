@@ -1,6 +1,7 @@
 import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/models/note_page.dart';
+import 'package:navinotes/models/page_format.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:record/record.dart';
 import 'package:just_audio/just_audio.dart';
@@ -269,6 +270,7 @@ class NoteCreationVm extends ChangeNotifier {
     final newPage = NotePage(
       noteId: content?.id ?? '',
       pageNumber: _notePages.length + 1,
+      format: PageFormat.defaultFormat, // A4 Portrait
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
@@ -283,6 +285,7 @@ class NoteCreationVm extends ChangeNotifier {
     final newPage = NotePage(
       noteId: content?.id ?? '',
       pageNumber: index + 1,
+      format: PageFormat.defaultFormat, // A4 Portrait
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
@@ -298,6 +301,7 @@ class NoteCreationVm extends ChangeNotifier {
     final newPage = NotePage(
       noteId: content?.id ?? '',
       pageNumber: index + 2,
+      format: PageFormat.defaultFormat, // A4 Portrait
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
@@ -334,11 +338,24 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateCurrentPageFormat(PageFormat newFormat) {
+    if (currentPage == null) return;
+    
+    final updatedPage = currentPage!.getUpdatedPage(
+      format: newFormat,
+      updatedAt: generateUnixTimestamp(),
+    );
+    
+    _notePages[_currentPageIndex] = updatedPage;
+    notifyListeners();
+  }
+
   void _createPagesFromLegacyContent() {
-    // Create a single page from existing content
+    // Create a single page from existing content with A4 Portrait default
     final page = NotePage(
       noteId: content?.id ?? '',
       pageNumber: 1,
+      format: PageFormat.defaultFormat, // A4 Portrait
       textContent: content?.content,
       drawingData: content?.drawing,
       createdAt: content?.createdAt ?? generateUnixTimestamp(),
