@@ -278,9 +278,9 @@ class NoteCreationMain extends StatelessWidget {
         onFormatChanged: (newFormat) {
           vm.updateCurrentPageFormat(newFormat);
         },
-        currentTemplate: vm.template,
+        currentTemplate: vm.currentPage!.template,
         onTemplateChanged: (newTemplate) {
-          vm.updateTemplate(newTemplate);
+          vm.updateCurrentPageTemplate(newTemplate);
         },
       ),
     );

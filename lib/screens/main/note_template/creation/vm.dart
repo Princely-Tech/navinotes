@@ -271,6 +271,7 @@ class NoteCreationVm extends ChangeNotifier {
       noteId: content?.id ?? '',
       pageNumber: _notePages.length + 1,
       format: PageFormat.defaultFormat, // A4 Portrait
+      template: template, // Use current global template as default
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
@@ -286,6 +287,7 @@ class NoteCreationVm extends ChangeNotifier {
       noteId: content?.id ?? '',
       pageNumber: index + 1,
       format: PageFormat.defaultFormat, // A4 Portrait
+      template: template, // Use current global template as default
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
@@ -302,6 +304,7 @@ class NoteCreationVm extends ChangeNotifier {
       noteId: content?.id ?? '',
       pageNumber: index + 2,
       format: PageFormat.defaultFormat, // A4 Portrait
+      template: template, // Use current global template as default
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
@@ -351,6 +354,19 @@ class NoteCreationVm extends ChangeNotifier {
     }
   }
 
+  void updateCurrentPageTemplate(BoardNoteTemplate newTemplate) {
+    if (currentPage != null) {
+      final pageIndex = _notePages.indexOf(currentPage!);
+      if (pageIndex != -1) {
+        _notePages[pageIndex] = currentPage!.copyWith(template: newTemplate);
+        notifyListeners();
+        
+        // Save to database
+        updateContentInDb();
+      }
+    }
+  }
+
   void updateTemplate(BoardNoteTemplate newTemplate) {
     template = newTemplate;
     notifyListeners();
@@ -365,6 +381,7 @@ class NoteCreationVm extends ChangeNotifier {
       noteId: content?.id ?? '',
       pageNumber: 1,
       format: PageFormat.defaultFormat, // A4 Portrait
+      template: template, // Use current global template
       textContent: content?.content,
       drawingData: content?.drawing,
       createdAt: content?.createdAt ?? generateUnixTimestamp(),

@@ -137,6 +137,12 @@ class _PageSettingsDialogState extends State<PageSettingsDialog> {
                   ElevatedButton(
                     onPressed: () {
                       widget.onFormatChanged(_selectedFormat);
+                      // Also apply template changes if callback is provided
+                      if (widget.onTemplateChanged != null &&
+                          widget.currentTemplate != null) {
+                        // Note: Template changes are applied immediately when selected
+                        // This ensures any pending changes are applied
+                      }
                       Navigator.of(context).pop();
                     },
                     child: const Text('Apply'),

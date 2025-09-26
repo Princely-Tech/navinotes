@@ -60,40 +60,12 @@ class _NotePageContentState extends State<NotePageContent> {
                         : const BouncingScrollPhysics(),
                 child: Stack(
                   children: [
-                    // Background pattern
-                    SizedBox(
-                      height: widget.inputHeight,
+                    // Background pattern based on page template
+                    Container(
                       width: widget.inputWidth,
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: widget.inputWidth,
-                            height: widget.inputHeight,
-                            color: widget.backgroundColor,
-                          ),
-                          ClipRect(
-                            child: SizedBox(
-                              width: widget.inputWidth,
-                              height: widget.inputHeight,
-                              child: const SquaredNoteBackground(),
-                            ),
-                          ),
-                          ClipRect(
-                            child: SizedBox(
-                              width: widget.inputWidth,
-                              height: widget.inputHeight,
-                              child: const LinedNoteBackground(),
-                            ),
-                          ),
-                          ClipRect(
-                            child: SizedBox(
-                              width: widget.inputWidth,
-                              height: widget.inputHeight,
-                              child: const DottedNoteBackground(),
-                            ),
-                          ),
-                        ],
-                      ),
+                      height: widget.inputHeight,
+                      color: widget.backgroundColor,
+                      child: _buildTemplateBackground(),
                     ),
 
                     // Page content based on mode
@@ -313,6 +285,60 @@ class _NotePageContentState extends State<NotePageContent> {
         padding: const EdgeInsets.all(24),
         child: buildVoiceRecorder(vm, widget.backgroundColor, context),
       ),
+    );
+  }
+
+  Widget _buildTemplateBackground() {
+    // Use the current page from ViewModel to get the latest template
+    return Consumer<NoteCreationVm>(
+      builder: (context, vm, child) {
+        final currentPage = vm.notePages.firstWhere(
+          (page) => page.id == widget.page.id,
+          orElse: () => widget.page,
+        );
+        
+        switch (currentPage.template.type) {
+          case NoteTemplateType.lined:
+            return ClipRect(
+              child: SizedBox(
+                width: widget.inputWidth,
+                height: widget.inputHeight,
+                child: const LinedNoteBackground(),
+              ),
+            );
+          case NoteTemplateType.squared:
+            return ClipRect(
+              child: SizedBox(
+                width: widget.inputWidth,
+                height: widget.inputHeight,
+                child: const SquaredNoteBackground(),
+              ),
+            );
+          case NoteTemplateType.dotted:
+            return ClipRect(
+              child: SizedBox(
+                width: widget.inputWidth,
+                height: widget.inputHeight,
+                child: const DottedNoteBackground(),
+              ),
+            );
+          case NoteTemplateType.cornell:
+            // Cornell template would need a special background
+            return ClipRect(
+              child: SizedBox(
+                width: widget.inputWidth,
+                height: widget.inputHeight,
+                child: Container(
+                  color: const Color(0xFFD1CDC4), // Cornell background color
+                ),
+              ),
+            );
+          case NoteTemplateType.blank:
+          default:
+            // Blank template - no background pattern
+            return const SizedBox.shrink();
+        }
+      },
     );
   }
 }

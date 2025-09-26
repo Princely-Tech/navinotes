@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/models/page_format.dart';
+import 'package:navinotes/screens/main/note_template/util.dart';
 
 /// Represents a single page within a note
 class NotePage {
@@ -7,6 +8,7 @@ class NotePage {
   final String noteId; // Reference to the parent Content
   final int pageNumber;
   final PageFormat format; // Page size and orientation
+  final BoardNoteTemplate template; // Page template (blank, lined, etc.)
   final String? textContent; // Rich text content (Quill Delta JSON)
   final String? drawingData; // Drawing/sketch data (JSON)
   final List<VoiceNote> voiceNotes; // Voice recordings for this page
@@ -19,19 +21,22 @@ class NotePage {
     required this.noteId,
     required this.pageNumber,
     this.format = PageFormat.defaultFormat,
+    BoardNoteTemplate? template,
     this.textContent,
     this.drawingData,
     this.voiceNotes = const [],
     required this.createdAt,
     required this.updatedAt,
     this.hasContent = false,
-  }) : id = id ?? const Uuid().v4();
+  }) : id = id ?? const Uuid().v4(),
+       template = template ?? noteTemplateBlank;
 
   NotePage copyWith({
     String? id,
     String? noteId,
     int? pageNumber,
     PageFormat? format,
+    BoardNoteTemplate? template,
     String? textContent,
     String? drawingData,
     List<VoiceNote>? voiceNotes,
@@ -44,6 +49,7 @@ class NotePage {
       noteId: noteId ?? this.noteId,
       pageNumber: pageNumber ?? this.pageNumber,
       format: format ?? this.format,
+      template: template ?? this.template,
       textContent: textContent ?? this.textContent,
       drawingData: drawingData ?? this.drawingData,
       voiceNotes: voiceNotes ?? this.voiceNotes,
@@ -59,6 +65,7 @@ class NotePage {
       'note_id': noteId,
       'page_number': pageNumber,
       'format': jsonEncode(format.toMap()),
+      'template': template.type.toString(),
       'text_content': textContent,
       'drawing_data': drawingData,
       'voice_notes': jsonEncode(voiceNotes.map((x) => x.toMap()).toList()),
@@ -109,11 +116,26 @@ class NotePage {
       return PageFormat.defaultFormat;
     }
 
+    BoardNoteTemplate parseTemplate(dynamic templateData) {
+      if (templateData == null) return noteTemplateBlank;
+      
+      try {
+        if (templateData is String) {
+          return getNoteTemplateFromString(templateData);
+        }
+      } catch (e) {
+        debugPrint('Error parsing page template: $e');
+      }
+      
+      return noteTemplateBlank;
+    }
+
     return NotePage(
       id: map['id'] ?? '',
       noteId: map['note_id'] ?? '',
       pageNumber: map['page_number'] ?? 0,
       format: parseFormat(map['format']),
+      template: parseTemplate(map['template']),
       textContent: map['text_content'],
       drawingData: map['drawing_data'],
       voiceNotes: parseVoiceNotes(map['voice_notes']),
@@ -133,6 +155,7 @@ class NotePage {
   /// Get updated page with new content
   NotePage getUpdatedPage({
     PageFormat? format,
+    BoardNoteTemplate? template,
     String? textContent,
     String? drawingData,
     List<VoiceNote>? voiceNotes,
@@ -141,6 +164,7 @@ class NotePage {
   }) {
     return copyWith(
       format: format,
+      template: template,
       textContent: textContent,
       drawingData: drawingData,
       voiceNotes: voiceNotes,

@@ -65,6 +65,18 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   Widget build(BuildContext context) {
     return Consumer<NoteCreationVm>(
       builder: (context, vm, child) {
+        // Sync PageController with ViewModel's current page index
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_pageController.hasClients &&
+              _pageController.page?.round() != vm.currentPageIndex) {
+            _pageController.animateToPage(
+              vm.currentPageIndex,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          }
+        });
+
         return Expanded(
           child: Stack(
             children: [
@@ -135,12 +147,25 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: vm.currentMode == NoteMode.read
-            ? InteractiveViewer(
-                minScale: 0.5,
-                maxScale: 3.0,
-                constrained: false,
-                child: Container(
+        child:
+            vm.currentMode == NoteMode.read
+                ? InteractiveViewer(
+                  minScale: 0.5,
+                  maxScale: 3.0,
+                  constrained: false,
+                  child: Container(
+                    width: pageWidth,
+                    height: pageHeight,
+                    child: NotePageContent(
+                      page: page,
+                      vm: vm,
+                      backgroundColor: widget.backgroundColor,
+                      inputWidth: pageWidth,
+                      inputHeight: pageHeight,
+                    ),
+                  ),
+                )
+                : Container(
                   width: pageWidth,
                   height: pageHeight,
                   child: NotePageContent(
@@ -151,18 +176,6 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                     inputHeight: pageHeight,
                   ),
                 ),
-              )
-            : Container(
-                width: pageWidth,
-                height: pageHeight,
-                child: NotePageContent(
-                  page: page,
-                  vm: vm,
-                  backgroundColor: widget.backgroundColor,
-                  inputWidth: pageWidth,
-                  inputHeight: pageHeight,
-                ),
-              ),
       ),
     );
   }
@@ -337,16 +350,17 @@ class _MultiPageViewerState extends State<MultiPageViewer>
 
     showDialog(
       context: context,
-      builder: (context) => PageSettingsDialog(
-        currentFormat: vm.currentPage!.format,
-        onFormatChanged: (newFormat) {
-          vm.updateCurrentPageFormat(newFormat);
-        },
-        currentTemplate: vm.template,
-        onTemplateChanged: (newTemplate) {
-          vm.updateTemplate(newTemplate);
-        },
-      ),
+      builder:
+          (context) => PageSettingsDialog(
+            currentFormat: vm.currentPage!.format,
+            onFormatChanged: (newFormat) {
+              vm.updateCurrentPageFormat(newFormat);
+            },
+            currentTemplate: vm.currentPage!.template,
+            onTemplateChanged: (newTemplate) {
+              vm.updateCurrentPageTemplate(newTemplate);
+            },
+          ),
     );
   }
 }
