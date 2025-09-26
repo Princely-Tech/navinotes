@@ -1,5 +1,6 @@
 import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/models/note_page.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:record/record.dart';
 import 'package:just_audio/just_audio.dart';
@@ -30,7 +31,17 @@ class NoteCreationVm extends ChangeNotifier {
   String? _recordingPath;
   NoteMode _currentMode = NoteMode.text;
 
-  DrawingController get drawingController => _drawingController;
+  // Multi-page functionality
+  List<NotePage> _notePages = [];
+  int _currentPageIndex = 0;
+  Map<String, DrawingController> _pageDrawingControllers = {};
+  Map<String, QuillController> _pageTextControllers = {};
+
+  List<NotePage> get notePages => _notePages;
+  int get currentPageIndex => _currentPageIndex;
+  NotePage? get currentPage => _notePages.isNotEmpty ? _notePages[_currentPageIndex] : null;
+
+  DrawingController get drawingController => getCurrentPageDrawingController();
   bool get isRecording => _isRecording;
   bool get isPlaying => _isPlaying;
   bool get hasRecording => _recordingPath != null;
@@ -148,6 +159,7 @@ class NoteCreationVm extends ChangeNotifier {
   void initialize() {
     richEditorController.readOnly = false;
     getContent().then((_) {
+      _initializePages();
       _startAutoSave();
     });
     notifyListeners();
@@ -157,6 +169,184 @@ class NoteCreationVm extends ChangeNotifier {
         updateContentInDb(showSnackBar: false);
       }
     });
+  }
+
+  // Multi-page methods
+  void _initializePages() {
+    if (_notePages.isEmpty) {
+      // Create first page if none exist
+      addNewPage();
+    }
+  }
+
+  DrawingController getCurrentPageDrawingController() {
+    if (currentPage == null) return _drawingController;
+    
+    final pageId = currentPage!.id;
+    if (!_pageDrawingControllers.containsKey(pageId)) {
+      _pageDrawingControllers[pageId] = DrawingController();
+    }
+    return _pageDrawingControllers[pageId]!;
+  }
+
+  QuillController getCurrentPageTextController() {
+    if (currentPage == null) return richEditorController;
+    
+    final pageId = currentPage!.id;
+    if (!_pageTextControllers.containsKey(pageId)) {
+      _pageTextControllers[pageId] = QuillController.basic();
+    }
+    return _pageTextControllers[pageId]!;
+  }
+
+  void setCurrentPageIndex(int index) {
+    if (index >= 0 && index < _notePages.length) {
+      _currentPageIndex = index;
+      _loadPageContent();
+      notifyListeners();
+    }
+  }
+
+  void _loadPageContent() {
+    if (currentPage == null) return;
+    
+    // Load text content for current page
+    final textController = getCurrentPageTextController();
+    if (currentPage!.textContent != null && currentPage!.textContent!.isNotEmpty) {
+      try {
+        textController.document = Document.fromJson(
+          jsonDecode(currentPage!.textContent!),
+        );
+      } catch (e) {
+        debugPrint('Error loading page text content: $e');
+      }
+    }
+    
+    // Load drawing content for current page
+    final drawingController = getCurrentPageDrawingController();
+    if (currentPage!.drawingData != null && currentPage!.drawingData!.isNotEmpty) {
+      try {
+        final List<dynamic> drawingData = jsonDecode(currentPage!.drawingData!);
+        drawingController.clear();
+        for (var item in drawingData) {
+          if (item is Map<String, dynamic>) {
+            final String type = item['type'] as String;
+            PaintContent? paintContent;
+
+            switch (type) {
+              case 'SimpleLine':
+                paintContent = SimpleLine.fromJson(item);
+                break;
+              case 'SmoothLine':
+                paintContent = SmoothLine.fromJson(item);
+                break;
+              case 'StraightLine':
+                paintContent = StraightLine.fromJson(item);
+                break;
+              case 'Rectangle':
+                paintContent = Rectangle.fromJson(item);
+                break;
+              case 'Circle':
+                paintContent = Circle.fromJson(item);
+                break;
+              case 'Eraser':
+                paintContent = Eraser.fromJson(item);
+                break;
+            }
+
+            if (paintContent != null) {
+              drawingController.addContent(paintContent);
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint('Error loading page drawing content: $e');
+      }
+    }
+  }
+
+  NotePage addNewPage() {
+    final newPage = NotePage(
+      noteId: content?.id ?? '',
+      pageNumber: _notePages.length + 1,
+      createdAt: generateUnixTimestamp(),
+      updatedAt: generateUnixTimestamp(),
+    );
+    
+    _notePages.add(newPage);
+    _currentPageIndex = _notePages.length - 1;
+    notifyListeners();
+    return newPage;
+  }
+
+  NotePage addNewPageBefore(int index) {
+    final newPage = NotePage(
+      noteId: content?.id ?? '',
+      pageNumber: index + 1,
+      createdAt: generateUnixTimestamp(),
+      updatedAt: generateUnixTimestamp(),
+    );
+    
+    _notePages.insert(index, newPage);
+    _renumberPages();
+    _currentPageIndex = index;
+    notifyListeners();
+    return newPage;
+  }
+
+  NotePage addNewPageAfter(int index) {
+    final newPage = NotePage(
+      noteId: content?.id ?? '',
+      pageNumber: index + 2,
+      createdAt: generateUnixTimestamp(),
+      updatedAt: generateUnixTimestamp(),
+    );
+    
+    _notePages.insert(index + 1, newPage);
+    _renumberPages();
+    _currentPageIndex = index + 1;
+    notifyListeners();
+    return newPage;
+  }
+
+  void _renumberPages() {
+    for (int i = 0; i < _notePages.length; i++) {
+      _notePages[i] = _notePages[i].copyWith(pageNumber: i + 1);
+    }
+  }
+
+  void deletePage(int index) {
+    if (_notePages.length <= 1) return; // Don't delete the last page
+    
+    final pageToDelete = _notePages[index];
+    _notePages.removeAt(index);
+    _renumberPages();
+    
+    // Clean up controllers
+    _pageDrawingControllers.remove(pageToDelete.id);
+    _pageTextControllers.remove(pageToDelete.id);
+    
+    // Adjust current page index
+    if (_currentPageIndex >= _notePages.length) {
+      _currentPageIndex = _notePages.length - 1;
+    }
+    
+    notifyListeners();
+  }
+
+  void _createPagesFromLegacyContent() {
+    // Create a single page from existing content
+    final page = NotePage(
+      noteId: content?.id ?? '',
+      pageNumber: 1,
+      textContent: content?.content,
+      drawingData: content?.drawing,
+      createdAt: content?.createdAt ?? generateUnixTimestamp(),
+      updatedAt: content?.updatedAt ?? generateUnixTimestamp(),
+    );
+    
+    _notePages = [page];
+    _currentPageIndex = 0;
   }
 
   Future<void> updateTitle(String newTitle) async {
@@ -195,20 +385,39 @@ class NoteCreationVm extends ChangeNotifier {
   Future<void> updateContentInDb({bool showSnackBar = false}) async {
     try {
       if (content != null) {
-        // Get the content from the rich editor
-        final String richEditorContent = jsonEncode(
-          richEditorController.document.toDelta().toJson(),
-        );
-        final String drawingContent = JsonEncoder.withIndent(
-          '  ',
-        ).convert(_drawingController.getJsonList());
+        // Save current page content before updating
+        await _saveCurrentPageContent();
+        
+        // For backward compatibility, use the first page's content as main content
+        String richEditorContent = '';
+        String drawingContent = '';
+        
+        if (_notePages.isNotEmpty) {
+          final firstPage = _notePages.first;
+          richEditorContent = firstPage.textContent ?? '';
+          drawingContent = firstPage.drawingData ?? '';
+        } else {
+          // Fallback to legacy single-page content
+          richEditorContent = jsonEncode(
+            richEditorController.document.toDelta().toJson(),
+          );
+          drawingContent = JsonEncoder.withIndent(
+            '  ',
+          ).convert(_drawingController.getJsonList());
+        }
+
+        // Store pages data in metadata
+        final pagesData = _notePages.map((page) => page.toMap()).toList();
+        final updatedMetaData = Map<String, dynamic>.from(content!.metaData);
+        updatedMetaData['pages'] = pagesData;
+        updatedMetaData['currentPageIndex'] = _currentPageIndex;
 
         // Create updated content with all current data including voice notes
-        final newContent = content!.getUpdatedContent(
+        final newContent = content!.getUpdatedContentWithMeta(
           title: titleController.text,
           content: richEditorContent,
-          // voiceNotes: content!.voiceNotes,
           drawing: drawingContent,
+          metaData: updatedMetaData,
           updatedAt: generateUnixTimestamp(),
         );
 
@@ -240,6 +449,35 @@ class NoteCreationVm extends ChangeNotifier {
     }
   }
 
+  Future<void> _saveCurrentPageContent() async {
+    if (currentPage == null) return;
+    
+    try {
+      // Save current text content
+      final textController = getCurrentPageTextController();
+      final textContent = jsonEncode(
+        textController.document.toDelta().toJson(),
+      );
+      
+      // Save current drawing content
+      final drawingController = getCurrentPageDrawingController();
+      final drawingContent = JsonEncoder.withIndent(
+        '  ',
+      ).convert(drawingController.getJsonList());
+      
+      // Update current page
+      final updatedPage = currentPage!.getUpdatedPage(
+        textContent: textContent,
+        drawingData: drawingContent,
+        updatedAt: generateUnixTimestamp(),
+      );
+      
+      _notePages[_currentPageIndex] = updatedPage;
+    } catch (e) {
+      debugPrint('Error saving current page content: $e');
+    }
+  }
+
   Content? content;
   bool fetchingContent = true;
 
@@ -259,13 +497,18 @@ class NoteCreationVm extends ChangeNotifier {
 
   QuillController richEditorController = QuillController.basic();
 
+  // Override richEditorController getter to use current page controller
+  QuillController get currentTextController => getCurrentPageTextController();
+
   void setMode(NoteMode mode) {
     _currentMode = mode;
 
-    richEditorController.readOnly = true;
-    // Handle mode-specific initialization
+    // Handle mode-specific initialization for current page
+    final currentController = getCurrentPageTextController();
+    currentController.readOnly = true;
+    
     if (mode == NoteMode.text) {
-      richEditorController.readOnly = false;
+      currentController.readOnly = false;
     } else if (mode == NoteMode.voice) {
       _initRecorder();
     }
@@ -480,6 +723,29 @@ class NoteCreationVm extends ChangeNotifier {
           debugPrint('Error loading drawing: $err');
         }
 
+        // Load pages data from metadata
+        if (content!.metaData.containsKey('pages')) {
+          try {
+            final pagesData = content!.metaData['pages'] as List<dynamic>;
+            _notePages = pagesData
+                .map((pageData) => NotePage.fromMap(Map<String, dynamic>.from(pageData)))
+                .toList();
+            
+            if (content!.metaData.containsKey('currentPageIndex')) {
+              _currentPageIndex = content!.metaData['currentPageIndex'] as int;
+              _currentPageIndex = _currentPageIndex.clamp(0, _notePages.length - 1);
+            }
+          } catch (e) {
+            debugPrint('Error loading pages data: $e');
+            // Fallback to creating pages from legacy content
+            _createPagesFromLegacyContent();
+          }
+        } else {
+          // Create pages from legacy content
+          _createPagesFromLegacyContent();
+        }
+
+        // Load legacy content for backward compatibility
         if (content!.content != null) {
           try {
             richEditorController.document = Document.fromJson(
@@ -667,6 +933,17 @@ class NoteCreationVm extends ChangeNotifier {
     summaryController.dispose();
     focusAreaController.dispose();
     summaryLengthController.dispose();
+    
+    // Dispose page controllers to prevent memory leaks
+    for (final controller in _pageDrawingControllers.values) {
+      controller.dispose();
+    }
+    for (final controller in _pageTextControllers.values) {
+      controller.dispose();
+    }
+    _pageDrawingControllers.clear();
+    _pageTextControllers.clear();
+    
     super.dispose();
   }
 }

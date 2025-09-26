@@ -9,7 +9,7 @@ Widget buildEditorToolBar(NoteCreationVm vm) {
     child: Container(
       color: Colors.white,
       child: QuillSimpleToolbar(
-        controller: vm.richEditorController,
+        controller: vm.currentTextController,
         //TODO check this didnt break stuff
         config: buildCustomToolbarConfig(
           showAlignmentButtons: true,
@@ -77,7 +77,7 @@ Widget buildTextEditor(
     padding: const EdgeInsets.only(top: 55, bottom: 24),
     child: ResponsiveHorizontalPadding(
       child: QuillEditor(
-        controller: vm.richEditorController,
+        controller: vm.currentTextController,
         scrollController: ScrollController(),
         focusNode: focusNode,
         config: const QuillEditorConfig(

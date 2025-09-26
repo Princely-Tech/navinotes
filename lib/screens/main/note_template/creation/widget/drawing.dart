@@ -166,12 +166,26 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerHover: (e) => setState(() => _cursorPos = e.localPosition),
-      onPointerMove: (e) => setState(() => _cursorPos = e.localPosition),
-      onPointerDown: (e) => setState(() => _cursorPos = e.localPosition),
-
-      // onPointerUp: (e) => setState(() => _cursorPos = null),
-      // onPointerExit: (e) => setState(() => _cursorPos = null),
+      onPointerHover: (e) {
+        if (mounted) {
+          setState(() => _cursorPos = e.localPosition);
+        }
+      },
+      onPointerMove: (e) {
+        if (mounted) {
+          setState(() => _cursorPos = e.localPosition);
+        }
+      },
+      onPointerDown: (e) {
+        if (mounted) {
+          setState(() => _cursorPos = e.localPosition);
+        }
+      },
+      onPointerUp: (e) {
+        if (mounted) {
+          setState(() => _cursorPos = null);
+        }
+      },
       child: Stack(
         children: [
           DrawingBoard(

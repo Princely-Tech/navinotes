@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/title.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/voice.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/multi_page_viewer.dart';
 import 'vm.dart';
-import 'widget/note_page.dart';
 
 class NoteCreationMain extends StatelessWidget {
   const NoteCreationMain({super.key});
@@ -30,9 +30,9 @@ class NoteCreationMain extends StatelessWidget {
               child: _modeSelector(vm, context),
             ),
             if (vm.currentMode != NoteMode.voice)
-              NoteDrawingWrapper(
+              MultiPageViewer(
                 vm: vm,
-                color: color,
+                backgroundColor: color,
                 inputWidth: inputWidth,
                 inputHeight: inputHeight,
               ),
