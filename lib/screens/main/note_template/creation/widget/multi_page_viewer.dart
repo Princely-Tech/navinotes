@@ -122,8 +122,21 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     if (!_transformationControllers.containsKey(pageId)) {
       _transformationControllers[pageId] = TransformationController();
       _zoomStates[pageId] = false;
+      
+      // Center the page on initial load
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _centerPage(pageId);
+      });
     }
     return _transformationControllers[pageId]!;
+  }
+
+  void _centerPage(String pageId) {
+    final controller = _transformationControllers[pageId];
+    if (controller != null) {
+      // Reset to identity matrix (centered and at scale 1.0)
+      controller.value = Matrix4.identity();
+    }
   }
 
   void _handleDoubleTap(NotePage page) {
@@ -136,7 +149,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     final fitToWidthScale = (screenWidth * 0.9) / pageDimensions.width;
     
     if (isZoomedToFit) {
-      // Zoom out to actual size (scale = 1.0)
+      // Zoom out to actual size (scale = 1.0) and center
       controller.value = Matrix4.identity();
       _zoomStates[page.id] = false;
     } else {
@@ -168,8 +181,14 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     final currentScale = controller.value.getMaxScaleOnAxis();
     final newScale = (currentScale / 1.2).clamp(0.5, 3.0);
     
-    final matrix = Matrix4.identity()..scale(newScale);
-    controller.value = matrix;
+    if (newScale <= 1.0) {
+      // If zooming to 1.0x or less, center the page
+      controller.value = Matrix4.identity()..scale(newScale);
+    } else {
+      // For scales above 1.0x, maintain current position
+      final matrix = Matrix4.identity()..scale(newScale);
+      controller.value = matrix;
+    }
     
     // Update zoom state
     _zoomStates[page.id] = newScale > 1.0;
@@ -337,7 +356,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withOpacity(0.4),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
