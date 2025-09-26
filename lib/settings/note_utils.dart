@@ -52,9 +52,9 @@ Future<void> createContentInDb({
         coverImage: null,
       );
       // Insert into database
-      final contentId = await DatabaseHelper.instance.insertContent(content);
+      final status = await DatabaseHelper.instance.insertContent(content);
 
-      if (contentId == 0) {
+      if (!status) {
         if (context.mounted) {
           MessageDisplayService.showErrorMessage(
             context,
@@ -62,9 +62,11 @@ Future<void> createContentInDb({
           );
         }
       } else {
-        debugPrint('Created content $contentId');
+        debugPrint('Content created successfully ${content.id}');
         // After inserting, we fetch the content back to get the string ID
-        final newContent = await DatabaseHelper.instance.getContentById(contentId.toString());
+        final newContent = await DatabaseHelper.instance.getContentById(
+          content.id,
+        );
         if (newContent != null) {
           return NavigationHelper.navigateToContent(newContent, replace: true);
         }

@@ -54,7 +54,7 @@ class NoteTemplateVm extends ChangeNotifier {
     createContentInDb(
       template: selectedTemplate,
       context: context,
-      boardId: board!.id!,
+      boardId: board!.id,
       setLoading: _setLoading,
     );
   }

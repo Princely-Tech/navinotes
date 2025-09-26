@@ -128,6 +128,12 @@ class SessionManager extends ChangeNotifier {
   String? getEmail() => user?.email ?? email;
   String? getOtp() => user?.otp ?? otp;
   String? getName() => user?.name;
+  String? getFirstName() {
+    if (user?.name != null) {
+      return user!.name.split(' ').first;
+    }
+    return null;
+  }
 }
 
 User? getCurrentUserFromSession(BuildContext context) {

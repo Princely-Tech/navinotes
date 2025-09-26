@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'vm.dart';
 import 'widgets.dart';
 
@@ -120,47 +121,51 @@ class EmptyDashboardMain extends StatelessWidget {
     required String title,
     required String body,
     required Widget icon,
+    void Function()? onTap,
   }) {
     return ExpandableController(
       mobile: false,
       desktop: true,
       child: ConstrainedBox(
         constraints: BoxConstraints(minWidth: 300),
-        child: CustomCard(
-          width: null,
-          padding: EdgeInsets.all(10),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            spacing: 15,
-            children: [
-              icon,
-              ExpandableController(
-                mobile: false,
-                desktop: true,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: AppTheme.text.copyWith(
-                        color: AppTheme.graphite,
-                        fontSize: 14.86,
-                        fontWeight: getFontWeight(500),
-                        height: 1.50,
+        child: InkWell(
+          onTap: onTap,
+          child: CustomCard(
+            width: null,
+            padding: EdgeInsets.all(10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 15,
+              children: [
+                icon,
+                ExpandableController(
+                  mobile: false,
+                  desktop: true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.graphite,
+                          fontSize: 14.86,
+                          fontWeight: getFontWeight(500),
+                          height: 1.50,
+                        ),
                       ),
-                    ),
-                    Text(
-                      body,
-                      style: AppTheme.text.copyWith(
-                        color: AppTheme.steelMist,
-                        fontSize: 11.15,
-                        height: 1.33,
+                      Text(
+                        body,
+                        style: AppTheme.text.copyWith(
+                          color: AppTheme.steelMist,
+                          fontSize: 11.15,
+                          height: 1.33,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -168,21 +173,21 @@ class EmptyDashboardMain extends StatelessWidget {
   }
 
   Widget _quickActions() {
-    Widget importPdf = _actionItem(
-      icon: OutlinedChild(
-        decoration: BoxDecoration(
-          color: AppTheme.paleBlue,
-          shape: BoxShape.circle,
-        ),
-        child: SVGImagePlaceHolder(
-          imagePath: Images.pdf,
-          size: 14,
-          color: AppTheme.vividBlue,
-        ),
-      ),
-      body: 'Convert documents to notes',
-      title: 'Import PDF',
-    );
+    // Widget importPdf = _actionItem(
+    //   icon: OutlinedChild(
+    //     decoration: BoxDecoration(
+    //       color: AppTheme.paleBlue,
+    //       shape: BoxShape.circle,
+    //     ),
+    //     child: SVGImagePlaceHolder(
+    //       imagePath: Images.pdf,
+    //       size: 14,
+    //       color: AppTheme.vividBlue,
+    //     ),
+    //   ),
+    //   body: 'Convert documents to notes',
+    //   title: 'Import PDF',
+    // );
     Widget takeTour = _actionItem(
       icon: OutlinedChild(
         decoration: BoxDecoration(
@@ -193,6 +198,14 @@ class EmptyDashboardMain extends StatelessWidget {
       ),
       body: 'Learn NaviNotes features',
       title: 'Take a Tour',
+      onTap: () async {
+        final Uri url = Uri.parse(
+          'https://youtu.be/zEFIyCFumiA?si=E3hOHldq50k6dDsM',
+        );
+        if (!await launchUrl(url)) {
+          throw Exception('Could not launch $url');
+        }
+      },
     );
     Widget connectCalender = _actionItem(
       icon: OutlinedChild(
@@ -221,10 +234,7 @@ class EmptyDashboardMain extends StatelessWidget {
         ScrollableController(
           desktop: false,
           scrollDirection: Axis.horizontal,
-          child: Row(
-            spacing: 10,
-            children: [importPdf, takeTour, connectCalender],
-          ),
+          child: Row(spacing: 10, children: [takeTour, connectCalender]),
         ),
       ],
     );
@@ -238,7 +248,7 @@ class EmptyDashboardMain extends StatelessWidget {
           spacing: 3,
           children: [
             Text(
-              'Welcome to ${AppStrings.appName}, ${sessionManager.getName()}!',
+              'Welcome to ${AppStrings.appName}, ${sessionManager.getFirstName()}!',
               style: AppTheme.text.copyWith(
                 color: AppTheme.graphite,
                 fontSize: 22.29,
