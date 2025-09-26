@@ -337,13 +337,16 @@ class _MultiPageViewerState extends State<MultiPageViewer>
 
     showDialog(
       context: context,
-      builder:
-          (context) => PageSettingsDialog(
-            currentFormat: vm.currentPage!.format,
-            onFormatChanged: (newFormat) {
-              vm.updateCurrentPageFormat(newFormat);
-            },
-          ),
+      builder: (context) => PageSettingsDialog(
+        currentFormat: vm.currentPage!.format,
+        onFormatChanged: (newFormat) {
+          vm.updateCurrentPageFormat(newFormat);
+        },
+        currentTemplate: vm.template,
+        onTemplateChanged: (newTemplate) {
+          vm.updateTemplate(newTemplate);
+        },
+      ),
     );
   }
 }

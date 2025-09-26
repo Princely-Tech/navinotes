@@ -339,15 +339,24 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   void updateCurrentPageFormat(PageFormat newFormat) {
-    if (currentPage == null) return;
-    
-    final updatedPage = currentPage!.getUpdatedPage(
-      format: newFormat,
-      updatedAt: generateUnixTimestamp(),
-    );
-    
-    _notePages[_currentPageIndex] = updatedPage;
+    if (currentPage != null) {
+      final pageIndex = _notePages.indexOf(currentPage!);
+      if (pageIndex != -1) {
+        _notePages[pageIndex] = currentPage!.copyWith(format: newFormat);
+        notifyListeners();
+        
+        // Save to database
+        updateContentInDb();
+      }
+    }
+  }
+
+  void updateTemplate(BoardNoteTemplate newTemplate) {
+    template = newTemplate;
     notifyListeners();
+    
+    // Save template change to database
+    updateContentInDb();
   }
 
   void _createPagesFromLegacyContent() {
