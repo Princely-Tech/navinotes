@@ -29,6 +29,8 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   late PageController _pageController;
   late AnimationController _addPageAnimationController;
   late Animation<double> _addPageAnimation;
+  final Map<String, TransformationController> _transformationControllers = {};
+  final Map<String, bool> _zoomStates = {};
 
   bool _showAddPageIndicator = false;
   String _addPageDirection = '';
@@ -40,6 +42,8 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       initialPage: widget.vm.currentPageIndex,
       viewportFraction: 0.95, // Show slight preview of adjacent pages
     );
+
+    // Transformation controllers will be created per page as needed
 
     _addPageAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -58,6 +62,10 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   void dispose() {
     _pageController.dispose();
     _addPageAnimationController.dispose();
+    // Dispose all transformation controllers
+    for (var controller in _transformationControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -110,6 +118,39 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     );
   }
 
+  TransformationController _getTransformationController(String pageId) {
+    if (!_transformationControllers.containsKey(pageId)) {
+      _transformationControllers[pageId] = TransformationController();
+      _zoomStates[pageId] = false;
+    }
+    return _transformationControllers[pageId]!;
+  }
+
+  void _handleDoubleTap(NotePage page) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final pageDimensions = page.format.actualDimensions;
+    final controller = _getTransformationController(page.id);
+    final isZoomedToFit = _zoomStates[page.id] ?? false;
+    
+    // Calculate the scale needed to fit page width to screen width
+    final fitToWidthScale = (screenWidth * 0.9) / pageDimensions.width;
+    
+    if (isZoomedToFit) {
+      // Zoom out to actual size (scale = 1.0)
+      controller.value = Matrix4.identity();
+      _zoomStates[page.id] = false;
+    } else {
+      // Zoom to fit width if page is smaller than screen
+      final currentScale = controller.value.getMaxScaleOnAxis();
+      if (currentScale < fitToWidthScale) {
+        final matrix = Matrix4.identity()
+          ..scale(fitToWidthScale);
+        controller.value = matrix;
+        _zoomStates[page.id] = true;
+      }
+    }
+  }
+
   Widget _buildPageWithZoomAndPan(NotePage page, NoteCreationVm vm) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -141,50 +182,38 @@ class _MultiPageViewerState extends State<MultiPageViewer>
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
-        child: Container(
-          width: displayWidth,
-          height: displayHeight,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
+        child: GestureDetector(
+          onDoubleTap: () => _handleDoubleTap(page),
+          child: InteractiveViewer(
+            transformationController: _getTransformationController(page.id),
+            minScale: 0.5,
+            maxScale: 3.0,
+            constrained: false,
+            child: Container(
+              width: displayWidth,
+              height: displayHeight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child:
-                vm.currentMode == NoteMode.read
-                    ? InteractiveViewer(
-                      minScale: 0.5,
-                      maxScale: 3.0,
-                      constrained: false,
-                      child: Container(
-                        width: pageDimensions.width,
-                        height: pageDimensions.height,
-                        child: Transform.scale(
-                          scale: displayScale,
-                          child: NotePageContent(
-                            page: page,
-                            vm: vm,
-                            backgroundColor: Colors.white,
-                            inputWidth: pageDimensions.width,
-                            inputHeight: pageDimensions.height,
-                          ),
-                        ),
-                      ),
-                    )
-                    : NotePageContent(
-                      page: page,
-                      vm: vm,
-                      backgroundColor: Colors.white,
-                      inputWidth: pageDimensions.width,
-                      inputHeight: pageDimensions.height,
-                    ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: NotePageContent(
+                  page: page,
+                  vm: vm,
+                  backgroundColor: Colors.white,
+                  inputWidth: pageDimensions.width,
+                  inputHeight: pageDimensions.height,
+                ),
+              ),
+            ),
           ),
         ),
       ),
