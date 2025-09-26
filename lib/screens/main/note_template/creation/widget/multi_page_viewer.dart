@@ -151,6 +151,30 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     }
   }
 
+  void _zoomIn(NotePage page) {
+    final controller = _getTransformationController(page.id);
+    final currentScale = controller.value.getMaxScaleOnAxis();
+    final newScale = (currentScale * 1.2).clamp(0.5, 3.0);
+    
+    final matrix = Matrix4.identity()..scale(newScale);
+    controller.value = matrix;
+    
+    // Update zoom state
+    _zoomStates[page.id] = newScale > 1.0;
+  }
+
+  void _zoomOut(NotePage page) {
+    final controller = _getTransformationController(page.id);
+    final currentScale = controller.value.getMaxScaleOnAxis();
+    final newScale = (currentScale / 1.2).clamp(0.5, 3.0);
+    
+    final matrix = Matrix4.identity()..scale(newScale);
+    controller.value = matrix;
+    
+    // Update zoom state
+    _zoomStates[page.id] = newScale > 1.0;
+  }
+
   Widget _buildPageWithZoomAndPan(NotePage page, NoteCreationVm vm) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -319,6 +343,22 @@ class _MultiPageViewerState extends State<MultiPageViewer>
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Zoom out button
+              if (vm.currentPage != null) ...[
+                GestureDetector(
+                  onTap: () => _zoomOut(vm.currentPage!),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    child: const Icon(
+                      Icons.zoom_out,
+                      color: Colors.white70,
+                      size: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              
               Text(
                 '${vm.currentPageIndex + 1} / ${vm.notePages.length}',
                 style: const TextStyle(
@@ -358,6 +398,22 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                     style: TextStyle(color: Colors.white54),
                   ),
                 ),
+              
+              // Zoom in button
+              if (vm.currentPage != null) ...[
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () => _zoomIn(vm.currentPage!),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    child: const Icon(
+                      Icons.zoom_in,
+                      color: Colors.white70,
+                      size: 18,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
