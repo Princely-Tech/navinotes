@@ -34,31 +34,42 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
                             desktop: false,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 15),
-                              child: AppButton(
-                                onTap: vm.gotToCreateNotePage,
-                                text: 'New Note Page',
-                                minHeight: 40,
-                                color: AppTheme.royalGold.withAlpha(0xE5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                prefix: Icon(
-                                  Icons.add,
-                                  color: AppTheme.white,
-                                  size: 20,
-                                ),
-                                style: AppTheme.text.copyWith(
-                                  color: AppTheme.eggShell.withAlpha(0xFF),
-                                  fontSize: 16.0,
-                                  fontFamily: AppTheme.fontCrimsonText,
-                                ),
+                              child: Column(
+                                children: [
+                                  AppButton(
+                                    onTap: vm.gotToCreateNotePage,
+                                    text: 'New Note Page',
+                                    minHeight: 40,
+                                    color: AppTheme.royalGold.withAlpha(0xE5),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    prefix: Icon(
+                                      Icons.add,
+                                      color: AppTheme.white,
+                                      size: 20,
+                                    ),
+                                    style: AppTheme.text.copyWith(
+                                      color: AppTheme.eggShell.withAlpha(0xFF),
+                                      fontSize: 16.0,
+                                      fontFamily: AppTheme.fontCrimsonText,
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.book_outlined),
+                                    title: const Text('New Notebook'),
+                                    onTap: () {
+                                      NavigationHelper.createAndNavigateToNewNotebook(vm.board);
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                           AppButton(
                             onTap:
-                                () => NavigationHelper.push(
-                                  Routes.boardLightAcademiaMindMap,
+                                () => NavigationHelper.createAndNavigateToNewMindMap(
+                                  vm.board,
                                 ),
                             color: AppTheme.almondCream,
                             borderColor: AppTheme.royalGold.withAlpha(0x4C),
@@ -75,42 +86,35 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
                                       size: 18,
                                     ),
                                     Flexible(
-                                      child: InkWell(
-                                        onTap: () {
-                                          NavigationHelper.createAndNavigateToNewMindMap(
-                                            vm.board,
-                                          );
-                                        },
-                                        child: Column(
-                                          spacing: 5,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Create Mind Map',
-                                              textAlign: TextAlign.center,
-                                              style: AppTheme.text.copyWith(
-                                                color: AppTheme.sepiaBrown,
-                                                fontSize: 16.0,
-                                                fontFamily:
-                                                    AppTheme.fontCrimsonText,
-                                                height: 1.50,
-                                              ),
+                                      child: Column(
+                                        spacing: 5,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Create Mind Map',
+                                            textAlign: TextAlign.center,
+                                            style: AppTheme.text.copyWith(
+                                              color: AppTheme.sepiaBrown,
+                                              fontSize: 16.0,
+                                              fontFamily:
+                                                  AppTheme.fontCrimsonText,
+                                              height: 1.50,
                                             ),
-                                            Text(
-                                              'See connections between notes',
-                                              textAlign: TextAlign.center,
-                                              style: AppTheme.text.copyWith(
-                                                color: AppTheme.sepiaBrown
-                                                    .withAlpha(0x99),
-                                                fontSize: 12.0,
-                                                fontFamily:
-                                                    AppTheme.fontCrimsonText,
-                                                height: 1.33,
-                                              ),
+                                          ),
+                                          Text(
+                                            'See connections between notes',
+                                            textAlign: TextAlign.center,
+                                            style: AppTheme.text.copyWith(
+                                              color: AppTheme.sepiaBrown
+                                                  .withAlpha(0x99),
+                                              fontSize: 12.0,
+                                              fontFamily:
+                                                  AppTheme.fontCrimsonText,
+                                              height: 1.33,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],

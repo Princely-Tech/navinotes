@@ -102,6 +102,13 @@ class RecentNotesMain extends StatelessWidget {
           color: AppTheme.vividBlue,
         );
         break;
+      case AppContentType.notebook:
+        icon = SVGImagePlaceHolder(
+          imagePath: Images.book,
+          size: 16,
+          color: AppTheme.vanillaDust,
+        );
+        break;
       case AppContentType.file:
         icon = SVGImagePlaceHolder(
           imagePath: Images.pdf,

@@ -26,24 +26,35 @@ class MinimalistNotePageAside extends StatelessWidget {
                           desktop: false,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 15),
-                            child: AppButton(
-                              onTap: vm.gotToCreateNotePage,
-                              text: 'New Note Page',
-                              minHeight: 40,
-                              color: AppTheme.steelBlue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              prefix: Icon(
-                                Icons.add,
-                                color: AppTheme.white,
-                                size: 20,
-                              ),
-                              style: AppTheme.text.copyWith(
-                                color: AppTheme.white,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w300,
-                              ),
+                            child: Column(
+                              children: [
+                                AppButton(
+                                  onTap: vm.gotToCreateNotePage,
+                                  text: 'New Note Page',
+                                  minHeight: 40,
+                                  color: AppTheme.steelBlue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  prefix: Icon(
+                                    Icons.add,
+                                    color: AppTheme.white,
+                                    size: 20,
+                                  ),
+                                  style: AppTheme.text.copyWith(
+                                    color: AppTheme.white,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                                ListTile(
+                                  leading: const Icon(Icons.book_outlined),
+                                  title: const Text('New Notebook'),
+                                  onTap: () {
+                                    NavigationHelper.createAndNavigateToNewNotebook(vm.board);
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ),

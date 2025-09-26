@@ -38,26 +38,37 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
                             desktop: false,
                             child: Padding(
                               padding: const EdgeInsets.only(bottom: 15),
-                              child: AppButton(
-                                onTap:
-                                    () => NavigationHelper.gotToNoteTemplate(),
-                                text: 'New Note Page',
-                                minHeight: 40,
-                                color: AppTheme.burntLeather.withAlpha(0xFF),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                  side: BorderSide(color: AppTheme.royalGold),
-                                ),
-                                prefix: Icon(
-                                  Icons.add,
-                                  color: AppTheme.royalGold,
-                                  size: 20,
-                                ),
-                                style: AppTheme.text.copyWith(
-                                  color: AppTheme.royalGold,
-                                  fontSize: 16.0,
-                                  fontFamily: AppTheme.fontCrimsonPro,
-                                ),
+                              child: Column(
+                                children: [
+                                  AppButton(
+                                    onTap:
+                                        () => NavigationHelper.gotToNoteTemplate(),
+                                    text: 'New Note Page',
+                                    minHeight: 40,
+                                    color: AppTheme.burntLeather.withAlpha(0xFF),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                      side: BorderSide(color: AppTheme.royalGold),
+                                    ),
+                                    prefix: Icon(
+                                      Icons.add,
+                                      color: AppTheme.royalGold,
+                                      size: 20,
+                                    ),
+                                    style: AppTheme.text.copyWith(
+                                      color: AppTheme.royalGold,
+                                      fontSize: 16.0,
+                                      fontFamily: AppTheme.fontCrimsonPro,
+                                    ),
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.book_outlined, color: AppTheme.royalGold),
+                                    title: const Text('New Notebook', style: TextStyle(color: AppTheme.royalGold)),
+                                    onTap: () {
+                                      NavigationHelper.createAndNavigateToNewNotebook(vm.board);
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                           ),

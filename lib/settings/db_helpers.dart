@@ -1,3 +1,4 @@
+import 'package:navinotes/models/notebook_page.dart';
 import 'package:navinotes/models/tag.dart';
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart';
@@ -110,6 +111,56 @@ class DatabaseHelper {
       created_at INTEGER,
       updated_at INTEGER,
       synced_at INTEGER
+    )
+    ''');
+
+    // New tables for GoodNotes-like notebook system
+    await db.execute('''
+    CREATE TABLE notebooks (
+      id TEXT PRIMARY KEY,
+      board_id TEXT,
+      title TEXT,
+      cover_image TEXT,
+      default_template TEXT,
+      total_pages INTEGER DEFAULT 0,
+      created_at INTEGER,
+      updated_at INTEGER
+    )
+    ''');
+
+    await db.execute('''
+    CREATE TABLE notebook_pages (
+      id TEXT PRIMARY KEY,
+      notebook_id TEXT,
+      page_number INTEGER,
+      template_data TEXT,
+      handwriting_data TEXT,
+      text_content TEXT,
+      drawing_data TEXT,
+      annotations TEXT,
+      has_content INTEGER DEFAULT 0,
+      created_at INTEGER,
+      updated_at INTEGER,
+      FOREIGN KEY (notebook_id) REFERENCES notebooks (id) ON DELETE CASCADE
+    )
+    ''');
+
+    await db.execute('''
+    CREATE TABLE paper_templates (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      size TEXT,
+      type TEXT,
+      color TEXT,
+      line_spacing TEXT,
+      show_margins INTEGER DEFAULT 1,
+      margin_left REAL DEFAULT 72.0,
+      margin_right REAL DEFAULT 72.0,
+      margin_top REAL DEFAULT 72.0,
+      margin_bottom REAL DEFAULT 72.0,
+      is_custom INTEGER DEFAULT 0,
+      created_at INTEGER,
+      updated_at INTEGER
     )
     ''');
   }
@@ -322,6 +373,96 @@ class DatabaseHelper {
       return Content.fromMap(maps.first);
     }
     return null;
+  }
+
+  // Notebook CRUD Operations
+  Future<bool> insertNotebook(Notebook notebook) async {
+    final db = await instance.database;
+    return 0 != await db.insert('notebooks', notebook.toMap());
+  }
+
+  Future<Notebook?> getNotebook(String notebookId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'notebooks',
+      where: 'id = ?',
+      whereArgs: [notebookId],
+    );
+    if (result.isNotEmpty) {
+      return Notebook.fromMap(result.first);
+    }
+    return null;
+  }
+
+  Future<List<Notebook>> getNotebooksForBoard(String boardId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'notebooks',
+      where: 'board_id = ?',
+      whereArgs: [boardId],
+      orderBy: 'updated_at DESC',
+    );
+    return result.map((json) => Notebook.fromMap(json)).toList();
+  }
+
+  Future<bool> updateNotebook(Notebook notebook) async {
+    final db = await instance.database;
+    return 0 != await db.update(
+      'notebooks',
+      notebook.toMap(),
+      where: 'id = ?',
+      whereArgs: [notebook.id],
+    );
+  }
+
+  Future<bool> deleteNotebook(String notebookId) async {
+    final db = await instance.database;
+    return 0 != await db.delete('notebooks', where: 'id = ?', whereArgs: [notebookId]);
+  }
+
+  // NotebookPage CRUD Operations
+  Future<bool> insertNotebookPage(NotebookPage page) async {
+    final db = await instance.database;
+    return 0 != await db.insert('notebook_pages', page.toMap());
+  }
+
+  Future<NotebookPage?> getNotebookPage(String pageId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'notebook_pages',
+      where: 'id = ?',
+      whereArgs: [pageId],
+    );
+    if (result.isNotEmpty) {
+      return NotebookPage.fromMap(result.first);
+    }
+    return null;
+  }
+
+  Future<List<NotebookPage>> getPagesForNotebook(String notebookId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'notebook_pages',
+      where: 'notebook_id = ?',
+      whereArgs: [notebookId],
+      orderBy: 'page_number ASC',
+    );
+    return result.map((json) => NotebookPage.fromMap(json)).toList();
+  }
+
+  Future<bool> updateNotebookPage(NotebookPage page) async {
+    final db = await instance.database;
+    return 0 != await db.update(
+      'notebook_pages',
+      page.toMap(),
+      where: 'id = ?',
+      whereArgs: [page.id],
+    );
+  }
+
+  Future<bool> deleteNotebookPage(String pageId) async {
+    final db = await instance.database;
+    return 0 != await db.delete('notebook_pages', where: 'id = ?', whereArgs: [pageId]);
   }
 
   Future close() async {

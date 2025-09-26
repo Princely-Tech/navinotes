@@ -55,7 +55,16 @@ class BoardPlainNotePageAside extends StatelessWidget {
     return Row(
       spacing: 10,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [NewNotesButton(isAside: true)],
+      children: [
+        NewNotesButton(isAside: true),
+        ListTile(
+          leading: const Icon(Icons.book_outlined),
+          title: const Text('New Notebook'),
+          onTap: () {
+            NavigationHelper.createAndNavigateToNewNotebook(board);
+          },
+        ),
+      ],
     );
   }
 

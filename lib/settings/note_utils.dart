@@ -63,7 +63,12 @@ Future<void> createContentInDb({
         }
       } else {
         debugPrint('Created content $contentId');
-        return NavigationHelper.navigateToContentById(contentId, replace:true);
+        // After inserting, we fetch the content back to get the string ID
+        final newContent = await DatabaseHelper.instance.getContentById(contentId.toString());
+        if (newContent != null) {
+          return NavigationHelper.navigateToContent(newContent, replace: true);
+        }
+
         // Navigate based on the template
         //   return NavigationHelper.navigateToNoteWithTemplate(
         //     template: template,

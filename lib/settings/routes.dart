@@ -4,6 +4,8 @@ import 'package:navinotes/screens/main/flashcards/ai/index.dart';
 import 'package:navinotes/screens/main/flashcards/index.dart';
 import 'package:navinotes/screens/notifications/index.dart';
 import 'package:navinotes/screens/pomodora/index.dart';
+import 'package:navinotes/models/notebook_page.dart';
+import 'package:navinotes/screens/main/notebook/notebook_page_viewer.dart';
 import 'package:navinotes/screens/profile/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 
@@ -65,6 +67,24 @@ Map<String, WidgetBuilder> routes = {
   Routes.pomodoroTimer: (context) => PomodoroTimerScreen(),
   Routes.profile: (context) => ProfileScreen(),
   Routes.notifications: (context) => NotificationsScreen(),
+
+  Routes.notebook: (context) {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is Map<String, dynamic>) {
+      final Notebook? notebook = args['notebook'] as Notebook?;
+      if (notebook != null) {
+        return NotebookPageViewer(
+          notebook: notebook,
+          onNotebookChanged: (updatedNotebook) {
+            // Handle notebook updates, e.g., save to DB
+          },
+        );
+      }
+    }
+    return const Scaffold(
+      body: Center(child: Text('Error: Notebook not found.')),
+    );
+  },
 
   // NavigationHelper.push(
   //                       Routes.mindMap,
@@ -148,6 +168,7 @@ class Routes {
   static const mindMap = 'mindMap';
   static const profile = 'profile';
   static const notifications = 'notifications';
+  static const notebook = 'notebook';
   // static const flashCards = 'flashCards';
   // static const flashCards = 'flashCards';
 }

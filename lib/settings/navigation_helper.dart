@@ -1,6 +1,7 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/note_utils.dart';
 import 'package:path/path.dart' as path;
-import 'package:uuid/uuid.dart';
+import 'dart:math';
 
 class NavigationHelper {
   NavigationHelper._();
@@ -56,28 +57,14 @@ class NavigationHelper {
   static void navigateToTutorial() {
     // push(Routes.noteTemplate, arguments: board);
   }
+
   static Future<void> gotToNewNoteTemplate(Board board) {
     return push(Routes.noteTemplate, arguments: board);
   }
 
-  //Note creation
-  // static navigateToNoteWithTemplate({
-  //   required BoardNoteTemplate template,
-  //   required int contentId,
-  //   {bool replace = false}
-  // }) async {
-  //         return navigateToNoteCreation(template, contentId);
-
-  //   // if (isNotNull(template.route)) {
-  //   //   return navigateToNoteTemplateRoute(template.route!, contentId);
-  //   // } else {
-  //   //   return navigateToNoteCreation(template, contentId);
-  //   // }
-  // }
-
   static void navigateToNoteCreation(
     BoardNoteTemplate template,
-    int contentId, {
+    String contentId, {
     bool replace = false,
   }) {
     if (replace) {
@@ -97,7 +84,7 @@ class NavigationHelper {
     push(Routes.flashcardStudy, arguments: deck);
   }
 
-  static void navigateToNoteTemplateRoute(String route, int contentId) {
+  static void navigateToNoteTemplateRoute(String route, String contentId) {
     push(route, arguments: contentId);
   }
 
@@ -120,25 +107,10 @@ class NavigationHelper {
 
   static Future navigateToBoard(
     Board board, {
-    // Object? arguments,
     bool replace = false,
     bool isNew = false,
   }) {
     return navigateToBoardPopup(board, replace: replace);
-
-    // final boardType = board.boardType ?? BoardTypeCodes.plain;
-
-    // final route = switch (boardType) {
-    //   BoardTypeCodes.plain => Routes.boardPlainEdit,
-    //   BoardTypeCodes.minimalist => Routes.boardMinimalistEdit,
-    //   BoardTypeCodes.darkAcademia => Routes.boardDarkAcademiaEdit,
-    //   BoardTypeCodes.lightAcademia => Routes.boardLightAcademiaEdit,
-    //   BoardTypeCodes.nature => Routes.boardNatureEdit,
-    // };
-    // if (replace) {
-    //   return NavigationHelper.pushReplacement(route, arguments: board);
-    // }
-    // return NavigationHelper.push(route, arguments: board);
   }
 
   static navigateToManualFlashCard(
@@ -185,7 +157,7 @@ class NavigationHelper {
     return NavigationHelper.push(route, arguments: board);
   }
 
-  static Future navigateToPdfView(int contentId) {
+  static Future navigateToPdfView(String contentId) {
     return push(Routes.viewPdf, arguments: contentId);
   }
 
@@ -200,35 +172,30 @@ class NavigationHelper {
   static navigateToContent(Content content, {bool replace = false}) async {
     debugPrint('Navigating to content ${content.id} - ${content.title}');
 
-    //Handle file
-    if (content.type == AppContentType.file) {
-      return _handleFileNavigation(content);
-    }
-
-    if (content.type == AppContentType.mindmap) {
-      push(Routes.mindMap, arguments: {'contentId': content.id});
-    }
-
     if (content.type == AppContentType.note) {
-      BoardNoteTemplate template = getNoteTemplateFromString(
-        content.metaData[ContentMetadataKey.template],
-      );
-
-      return navigateToNoteCreation(template, content.id!, replace: replace);
-
-      // return NavigationHelper.navigateToNoteWithTemplate(
-      //   template: template,
-      //   contentId: content.id!,
-      //   replace: replace,
-      // );
-    }
-
-    if (content.type == AppContentType.flashcardDeck) {
+      final boardId = content.boardId;
+      final board = await DatabaseHelper.instance.getBoard(boardId);
+      final route = NoteUtils.getNoteCreationRoute(board.type);
+      push(route, arguments: {'content': content});
+    } else if (content.type == AppContentType.notebook) {
+      final notebook = await DatabaseHelper.instance.getNotebook(content.id);
+      if (notebook != null) {
+        final pages = await DatabaseHelper.instance.getPagesForNotebook(notebook.id);
+        final notebookWithPages = notebook.copyWith(pages: pages);
+        push(Routes.notebook, arguments: {'notebook': notebookWithPages});
+      } else {
+        debugPrint('Error: Notebook with id ${content.id} not found.');
+      }
+    } else if (content.type == AppContentType.mindmap) {
+      push(Routes.mindMap, arguments: {'contentId': content.id});
+    } else if (content.type == AppContentType.file) {
+      handleFileNavigation(content);
+    } else if (content.type == AppContentType.flashcardDeck) {
       navigateToDeck(content);
     }
   }
 
-  static _handleFileNavigation(Content content) async {
+  static handleFileNavigation(Content content) async {
     try {
       final filePath = content.file;
       if (filePath == null || filePath.isEmpty) {
@@ -243,9 +210,8 @@ class NavigationHelper {
 
       final ext = path.extension(filePath).toLowerCase();
 
-      // Handle PDF files with custom viewer
       if (ext == '.pdf') {
-        navigateToPdfView(content.id!);
+        navigateToPdfView(content.id);
         return;
       }
 
@@ -258,7 +224,7 @@ class NavigationHelper {
     }
   }
 
-  static navigateToContentById(int contentId, {bool replace = false}) async {
+  static navigateToContentById(String contentId, {bool replace = false}) async {
     final content = await DatabaseHelper.instance.getContentById(contentId);
     return navigateToContent(content!, replace: replace);
   }
@@ -268,8 +234,8 @@ class NavigationHelper {
     navigateToManualFlashCard(ManualFlashCardProps(deck: deck));
   }
 
-  static navigateToDeckById(int deckId) async {
-    final deck = await DatabaseHelper.instance.getDeck(deckId);
+  static navigateToDeckById(String deckId) async {
+    final deck = await DatabaseHelper.instance.getDeck(int.parse(deckId));
     return navigateToDeck(deck!);
   }
 
@@ -289,13 +255,22 @@ class NavigationHelper {
     final adjective = adjectives[random.nextInt(adjectives.length)];
     final noun = nouns[random.nextInt(nouns.length)];
 
-    final title = '$adjective $noun ${generateUnixTimestamp() % 100}';
+    final title = '$adjective $noun ${DateTime.now().millisecondsSinceEpoch % 100}';
     final id = await _createNewContent(
       AppContentType.flashcardDeck,
       board,
       title,
     );
     return navigateToDeckById(id);
+  }
+
+  static createAndNavigateToNewNotebook(Board board) async {
+    final id = await _createNewContent(
+      AppContentType.notebook,
+      board,
+      'New Notebook',
+    );
+    return navigateToContentById(id);
   }
 
   static Future<String> _createNewContent(
@@ -306,9 +281,9 @@ class NavigationHelper {
     final content = Content(
       title: title,
       type: type,
-      boardId: board.id!,
-      createdAt: generateUnixTimestamp(),
-      updatedAt: generateUnixTimestamp(),
+      boardId: board.id,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
       metaData: {},
       tags: null,
       content: null,

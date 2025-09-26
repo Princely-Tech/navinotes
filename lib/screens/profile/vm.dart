@@ -73,6 +73,7 @@ class ProfileVm extends ChangeNotifier {
         for (final content in contents) {
           switch (content.type) {
             case AppContentType.note:
+            case AppContentType.notebook:
               notesCount++;
               break;
             case AppContentType.mindmap:

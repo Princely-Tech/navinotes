@@ -90,6 +90,7 @@ enum KanbanTaskTag {
 
 enum AppContentType {
   note,
+  notebook,
   mindmap,
 
   // syllabus,
@@ -101,6 +102,8 @@ enum AppContentType {
     switch (this) {
       case note:
         return 'Note';
+      case notebook:
+        return 'Notebook';
       case mindmap:
         return 'Mindmap';
       // case syllabus:
