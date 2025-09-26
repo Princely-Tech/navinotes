@@ -54,10 +54,9 @@ class _NotePageContentState extends State<NotePageContent> {
             children: [
               // Scrollable background + content
               SingleChildScrollView(
-                physics:
-                    (vm.currentMode == NoteMode.drawing && fingerCount < 2)
-                        ? const NeverScrollableScrollPhysics()
-                        : const BouncingScrollPhysics(),
+                physics: vm.currentMode == NoteMode.drawing
+                    ? const NeverScrollableScrollPhysics()
+                    : const BouncingScrollPhysics(),
                 child: Stack(
                   children: [
                     // Background pattern based on page template

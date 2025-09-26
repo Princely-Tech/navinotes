@@ -137,7 +137,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       width: screenWidth * 0.95,
       height: screenHeight * 0.8,
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5DC), // Beige/carton background
+        color: AppTheme.lightAsh,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
@@ -254,7 +254,6 @@ class _MultiPageViewerState extends State<MultiPageViewer>
             )
           else
             const SizedBox(width: 40),
-
 
           // Next page button
           if (vm.currentPageIndex < vm.notePages.length - 1)

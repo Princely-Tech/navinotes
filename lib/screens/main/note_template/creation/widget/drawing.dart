@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:navinotes/screens/main/note_template/creation/vm.dart';
-import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter_drawing_board/flutter_drawing_board.dart';
+import 'package:navinotes/screens/main/note_template/creation/vm.dart';
 import 'package:flutter_drawing_board/helpers.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
 

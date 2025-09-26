@@ -27,7 +27,8 @@ class NoteCreationScreen extends StatelessWidget {
       child: Consumer<NoteCreationVm>(
         builder: (_, vm, _) {
           return ScaffoldFrame(
-            backgroundColor: AppTheme.white,
+            // backgroundColor: AppTheme.white,
+            backgroundColor: AppTheme.lightAsh,
             scaffoldKey: _scaffoldKey,
             endDrawer: CustomDrawer(child: NoteCreationRight()),
             drawer: CustomDrawer(child: NoteCreationLeft()),

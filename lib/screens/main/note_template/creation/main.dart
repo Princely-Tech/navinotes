@@ -273,16 +273,17 @@ class NoteCreationMain extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => PageSettingsDialog(
-        currentFormat: vm.currentPage!.format,
-        onFormatChanged: (newFormat) {
-          vm.updateCurrentPageFormat(newFormat);
-        },
-        currentTemplate: vm.currentPage!.template,
-        onTemplateChanged: (newTemplate) {
-          vm.updateCurrentPageTemplate(newTemplate);
-        },
-      ),
+      builder:
+          (context) => PageSettingsDialog(
+            currentFormat: vm.currentPage!.format,
+            onFormatChanged: (newFormat) {
+              vm.updateCurrentPageFormat(newFormat);
+            },
+            currentTemplate: vm.currentPage!.template,
+            onTemplateChanged: (newTemplate) {
+              vm.updateCurrentPageTemplate(newTemplate);
+            },
+          ),
     );
   }
 }
