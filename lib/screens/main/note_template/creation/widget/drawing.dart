@@ -11,15 +11,20 @@ Widget buildDrawingBoard(
   double inputWidth,
   double inputHeight,
 ) {
+  // Validate dimensions to prevent "Invalid image dimensions" error
+  final validWidth = inputWidth.isFinite && inputWidth > 0 ? inputWidth : 595.0;
+  final validHeight = inputHeight.isFinite && inputHeight > 0 ? inputHeight : 842.0;
+
   return IgnorePointer(
     ignoring: vm.currentMode != NoteMode.drawing,
     child: Container(
-      width: inputWidth,
-      height: inputHeight,
+      width: validWidth,
+      height: validHeight,
       child: DrawingBoardWithCursor(
+        key: ValueKey('drawing_${vm.currentPageIndex}_${vm.drawingController.hashCode}'),
         controller: vm.drawingController,
-        width: inputWidth,
-        height: inputHeight,
+        width: validWidth,
+        height: validHeight,
       ),
     ),
   );
@@ -157,7 +162,43 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
   Offset? _cursorPos;
 
   @override
+  void initState() {
+    super.initState();
+    // Listen to drawing controller changes to trigger rebuilds
+    widget.controller.addListener(_onDrawingChanged);
+  }
+
+  @override
+  void didUpdateWidget(DrawingBoardWithCursor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      // Remove listener from old controller
+      oldWidget.controller.removeListener(_onDrawingChanged);
+      // Add listener to new controller
+      widget.controller.addListener(_onDrawingChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onDrawingChanged);
+    super.dispose();
+  }
+
+  void _onDrawingChanged() {
+    if (mounted) {
+      setState(() {
+        // Trigger rebuild when drawing content changes
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Validate dimensions to prevent rendering issues
+    final validWidth = widget.width.isFinite && widget.width > 0 ? widget.width : 595.0;
+    final validHeight = widget.height.isFinite && widget.height > 0 ? widget.height : 842.0;
+
     return Listener(
       onPointerHover: (e) {
         if (mounted) {
@@ -179,18 +220,19 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
           setState(() => _cursorPos = null);
         }
       },
-      child: Stack(
-        children: [
-          DrawingBoard(
-            controller: widget.controller,
-            background: Container(
-              width: widget.width,
-              height: widget.height,
-              color: Colors.transparent,
+      child: RepaintBoundary(
+        child: Stack(
+          children: [
+            DrawingBoard(
+              controller: widget.controller,
+              background: Container(
+                width: validWidth,
+                height: validHeight,
+                color: Colors.transparent,
+              ),
+              showDefaultActions: false,
+              showDefaultTools: false,
             ),
-            showDefaultActions: false,
-            showDefaultTools: false,
-          ),
           if (_cursorPos != null)
             ValueListenableBuilder<DrawConfig>(
               valueListenable: widget.controller.drawConfig,
@@ -212,6 +254,7 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
               },
             ),
         ],
+        ),
       ),
     );
   }

@@ -3,10 +3,13 @@ import 'package:navinotes/packages.dart';
 import 'package:navinotes/models/note_page.dart';
 import 'package:navinotes/models/page_format.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 
 enum NoteMode { text, drawing, voice, read }
 
@@ -185,7 +188,12 @@ class NoteCreationVm extends ChangeNotifier {
     
     final pageId = currentPage!.id;
     if (!_pageDrawingControllers.containsKey(pageId)) {
-      _pageDrawingControllers[pageId] = DrawingController();
+      final controller = DrawingController();
+      // Add listener to auto-save when drawing changes
+      controller.addListener(() {
+        _autoSaveCurrentPage();
+      });
+      _pageDrawingControllers[pageId] = controller;
     }
     return _pageDrawingControllers[pageId]!;
   }
@@ -679,8 +687,24 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   void clearDrawing() {
-    _drawingController.clear();
+    final controller = getCurrentPageDrawingController();
+    controller.clear();
     notifyListeners();
+  }
+
+  void refreshDrawingState() {
+    // Force a state update to ensure drawing changes are reflected
+    notifyListeners();
+  }
+
+  void _autoSaveCurrentPage() {
+    // Auto-save the current page when drawing changes
+    if (currentPage != null) {
+      // Use a timer to debounce rapid changes
+      Timer(const Duration(milliseconds: 500), () {
+        _saveCurrentPageContent();
+      });
+    }
   }
 
   void openDrawer() {

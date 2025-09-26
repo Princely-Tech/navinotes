@@ -122,37 +122,45 @@ class _NotePageContentState extends State<NotePageContent> {
     // For current page, show interactive content based on mode
     switch (vm.currentMode) {
       case NoteMode.text:
+        // Validate dimensions to prevent "Invalid image dimensions" error
+        final validWidth = widget.inputWidth.isFinite && widget.inputWidth > 0 ? widget.inputWidth : 595.0;
+        final validHeight = widget.inputHeight.isFinite && widget.inputHeight > 0 ? widget.inputHeight : 842.0;
+        
         return [
           // Drawing layer (non-interactive in text mode)
           IgnorePointer(
             ignoring: true,
             child: SizedBox(
-              width: widget.inputWidth,
-              height: widget.inputHeight,
+              width: validWidth,
+              height: validHeight,
               child: buildDrawingBoard(
                 vm,
-                widget.inputWidth,
-                widget.inputHeight,
+                validWidth,
+                validHeight,
               ),
             ),
           ),
           // Text editor (interactive) - full page coverage
           Positioned.fill(
             child: SizedBox(
-              width: widget.inputWidth,
-              height: widget.inputHeight,
-              child: buildTextEditor(vm, widget.inputWidth, widget.inputHeight),
+              width: validWidth,
+              height: validHeight,
+              child: buildTextEditor(vm, validWidth, validHeight),
             ),
           ),
         ];
       case NoteMode.drawing:
+        // Validate dimensions to prevent "Invalid image dimensions" error
+        final validWidth = widget.inputWidth.isFinite && widget.inputWidth > 0 ? widget.inputWidth : 595.0;
+        final validHeight = widget.inputHeight.isFinite && widget.inputHeight > 0 ? widget.inputHeight : 842.0;
+        
         return [
           // Text editor (non-interactive in drawing mode)
           Positioned.fill(
             child: SizedBox(
-              width: widget.inputWidth,
-              height: widget.inputHeight,
-              child: buildTextEditor(vm, widget.inputWidth, widget.inputHeight),
+              width: validWidth,
+              height: validHeight,
+              child: buildTextEditor(vm, validWidth, validHeight),
             ),
           ),
           // Drawing layer (interactive)
@@ -160,12 +168,12 @@ class _NotePageContentState extends State<NotePageContent> {
             child: IgnorePointer(
               ignoring: false,
               child: SizedBox(
-                width: widget.inputWidth,
-                height: widget.inputHeight,
+                width: validWidth,
+                height: validHeight,
                 child: buildDrawingBoard(
                   vm,
-                  widget.inputWidth,
-                  widget.inputHeight,
+                  validWidth,
+                  validHeight,
                 ),
               ),
             ),
@@ -212,11 +220,13 @@ class _NotePageContentState extends State<NotePageContent> {
       return const SizedBox.shrink();
     }
 
-    try {
-      // Create a read-only drawing controller for this page
-      final drawingController = DrawingController();
+    // Validate dimensions to prevent "Invalid image dimensions" error
+    final validWidth = widget.inputWidth.isFinite && widget.inputWidth > 0 ? widget.inputWidth : 595.0;
+    final validHeight = widget.inputHeight.isFinite && widget.inputHeight > 0 ? widget.inputHeight : 842.0;
 
-      // Load the drawing data using the same method as in ViewModel
+    try {
+      // Create a read-only DrawingController for this page
+      final drawingController = DrawingController();
       final List<dynamic> drawingList = jsonDecode(widget.page.drawingData!);
 
       for (var item in drawingList) {
@@ -253,15 +263,15 @@ class _NotePageContentState extends State<NotePageContent> {
 
       return Positioned.fill(
         child: SizedBox(
-          width: widget.inputWidth,
-          height: widget.inputHeight,
+          width: validWidth,
+          height: validHeight,
           child: IgnorePointer(
             ignoring: true, // Make it non-interactive in read mode
             child: DrawingBoard(
               controller: drawingController,
               background: Container(
-                width: widget.inputWidth,
-                height: widget.inputHeight,
+                width: validWidth,
+                height: validHeight,
                 color: Colors.transparent,
               ),
               showDefaultActions: false,

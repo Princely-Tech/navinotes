@@ -98,6 +98,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8),
+
                     child: _buildPageWithZoomAndPan(vm.notePages[index], vm),
                   );
                 },
@@ -122,7 +123,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     if (!_transformationControllers.containsKey(pageId)) {
       _transformationControllers[pageId] = TransformationController();
       _zoomStates[pageId] = false;
-      
+
       // Center the page on initial load
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _centerPage(pageId);
@@ -144,10 +145,10 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     final pageDimensions = page.format.actualDimensions;
     final controller = _getTransformationController(page.id);
     final isZoomedToFit = _zoomStates[page.id] ?? false;
-    
+
     // Calculate the scale needed to fit page width to screen width
     final fitToWidthScale = (screenWidth * 0.9) / pageDimensions.width;
-    
+
     if (isZoomedToFit) {
       // Zoom out to actual size (scale = 1.0) and center
       controller.value = Matrix4.identity();
@@ -156,8 +157,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       // Zoom to fit width if page is smaller than screen
       final currentScale = controller.value.getMaxScaleOnAxis();
       if (currentScale < fitToWidthScale) {
-        final matrix = Matrix4.identity()
-          ..scale(fitToWidthScale);
+        final matrix = Matrix4.identity()..scale(fitToWidthScale);
         controller.value = matrix;
         _zoomStates[page.id] = true;
       }
@@ -168,10 +168,10 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     final controller = _getTransformationController(page.id);
     final currentScale = controller.value.getMaxScaleOnAxis();
     final newScale = (currentScale * 1.2).clamp(0.5, 3.0);
-    
+
     final matrix = Matrix4.identity()..scale(newScale);
     controller.value = matrix;
-    
+
     // Update zoom state
     _zoomStates[page.id] = newScale > 1.0;
   }
@@ -180,7 +180,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     final controller = _getTransformationController(page.id);
     final currentScale = controller.value.getMaxScaleOnAxis();
     final newScale = (currentScale / 1.2).clamp(0.5, 3.0);
-    
+
     if (newScale <= 1.0) {
       // If zooming to 1.0x or less, center the page
       controller.value = Matrix4.identity()..scale(newScale);
@@ -189,7 +189,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       final matrix = Matrix4.identity()..scale(newScale);
       controller.value = matrix;
     }
-    
+
     // Update zoom state
     _zoomStates[page.id] = newScale > 1.0;
   }
@@ -377,7 +377,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                 ),
                 const SizedBox(width: 8),
               ],
-              
+
               Text(
                 '${vm.currentPageIndex + 1} / ${vm.notePages.length}',
                 style: const TextStyle(
@@ -417,7 +417,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                     style: TextStyle(color: Colors.white54),
                   ),
                 ),
-              
+
               // Zoom in button
               if (vm.currentPage != null) ...[
                 const SizedBox(width: 8),
