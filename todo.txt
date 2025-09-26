@@ -1,8 +1,11 @@
 
-pdf editor
-note templates
+improve pdf editor. Fix annotation
 
-settings
-profile
+note page:
+1. set and store the canvas size on the content model
+2. allow panning
+3. allow zooming
+4. the text font and the drawings should match the zoom level
+
 
 market place categories and subcategories
