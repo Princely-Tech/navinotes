@@ -100,7 +100,13 @@ class PageFormat {
 
   /// Get actual dimensions considering orientation
   Size get actualDimensions {
-    Size baseDimensions = customSize ?? size.dimensions;
+    Size baseDimensions;
+    
+    if (size == PageSize.custom && customSize != null) {
+      baseDimensions = customSize!;
+    } else {
+      baseDimensions = size.dimensions;
+    }
     
     if (orientation == PageOrientation.landscape) {
       return Size(baseDimensions.height, baseDimensions.width);
@@ -185,6 +191,10 @@ class PageFormat {
 
   @override
   String toString() {
+    if (size == PageSize.custom && customSize != null) {
+      final dims = actualDimensions;
+      return 'Custom ${dims.width.toInt()}×${dims.height.toInt()} ${orientation.displayName}';
+    }
     return '${size.displayName} ${orientation.displayName}';
   }
 }

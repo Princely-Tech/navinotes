@@ -29,10 +29,10 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   late PageController _pageController;
   late AnimationController _addPageAnimationController;
   late Animation<double> _addPageAnimation;
-  
+
   bool _showAddPageIndicator = false;
   String _addPageDirection = '';
-  
+
   @override
   void initState() {
     super.initState();
@@ -40,19 +40,18 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       initialPage: widget.vm.currentPageIndex,
       viewportFraction: 0.95, // Show slight preview of adjacent pages
     );
-    
+
     _addPageAnimationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    
-    _addPageAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _addPageAnimationController,
-      curve: Curves.elasticOut,
-    ));
+
+    _addPageAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _addPageAnimationController,
+        curve: Curves.elasticOut,
+      ),
+    );
   }
 
   @override
@@ -83,13 +82,13 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                   );
                 },
               ),
-              
+
               // Add page indicators
               if (_showAddPageIndicator) _buildAddPageIndicator(),
-              
+
               // Page navigation controls
               _buildPageControls(vm),
-              
+
               // Page indicator dots
               _buildPageIndicator(vm),
             ],
@@ -100,30 +99,27 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   }
 
   Widget _buildPageWithZoomAndPan(NotePage page, NoteCreationVm vm) {
-    // Calculate page dimensions based on format
-    final displaySize = page.format.getDisplayDimensions(scale: 0.6);
+    // Calculate page dimensions based on format with better scaling
     final aspectRatio = page.format.aspectRatio;
-    
-    // Ensure minimum size for usability
-    final minWidth = 300.0;
-    final minHeight = 400.0;
-    
-    double pageWidth = math.max(displaySize.width, minWidth);
-    double pageHeight = math.max(displaySize.height, minHeight);
-    
-    // Adjust for container constraints
-    final containerWidth = MediaQuery.of(context).size.width * 0.9;
-    final containerHeight = MediaQuery.of(context).size.height * 0.7;
-    
-    if (pageWidth > containerWidth) {
-      pageWidth = containerWidth;
-      pageHeight = pageWidth / aspectRatio;
-    }
-    
-    if (pageHeight > containerHeight) {
-      pageHeight = containerHeight;
+
+    // Use screen dimensions as base, but maintain aspect ratio
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Calculate optimal page size to fit screen while maintaining aspect ratio
+    double pageWidth = screenWidth * 0.85; // Use 85% of screen width
+    double pageHeight = pageWidth / aspectRatio;
+
+    // If height is too large, scale down based on height
+    final maxHeight = screenHeight * 0.75; // Use 75% of screen height
+    if (pageHeight > maxHeight) {
+      pageHeight = maxHeight;
       pageWidth = pageHeight * aspectRatio;
     }
+
+    // Ensure minimum usable size
+    pageWidth = math.max(pageWidth, 400.0);
+    pageHeight = math.max(pageHeight, 500.0);
 
     return Container(
       decoration: BoxDecoration(
@@ -139,22 +135,34 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: InteractiveViewer(
-          minScale: 0.5,
-          maxScale: 3.0,
-          constrained: false,
-          child: Container(
-            width: pageWidth,
-            height: pageHeight,
-            child: NotePageContent(
-              page: page,
-              vm: vm,
-              backgroundColor: widget.backgroundColor,
-              inputWidth: pageWidth,
-              inputHeight: pageHeight,
-            ),
-          ),
-        ),
+        child: vm.currentMode == NoteMode.read
+            ? InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 3.0,
+                constrained: false,
+                child: Container(
+                  width: pageWidth,
+                  height: pageHeight,
+                  child: NotePageContent(
+                    page: page,
+                    vm: vm,
+                    backgroundColor: widget.backgroundColor,
+                    inputWidth: pageWidth,
+                    inputHeight: pageHeight,
+                  ),
+                ),
+              )
+            : Container(
+                width: pageWidth,
+                height: pageHeight,
+                child: NotePageContent(
+                  page: page,
+                  vm: vm,
+                  backgroundColor: widget.backgroundColor,
+                  inputWidth: pageWidth,
+                  inputHeight: pageHeight,
+                ),
+              ),
       ),
     );
   }
@@ -179,11 +187,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 32,
-                  ),
+                  Icon(Icons.add, color: Colors.white, size: 32),
                   const SizedBox(height: 8),
                   Text(
                     'Release to\nadd page',
@@ -226,27 +230,27 @@ class _MultiPageViewerState extends State<MultiPageViewer>
             )
           else
             const SizedBox(width: 40),
-          
+
           // Page settings and add page buttons
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FloatingActionButton.small(
-                heroTag: "page_settings",
-                onPressed: () => _showPageSettings(vm),
-                backgroundColor: Colors.white.withOpacity(0.9),
-                child: const Icon(Icons.settings),
-              ),
-              const SizedBox(width: 8),
-              FloatingActionButton.small(
-                heroTag: "add_page",
-                onPressed: () => vm.addNewPage(),
-                backgroundColor: Theme.of(context).primaryColor,
-                child: const Icon(Icons.add, color: Colors.white),
-              ),
-            ],
-          ),
-          
+          // Row(
+          //   mainAxisSize: MainAxisSize.min,
+          //   children: [
+          //     FloatingActionButton.small(
+          //       heroTag: "page_settings",
+          //       onPressed: () => _showPageSettings(vm),
+          //       backgroundColor: Colors.white.withOpacity(0.9),
+          //       child: const Icon(Icons.settings),
+          //     ),
+          //     const SizedBox(width: 8),
+          //     FloatingActionButton.small(
+          //       heroTag: "add_page",
+          //       onPressed: () => vm.addNewPage(),
+          //       backgroundColor: Theme.of(context).primaryColor,
+          //       child: const Icon(Icons.add, color: Colors.white),
+          //     ),
+          //   ],
+          // ),
+
           // Next page button
           if (vm.currentPageIndex < vm.notePages.length - 1)
             FloatingActionButton.small(
@@ -294,10 +298,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                 const SizedBox(width: 8),
                 Text(
                   '• ${vm.currentPage!.format}',
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                  ),
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
               const SizedBox(width: 12),
@@ -333,16 +334,16 @@ class _MultiPageViewerState extends State<MultiPageViewer>
 
   void _showPageSettings(NoteCreationVm vm) {
     if (vm.currentPage == null) return;
-    
+
     showDialog(
       context: context,
-      builder: (context) => PageSettingsDialog(
-        currentFormat: vm.currentPage!.format,
-        onFormatChanged: (newFormat) {
-          vm.updateCurrentPageFormat(newFormat);
-        },
-      ),
+      builder:
+          (context) => PageSettingsDialog(
+            currentFormat: vm.currentPage!.format,
+            onFormatChanged: (newFormat) {
+              vm.updateCurrentPageFormat(newFormat);
+            },
+          ),
     );
   }
-
 }

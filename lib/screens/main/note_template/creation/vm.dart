@@ -8,7 +8,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
-enum NoteMode { text, drawing, voice }
+enum NoteMode { text, drawing, voice, read }
 
 class NoteCreationVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;

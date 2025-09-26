@@ -21,10 +21,13 @@ void _showTitleEditDialog(NoteCreationVm vm) {
             color: const Color(0xFF374151),
           ),
         ),
-        content: CustomInputField(
-          controller: dialogController,
-          hintText: 'Enter note title',
-          style: TextStyle(fontSize: 16, color: const Color(0xFF374151)),
+        content: SizedBox(
+          height: 80,
+          child: CustomInputField(
+            controller: dialogController,
+            hintText: 'Enter note title',
+            style: TextStyle(fontSize: 16, color: const Color(0xFF374151)),
+          ),
         ),
         actions: [
           TextButton(

@@ -74,7 +74,6 @@ Widget buildTextEditor(
   return Container(
     width: inputWidth,
     height: inputHeight,
-    padding: const EdgeInsets.only(top: 55, bottom: 24),
     child: ResponsiveHorizontalPadding(
       child: QuillEditor(
         controller: vm.currentTextController,
@@ -83,7 +82,7 @@ Widget buildTextEditor(
         config: const QuillEditorConfig(
           placeholder: 'Start writing your note...',
           showCursor: true,
-          padding: EdgeInsets.all(12.0),
+          padding: EdgeInsets.all(16.0),
           expands: true,
           scrollable: true,
         ),

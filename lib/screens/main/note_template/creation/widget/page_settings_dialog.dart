@@ -18,11 +18,30 @@ class PageSettingsDialog extends StatefulWidget {
 
 class _PageSettingsDialogState extends State<PageSettingsDialog> {
   late PageFormat _selectedFormat;
+  final TextEditingController _customWidthController = TextEditingController();
+  final TextEditingController _customHeightController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _selectedFormat = widget.currentFormat;
+    
+    // Initialize custom size controllers if current format is custom
+    if (_selectedFormat.size == PageSize.custom && _selectedFormat.customSize != null) {
+      _customWidthController.text = _selectedFormat.customSize!.width.toInt().toString();
+      _customHeightController.text = _selectedFormat.customSize!.height.toInt().toString();
+    } else {
+      // Default custom size (A4 dimensions in points)
+      _customWidthController.text = '595';
+      _customHeightController.text = '842';
+    }
+  }
+
+  @override
+  void dispose() {
+    _customWidthController.dispose();
+    _customHeightController.dispose();
+    super.dispose();
   }
 
   @override
@@ -125,37 +144,159 @@ class _PageSettingsDialogState extends State<PageSettingsDialog> {
   }
 
   Widget _buildPageSizeGrid() {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: PageSize.values.where((size) => size != PageSize.custom).map((size) {
-        final isSelected = _selectedFormat.size == size;
-        return InkWell(
-          onTap: () {
-            setState(() {
-              _selectedFormat = _selectedFormat.copyWith(size: size);
-            });
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
-              border: Border.all(
-                color: isSelected ? Theme.of(context).primaryColor : Colors.grey[300]!,
-                width: isSelected ? 2 : 1,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: PageSize.values.map((size) {
+            final isSelected = _selectedFormat.size == size;
+            return InkWell(
+              onTap: () {
+                setState(() {
+                  if (size == PageSize.custom) {
+                    _selectedFormat = _selectedFormat.copyWith(
+                      size: size,
+                      customSize: Size(
+                        double.tryParse(_customWidthController.text) ?? 595,
+                        double.tryParse(_customHeightController.text) ?? 842,
+                      ),
+                    );
+                  } else {
+                    _selectedFormat = _selectedFormat.copyWith(size: size);
+                  }
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
+                  border: Border.all(
+                    color: isSelected ? Theme.of(context).primaryColor : Colors.grey[300]!,
+                    width: isSelected ? 2 : 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  size.displayName,
+                  style: TextStyle(
+                    color: isSelected ? Theme.of(context).primaryColor : null,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                ),
               ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              size.displayName,
-              style: TextStyle(
-                color: isSelected ? Theme.of(context).primaryColor : null,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
+            );
+          }).toList(),
+        ),
+        
+        // Custom size input fields
+        if (_selectedFormat.size == PageSize.custom) ...[
+          const SizedBox(height: 16),
+          const Text(
+            'Custom Dimensions (in points)',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
           ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _customWidthController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Width',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  onChanged: (value) {
+                    _updateCustomSize();
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text('×'),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: _customHeightController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Height',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  onChanged: (value) {
+                    _updateCustomSize();
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Reference: A4 = 595×842, Letter = 612×792',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Quick Presets:',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Wrap(
+            spacing: 8,
+            children: [
+              _buildPresetButton('Square', 595, 595),
+              _buildPresetButton('Wide', 842, 595),
+              _buildPresetButton('Tall', 420, 842),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  void _updateCustomSize() {
+    if (_selectedFormat.size == PageSize.custom) {
+      final width = double.tryParse(_customWidthController.text) ?? 595;
+      final height = double.tryParse(_customHeightController.text) ?? 842;
+      
+      setState(() {
+        _selectedFormat = _selectedFormat.copyWith(
+          customSize: Size(width, height),
         );
-      }).toList(),
+      });
+    }
+  }
+
+  Widget _buildPresetButton(String label, double width, double height) {
+    return InkWell(
+      onTap: () {
+        _customWidthController.text = width.toInt().toString();
+        _customHeightController.text = height.toInt().toString();
+        _updateCustomSize();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[300]!),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(fontSize: 11),
+        ),
+      ),
     );
   }
 
@@ -209,10 +350,12 @@ class _PageSettingsDialogState extends State<PageSettingsDialog> {
 
   Widget _buildPreview() {
     final previewSize = _selectedFormat.getDisplayDimensions(scale: 0.3);
+    final actualDimensions = _selectedFormat.actualDimensions;
+    
     return Center(
       child: Container(
-        width: previewSize.width,
-        height: previewSize.height,
+        width: previewSize.width.clamp(60.0, 120.0),
+        height: previewSize.height.clamp(80.0, 160.0),
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: Colors.grey[300]!),
@@ -243,6 +386,16 @@ class _PageSettingsDialogState extends State<PageSettingsDialog> {
                   color: Colors.grey[600],
                 ),
               ),
+              if (_selectedFormat.size == PageSize.custom) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '${actualDimensions.width.toInt()}×${actualDimensions.height.toInt()}',
+                  style: TextStyle(
+                    fontSize: 9,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
             ],
           ),
         ),

@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/title.dart';
-import 'package:navinotes/screens/main/note_template/creation/widget/voice.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/multi_page_viewer.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/page_settings_dialog.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/centered_toolbar.dart';
 import 'vm.dart';
 
 class NoteCreationMain extends StatelessWidget {
@@ -25,20 +25,16 @@ class NoteCreationMain extends StatelessWidget {
         return Column(
           children: [
             _header(vm),
-            VisibleController(
-              mobile: true,
-              tablet: false,
-              child: _modeSelector(vm, context),
-            ),
-            if (vm.currentMode != NoteMode.voice)
-              MultiPageViewer(
+            // Centered toolbar above pages
+            CenteredToolbar(vm: vm),
+            Expanded(
+              child: MultiPageViewer(
                 vm: vm,
                 backgroundColor: color,
                 inputWidth: inputWidth,
                 inputHeight: inputHeight,
               ),
-            if (vm.currentMode == NoteMode.voice)
-              buildVoiceRecorder(vm, color, context),
+            ),
           ],
         );
       },
@@ -77,12 +73,6 @@ class NoteCreationMain extends StatelessWidget {
                       Row(
                         children: [
                           // IconButton(
-                          //   icon: const Icon(Icons.save, size: 24),
-                          //   onPressed: () {
-                          //     vm.updateContentInDb(showSnackBar: true);
-                          //   },
-                          //   tooltip: 'Save Note',
-                          // ),
                           if (layoutVm.deviceType != DeviceType.mobile)
                             _shareAndAI(vm),
                           VisibleController(
@@ -126,17 +116,24 @@ class NoteCreationMain extends StatelessWidget {
             children: [
               _buildModeButton(
                 context,
-                icon: Icons.text_fields,
-                label: 'Text',
-                isActive: vm.currentMode == NoteMode.text,
-                onTap: () => vm.setMode(NoteMode.text),
+                icon: Icons.menu_book,
+                label: 'Read',
+                isActive: vm.currentMode == NoteMode.read,
+                onTap: () => vm.setMode(NoteMode.read),
               ),
               _buildModeButton(
                 context,
                 icon: Icons.brush,
-                label: 'Draw',
+                label: 'Hand',
                 isActive: vm.currentMode == NoteMode.drawing,
                 onTap: () => vm.setMode(NoteMode.drawing),
+              ),
+              _buildModeButton(
+                context,
+                icon: Icons.text_fields,
+                label: 'Text',
+                isActive: vm.currentMode == NoteMode.text,
+                onTap: () => vm.setMode(NoteMode.text),
               ),
               _buildModeButton(
                 context,
