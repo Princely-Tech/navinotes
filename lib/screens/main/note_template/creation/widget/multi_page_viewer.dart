@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:navinotes/models/note_page.dart';
-import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/note_template/creation/vm.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/note_page_content.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/page_settings_dialog.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/page_navigator.dart';
+import 'package:navinotes/packages.dart';
 
 class MultiPageViewer extends StatefulWidget {
   final NoteCreationVm vm;
@@ -219,6 +220,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
 
     // Canvas background (carton/desk color)
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 60, vertical: 0),
       width: screenWidth * 0.95,
       height: screenHeight * 0.8,
       decoration: BoxDecoration(
@@ -358,90 +360,104 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       left: 0,
       right: 0,
       child: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Zoom out button
-              if (vm.currentPage != null) ...[
-                GestureDetector(
-                  onTap: () => _zoomOut(vm.currentPage!),
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    child: const Icon(
-                      Icons.zoom_out,
-                      color: Colors.white70,
-                      size: 18,
+        child: GestureDetector(
+          onTap: () => _showPageNavigator(vm),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Zoom out button
+                if (vm.currentPage != null) ...[
+                  GestureDetector(
+                    onTap: () => _zoomOut(vm.currentPage!),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      child: const Icon(
+                        Icons.zoom_out,
+                        color: Colors.white70,
+                        size: 18,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-              ],
+                  const SizedBox(width: 8),
+                ],
 
-              Text(
-                '${vm.currentPageIndex + 1} / ${vm.notePages.length}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              if (vm.currentPage != null) ...[
-                const SizedBox(width: 8),
                 Text(
-                  '• ${vm.currentPage!.format}',
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-              ],
-              const SizedBox(width: 12),
-              ...List.generate(
-                vm.notePages.length.clamp(0, 5), // Show max 5 dots
-                (index) {
-                  final isActive = index == vm.currentPageIndex;
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
-                    width: isActive ? 8 : 6,
-                    height: isActive ? 8 : 6,
-                    decoration: BoxDecoration(
-                      color: isActive ? Colors.white : Colors.white54,
-                      shape: BoxShape.circle,
-                    ),
-                  );
-                },
-              ),
-              if (vm.notePages.length > 5)
-                Container(
-                  margin: const EdgeInsets.only(left: 4),
-                  child: const Text(
-                    '...',
-                    style: TextStyle(color: Colors.white54),
+                  '${vm.currentPageIndex + 1} / ${vm.notePages.length}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
+                if (vm.currentPage != null) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    '• ${vm.currentPage!.format}',
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+                ],
+                const SizedBox(width: 12),
+                ...List.generate(
+                  vm.notePages.length.clamp(0, 5), // Show max 5 dots
+                  (index) {
+                    final isActive = index == vm.currentPageIndex;
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      width: isActive ? 8 : 6,
+                      height: isActive ? 8 : 6,
+                      decoration: BoxDecoration(
+                        color: isActive ? Colors.white : Colors.white54,
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  },
+                ),
+                if (vm.notePages.length > 5)
+                  Container(
+                    margin: const EdgeInsets.only(left: 4),
+                    child: const Text(
+                      '...',
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                  ),
 
-              // Zoom in button
-              if (vm.currentPage != null) ...[
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () => _zoomIn(vm.currentPage!),
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    child: const Icon(
-                      Icons.zoom_in,
-                      color: Colors.white70,
-                      size: 18,
+                // Zoom in button
+                if (vm.currentPage != null) ...[
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => _zoomIn(vm.currentPage!),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      child: const Icon(
+                        Icons.zoom_in,
+                        color: Colors.white70,
+                        size: 18,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  void _showPageNavigator(NoteCreationVm vm) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder:
+          (context) =>
+              PageNavigator(vm: vm, onClose: () => Navigator.of(context).pop()),
     );
   }
 
