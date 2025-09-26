@@ -124,6 +124,8 @@ class DatabaseHelper {
       handwriting_data TEXT,
       text_content TEXT,
       drawing_data TEXT,
+      text_boxes TEXT,
+      voice_notes TEXT,
       annotations TEXT,
       has_content INTEGER DEFAULT 0,
       created_at INTEGER,

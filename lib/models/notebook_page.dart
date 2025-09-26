@@ -10,6 +10,8 @@ class NotebookPage {
   final String? handwritingData; // SVG or path data for handwriting
   final String? textContent; // Rich text content
   final String? drawingData; // Drawing/sketch data
+  final String? textBoxes; // JSON array of positioned text boxes
+  final String? voiceNotes; // JSON array of voice recordings
   final List<PageAnnotation> annotations;
   final int createdAt;
   final int updatedAt;
@@ -23,6 +25,8 @@ class NotebookPage {
     this.handwritingData,
     this.textContent,
     this.drawingData,
+    this.textBoxes,
+    this.voiceNotes,
     this.annotations = const [],
     required this.createdAt,
     required this.updatedAt,
@@ -37,6 +41,8 @@ class NotebookPage {
     String? handwritingData,
     String? textContent,
     String? drawingData,
+    String? textBoxes,
+    String? voiceNotes,
     List<PageAnnotation>? annotations,
     int? createdAt,
     int? updatedAt,
@@ -50,6 +56,8 @@ class NotebookPage {
       handwritingData: handwritingData ?? this.handwritingData,
       textContent: textContent ?? this.textContent,
       drawingData: drawingData ?? this.drawingData,
+      textBoxes: textBoxes ?? this.textBoxes,
+      voiceNotes: voiceNotes ?? this.voiceNotes,
       annotations: annotations ?? this.annotations,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -66,6 +74,8 @@ class NotebookPage {
       'handwriting_data': handwritingData,
       'text_content': textContent,
       'drawing_data': drawingData,
+      'text_boxes': textBoxes,
+      'voice_notes': voiceNotes,
       'annotations': jsonEncode(annotations.map((a) => a.toMap()).toList()),
       'created_at': createdAt,
       'updated_at': updatedAt,
@@ -92,6 +102,8 @@ class NotebookPage {
       handwritingData: map['handwriting_data'],
       textContent: map['text_content'],
       drawingData: map['drawing_data'],
+      textBoxes: map['text_boxes'],
+      voiceNotes: map['voice_notes'],
       annotations: annotationsList,
       createdAt: map['created_at'] ?? 0,
       updatedAt: map['updated_at'] ?? 0,
