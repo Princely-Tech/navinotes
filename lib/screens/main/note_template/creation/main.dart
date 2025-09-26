@@ -28,11 +28,14 @@ class NoteCreationMain extends StatelessWidget {
             // Centered toolbar above pages
             CenteredToolbar(vm: vm),
             Expanded(
-              child: MultiPageViewer(
-                vm: vm,
-                backgroundColor: color,
-                inputWidth: inputWidth,
-                inputHeight: inputHeight,
+              child: Container(
+                color: AppTheme.lightAsh,
+                child: MultiPageViewer(
+                  vm: vm,
+                  backgroundColor: color,
+                  inputWidth: inputWidth,
+                  inputHeight: inputHeight,
+                ),
               ),
             ),
           ],
