@@ -64,9 +64,10 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     _pageController.dispose();
     _addPageAnimationController.dispose();
     // Dispose all transformation controllers
-    for (var controller in _transformationControllers.values) {
+    for (final controller in _transformationControllers.values) {
       controller.dispose();
     }
+    _transformationControllers.clear();
     super.dispose();
   }
 
@@ -89,9 +90,13 @@ class _MultiPageViewerState extends State<MultiPageViewer>
         return Expanded(
           child: Stack(
             children: [
-              // Main PageView
+              // Main PageView with enhanced panning
               PageView.builder(
                 controller: _pageController,
+                physics:
+                    _isZoomedOut(vm)
+                        ? const NeverScrollableScrollPhysics()
+                        : const PageScrollPhysics(),
                 onPageChanged: (index) {
                   vm.setCurrentPageIndex(index);
                 },
@@ -99,7 +104,6 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                 itemBuilder: (context, index) {
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8),
-
                     child: _buildPageWithZoomAndPan(vm.notePages[index], vm),
                   );
                 },
@@ -122,7 +126,18 @@ class _MultiPageViewerState extends State<MultiPageViewer>
 
   TransformationController _getTransformationController(String pageId) {
     if (!_transformationControllers.containsKey(pageId)) {
-      _transformationControllers[pageId] = TransformationController();
+      final controller = TransformationController();
+
+      // Add listener to trigger rebuilds when zoom changes
+      controller.addListener(() {
+        if (mounted) {
+          setState(() {
+            // Trigger rebuild to check if we should switch view modes
+          });
+        }
+      });
+
+      _transformationControllers[pageId] = controller;
       _zoomStates[pageId] = false;
 
       // Center the page on initial load
@@ -195,6 +210,96 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     _zoomStates[page.id] = newScale > 1.0;
   }
 
+  double _getCurrentScale(NotePage page) {
+    final controller = _getTransformationController(page.id);
+    return controller.value.getMaxScaleOnAxis();
+  }
+
+  bool _isZoomedOut(NoteCreationVm vm) {
+    // Check if current page is zoomed out (< 1.0x)
+    if (vm.currentPage != null) {
+      final currentScale = _getCurrentScale(vm.currentPage!);
+      return currentScale < 1.0;
+    }
+    return false;
+  }
+
+  Widget _buildContinuousView(NoteCreationVm vm) {
+    return InteractiveViewer(
+      minScale: 0.3,
+      maxScale: 2.0,
+      constrained: false,
+      clipBehavior: Clip.none,
+      boundaryMargin: const EdgeInsets.all(200),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children:
+              vm.notePages.asMap().entries.map((entry) {
+                final index = entry.key;
+                final page = entry.value;
+                final isCurrentPage = index == vm.currentPageIndex;
+
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    border:
+                        isCurrentPage
+                            ? Border.all(color: Colors.blue, width: 3)
+                            : Border.all(color: Colors.grey.shade300, width: 1),
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: GestureDetector(
+                    onTap: () => vm.setCurrentPageIndex(index),
+                    child: _buildPagePreview(page, vm),
+                  ),
+                );
+              }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPagePreview(NotePage page, NoteCreationVm vm) {
+    final pageDimensions = page.format.actualDimensions;
+    final scale = 0.4; // Larger scale for continuous view
+
+    return Container(
+      width: pageDimensions.width * scale,
+      height: pageDimensions.height * scale,
+      child: Transform.scale(
+        scale: scale,
+        child: Container(
+          width: pageDimensions.width,
+          height: pageDimensions.height,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: IgnorePointer(
+              child: NotePageContent(
+                page: page,
+                vm: vm,
+                backgroundColor: Colors.white,
+                inputWidth: pageDimensions.width,
+                inputHeight: pageDimensions.height,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildPageWithZoomAndPan(NotePage page, NoteCreationVm vm) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -238,6 +343,10 @@ class _MultiPageViewerState extends State<MultiPageViewer>
             clipBehavior: Clip.none,
             panEnabled: true,
             scaleEnabled: true,
+            boundaryMargin:
+                _getCurrentScale(page) < 1.0
+                    ? const EdgeInsets.all(double.infinity)
+                    : const EdgeInsets.all(50),
             child: Container(
               width: displayWidth,
               height: displayHeight,
