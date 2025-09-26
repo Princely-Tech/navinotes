@@ -111,71 +111,82 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   }
 
   Widget _buildPageWithZoomAndPan(NotePage page, NoteCreationVm vm) {
-    // Calculate page dimensions based on format with better scaling
-    final aspectRatio = page.format.aspectRatio;
-
-    // Use screen dimensions as base, but maintain aspect ratio
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Calculate optimal page size to fit screen while maintaining aspect ratio
-    double pageWidth = screenWidth * 0.85; // Use 85% of screen width
-    double pageHeight = pageWidth / aspectRatio;
+    // Get actual page dimensions from format (in points)
+    final pageDimensions = page.format.actualDimensions;
 
-    // If height is too large, scale down based on height
-    final maxHeight = screenHeight * 0.75; // Use 75% of screen height
-    if (pageHeight > maxHeight) {
-      pageHeight = maxHeight;
-      pageWidth = pageHeight * aspectRatio;
-    }
+    // Calculate display scale to fit page on screen while maintaining aspect ratio
+    final maxDisplayWidth = screenWidth * 0.85;
+    final maxDisplayHeight = screenHeight * 0.75;
 
-    // Ensure minimum usable size
-    pageWidth = math.max(pageWidth, 400.0);
-    pageHeight = math.max(pageHeight, 500.0);
+    double displayScale = math.min(
+      maxDisplayWidth / pageDimensions.width,
+      maxDisplayHeight / pageDimensions.height,
+    );
 
+    // Ensure minimum readable scale
+    displayScale = math.max(displayScale, 0.3);
+
+    final displayWidth = pageDimensions.width * displayScale;
+    final displayHeight = pageDimensions.height * displayScale;
+
+    // Canvas background (carton/desk color)
     return Container(
+      width: screenWidth * 0.95,
+      height: screenHeight * 0.8,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: const Color(0xFFF5F5DC), // Beige/carton background
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child:
-            vm.currentMode == NoteMode.read
-                ? InteractiveViewer(
-                  minScale: 0.5,
-                  maxScale: 3.0,
-                  constrained: false,
-                  child: Container(
-                    width: pageWidth,
-                    height: pageHeight,
-                    child: NotePageContent(
+      child: Center(
+        child: Container(
+          width: displayWidth,
+          height: displayHeight,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child:
+                vm.currentMode == NoteMode.read
+                    ? InteractiveViewer(
+                      minScale: 0.5,
+                      maxScale: 3.0,
+                      constrained: false,
+                      child: Container(
+                        width: pageDimensions.width,
+                        height: pageDimensions.height,
+                        child: Transform.scale(
+                          scale: displayScale,
+                          child: NotePageContent(
+                            page: page,
+                            vm: vm,
+                            backgroundColor: Colors.white,
+                            inputWidth: pageDimensions.width,
+                            inputHeight: pageDimensions.height,
+                          ),
+                        ),
+                      ),
+                    )
+                    : NotePageContent(
                       page: page,
                       vm: vm,
-                      backgroundColor: widget.backgroundColor,
-                      inputWidth: pageWidth,
-                      inputHeight: pageHeight,
+                      backgroundColor: Colors.white,
+                      inputWidth: pageDimensions.width,
+                      inputHeight: pageDimensions.height,
                     ),
-                  ),
-                )
-                : Container(
-                  width: pageWidth,
-                  height: pageHeight,
-                  child: NotePageContent(
-                    page: page,
-                    vm: vm,
-                    backgroundColor: widget.backgroundColor,
-                    inputWidth: pageWidth,
-                    inputHeight: pageHeight,
-                  ),
-                ),
+          ),
+        ),
       ),
     );
   }
@@ -244,25 +255,6 @@ class _MultiPageViewerState extends State<MultiPageViewer>
           else
             const SizedBox(width: 40),
 
-          // Page settings and add page buttons
-          // Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: [
-          //     FloatingActionButton.small(
-          //       heroTag: "page_settings",
-          //       onPressed: () => _showPageSettings(vm),
-          //       backgroundColor: Colors.white.withOpacity(0.9),
-          //       child: const Icon(Icons.settings),
-          //     ),
-          //     const SizedBox(width: 8),
-          //     FloatingActionButton.small(
-          //       heroTag: "add_page",
-          //       onPressed: () => vm.addNewPage(),
-          //       backgroundColor: Theme.of(context).primaryColor,
-          //       child: const Icon(Icons.add, color: Colors.white),
-          //     ),
-          //   ],
-          // ),
 
           // Next page button
           if (vm.currentPageIndex < vm.notePages.length - 1)

@@ -17,14 +17,6 @@ Widget buildDrawingBoard(
       height: inputHeight,
       child: DrawingBoardWithCursor(
         controller: vm.drawingController,
-        // background: Container(
-        //   //padding: const EdgeInsets.only(top: 55, bottom: 24),
-        //   color: Colors.transparent,
-        //   width: inputWidth,
-        //   height: inputHeight,
-        // ),
-        // showDefaultActions: false,
-        // showDefaultTools: false,
         width: inputWidth,
         height: inputHeight,
       ),
