@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/settings/note_utils.dart';
+import 'package:navinotes/models/notebook_page.dart';
+import 'package:navinotes/models/paper_template.dart';
 import 'package:path/path.dart' as path;
 import 'dart:math';
 
@@ -186,14 +187,9 @@ class NavigationHelper {
       return navigateToNoteCreation(template, content.id, replace: replace);
 
     } else if (content.type == AppContentType.notebook) {
-      final notebook = await DatabaseHelper.instance.getNotebook(content.id);
-      if (notebook != null) {
-        final pages = await DatabaseHelper.instance.getPagesForNotebook(notebook.id);
-        final notebookWithPages = notebook.copyWith(pages: pages);
-        push(Routes.notebook, arguments: {'notebook': notebookWithPages});
-      } else {
-        debugPrint('Error: Notebook with id ${content.id} not found.');
-      }
+      // Get notebook pages for this content
+      final pages = await DatabaseHelper.instance.getPagesForNotebook(content.id);
+      push(Routes.notebook, arguments: {'content': content, 'pages': pages});
     } else if (content.type == AppContentType.mindmap) {
       push(Routes.mindMap, arguments: {'contentId': content.id});
     } else if (content.type == AppContentType.file) {
@@ -278,6 +274,19 @@ class NavigationHelper {
       board,
       'New Notebook',
     );
+    
+    // Create an initial page for the notebook
+    final defaultTemplate = PaperTemplates.getDefault();
+    final initialPage = NotebookPage(
+      notebookId: id,
+      pageNumber: 1,
+      template: defaultTemplate,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    );
+    
+    await DatabaseHelper.instance.insertNotebookPage(initialPage);
+    
     return navigateToContentById(id);
   }
 

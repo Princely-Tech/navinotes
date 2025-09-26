@@ -114,19 +114,6 @@ class DatabaseHelper {
     )
     ''');
 
-    // New tables for GoodNotes-like notebook system
-    await db.execute('''
-    CREATE TABLE notebooks (
-      id TEXT PRIMARY KEY,
-      board_id TEXT,
-      title TEXT,
-      cover_image TEXT,
-      default_template TEXT,
-      total_pages INTEGER DEFAULT 0,
-      created_at INTEGER,
-      updated_at INTEGER
-    )
-    ''');
 
     await db.execute('''
     CREATE TABLE notebook_pages (
@@ -141,7 +128,6 @@ class DatabaseHelper {
       has_content INTEGER DEFAULT 0,
       created_at INTEGER,
       updated_at INTEGER,
-      FOREIGN KEY (notebook_id) REFERENCES notebooks (id) ON DELETE CASCADE
     )
     ''');
 
@@ -375,50 +361,6 @@ class DatabaseHelper {
     return null;
   }
 
-  // Notebook CRUD Operations
-  Future<bool> insertNotebook(Notebook notebook) async {
-    final db = await instance.database;
-    return 0 != await db.insert('notebooks', notebook.toMap());
-  }
-
-  Future<Notebook?> getNotebook(String notebookId) async {
-    final db = await instance.database;
-    final result = await db.query(
-      'notebooks',
-      where: 'id = ?',
-      whereArgs: [notebookId],
-    );
-    if (result.isNotEmpty) {
-      return Notebook.fromMap(result.first);
-    }
-    return null;
-  }
-
-  Future<List<Notebook>> getNotebooksForBoard(String boardId) async {
-    final db = await instance.database;
-    final result = await db.query(
-      'notebooks',
-      where: 'board_id = ?',
-      whereArgs: [boardId],
-      orderBy: 'updated_at DESC',
-    );
-    return result.map((json) => Notebook.fromMap(json)).toList();
-  }
-
-  Future<bool> updateNotebook(Notebook notebook) async {
-    final db = await instance.database;
-    return 0 != await db.update(
-      'notebooks',
-      notebook.toMap(),
-      where: 'id = ?',
-      whereArgs: [notebook.id],
-    );
-  }
-
-  Future<bool> deleteNotebook(String notebookId) async {
-    final db = await instance.database;
-    return 0 != await db.delete('notebooks', where: 'id = ?', whereArgs: [notebookId]);
-  }
 
   // NotebookPage CRUD Operations
   Future<bool> insertNotebookPage(NotebookPage page) async {

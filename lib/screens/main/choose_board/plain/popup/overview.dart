@@ -912,6 +912,18 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 onTap: vm.goToBoardNotes,
               ),
               buildActionCard(
+                title: 'Create Notebook',
+                description: 'Document your insights and research findings',
+                buttonText: 'New Notebook',
+                imagePath: Images.boardPlainCreateNote,
+                onTap:
+                    () => NavigationHelper.createAndNavigateToNewNotebook(
+                      vm.board,
+                    ),
+              ),
+
+              
+              buildActionCard(
                 title: 'Import PDF',
                 description: 'Add research papers and reference materials',
                 buttonText: 'Upload PDF',

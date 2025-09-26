@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/notebook_page.dart';
+import 'package:navinotes/models/paper_template.dart';
 import 'package:navinotes/widgets/handwriting_canvas.dart';
 import 'package:navinotes/packages.dart';
 
 /// Main notebook page viewer - GoodNotes-like experience
 class NotebookPageViewer extends StatefulWidget {
-  final Notebook notebook;
+  final Content content;
+  final List<NotebookPage> pages;
   final int initialPageIndex;
-  final Function(Notebook) onNotebookChanged;
+  final Function(Content) onContentChanged;
 
   const NotebookPageViewer({
     super.key,
-    required this.notebook,
+    required this.content,
+    required this.pages,
     this.initialPageIndex = 0,
-    required this.onNotebookChanged,
+    required this.onContentChanged,
   });
 
   @override
@@ -90,6 +93,43 @@ class _NotebookPageViewerState extends State<NotebookPageViewer>
   }
 
   Widget _buildPageViewer() {
+    // Handle empty notebook case
+    if (widget.pages.isEmpty) {
+      return Positioned.fill(
+        top: 80,
+        bottom: 100,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.book_outlined,
+                size: 64,
+                color: Colors.grey[400],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Empty Notebook',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Tap the + button to add your first page',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[500],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
     return Positioned.fill(
       top: 80,
       bottom: 100,
@@ -100,9 +140,9 @@ class _NotebookPageViewerState extends State<NotebookPageViewer>
             _currentPageIndex = index;
           });
         },
-        itemCount: widget.notebook.pages.length,
+        itemCount: widget.pages.length,
         itemBuilder: (context, index) {
-          final page = widget.notebook.pages[index];
+          final page = widget.pages[index];
           return _buildSinglePage(page);
         },
       ),
@@ -191,7 +231,7 @@ class _NotebookPageViewerState extends State<NotebookPageViewer>
                     // Notebook title
                     Expanded(
                       child: Text(
-                        widget.notebook.title,
+                        widget.content.title,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -211,7 +251,9 @@ class _NotebookPageViewerState extends State<NotebookPageViewer>
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
-                        '${_currentPageIndex + 1} / ${widget.notebook.pages.length}',
+                        widget.pages.isEmpty 
+                          ? '0 / 0' 
+                          : '${_currentPageIndex + 1} / ${widget.pages.length}',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -492,9 +534,9 @@ class _NotebookPageViewerState extends State<NotebookPageViewer>
       child: Container(
         color: Colors.white,
         child: ListView.builder(
-          itemCount: widget.notebook.pages.length,
+          itemCount: widget.pages.length,
           itemBuilder: (context, index) {
-            final page = widget.notebook.pages[index];
+            final page = widget.pages[index];
             final isSelected = index == _currentPageIndex;
 
             return GestureDetector(
@@ -559,18 +601,15 @@ class _NotebookPageViewerState extends State<NotebookPageViewer>
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
 
-    final updatedPages = List<NotebookPage>.from(widget.notebook.pages);
-    final pageIndex = updatedPages.indexWhere((p) => p.id == page.id);
-    if (pageIndex != -1) {
-      updatedPages[pageIndex] = updatedPage;
-    }
-
-    final updatedNotebook = widget.notebook.copyWith(
-      pages: updatedPages,
+    // Update the page in the database
+    DatabaseHelper.instance.updateNotebookPage(updatedPage);
+    
+    // Update the content's updated timestamp
+    final updatedContent = widget.content.getUpdatedContent(
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
-
-    widget.onNotebookChanged(updatedNotebook);
+    
+    widget.onContentChanged(updatedContent);
   }
 
   void _undoLastStroke() {
@@ -579,27 +618,31 @@ class _NotebookPageViewerState extends State<NotebookPageViewer>
   }
 
   void _addNewPage() {
+    // Create a default paper template
+    final defaultTemplate = PaperTemplates.getDefault();
+    
     final newPage = NotebookPage(
-      notebookId: widget.notebook.id,
-      pageNumber: widget.notebook.pages.length + 1,
-      template: widget.notebook.defaultTemplate,
+      notebookId: widget.content.id,
+      pageNumber: widget.pages.length + 1,
+      template: defaultTemplate,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
 
-    final updatedPages = [...widget.notebook.pages, newPage];
-    final updatedNotebook = widget.notebook.copyWith(
-      pages: updatedPages,
-      totalPages: updatedPages.length,
+    // Insert the new page into the database
+    DatabaseHelper.instance.insertNotebookPage(newPage);
+    
+    // Update the content's updated timestamp
+    final updatedContent = widget.content.getUpdatedContent(
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
-
-    widget.onNotebookChanged(updatedNotebook);
+    
+    widget.onContentChanged(updatedContent);
 
     // Navigate to the new page
     Future.delayed(const Duration(milliseconds: 100), () {
       _pageController.animateToPage(
-        updatedPages.length - 1,
+        widget.pages.length, // New page will be at the end
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );

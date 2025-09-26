@@ -71,12 +71,14 @@ Map<String, WidgetBuilder> routes = {
   Routes.notebook: (context) {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map<String, dynamic>) {
-      final Notebook? notebook = args['notebook'] as Notebook?;
-      if (notebook != null) {
+      final Content? content = args['content'] as Content?;
+      final List<NotebookPage>? pages = args['pages'] as List<NotebookPage>?;
+      if (content != null) {
         return NotebookPageViewer(
-          notebook: notebook,
-          onNotebookChanged: (updatedNotebook) {
-            // Handle notebook updates, e.g., save to DB
+          content: content,
+          pages: pages ?? [],
+          onContentChanged: (updatedContent) {
+            // Handle content updates, e.g., save to DB
           },
         );
       }
