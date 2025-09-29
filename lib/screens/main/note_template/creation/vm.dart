@@ -39,10 +39,13 @@ class NoteCreationVm extends ChangeNotifier {
   double _playbackSpeed = 1.0;
   Duration _currentPosition = Duration.zero;
   Duration _totalDuration = Duration.zero;
+  DateTime? _lastPositionUpdate;
+  StreamSubscription<Duration>? _positionSubscription;
+  StreamSubscription<PlayerState>? _playerStateSubscription;
   NoteMode _currentMode = NoteMode.text;
   bool _isTextBoxMode = false;
   String? _selectedTextBoxTool;
-  
+
   // Drawing tool state
   Color _selectedColor = Colors.black;
   double _strokeWidth = 2.0;
@@ -139,8 +142,10 @@ class NoteCreationVm extends ChangeNotifier {
       await _audioPlayer.pause();
       _isPlaying = false;
     } else {
-      // Stop any current playback
+      // Stop any current playback and cancel existing subscriptions
       await _audioPlayer.stop();
+      _positionSubscription?.cancel();
+      _playerStateSubscription?.cancel();
 
       // Start new playback
       if (content?.voiceNotes.isNotEmpty ?? false) {
@@ -154,18 +159,28 @@ class NoteCreationVm extends ChangeNotifier {
         _totalDuration = voiceNote.duration ?? Duration.zero;
         _currentPosition = Duration.zero;
 
-        // Listen for position changes
-        _audioPlayer.positionStream.listen((position) {
+        // Listen for position changes (throttled to avoid excessive rebuilds)
+        _positionSubscription = _audioPlayer.positionStream.listen((position) {
           _currentPosition = position;
-          notifyListeners();
+          // Only notify listeners every 500ms to avoid excessive rebuilds
+          if (_lastPositionUpdate == null ||
+              DateTime.now().difference(_lastPositionUpdate!) >
+                  const Duration(milliseconds: 500)) {
+            _lastPositionUpdate = DateTime.now();
+            notifyListeners();
+          }
         });
 
         // Listen for playback completion
-        _audioPlayer.playerStateStream.listen((state) {
+        _playerStateSubscription = _audioPlayer.playerStateStream.listen((
+          state,
+        ) {
           if (state.processingState == ProcessingState.completed) {
             _isPlaying = false;
             _currentlyPlayingIndex = null;
             _currentPosition = Duration.zero;
+            _positionSubscription?.cancel();
+            _playerStateSubscription?.cancel();
             notifyListeners();
           }
         });
@@ -187,6 +202,8 @@ class NoteCreationVm extends ChangeNotifier {
       // Stop playback if this voice note is currently playing
       if (_currentlyPlayingIndex == index) {
         await _audioPlayer.stop();
+        _positionSubscription?.cancel();
+        _playerStateSubscription?.cancel();
         _isPlaying = false;
         _currentlyPlayingIndex = null;
       }
@@ -500,9 +517,7 @@ class NoteCreationVm extends ChangeNotifier {
     if (currentPage!.textBoxData != null &&
         currentPage!.textBoxData!.isNotEmpty) {
       try {
-        debugPrint(
-          'Loading text box data for page ${currentPage!.id}',
-        );
+        debugPrint('Loading text box data for page ${currentPage!.id}');
         final List<dynamic> textBoxData = jsonDecode(currentPage!.textBoxData!);
         textBoxManager.loadFromJson(textBoxData);
         debugPrint('Loaded ${textBoxData.length} text boxes');
@@ -1321,6 +1336,8 @@ class NoteCreationVm extends ChangeNotifier {
     updateContentInDb(showSnackBar: false);
     _autoSaveTimer?.cancel();
     _debounceTimer?.cancel();
+    _positionSubscription?.cancel();
+    _playerStateSubscription?.cancel();
     _audioRecorder.dispose();
     _audioPlayer.dispose();
     titleController.dispose();
