@@ -5,6 +5,8 @@ import 'package:navinotes/screens/main/note_template/creation/vm.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/note_page_content.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/page_settings_dialog.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/page_navigator.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/voice.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/recording_indicator.dart';
 import 'package:navinotes/packages.dart';
 
 class MultiPageViewer extends StatefulWidget {
@@ -89,6 +91,10 @@ class _MultiPageViewerState extends State<MultiPageViewer>
 
         return Stack(
           children: [
+            // Show voice recorder independently when in voice mode
+            if (vm.currentMode == NoteMode.voice)
+              buildVoiceRecorder(vm, widget.backgroundColor, context)
+            else
               // Main PageView with enhanced panning
               PageView.builder(
                 controller: _pageController,
@@ -115,7 +121,11 @@ class _MultiPageViewerState extends State<MultiPageViewer>
               _buildPageControls(vm),
 
               // Page indicator dots
-              _buildPageIndicator(vm),
+              if (vm.currentMode != NoteMode.voice) _buildPageIndicator(vm),
+
+            // Recording indicator - shows on all modes when recording (only if not in voice mode)
+            if (vm.currentMode != NoteMode.voice)
+              RecordingIndicator(vm: vm, showInHeader: true, isCompact: true),
             ],
         );
       },

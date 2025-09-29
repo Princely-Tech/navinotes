@@ -9,7 +9,6 @@ import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/lined_rule.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/squared_rule.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/dotted.dart';
-import 'package:navinotes/screens/main/note_template/creation/widget/voice.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/text_box_widget.dart';
 import 'package:navinotes/screens/main/note_template/creation/models/text_box.dart';
 
@@ -241,8 +240,8 @@ class _NotePageContentState extends State<NotePageContent> {
           ),
         ];
       case NoteMode.voice:
-        // In voice mode, show voice recorder as full page
-        return [_buildVoiceRecorderPage(vm)];
+        // Voice mode is now handled independently in MultiPageViewer
+        return [];
     }
   }
 
@@ -388,16 +387,6 @@ class _NotePageContentState extends State<NotePageContent> {
     }
   }
 
-  Widget _buildVoiceRecorderPage(NoteCreationVm vm) {
-    return Positioned.fill(
-      child: Container(
-        width: widget.inputWidth,
-        height: widget.inputHeight,
-        padding: const EdgeInsets.all(24),
-        child: buildVoiceRecorder(vm, widget.backgroundColor, context),
-      ),
-    );
-  }
 
   Widget _buildTemplateBackground() {
     // Use the current page from ViewModel to get the latest template

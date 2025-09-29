@@ -5,6 +5,7 @@ import 'package:navinotes/screens/main/note_template/creation/widget/title.dart'
 import 'package:navinotes/screens/main/note_template/creation/widget/multi_page_viewer.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/page_settings_dialog.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/centered_toolbar.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/recording_indicator.dart';
 import 'vm.dart';
 
 class NoteCreationMain extends StatelessWidget {
@@ -138,13 +139,7 @@ class NoteCreationMain extends StatelessWidget {
                 isActive: vm.currentMode == NoteMode.text,
                 onTap: () => vm.setMode(NoteMode.text),
               ),
-              _buildModeButton(
-                context,
-                icon: Icons.mic,
-                label: 'Voice',
-                isActive: vm.currentMode == NoteMode.voice,
-                onTap: () => vm.setMode(NoteMode.voice),
-              ),
+              _buildVoiceModeButton(context, vm),
               // Divider
               Container(
                 height: 30,
@@ -207,6 +202,59 @@ class NoteCreationMain extends StatelessWidget {
                 if (isActive || isMobile)
                   Text(
                     label,
+                    style: TextStyle(
+                      color:
+                          isActive
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey,
+                      fontWeight:
+                          isActive ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildVoiceModeButton(BuildContext context, NoteCreationVm vm) {
+    return Consumer<LayoutProviderVm>(
+      builder: (_, layoutVm, _) {
+        bool isMobile = layoutVm.deviceType == DeviceType.mobile;
+        bool isActive = vm.currentMode == NoteMode.voice;
+        
+        return InkWell(
+          onTap: () => vm.setMode(NoteMode.voice),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color:
+                  isActive
+                      ? Theme.of(context).primaryColor.withOpacity(0.1)
+                      : null,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              spacing: 4,
+              children: [
+                // Show recording indicator if recording, otherwise show mic icon
+                if (vm.isRecording)
+                  RecordingIndicator(
+                    vm: vm,
+                    showInHeader: false,
+                    isCompact: true,
+                  )
+                else
+                  Icon(
+                    Icons.mic,
+                    color:
+                        isActive ? Theme.of(context).primaryColor : Colors.grey,
+                  ),
+                if ((isActive || isMobile) && !vm.isRecording)
+                  Text(
+                    'Voice',
                     style: TextStyle(
                       color:
                           isActive
