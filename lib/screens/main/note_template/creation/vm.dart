@@ -528,9 +528,19 @@ class NoteCreationVm extends ChangeNotifier {
       
       // Save current drawing content
       final drawingController = getCurrentPageDrawingController();
-      final drawingContent = JsonEncoder.withIndent(
-        '  ',
-      ).convert(drawingController.getJsonList());
+      String drawingContent = '[]';
+      try {
+        // Safely get drawing content, avoiding issues during active drawing
+        drawingContent = JsonEncoder.withIndent(
+          '  ',
+        ).convert(drawingController.getJsonList());
+      } catch (e) {
+        debugPrint('Error getting drawing content during save: $e');
+        // Keep existing drawing data if there's an error
+        if (currentPage!.drawingData != null && currentPage!.drawingData!.isNotEmpty) {
+          drawingContent = currentPage!.drawingData!;
+        }
+      }
       
       // Update current page
       final updatedPage = currentPage!.getUpdatedPage(
@@ -713,7 +723,18 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setDrawingState(bool isDrawing) {
+    _isDrawing = isDrawing;
+    if (!isDrawing) {
+      // When drawing ends, trigger a save after a short delay
+      Timer(const Duration(milliseconds: 100), () {
+        _autoSaveCurrentPage();
+      });
+    }
+  }
+
   Timer? _debounceTimer;
+  bool _isDrawing = false;
   
   void _autoSaveCurrentPage() {
     // Auto-save the current page when content changes
@@ -721,11 +742,17 @@ class NoteCreationVm extends ChangeNotifier {
       // Cancel previous timer to debounce rapid changes
       _debounceTimer?.cancel();
       
+      // Use a longer debounce for drawing mode to avoid interfering with active drawing
+      final debounceMs = currentMode == NoteMode.drawing ? 1000 : 500;
+      
       // Use a timer to debounce rapid changes
-      _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
-        await _saveCurrentPageContent();
-        // Also save to database to prevent data loss
-        await updateContentInDb(showSnackBar: false);
+      _debounceTimer = Timer(Duration(milliseconds: debounceMs), () async {
+        // Don't save if we're in the middle of drawing to avoid interference
+        if (!_isDrawing) {
+          await _saveCurrentPageContent();
+          // Also save to database to prevent data loss
+          await updateContentInDb(showSnackBar: false);
+        }
       });
     }
   }

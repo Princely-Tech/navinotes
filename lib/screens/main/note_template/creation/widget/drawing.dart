@@ -12,8 +12,19 @@ Widget buildDrawingBoard(
   double inputHeight,
 ) {
   // Validate dimensions to prevent "Invalid image dimensions" error
-  final validWidth = inputWidth.isFinite && inputWidth > 0 ? inputWidth : 595.0;
-  final validHeight = inputHeight.isFinite && inputHeight > 0 ? inputHeight : 842.0;
+  final validWidth =
+      inputWidth.isFinite && inputWidth > 10 ? inputWidth : 595.0;
+  final validHeight =
+      inputHeight.isFinite && inputHeight > 10 ? inputHeight : 842.0;
+
+  // Additional safety check - if dimensions are still invalid, return empty container
+  if (validWidth < 10 || validHeight < 10) {
+    return Container(
+      width: validWidth,
+      height: validHeight,
+      color: Colors.transparent,
+    );
+  }
 
   return IgnorePointer(
     ignoring: vm.currentMode != NoteMode.drawing,
@@ -21,10 +32,13 @@ Widget buildDrawingBoard(
       width: validWidth,
       height: validHeight,
       child: DrawingBoardWithCursor(
-        key: ValueKey('drawing_${vm.currentPageIndex}_${vm.drawingController.hashCode}'),
+        key: ValueKey(
+          'drawing_${vm.currentPageIndex}_${vm.drawingController.hashCode}',
+        ),
         controller: vm.drawingController,
         width: validWidth,
         height: validHeight,
+        vm: vm,
       ),
     ),
   );
@@ -146,11 +160,13 @@ class DrawingBoardWithCursor extends StatefulWidget {
   final DrawingController controller;
   final double width;
   final double height;
+  final NoteCreationVm vm;
 
   const DrawingBoardWithCursor({
     required this.controller,
     required this.width,
     required this.height,
+    required this.vm,
     Key? key,
   }) : super(key: key);
 
@@ -196,8 +212,19 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
   @override
   Widget build(BuildContext context) {
     // Validate dimensions to prevent rendering issues
-    final validWidth = widget.width.isFinite && widget.width > 0 ? widget.width : 595.0;
-    final validHeight = widget.height.isFinite && widget.height > 0 ? widget.height : 842.0;
+    final validWidth =
+        widget.width.isFinite && widget.width > 10 ? widget.width : 595.0;
+    final validHeight =
+        widget.height.isFinite && widget.height > 10 ? widget.height : 842.0;
+
+    // Additional safety check for very small dimensions that could cause rendering issues
+    if (validWidth < 10 || validHeight < 10) {
+      return Container(
+        width: validWidth,
+        height: validHeight,
+        color: Colors.transparent,
+      );
+    }
 
     return Listener(
       onPointerHover: (e) {
@@ -213,11 +240,15 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
       onPointerDown: (e) {
         if (mounted) {
           setState(() => _cursorPos = e.localPosition);
+          // Notify VM that drawing has started
+          widget.vm.setDrawingState(true);
         }
       },
       onPointerUp: (e) {
         if (mounted) {
           setState(() => _cursorPos = null);
+          // Notify VM that drawing has ended
+          widget.vm.setDrawingState(false);
         }
       },
       child: RepaintBoundary(
@@ -233,27 +264,27 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
               showDefaultActions: false,
               showDefaultTools: false,
             ),
-          if (_cursorPos != null)
-            ValueListenableBuilder<DrawConfig>(
-              valueListenable: widget.controller.drawConfig,
-              builder: (_, drawConfig, __) {
-                return Positioned(
-                  left: _cursorPos!.dx - drawConfig.strokeWidth / 2,
-                  top: _cursorPos!.dy - drawConfig.strokeWidth / 2,
-                  child: IgnorePointer(
-                    child: Container(
-                      width: drawConfig.strokeWidth,
-                      height: drawConfig.strokeWidth,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black26, width: 1),
+            if (_cursorPos != null)
+              ValueListenableBuilder<DrawConfig>(
+                valueListenable: widget.controller.drawConfig,
+                builder: (_, drawConfig, __) {
+                  return Positioned(
+                    left: _cursorPos!.dx - drawConfig.strokeWidth / 2,
+                    top: _cursorPos!.dy - drawConfig.strokeWidth / 2,
+                    child: IgnorePointer(
+                      child: Container(
+                        width: drawConfig.strokeWidth,
+                        height: drawConfig.strokeWidth,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.black26, width: 1),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-        ],
+                  );
+                },
+              ),
+          ],
         ),
       ),
     );
