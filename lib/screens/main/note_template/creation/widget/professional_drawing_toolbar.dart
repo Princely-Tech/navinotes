@@ -187,36 +187,43 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
   Widget _buildMainToolbar() {
     return Container(
       height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          // Quick access tools
-          _buildQuickToolButton(DrawingToolType.simpleLine),
-          _buildQuickToolButton(DrawingToolType.smoothLine),
-          _buildQuickToolButton(DrawingToolType.eraser),
-          
-          const SizedBox(width: 16),
-          
-          // Category buttons
-          ...DrawingTools.getAllCategories().map((category) => 
-            _buildCategoryButton(category)
-          ),
-          
-          const Spacer(),
-          
-          // Color picker
-          _buildColorPicker(),
-          
-          const SizedBox(width: 8),
-          
-          // Stroke width
-          _buildStrokeWidthSlider(),
-          
-          const SizedBox(width: 8),
-          
-          // Undo/Redo
-          _buildUndoRedoButtons(),
-        ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Quick access tools
+            _buildQuickToolButton(DrawingToolType.simpleLine),
+            _buildQuickToolButton(DrawingToolType.smoothLine),
+            _buildQuickToolButton(DrawingToolType.eraser),
+            
+            const SizedBox(width: 16),
+            
+            // Category buttons
+            ...DrawingTools.getAllCategories().map((category) => 
+              _buildCategoryButton(category)
+            ),
+            
+            const SizedBox(width: 16),
+            
+            // Color picker
+            _buildColorPicker(),
+            
+            const SizedBox(width: 8),
+            
+            // Stroke width
+            _buildStrokeWidthSlider(),
+            
+            const SizedBox(width: 8),
+            
+            // Undo/Redo
+            _buildUndoRedoButtons(),
+            
+            // Add some padding at the end
+            const SizedBox(width: 16),
+          ],
+        ),
       ),
     );
   }
