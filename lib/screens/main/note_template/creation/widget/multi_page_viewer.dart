@@ -317,9 +317,9 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     // Ensure minimum readable scale
     displayScale = math.max(displayScale, 0.3);
 
-    // Use actual page dimensions (the red container IS the page)
-    final displayWidth = pageDimensions.width;
-    final displayHeight = pageDimensions.height;
+    // Use scaled dimensions for the container to ensure proper layout/centering
+    final displayWidth = pageDimensions.width * displayScale;
+    final displayHeight = pageDimensions.height * displayScale;
 
     // Canvas background (carton/desk color)
     return Container(
@@ -348,26 +348,32 @@ class _MultiPageViewerState extends State<MultiPageViewer>
             child: Container(
               width: displayWidth,
               height: displayHeight,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                // border: Border.all(color: Colors.red, width: 2.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
+              child: Transform.scale(
+                scale: displayScale,
+                child: Container(
+                  width: pageDimensions.width,
+                  height: pageDimensions.height,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: NotePageContent(
-                  page: page,
-                  vm: vm,
-                  backgroundColor: Colors.white,
-                  inputWidth: pageDimensions.width,
-                  inputHeight: pageDimensions.height,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: NotePageContent(
+                      page: page,
+                      vm: vm,
+                      backgroundColor: Colors.white,
+                      inputWidth: pageDimensions.width,
+                      inputHeight: pageDimensions.height,
+                    ),
+                  ),
                 ),
               ),
             ),
