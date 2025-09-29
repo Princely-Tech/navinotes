@@ -18,13 +18,16 @@ Widget buildDrawingBoard(
       inputHeight.isFinite && inputHeight > 10 ? inputHeight : 842.0;
 
   // Additional safety check - if dimensions are still invalid, return empty container
-  if (validWidth < 10 || validHeight < 10) {
+  if (validWidth < 10 || validHeight < 10 || !validWidth.isFinite || !validHeight.isFinite) {
+    debugPrint('buildDrawingBoard: Invalid dimensions $validWidth x $validHeight, returning empty container');
     return Container(
-      width: validWidth,
-      height: validHeight,
+      width: 100,
+      height: 100,
       color: Colors.transparent,
     );
   }
+  
+  debugPrint('buildDrawingBoard: Using dimensions $validWidth x $validHeight');
 
   return IgnorePointer(
     ignoring: vm.currentMode != NoteMode.drawing,
@@ -194,13 +197,16 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
         widget.height.isFinite && widget.height > 10 ? widget.height : 842.0;
 
     // Additional safety check for very small dimensions that could cause rendering issues
-    if (validWidth < 10 || validHeight < 10) {
+    if (validWidth < 10 || validHeight < 10 || !validWidth.isFinite || !validHeight.isFinite) {
+      debugPrint('DrawingBoardWithCursor: Invalid dimensions $validWidth x $validHeight, returning empty container');
       return Container(
-        width: validWidth,
-        height: validHeight,
+        width: 100,
+        height: 100,
         color: Colors.transparent,
       );
     }
+    
+    debugPrint('DrawingBoardWithCursor: Using dimensions $validWidth x $validHeight');
 
     return Listener(
       onPointerHover: (e) {
@@ -226,15 +232,31 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
       child: RepaintBoundary(
         child: Stack(
           children: [
-            DrawingBoard(
-              controller: widget.controller,
-              background: Container(
-                width: validWidth,
-                height: validHeight,
-                color: Colors.transparent,
-              ),
-              showDefaultActions: false,
-              showDefaultTools: false,
+            Builder(
+              builder: (context) {
+                try {
+                  return DrawingBoard(
+                    controller: widget.controller,
+                    background: Container(
+                      width: validWidth,
+                      height: validHeight,
+                      color: Colors.transparent,
+                    ),
+                    showDefaultActions: false,
+                    showDefaultTools: false,
+                  );
+                } catch (e) {
+                  debugPrint('Error creating DrawingBoard: $e');
+                  return Container(
+                    width: validWidth,
+                    height: validHeight,
+                    color: Colors.grey.withOpacity(0.1),
+                    child: const Center(
+                      child: Text('Drawing unavailable'),
+                    ),
+                  );
+                }
+              },
             ),
             if (_cursorPos != null)
               ValueListenableBuilder<DrawConfig>(

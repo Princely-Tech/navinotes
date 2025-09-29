@@ -227,19 +227,19 @@ class _PageNavigatorState extends State<PageNavigator> {
   Widget _buildFullSizeThumbnail(NotePage page) {
     // Get the actual page dimensions to calculate the proper scale
     final pageDimensions = page.format.actualDimensions;
-    
+
     return LayoutBuilder(
       builder: (context, constraints) {
         // Calculate scale to fill the available space while maintaining aspect ratio
         final availableWidth = constraints.maxWidth;
         final availableHeight = constraints.maxHeight;
-        
+
         final scaleX = availableWidth / pageDimensions.width;
         final scaleY = availableHeight / pageDimensions.height;
-        
+
         // Use the smaller scale to ensure the page fits entirely
         final scale = math.min(scaleX, scaleY);
-        
+
         return ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: Transform.scale(
