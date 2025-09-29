@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'managers/text_box_manager.dart';
+import 'models/drawing_tools.dart';
 
 enum NoteMode { text, drawing, voice, read }
 
@@ -34,12 +36,20 @@ class NoteCreationVm extends ChangeNotifier {
   bool _isPlaying = false;
   String? _recordingPath;
   NoteMode _currentMode = NoteMode.text;
+  bool _isTextBoxMode = false;
+  String? _selectedTextBoxTool;
+  
+  // Drawing tool state
+  Color _selectedColor = Colors.black;
+  double _strokeWidth = 2.0;
+  DrawingToolType _selectedDrawingTool = DrawingToolType.simpleLine;
 
   // Multi-page functionality
   List<NotePage> _notePages = [];
   int _currentPageIndex = 0;
   Map<String, DrawingController> _pageDrawingControllers = {};
   Map<String, QuillController> _pageTextControllers = {};
+  Map<String, TextBoxManager> _pageTextBoxManagers = {};
 
   List<NotePage> get notePages => _notePages;
   int get currentPageIndex => _currentPageIndex;
@@ -223,6 +233,108 @@ class NoteCreationVm extends ChangeNotifier {
     return _pageTextControllers[pageId]!;
   }
 
+  TextBoxManager getCurrentPageTextBoxManager() {
+    if (currentPage == null) {
+      // Return a temporary manager for pages that don't exist yet
+      return TextBoxManager();
+    }
+
+    final pageId = currentPage!.id;
+    if (!_pageTextBoxManagers.containsKey(pageId)) {
+      final manager = TextBoxManager();
+      // Add listener to auto-save when text boxes change
+      manager.addListener(() {
+        _autoSaveCurrentPage();
+      });
+      _pageTextBoxManagers[pageId] = manager;
+    }
+    return _pageTextBoxManagers[pageId]!;
+  }
+
+  // Text box management methods
+  void addTextBox(Offset position, {String? text}) {
+    debugPrint('Adding text box at position: $position');
+    final manager = getCurrentPageTextBoxManager();
+    final textBox = manager.addTextBox(position, text: text);
+    debugPrint('Text box created with ID: ${textBox.id}');
+    notifyListeners();
+  }
+
+  void selectTextBox(String? textBoxId) {
+    final manager = getCurrentPageTextBoxManager();
+    manager.selectTextBox(textBoxId);
+  }
+
+  void startEditingTextBox(String textBoxId) {
+    final manager = getCurrentPageTextBoxManager();
+    manager.startEditing(textBoxId);
+  }
+
+  void stopEditingTextBox() {
+    final manager = getCurrentPageTextBoxManager();
+    manager.stopEditing();
+  }
+
+  void deleteTextBox(String textBoxId) {
+    final manager = getCurrentPageTextBoxManager();
+    manager.deleteTextBox(textBoxId);
+    notifyListeners();
+  }
+
+  void clearTextBoxSelection() {
+    final manager = getCurrentPageTextBoxManager();
+    manager.clearSelection();
+  }
+
+  // Get text box manager for current page
+  TextBoxManager get textBoxManager => getCurrentPageTextBoxManager();
+
+  // Text box mode getters and setters
+  bool get isTextBoxMode => _isTextBoxMode;
+  String? get selectedTextBoxTool => _selectedTextBoxTool;
+
+  void setTextBoxMode(bool enabled, {String? tool}) {
+    _isTextBoxMode = enabled;
+    _selectedTextBoxTool = tool;
+    notifyListeners();
+  }
+
+  void selectTextBoxTool(String tool) {
+    debugPrint('Selecting text box tool: $tool');
+    _isTextBoxMode = true;
+    _selectedTextBoxTool = tool;
+    notifyListeners();
+  }
+
+  void exitTextBoxMode() {
+    debugPrint('Exiting text box mode');
+    _isTextBoxMode = false;
+    _selectedTextBoxTool = null;
+    // Also clear any text box selection
+    clearTextBoxSelection();
+    notifyListeners();
+  }
+
+  // Drawing tool getters and setters
+  Color get selectedColor => _selectedColor;
+  double get strokeWidth => _strokeWidth;
+  DrawingToolType get selectedDrawingTool => _selectedDrawingTool;
+
+  void setSelectedColor(Color color) {
+    _selectedColor = color;
+    notifyListeners();
+  }
+
+  void setStrokeWidth(double width) {
+    _strokeWidth = width;
+    notifyListeners();
+  }
+
+  void setSelectedDrawingTool(DrawingToolType tool) {
+    _selectedDrawingTool = tool;
+    notifyListeners();
+  }
+
   void setCurrentPageIndex(int index) {
     if (index >= 0 && index < _notePages.length) {
       // Save current page content before switching
@@ -319,6 +431,26 @@ class NoteCreationVm extends ChangeNotifier {
       // Clear the drawing controller if no data
       final drawingController = getCurrentPageDrawingController();
       drawingController.clear();
+    }
+
+    // Load text box content for current page
+    final textBoxManager = getCurrentPageTextBoxManager();
+    if (currentPage!.textBoxData != null &&
+        currentPage!.textBoxData!.isNotEmpty) {
+      try {
+        debugPrint(
+          'Loading text box data for page ${currentPage!.id}',
+        );
+        final List<dynamic> textBoxData = jsonDecode(currentPage!.textBoxData!);
+        textBoxManager.loadFromJson(textBoxData);
+        debugPrint('Loaded ${textBoxData.length} text boxes');
+      } catch (e) {
+        debugPrint('Error loading page text box content: $e');
+      }
+    } else {
+      debugPrint('No text box data to load for page ${currentPage!.id}');
+      // Clear text boxes if no data
+      textBoxManager.clearAll();
     }
   }
 
@@ -577,10 +709,29 @@ class NoteCreationVm extends ChangeNotifier {
         }
       }
 
+      // Save current text box content
+      final textBoxManager = getCurrentPageTextBoxManager();
+      String textBoxContent = '[]';
+      try {
+        final textBoxList = textBoxManager.toJson();
+        debugPrint(
+          'Saving text box content for page ${currentPage!.id}: ${textBoxList.length} items',
+        );
+        textBoxContent = JsonEncoder.withIndent('  ').convert(textBoxList);
+      } catch (e) {
+        debugPrint('Error getting text box content during save: $e');
+        // Keep existing text box data if there's an error
+        if (currentPage!.textBoxData != null &&
+            currentPage!.textBoxData!.isNotEmpty) {
+          textBoxContent = currentPage!.textBoxData!;
+        }
+      }
+
       // Update current page
-      final updatedPage = currentPage!.getUpdatedPage(
+      final updatedPage = currentPage!.copyWith(
         textContent: textContent,
         drawingData: drawingContent,
+        textBoxData: textBoxContent,
         updatedAt: generateUnixTimestamp(),
       );
 

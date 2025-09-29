@@ -11,6 +11,7 @@ class NotePage {
   final BoardNoteTemplate template; // Page template (blank, lined, etc.)
   final String? textContent; // Rich text content (Quill Delta JSON)
   final String? drawingData; // Drawing/sketch data (JSON)
+  final String? textBoxData; // Text box data (JSON)
   final List<VoiceNote> voiceNotes; // Voice recordings for this page
   final int createdAt;
   final int updatedAt;
@@ -24,6 +25,7 @@ class NotePage {
     BoardNoteTemplate? template,
     this.textContent,
     this.drawingData,
+    this.textBoxData,
     this.voiceNotes = const [],
     required this.createdAt,
     required this.updatedAt,
@@ -39,6 +41,7 @@ class NotePage {
     BoardNoteTemplate? template,
     String? textContent,
     String? drawingData,
+    String? textBoxData,
     List<VoiceNote>? voiceNotes,
     int? createdAt,
     int? updatedAt,
@@ -52,6 +55,7 @@ class NotePage {
       template: template ?? this.template,
       textContent: textContent ?? this.textContent,
       drawingData: drawingData ?? this.drawingData,
+      textBoxData: textBoxData ?? this.textBoxData,
       voiceNotes: voiceNotes ?? this.voiceNotes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -68,6 +72,7 @@ class NotePage {
       'template': template.type.toString(),
       'text_content': textContent,
       'drawing_data': drawingData,
+      'text_box_data': textBoxData,
       'voice_notes': jsonEncode(voiceNotes.map((x) => x.toMap()).toList()),
       'created_at': createdAt,
       'updated_at': updatedAt,
@@ -138,6 +143,7 @@ class NotePage {
       template: parseTemplate(map['template']),
       textContent: map['text_content'],
       drawingData: map['drawing_data'],
+      textBoxData: map['text_box_data'],
       voiceNotes: parseVoiceNotes(map['voice_notes']),
       createdAt: map['created_at'] ?? 0,
       updatedAt: map['updated_at'] ?? 0,

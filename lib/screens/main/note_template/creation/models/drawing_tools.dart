@@ -41,6 +41,9 @@ enum DrawingToolType {
   // Text
   textBox,
   textCallout,
+  textBold,
+  textItalic,
+  textUnderline,
   
   // Utilities
   highlighter,
@@ -306,16 +309,37 @@ class DrawingTools {
     // Text
     DrawingToolType.textBox: DrawingToolConfig(
       type: DrawingToolType.textBox,
-      name: 'Text',
-      description: 'Add text',
+      name: 'Text Box',
+      description: 'Add editable text box',
       icon: Icons.text_fields,
       category: DrawingToolCategory.text,
     ),
     DrawingToolType.textCallout: DrawingToolConfig(
       type: DrawingToolType.textCallout,
       name: 'Callout',
-      description: 'Text with callout',
+      description: 'Text with callout bubble',
       icon: Icons.chat_bubble_outline,
+      category: DrawingToolCategory.text,
+    ),
+    DrawingToolType.textBold: DrawingToolConfig(
+      type: DrawingToolType.textBold,
+      name: 'Bold Text',
+      description: 'Bold text box',
+      icon: Icons.format_bold,
+      category: DrawingToolCategory.text,
+    ),
+    DrawingToolType.textItalic: DrawingToolConfig(
+      type: DrawingToolType.textItalic,
+      name: 'Italic Text',
+      description: 'Italic text box',
+      icon: Icons.format_italic,
+      category: DrawingToolCategory.text,
+    ),
+    DrawingToolType.textUnderline: DrawingToolConfig(
+      type: DrawingToolType.textUnderline,
+      name: 'Underlined Text',
+      description: 'Underlined text box',
+      icon: Icons.format_underlined,
       category: DrawingToolCategory.text,
     ),
     

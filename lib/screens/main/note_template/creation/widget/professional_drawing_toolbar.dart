@@ -8,13 +8,12 @@ import 'custom_paint_contents.dart';
 class ProfessionalDrawingToolbar extends StatefulWidget {
   final NoteCreationVm vm;
 
-  const ProfessionalDrawingToolbar({
-    Key? key,
-    required this.vm,
-  }) : super(key: key);
+  const ProfessionalDrawingToolbar({Key? key, required this.vm})
+    : super(key: key);
 
   @override
-  State<ProfessionalDrawingToolbar> createState() => _ProfessionalDrawingToolbarState();
+  State<ProfessionalDrawingToolbar> createState() =>
+      _ProfessionalDrawingToolbarState();
 }
 
 class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
@@ -22,11 +21,6 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
   DrawingToolCategory? _expandedCategory;
   late AnimationController _animationController;
   late Animation<double> _animation;
-  Color _selectedColor = Colors.black;
-  double _strokeWidth = 2.0;
-  StrokeStyle _strokeStyle = StrokeStyle.solid;
-  bool _fillEnabled = false;
-  DrawingToolType _selectedTool = DrawingToolType.simpleLine;
 
   @override
   void initState() {
@@ -61,17 +55,17 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
 
   void _selectTool(DrawingToolType toolType) {
     setState(() {
-      _selectedTool = toolType;
       _expandedCategory = null;
-      _animationController.reverse();
     });
+    _animationController.reverse();
+
+    // Update ViewModel with selected tool
+    widget.vm.setSelectedDrawingTool(toolType);
 
     final config = DrawingTools.getToolConfig(toolType);
     if (config != null) {
-      _selectedColor = config.defaultColor;
-      _strokeWidth = config.defaultStrokeWidth;
-      _strokeStyle = config.defaultStrokeStyle;
-      _fillEnabled = config.fillEnabled;
+      widget.vm.setSelectedColor(config.defaultColor);
+      widget.vm.setStrokeWidth(config.defaultStrokeWidth);
     }
 
     // Set the drawing tool based on type
@@ -80,7 +74,7 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
 
   void _setPaintContent(DrawingToolType toolType) {
     final controller = widget.vm.getCurrentPageDrawingController();
-    
+
     switch (toolType) {
       case DrawingToolType.simpleLine:
         controller.setPaintContent(SimpleLine());
@@ -116,22 +110,11 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
         controller.setPaintContent(Heart());
         break;
       case DrawingToolType.arrowStraight:
-        controller.setPaintContent(ArrowStraight());
-        break;
-      case DrawingToolType.highlighter:
-        controller.setPaintContent(Highlighter());
-        break;
-      case DrawingToolType.marker:
-        controller.setPaintContent(SmoothLine()); // Use smooth line for marker
-        break;
-      case DrawingToolType.eraser:
-        controller.setPaintContent(Eraser());
-        break;
-      // Placeholder implementations for future features
-      case DrawingToolType.arrowCurved:
       case DrawingToolType.arrowDouble:
       case DrawingToolType.arrowBent:
-        controller.setPaintContent(ArrowStraight()); // Use straight arrow for now
+        controller.setPaintContent(
+          ArrowStraight(),
+        ); // Use straight arrow for now
         break;
       case DrawingToolType.dottedLine:
       case DrawingToolType.dashedLine:
@@ -139,17 +122,23 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
         break;
       case DrawingToolType.textBox:
       case DrawingToolType.textCallout:
-        // Text tools will be implemented in future updates
-        controller.setPaintContent(SimpleLine());
-        break;
+      case DrawingToolType.textBold:
+      case DrawingToolType.textItalic:
+      case DrawingToolType.textUnderline:
+        // Text tools are handled by the text box system, not drawing controller
+        widget.vm.selectTextBoxTool(toolType.toString());
+        return; // Don't update drawing controller for text tools
       default:
         controller.setPaintContent(SimpleLine());
     }
 
+    // Exit text box mode when selecting non-text tools
+    widget.vm.exitTextBoxMode();
+
     // Update stroke properties
     controller.setStyle(
-      strokeWidth: _strokeWidth,
-      color: _selectedColor,
+      strokeWidth: widget.vm.strokeWidth,
+      color: widget.vm.selectedColor,
     );
   }
 
@@ -197,29 +186,29 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
             _buildQuickToolButton(DrawingToolType.simpleLine),
             _buildQuickToolButton(DrawingToolType.smoothLine),
             _buildQuickToolButton(DrawingToolType.eraser),
-            
+
             const SizedBox(width: 16),
-            
+
             // Category buttons
-            ...DrawingTools.getAllCategories().map((category) => 
-              _buildCategoryButton(category)
+            ...DrawingTools.getAllCategories().map(
+              (category) => _buildCategoryButton(category),
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // Color picker
             _buildColorPicker(),
-            
+
             const SizedBox(width: 8),
-            
+
             // Stroke width
             _buildStrokeWidthSlider(),
-            
+
             const SizedBox(width: 8),
-            
+
             // Undo/Redo
             _buildUndoRedoButtons(),
-            
+
             // Add some padding at the end
             const SizedBox(width: 16),
           ],
@@ -232,12 +221,15 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
     final config = DrawingTools.getToolConfig(toolType);
     if (config == null) return const SizedBox.shrink();
 
-    final isSelected = _selectedTool == toolType;
+    final isSelected = widget.vm.selectedDrawingTool == toolType;
 
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: Material(
-        color: isSelected ? config.category.color.withOpacity(0.2) : Colors.transparent,
+        color:
+            isSelected
+                ? config.category.color.withOpacity(0.2)
+                : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
@@ -247,9 +239,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
             height: 44,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: isSelected 
-                ? Border.all(color: config.category.color, width: 2)
-                : null,
+              border:
+                  isSelected
+                      ? Border.all(color: config.category.color, width: 2)
+                      : null,
             ),
             child: Icon(
               config.icon,
@@ -264,11 +257,12 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
 
   Widget _buildCategoryButton(DrawingToolCategory category) {
     final isExpanded = _expandedCategory == category;
-    
+
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: Material(
-        color: isExpanded ? category.color.withOpacity(0.2) : Colors.transparent,
+        color:
+            isExpanded ? category.color.withOpacity(0.2) : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
@@ -277,9 +271,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: isExpanded 
-                ? Border.all(color: category.color, width: 2)
-                : Border.all(color: Colors.grey[300]!),
+              border:
+                  isExpanded
+                      ? Border.all(color: category.color, width: 2)
+                      : Border.all(color: Colors.grey[300]!),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -300,7 +295,9 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
                 ),
                 const SizedBox(width: 4),
                 Icon(
-                  isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
                   size: 16,
                   color: isExpanded ? category.color : Colors.grey[600],
                 ),
@@ -319,7 +316,7 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: _selectedColor,
+          color: widget.vm.selectedColor,
           shape: BoxShape.circle,
           border: Border.all(color: Colors.grey[300]!, width: 2),
           boxShadow: [
@@ -341,11 +338,8 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '${_strokeWidth.round()}px',
-            style: TextStyle(
-              fontSize: 10,
-              color: Colors.grey[600],
-            ),
+            '${widget.vm.strokeWidth.round()}px',
+            style: TextStyle(fontSize: 10, color: Colors.grey[600]),
           ),
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
@@ -354,15 +348,15 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
               overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
             ),
             child: Slider(
-              value: _strokeWidth,
+              value: widget.vm.strokeWidth,
               min: 1,
               max: 20,
               divisions: 19,
               onChanged: (value) {
-                setState(() {
-                  _strokeWidth = value;
-                });
-                widget.vm.getCurrentPageDrawingController().setStyle(strokeWidth: value);
+                widget.vm.setStrokeWidth(value);
+                widget.vm.getCurrentPageDrawingController().setStyle(
+                  strokeWidth: value,
+                );
               },
             ),
           ),
@@ -373,7 +367,7 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
 
   Widget _buildUndoRedoButtons() {
     final controller = widget.vm.getCurrentPageDrawingController();
-    
+
     return Row(
       children: [
         IconButton(
@@ -400,14 +394,12 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
     if (_expandedCategory == null) return const SizedBox.shrink();
 
     final tools = DrawingTools.getToolsByCategory(_expandedCategory!);
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey[50],
-        border: Border(
-          top: BorderSide(color: Colors.grey[200]!),
-        ),
+        border: Border(top: BorderSide(color: Colors.grey[200]!)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,7 +416,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: tools.map((config) => _buildExpandedToolButton(config)).toList(),
+            children:
+                tools
+                    .map((config) => _buildExpandedToolButton(config))
+                    .toList(),
           ),
         ],
       ),
@@ -432,8 +427,12 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
   }
 
   Widget _buildExpandedToolButton(DrawingToolConfig config) {
-    final isSelected = _selectedTool == config.type;
-    
+    final isSelected =
+        widget.vm.selectedDrawingTool == config.type ||
+        (config.category == DrawingToolCategory.text &&
+            widget.vm.isTextBoxMode &&
+            widget.vm.selectedTextBoxTool == config.type.toString());
+
     return Material(
       color: isSelected ? config.category.color.withOpacity(0.2) : Colors.white,
       borderRadius: BorderRadius.circular(12),
@@ -446,9 +445,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
           height: 80,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: isSelected 
-              ? Border.all(color: config.category.color, width: 2)
-              : Border.all(color: Colors.grey[200]!),
+            border:
+                isSelected
+                    ? Border.all(color: config.category.color, width: 2)
+                    : Border.all(color: Colors.grey[200]!),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -498,18 +498,13 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.grey[200]!),
-              ),
+              border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
             ),
             child: Row(
               children: [
                 const Text(
                   'Choose Color',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
                 IconButton(
@@ -528,40 +523,36 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Basic Colors',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: DrawingColorPalette.basicColors.map((color) => 
-                    _buildColorOption(color)
-                  ).toList(),
+                  children:
+                      DrawingColorPalette.basicColors
+                          .map((color) => _buildColorOption(color))
+                          .toList(),
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Extended colors
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Extended Colors',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Wrap(
                   spacing: 6,
                   runSpacing: 6,
-                  children: DrawingColorPalette.extendedColors.map((color) => 
-                    _buildColorOption(color, size: 32)
-                  ).toList(),
+                  children:
+                      DrawingColorPalette.extendedColors
+                          .map((color) => _buildColorOption(color, size: 32))
+                          .toList(),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -573,13 +564,11 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
   }
 
   Widget _buildColorOption(Color color, {double size = 40}) {
-    final isSelected = _selectedColor == color;
-    
+    final isSelected = widget.vm.selectedColor == color;
+
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _selectedColor = color;
-        });
+        widget.vm.setSelectedColor(color);
         widget.vm.getCurrentPageDrawingController().setStyle(color: color);
         Navigator.pop(context);
       },
@@ -601,13 +590,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
             ),
           ],
         ),
-        child: isSelected 
-          ? const Icon(
-              Icons.check,
-              color: Colors.white,
-              size: 16,
-            )
-          : null,
+        child:
+            isSelected
+                ? const Icon(Icons.check, color: Colors.white, size: 16)
+                : null,
       ),
     );
   }

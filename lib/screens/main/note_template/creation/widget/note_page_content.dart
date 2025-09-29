@@ -10,6 +10,7 @@ import 'package:navinotes/screens/main/note_template/creation/widget/lined_rule.
 import 'package:navinotes/screens/main/note_template/creation/widget/squared_rule.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/dotted.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/voice.dart';
+import 'package:navinotes/screens/main/note_template/creation/widget/text_box_widget.dart';
 
 class NotePageContent extends StatefulWidget {
   final NotePage page;
@@ -49,9 +50,8 @@ class _NotePageContentState extends State<NotePageContent> {
     return Listener(
       onPointerDown: (_) => _safeSetState(() => fingerCount++),
       onPointerUp:
-          (_) => _safeSetState(
-        () => fingerCount = (fingerCount - 1).clamp(0, 10),
-      ),
+          (_) =>
+              _safeSetState(() => fingerCount = (fingerCount - 1).clamp(0, 10)),
       child: Stack(
         children: [
           // Fixed page content (no scrolling - like real paper)
@@ -187,6 +187,10 @@ class _NotePageContentState extends State<NotePageContent> {
               ),
             ),
           ),
+          // Text box overlay (interactive)
+          Positioned.fill(
+            child: _buildTextBoxOverlay(vm, validWidth, validHeight),
+          ),
         ];
       case NoteMode.read:
         // In read mode, show static content only
@@ -238,17 +242,24 @@ class _NotePageContentState extends State<NotePageContent> {
         widget.inputHeight.isFinite && widget.inputHeight > 10
             ? widget.inputHeight
             : 842.0;
-    
-    debugPrint('NotePageContent dimensions: width=$validWidth, height=$validHeight, isThumbnail=${widget.isThumbnail}');
+
+    debugPrint(
+      'NotePageContent dimensions: width=$validWidth, height=$validHeight, isThumbnail=${widget.isThumbnail}',
+    );
 
     // For thumbnails with very small dimensions, skip DrawingBoard to avoid errors
     if (widget.isThumbnail && (validWidth < 50 || validHeight < 50)) {
       return const SizedBox.shrink();
     }
-    
+
     // Additional safety check for invalid dimensions
-    if (validWidth < 10 || validHeight < 10 || !validWidth.isFinite || !validHeight.isFinite) {
-      debugPrint('Skipping DrawingBoard due to invalid dimensions: $validWidth x $validHeight');
+    if (validWidth < 10 ||
+        validHeight < 10 ||
+        !validWidth.isFinite ||
+        !validHeight.isFinite) {
+      debugPrint(
+        'Skipping DrawingBoard due to invalid dimensions: $validWidth x $validHeight',
+      );
       return const SizedBox.shrink();
     }
 
@@ -296,15 +307,31 @@ class _NotePageContentState extends State<NotePageContent> {
           child: IgnorePointer(
             ignoring: true, // Make it non-interactive in read mode
             child: RepaintBoundary(
-              child: DrawingBoard(
-                controller: drawingController,
-                background: Container(
-                  width: validWidth,
-                  height: validHeight,
-                  color: Colors.transparent,
-                ),
-                showDefaultActions: false,
-                showDefaultTools: false,
+              child: Builder(
+                builder: (context) {
+                  try {
+                    return DrawingBoard(
+                      controller: drawingController,
+                      background: Container(
+                        width: validWidth,
+                        height: validHeight,
+                        color: Colors.transparent,
+                      ),
+                      showDefaultActions: false,
+                      showDefaultTools: false,
+                    );
+                  } catch (e) {
+                    debugPrint('Error creating static DrawingBoard: $e');
+                    return Container(
+                      width: validWidth,
+                      height: validHeight,
+                      color: Colors.grey.withOpacity(0.1),
+                      child: const Center(
+                        child: Icon(Icons.draw, color: Colors.grey, size: 24),
+                      ),
+                    );
+                  }
+                },
               ),
             ),
           ),
@@ -337,45 +364,114 @@ class _NotePageContentState extends State<NotePageContent> {
     );
 
     switch (currentPage.template.type) {
-          case NoteTemplateType.lined:
-            return ClipRect(
-              child: SizedBox(
-                width: widget.inputWidth,
-                height: widget.inputHeight,
-                child: const LinedNoteBackground(),
-              ),
-            );
-          case NoteTemplateType.squared:
-            return ClipRect(
-              child: SizedBox(
-                width: widget.inputWidth,
-                height: widget.inputHeight,
-                child: const SquaredNoteBackground(),
-              ),
-            );
-          case NoteTemplateType.dotted:
-            return ClipRect(
-              child: SizedBox(
-                width: widget.inputWidth,
-                height: widget.inputHeight,
-                child: const DottedNoteBackground(),
-              ),
-            );
-          case NoteTemplateType.cornell:
-            // Cornell template would need a special background
-            return ClipRect(
-              child: SizedBox(
-                width: widget.inputWidth,
-                height: widget.inputHeight,
-                child: Container(
-                  color: const Color(0xFFD1CDC4), // Cornell background color
-                ),
-              ),
-            );
-          case NoteTemplateType.blank:
-          default:
-            // Blank template - no background pattern
-            return const SizedBox.shrink();
-        }
+      case NoteTemplateType.lined:
+        return ClipRect(
+          child: SizedBox(
+            width: widget.inputWidth,
+            height: widget.inputHeight,
+            child: const LinedNoteBackground(),
+          ),
+        );
+      case NoteTemplateType.squared:
+        return ClipRect(
+          child: SizedBox(
+            width: widget.inputWidth,
+            height: widget.inputHeight,
+            child: const SquaredNoteBackground(),
+          ),
+        );
+      case NoteTemplateType.dotted:
+        return ClipRect(
+          child: SizedBox(
+            width: widget.inputWidth,
+            height: widget.inputHeight,
+            child: const DottedNoteBackground(),
+          ),
+        );
+      case NoteTemplateType.cornell:
+        // Cornell template would need a special background
+        return ClipRect(
+          child: SizedBox(
+            width: widget.inputWidth,
+            height: widget.inputHeight,
+            child: Container(
+              color: const Color(0xFFD1CDC4), // Cornell background color
+            ),
+          ),
+        );
+      case NoteTemplateType.blank:
+      default:
+        // Blank template - no background pattern
+        return const SizedBox.shrink();
+    }
+  }
+
+  Widget _buildTextBoxOverlay(NoteCreationVm vm, double width, double height) {
+    // Only show text boxes for the current page
+    if (!_isCurrentPage(vm)) {
+      return const SizedBox.shrink();
+    }
+
+    return Consumer<NoteCreationVm>(
+      builder: (context, vm, child) {
+        final textBoxManager = vm.textBoxManager;
+
+        return GestureDetector(
+          onTapDown: (details) {
+            // Handle tap to add text box or clear selection
+            final position = details.localPosition;
+            final tappedTextBox = textBoxManager.getTextBoxAtPosition(position);
+
+            if (tappedTextBox == null) {
+              // Check if we're in text box mode
+              final selectedTool =
+                  vm.currentMode == NoteMode.drawing
+                      ? _getSelectedTextTool(vm)
+                      : null;
+              debugPrint(
+                'Tap detected at $position, textBoxMode: ${vm.isTextBoxMode}, selectedTool: $selectedTool',
+              );
+              if (selectedTool != null) {
+                // Add new text box
+                debugPrint('Adding text box at $position');
+                vm.addTextBox(position);
+              } else {
+                // Clear selection
+                vm.clearTextBoxSelection();
+              }
+            }
+          },
+          child: TextBoxOverlay(
+            textBoxes: textBoxManager.textBoxes,
+            selectedTextBoxId: textBoxManager.selectedTextBoxId,
+            editingTextBoxId: textBoxManager.editingTextBoxId,
+            canvasSize: Size(width, height),
+            onTextBoxUpdate: (textBox) {
+              textBoxManager.updateTextBox(textBox);
+            },
+            onTextBoxDelete: (textBoxId) {
+              vm.deleteTextBox(textBoxId);
+            },
+            onTextBoxSelect: (textBoxId) {
+              vm.selectTextBox(textBoxId);
+            },
+            onStartEdit: () {
+              // Start editing the selected text box
+              if (textBoxManager.selectedTextBoxId != null) {
+                vm.startEditingTextBox(textBoxManager.selectedTextBoxId!);
+              }
+            },
+            onEndEdit: () {
+              vm.stopEditingTextBox();
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  String? _getSelectedTextTool(NoteCreationVm vm) {
+    // Check if we're in text box mode and return the selected tool
+    return vm.isTextBoxMode ? vm.selectedTextBoxTool : null;
   }
 }
