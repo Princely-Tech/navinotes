@@ -380,17 +380,15 @@ class PressureDrawingController extends ChangeNotifier {
 
   /// Add pressure-aware paint content
   void _addPressureAwarePaintContent(PressurePoint point, PressureDrawingConfig config) {
-    // Create a simple line with pressure-adjusted properties
-    final paintContent = SimpleLine();
-    
-    // Set the paint properties on the drawing controller
+    // Update the drawing controller's style with pressure-adjusted properties
     _drawingController.setStyle(
       strokeWidth: config.strokeWidth,
       color: config.color,
     );
     
-    // Add the content to the drawing controller
-    _drawingController.addContent(paintContent);
+    // The actual drawing will be handled by the DrawingBoard widget
+    // when it receives pointer events. We just need to ensure the
+    // style is set correctly for pressure sensitivity.
   }
 
   /// Get hover information for cursor display

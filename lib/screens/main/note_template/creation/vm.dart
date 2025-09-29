@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'managers/text_box_manager.dart';
 import 'models/drawing_tools.dart';
 import 'models/stylus_settings.dart';
@@ -32,10 +33,11 @@ class NoteCreationVm extends ChangeNotifier {
   TextEditingController titleController = TextEditingController();
 
   final DrawingController _drawingController = DrawingController();
-  
+
   // Stylus settings and pressure-sensitive controllers
   StylusSettings _stylusSettings = const StylusSettings();
-  final Map<String, PressureDrawingController> _pagePressureControllers = <String, PressureDrawingController>{};
+  final Map<String, PressureDrawingController> _pagePressureControllers =
+      <String, PressureDrawingController>{};
   final AudioRecorder _audioRecorder = AudioRecorder();
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isRecording = false;
@@ -113,55 +115,54 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   Future<void> updateVoiceNoteName(int index, String newName) async {
-  // Validate input
-  if (content == null || 
-      index < 0 || 
-      index >= content!.voiceNotes.length || 
-      newName.trim().isEmpty) {
-    return;
-  }
-
-  try {
-    final oldVoiceNote = content!.voiceNotes[index];
-    
-    // Check if name actually changed
-    if (oldVoiceNote.name == newName) {
+    // Validate input
+    if (content == null ||
+        index < 0 ||
+        index >= content!.voiceNotes.length ||
+        newName.trim().isEmpty) {
       return;
     }
 
-    // Create new list to ensure immutability
-    final updatedVoiceNotes = List<VoiceNote>.from(content!.voiceNotes);
-    
-    // Create new voice note with updated name
-    final updatedVoiceNote = VoiceNote(
-      name: newName.trim(),
-      createdAt: oldVoiceNote.createdAt,
-      file: oldVoiceNote.file,
-      duration: oldVoiceNote.duration,
-      fileSize: oldVoiceNote.fileSize,
-    );
-    
-    // Update the list
-    updatedVoiceNotes[index] = updatedVoiceNote;
+    try {
+      final oldVoiceNote = content!.voiceNotes[index];
 
-    // Update content
-    content = content!.getUpdatedContent(
-      voiceNotes: updatedVoiceNotes,
-      updatedAt: generateUnixTimestamp(),
-    );
+      // Check if name actually changed
+      if (oldVoiceNote.name == newName) {
+        return;
+      }
 
-    // Save to database
-    await updateContentInDb(showSnackBar: false);
-    
-    // Notify listeners after successful update
-    notifyListeners();
-    
-  } catch (e) {
-    debugPrint('Error updating voice note name: $e');
-    // Consider showing an error to the user
-    rethrow;
+      // Create new list to ensure immutability
+      final updatedVoiceNotes = List<VoiceNote>.from(content!.voiceNotes);
+
+      // Create new voice note with updated name
+      final updatedVoiceNote = VoiceNote(
+        name: newName.trim(),
+        createdAt: oldVoiceNote.createdAt,
+        file: oldVoiceNote.file,
+        duration: oldVoiceNote.duration,
+        fileSize: oldVoiceNote.fileSize,
+      );
+
+      // Update the list
+      updatedVoiceNotes[index] = updatedVoiceNote;
+
+      // Update content
+      content = content!.getUpdatedContent(
+        voiceNotes: updatedVoiceNotes,
+        updatedAt: generateUnixTimestamp(),
+      );
+
+      // Save to database
+      await updateContentInDb(showSnackBar: false);
+
+      // Notify listeners after successful update
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error updating voice note name: $e');
+      // Consider showing an error to the user
+      rethrow;
+    }
   }
-}
 
   // Update the togglePlayback method
   Future<void> toggleVoiceNotePlayback(int index) async {
@@ -623,13 +624,33 @@ class NoteCreationVm extends ChangeNotifier {
 
     final pageToDelete = _notePages[index];
     _notePages.removeAt(index);
-    _renumberPages();
 
-    // Clean up controllers
-    _pageDrawingControllers.remove(pageToDelete.id);
-    _pageTextControllers.remove(pageToDelete.id);
+    // Clean up the drawing controller for the deleted page
+    final pageId = pageToDelete.id;
+    if (_pageDrawingControllers.containsKey(pageId)) {
+      _pageDrawingControllers[pageId]?.dispose();
+      _pageDrawingControllers.remove(pageId);
+    }
 
-    // Adjust current page index
+    // Clean up the text controller for the deleted page
+    if (_pageTextControllers.containsKey(pageId)) {
+      _pageTextControllers[pageId]?.dispose();
+      _pageTextControllers.remove(pageId);
+    }
+
+    // Clean up pressure controller for the deleted page
+    if (_pagePressureControllers.containsKey(pageId)) {
+      _pagePressureControllers[pageId]?.dispose();
+      _pagePressureControllers.remove(pageId);
+    }
+
+    // Clean up text box manager for the deleted page
+    if (_pageTextBoxManagers.containsKey(pageId)) {
+      _pageTextBoxManagers[pageId]?.dispose();
+      _pageTextBoxManagers.remove(pageId);
+    }
+
+    // Adjust current page index if necessary
     if (_currentPageIndex >= _notePages.length) {
       _currentPageIndex = _notePages.length - 1;
     }
@@ -792,22 +813,28 @@ class NoteCreationVm extends ChangeNotifier {
     if (currentPage == null) return;
 
     try {
-      // Save current text content
-      final textController = getCurrentPageTextController();
-      final textContent = jsonEncode(
-        textController.document.toDelta().toJson(),
-      );
+      // Save text content
+      final textContent = richEditorController.document.toDelta().toJson();
+      final textContentJson = JsonEncoder.withIndent('  ').convert(textContent);
 
-      // Save current drawing content
-      final drawingController = getCurrentPageDrawingController();
+      // Save drawing content - prioritize pressure controller if stylus is enabled
       String drawingContent = '[]';
       try {
-        // Safely get drawing content, avoiding issues during active drawing
-        final jsonList = drawingController.getJsonList();
-        debugPrint(
-          'Saving drawing content for page ${currentPage!.id}: ${jsonList.length} items',
-        );
+        List<Map<String, dynamic>> jsonList;
+        if (_stylusSettings.pressureSensitivityEnabled &&
+            _pagePressureControllers.containsKey(currentPage!.id)) {
+          jsonList = _pagePressureControllers[currentPage!.id]!.getJsonList();
+          debugPrint(
+            'Saving pressure-sensitive drawing content for page ${currentPage!.id}: ${jsonList.length} items',
+          );
+        } else {
+          jsonList = getCurrentPageDrawingController().getJsonList();
+          debugPrint(
+            'Saving regular drawing content for page ${currentPage!.id}: ${jsonList.length} items',
+          );
+        }
         drawingContent = JsonEncoder.withIndent('  ').convert(jsonList);
+        debugPrint('Drawing content JSON: $drawingContent');
       } catch (e) {
         debugPrint('Error getting drawing content during save: $e');
         // Keep existing drawing data if there's an error
@@ -837,7 +864,7 @@ class NoteCreationVm extends ChangeNotifier {
 
       // Update current page
       final updatedPage = currentPage!.copyWith(
-        textContent: textContent,
+        textContent: textContentJson,
         drawingData: drawingContent,
         textBoxData: textBoxContent,
         updatedAt: generateUnixTimestamp(),
@@ -1369,6 +1396,13 @@ class NoteCreationVm extends ChangeNotifier {
     _debounceTimer?.cancel();
     _positionSubscription?.cancel();
     _playerStateSubscription?.cancel();
+
+    // Dispose all pressure controllers
+    for (final controller in _pagePressureControllers.values) {
+      controller.dispose();
+    }
+    _pagePressureControllers.clear();
+
     _audioRecorder.dispose();
     _audioPlayer.dispose();
     titleController.dispose();
@@ -1377,41 +1411,75 @@ class NoteCreationVm extends ChangeNotifier {
     summaryController.dispose();
     focusAreaController.dispose();
     summaryLengthController.dispose();
-
-    // Dispose page controllers to prevent memory leaks
-    for (final controller in _pageDrawingControllers.values) {
-      controller.dispose();
-    }
-    for (final controller in _pageTextControllers.values) {
-      controller.dispose();
-    }
-    for (final controller in _pagePressureControllers.values) {
-      controller.dispose();
-    }
-    _pageDrawingControllers.clear();
-    _pageTextControllers.clear();
-    _pagePressureControllers.clear();
-
+    richEditorController.dispose();
     super.dispose();
   }
 
   // Stylus Settings Methods
-  
   /// Get current stylus settings
   StylusSettings get stylusSettings => _stylusSettings;
-  
+
   /// Update stylus settings
   void updateStylusSettings(StylusSettings settings) {
+    final wasEnabled = _stylusSettings.pressureSensitivityEnabled;
+    final isEnabled = settings.pressureSensitivityEnabled;
+
     _stylusSettings = settings;
-    
+
     // Update all pressure controllers with new settings
     for (final controller in _pagePressureControllers.values) {
       controller.updateStylusSettings(settings);
     }
-    
+
+    // If pressure sensitivity was toggled, sync drawing data between controllers
+    if (wasEnabled != isEnabled && currentPage != null) {
+      _syncDrawingControllers();
+    }
+
     notifyListeners();
   }
-  
+
+  /// Sync drawing data between regular and pressure controllers
+  void _syncDrawingControllers() {
+    if (currentPage == null) return;
+
+    final pageId = currentPage!.id;
+    final regularController = getCurrentPageDrawingController();
+    final pressureController = getCurrentPagePressureController();
+
+    if (_stylusSettings.pressureSensitivityEnabled) {
+      // Switching to pressure mode - copy data from regular to pressure controller
+      final jsonList = regularController.getJsonList();
+      if (jsonList.isNotEmpty) {
+        pressureController.drawingController.clear();
+        for (final item in jsonList) {
+          final paintContent = _createPaintContentFromJson(item['type'], item);
+          if (paintContent != null) {
+            pressureController.addContent(paintContent);
+          }
+        }
+        debugPrint(
+          'Synced ${jsonList.length} items from regular to pressure controller',
+        );
+      }
+    } else {
+      // Switching to regular mode - copy data from pressure to regular controller
+      final jsonList = pressureController.getJsonList();
+      if (jsonList.isNotEmpty) {
+        regularController.clear();
+        for (final item in jsonList) {
+          final paintContent = _createPaintContentFromJson(item['type'], item);
+          if (paintContent != null) {
+            regularController.addContent(paintContent);
+          }
+        }
+        debugPrint(
+          'Synced ${jsonList.length} items from pressure to regular controller',
+        );
+      }
+    }
+  }
+
   /// Get pressure-sensitive drawing controller for current page
   PressureDrawingController getCurrentPagePressureController() {
     if (currentPage == null) {
@@ -1421,53 +1489,123 @@ class NoteCreationVm extends ChangeNotifier {
 
     final pageId = currentPage!.id;
     if (!_pagePressureControllers.containsKey(pageId)) {
-      final controller = PressureDrawingController(stylusSettings: _stylusSettings);
+      final controller = PressureDrawingController(
+        stylusSettings: _stylusSettings,
+      );
       _pagePressureControllers[pageId] = controller;
+
+      // Load existing drawing data if available
+      _loadDrawingDataToPressureController(controller, currentPage!);
+
       debugPrint('Created new pressure drawing controller for page: $pageId');
     } else {
-      debugPrint('Using existing pressure drawing controller for page: $pageId');
+      debugPrint(
+        'Using existing pressure drawing controller for page: $pageId',
+      );
     }
     return _pagePressureControllers[pageId]!;
   }
-  
+
+  /// Load drawing data to pressure controller
+  void _loadDrawingDataToPressureController(
+    PressureDrawingController controller,
+    NotePage page,
+  ) {
+    if (page.drawingData != null && page.drawingData!.isNotEmpty) {
+      try {
+        final List<dynamic> drawingData = jsonDecode(page.drawingData!);
+        for (final item in drawingData) {
+          final type = item['type'] as String;
+          final paintContent = _createPaintContentFromJson(type, item);
+          if (paintContent != null) {
+            controller.addContent(paintContent);
+          }
+        }
+        debugPrint(
+          'Loaded ${drawingData.length} items to pressure controller for page ${page.id}',
+        );
+      } catch (e) {
+        debugPrint('Error loading drawing data to pressure controller: $e');
+      }
+    }
+  }
+
+  /// Create paint content from JSON data
+  PaintContent? _createPaintContentFromJson(
+    String type,
+    Map<String, dynamic> item,
+  ) {
+    try {
+      switch (type) {
+        case 'SimpleLine':
+          return SimpleLine.fromJson(item);
+        case 'SmoothLine':
+          return SmoothLine.fromJson(item);
+        case 'StraightLine':
+          return StraightLine.fromJson(item);
+        case 'Rectangle':
+          return Rectangle.fromJson(item);
+        case 'Circle':
+          return Circle.fromJson(item);
+        case 'Eraser':
+          return Eraser.fromJson(item);
+        default:
+          debugPrint('Unknown paint content type: $type');
+          return null;
+      }
+    } catch (e) {
+      debugPrint('Error creating paint content from JSON: $e');
+      return null;
+    }
+  }
+
   /// Show stylus settings dialog
   void showStylusSettings() {
     // This method would be called from the UI to show the settings dialog
     notifyListeners();
   }
-  
+
   /// Reset stylus settings to defaults
   void resetStylusSettings() {
     updateStylusSettings(const StylusSettings());
   }
-  
+
   /// Load stylus settings from storage
   Future<void> loadStylusSettings() async {
     try {
-      // In a full implementation, you would load from SharedPreferences or database
-      // For now, we'll use default settings
-      final defaultSettings = const StylusSettings();
-      updateStylusSettings(defaultSettings);
+      final prefs = await SharedPreferences.getInstance();
+      final settingsJson = prefs.getString('stylus_settings');
+
+      if (settingsJson != null) {
+        final settingsMap = jsonDecode(settingsJson) as Map<String, dynamic>;
+        final loadedSettings = StylusSettings.fromJson(settingsMap);
+        updateStylusSettings(loadedSettings);
+        debugPrint('Loaded stylus settings: $settingsMap');
+      } else {
+        // Use default settings if no saved settings found
+        final defaultSettings = const StylusSettings();
+        updateStylusSettings(defaultSettings);
+        debugPrint('No saved stylus settings found, using defaults');
+      }
     } catch (e) {
       debugPrint('Error loading stylus settings: $e');
       // Fallback to default settings
       updateStylusSettings(const StylusSettings());
     }
   }
-  
+
   /// Save stylus settings to storage
   Future<void> saveStylusSettings() async {
     try {
-      // In a full implementation, you would save to SharedPreferences or database
+      final prefs = await SharedPreferences.getInstance();
       final json = _stylusSettings.toJson();
-      debugPrint('Saving stylus settings: $json');
-      // await SharedPreferences.getInstance().then((prefs) => 
-      //   prefs.setString('stylus_settings', jsonEncode(json)));
+      await prefs.setString('stylus_settings', jsonEncode(json));
+      debugPrint('Saved stylus settings: $json');
     } catch (e) {
       debugPrint('Error saving stylus settings: $e');
     }
   }
-  
+
   /// Check if stylus is connected (platform-specific implementation)
   bool get isStylusConnected {
     try {
@@ -1490,7 +1628,7 @@ class NoteCreationVm extends ChangeNotifier {
       return false;
     }
   }
-  
+
   /// Get stylus input type based on platform and device
   StylusInputType get detectedStylusType {
     try {
@@ -1518,7 +1656,7 @@ class NoteCreationVm extends ChangeNotifier {
     // - System properties
     // - Hardware capabilities
     // - Previous stylus input detection
-    
+
     // For now, assume Android devices may have stylus support
     // This could be enhanced with device-specific detection
     return true;
@@ -1530,7 +1668,7 @@ class NoteCreationVm extends ChangeNotifier {
     // - Check device manufacturer for Samsung S Pen
     // - Check for other OEM stylus implementations
     // - Use system APIs to detect stylus capabilities
-    
+
     // Simplified detection based on common patterns
     try {
       // This is where you could add device-specific detection
@@ -1547,13 +1685,13 @@ class NoteCreationVm extends ChangeNotifier {
     // - Wacom tablets
     // - Surface Pen (Windows)
     // - Other graphics tablets
-    
+
     // This is a simplified implementation
     // Real detection would involve checking for:
     // - Connected tablet devices
     // - System drivers
     // - Hardware capabilities
-    
+
     return false; // Conservative default for desktop
   }
 
@@ -1565,7 +1703,7 @@ class NoteCreationVm extends ChangeNotifier {
       // - Check hardware capabilities
       // - Test for stylus input events
       // - Cache results for performance
-      
+
       if (Platform.isIOS) {
         // Could check for iPad models that support Apple Pencil
         return true;
@@ -1573,7 +1711,7 @@ class NoteCreationVm extends ChangeNotifier {
         // Could use platform channels to check Android-specific APIs
         return _hasAndroidStylusSupport();
       }
-      
+
       return false;
     } catch (e) {
       debugPrint('Error in async stylus detection: $e');
@@ -1589,6 +1727,33 @@ class NoteCreationVm extends ChangeNotifier {
       'hoverDetection': _supportsHover(),
       'palmRejection': _supportsPalmRejection(),
     };
+  }
+
+  /// Test stylus functionality (for debugging)
+  void testStylusFeatures() {
+    debugPrint('=== Stylus System Test ===');
+    debugPrint('Stylus connected: $isStylusConnected');
+    debugPrint('Detected stylus type: $detectedStylusType');
+    debugPrint(
+      'Pressure sensitivity enabled: ${_stylusSettings.pressureSensitivityEnabled}',
+    );
+    debugPrint('Palm rejection level: ${_stylusSettings.palmRejectionLevel}');
+    debugPrint('Stylus capabilities: $stylusCapabilities');
+    debugPrint(
+      'Current page has pressure controller: ${currentPage != null && _pagePressureControllers.containsKey(currentPage!.id)}',
+    );
+
+    if (currentPage != null) {
+      final regularItems =
+          getCurrentPageDrawingController().getJsonList().length;
+      final pressureItems =
+          _pagePressureControllers.containsKey(currentPage!.id)
+              ? _pagePressureControllers[currentPage!.id]!.getJsonList().length
+              : 0;
+      debugPrint('Regular controller items: $regularItems');
+      debugPrint('Pressure controller items: $pressureItems');
+    }
+    debugPrint('=========================');
   }
 
   /// Check if device supports pressure sensitivity

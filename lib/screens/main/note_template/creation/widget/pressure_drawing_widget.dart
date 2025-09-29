@@ -192,6 +192,9 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
       _isDrawing = true;
       widget.vm.setDrawingState(true);
       
+      // Apply pressure-sensitive styling in real-time
+      _updateDrawingStyle(event);
+      
       // Provide haptic feedback for stylus
       if (widget.controller.stylusSettings.hapticFeedbackEnabled &&
           event.kind == PointerDeviceKind.stylus) {
@@ -213,6 +216,9 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     final handled = widget.controller.handlePointerMove(event);
     
     if (handled && _isDrawing) {
+      // Apply pressure-sensitive styling in real-time
+      _updateDrawingStyle(event);
+      
       // Continue drawing stroke
       widget.vm.setDrawingState(true);
     }
@@ -341,6 +347,49 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
           ),
         ),
       ),
+    );
+  }
+
+  /// Update drawing style based on pressure and stylus settings
+  void _updateDrawingStyle(PointerEvent event) {
+    if (!widget.controller.stylusSettings.pressureSensitivityEnabled) {
+      return;
+    }
+
+    // Get current drawing tool settings from VM
+    final currentTool = widget.vm.selectedDrawingTool;
+    final baseStrokeWidth = widget.vm.strokeWidth;
+    final currentColor = widget.vm.selectedColor;
+
+    // Apply pressure sensitivity
+    double pressure = 1.0;
+    if (event is PointerDownEvent || event is PointerMoveEvent) {
+      pressure = event.pressure;
+    }
+
+    // Apply pressure curve from settings
+    final adjustedPressure = widget.controller.stylusSettings.getPressureValue(pressure);
+    
+    // Calculate pressure-adjusted stroke width
+    final pressureStrokeWidth = baseStrokeWidth * adjustedPressure;
+    
+    // Apply tilt adjustments if supported
+    double tiltAdjustedWidth = pressureStrokeWidth;
+    double tiltAdjustedOpacity = 1.0;
+    
+    if (widget.controller.stylusSettings.tiltSensitivityEnabled) {
+      // Note: Tilt values would need platform-specific implementation
+      // For now, we'll use default values
+      tiltAdjustedWidth = widget.controller.stylusSettings.getTiltAdjustedWidth(
+        pressureStrokeWidth, 0.0, 0.0);
+      tiltAdjustedOpacity = widget.controller.stylusSettings.getTiltAdjustedOpacity(
+        1.0, 0.0, 0.0);
+    }
+
+    // Update the drawing controller with pressure-adjusted style
+    widget.controller.setStyle(
+      strokeWidth: tiltAdjustedWidth.clamp(0.1, 50.0),
+      color: currentColor.withValues(alpha: tiltAdjustedOpacity),
     );
   }
 }

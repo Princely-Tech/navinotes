@@ -222,6 +222,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
               _buildStylusToolbar(),
             ],
 
+            // Debug button for testing stylus features (development only)
+            const SizedBox(width: 8),
+            _buildDebugButton(),
+
             // Add some padding at the end
             const SizedBox(width: 16),
           ],
@@ -967,12 +971,55 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
     widget.vm.saveStylusSettings();
   }
 
+  /// Build debug button for testing stylus features
+  Widget _buildDebugButton() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.orange.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.orange.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () {
+          widget.vm.testStylusFeatures();
+        },
+        child: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.bug_report,
+                size: 16,
+                color: Colors.orange,
+              ),
+              SizedBox(width: 4),
+              Text(
+                'Test',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.orange,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Get palm rejection level text
   String _getPalmRejectionLevelText(PalmRejectionLevel level) {
     switch (level) {
       case PalmRejectionLevel.off:
         return 'Off';
       case PalmRejectionLevel.low:
+        return 'Low';
         return 'L';
       case PalmRejectionLevel.medium:
         return 'M';
