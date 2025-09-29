@@ -114,7 +114,19 @@ class _NotePageContentState extends State<NotePageContent> {
   List<Widget> getPageContent(NoteCreationVm vm) {
     // For thumbnails, always show static content to avoid GlobalKey conflicts
     if (widget.isThumbnail) {
-      return [_buildStaticTextContent(), _buildStaticDrawingContent()];
+      final validWidth =
+          widget.inputWidth.isFinite && widget.inputWidth > 10
+              ? widget.inputWidth
+              : 595.0;
+      final validHeight =
+          widget.inputHeight.isFinite && widget.inputHeight > 10
+              ? widget.inputHeight
+              : 842.0;
+      return [
+        _buildStaticTextContent(),
+        _buildStaticDrawingContent(),
+        _buildStaticTextBoxContent(validWidth, validHeight)
+      ];
     }
 
     // Only show interactive content for the current page
@@ -122,7 +134,19 @@ class _NotePageContentState extends State<NotePageContent> {
 
     if (!isCurrentPage) {
       // For non-current pages, show static content
-      return [_buildStaticTextContent(), _buildStaticDrawingContent()];
+      final validWidth =
+          widget.inputWidth.isFinite && widget.inputWidth > 10
+              ? widget.inputWidth
+              : 595.0;
+      final validHeight =
+          widget.inputHeight.isFinite && widget.inputHeight > 10
+              ? widget.inputHeight
+              : 842.0;
+      return [
+        _buildStaticTextContent(),
+        _buildStaticDrawingContent(),
+        _buildStaticTextBoxContent(validWidth, validHeight)
+      ];
     }
 
     // For current page, show interactive content based on mode
@@ -510,27 +534,24 @@ class _NotePageContentState extends State<NotePageContent> {
 
     try {
       final List<dynamic> textBoxList = jsonDecode(widget.page.textBoxData!);
-      
-      return SizedBox(
-        width: width,
-        height: height,
-        child: Stack(
-          children: textBoxList.map<Widget>((json) {
-            try {
-              final textBox = TextBox.fromJson(json as Map<String, dynamic>);
-              
-              return Positioned(
-                left: textBox.position.dx,
-                top: textBox.position.dy,
-                child: Container(
-                  width: textBox.size.width,
-                  height: textBox.size.height,
-                  padding: textBox.padding,
-                  decoration: BoxDecoration(
-                    color: textBox.backgroundColor.opacity > 0 
-                      ? textBox.backgroundColor 
+
+      return Stack(
+        children: textBoxList.map<Widget>((json) {
+          try {
+            final textBox = TextBox.fromJson(json as Map<String, dynamic>);
+
+            return Positioned(
+              left: textBox.position.dx,
+              top: textBox.position.dy,
+              child: Container(
+                width: textBox.size.width,
+                height: textBox.size.height,
+                padding: textBox.padding,
+                decoration: BoxDecoration(
+                  color: textBox.backgroundColor.opacity > 0
+                      ? textBox.backgroundColor
                       : Colors.white.withOpacity(0.9),
-                    border: textBox.hasBorder
+                  border: textBox.hasBorder
                       ? Border.all(
                           color: textBox.borderColor,
                           width: textBox.borderWidth,
@@ -539,32 +560,31 @@ class _NotePageContentState extends State<NotePageContent> {
                           color: Colors.grey.withOpacity(0.3),
                           width: 1.0,
                         ),
-                    borderRadius: textBox.borderRadius,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    textBox.text.isEmpty ? 'Text' : textBox.text,
-                    style: textBox.text.isEmpty 
+                  borderRadius: textBox.borderRadius,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  textBox.text.isEmpty ? 'Text' : textBox.text,
+                  style: textBox.text.isEmpty
                       ? textBox.textStyle.copyWith(color: Colors.grey)
                       : textBox.textStyle,
-                    textAlign: textBox.textAlign,
-                    maxLines: null,
-                    overflow: TextOverflow.visible,
-                  ),
+                  textAlign: textBox.textAlign,
+                  maxLines: null,
+                  overflow: TextOverflow.visible,
                 ),
-              );
-            } catch (e) {
-              debugPrint('Error rendering static text box: $e');
-              return const SizedBox.shrink();
-            }
-          }).toList(),
-        ),
+              ),
+            );
+          } catch (e) {
+            debugPrint('Error rendering static text box: $e');
+            return const SizedBox.shrink();
+          }
+        }).toList(),
       );
     } catch (e) {
       debugPrint('Error loading static text box content: $e');

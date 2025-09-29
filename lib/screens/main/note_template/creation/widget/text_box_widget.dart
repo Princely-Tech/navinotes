@@ -45,7 +45,7 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
     super.initState();
     _textController = TextEditingController(text: widget.textBox.text);
     _focusNode = FocusNode();
-    
+
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus && widget.isEditing) {
         _finishEditing();
@@ -56,11 +56,11 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
   @override
   void didUpdateWidget(TextBoxWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     if (oldWidget.textBox.text != widget.textBox.text) {
       _textController.text = widget.textBox.text;
     }
-    
+
     if (widget.isEditing && !oldWidget.isEditing) {
       _startEditing();
     } else if (!widget.isEditing && oldWidget.isEditing) {
@@ -79,7 +79,7 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
     // Immediate focus request for smoother transition
     if (mounted) {
       _focusNode.requestFocus();
-      
+
       // Use a shorter delay for better responsiveness
       Future.delayed(const Duration(milliseconds: 50), () {
         if (mounted && _focusNode.hasFocus) {
@@ -95,7 +95,7 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
   void _finishEditing() {
     // Unfocus immediately for smooth transition
     _focusNode.unfocus();
-    
+
     // Update text if changed
     if (_textController.text != widget.textBox.text) {
       final updatedTextBox = widget.textBox.copyWith(
@@ -104,24 +104,29 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
       );
       widget.onUpdate(updatedTextBox);
     }
-    
+
     // Notify parent to exit edit mode
     widget.onEndEdit?.call();
   }
 
   void _handleTap() {
     debugPrint('TextBox tap detected - ID: ${widget.textBox.id}');
+    debugPrint('TextBox isSelected before: ${widget.isSelected}');
     widget.onSelect(widget.textBox.id);
   }
 
   void _handleDoubleTap() {
-    debugPrint('TextBox double tap detected - Starting edit mode for ID: ${widget.textBox.id}');
+    debugPrint(
+      'TextBox double tap detected - Starting edit mode for ID: ${widget.textBox.id}',
+    );
     widget.onSelect(widget.textBox.id);
     widget.onStartEdit?.call();
   }
 
   void _handlePanStart(DragStartDetails details) {
-    debugPrint('TextBox drag start - ID: ${widget.textBox.id}, position: ${details.localPosition}');
+    debugPrint(
+      'TextBox drag start - ID: ${widget.textBox.id}, position: ${details.localPosition}',
+    );
     _dragStart = details.localPosition;
     _dragOffset = Offset.zero;
     widget.onSelect(widget.textBox.id);
@@ -129,7 +134,7 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
 
   void _handlePanUpdate(DragUpdateDetails details) {
     if (_dragStart == null) return;
-    
+
     setState(() {
       _dragOffset = details.localPosition - _dragStart!;
     });
@@ -147,7 +152,7 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
       );
       widget.onUpdate(updatedTextBox);
     }
-    
+
     _dragStart = null;
     _dragOffset = null;
   }
@@ -159,26 +164,22 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
   Widget _buildSelectionBorder() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.blue,
-          width: 2.0,
-        ),
+        border: Border.all(color: Colors.blue, width: 3.0),
         borderRadius: widget.textBox.borderRadius,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            blurRadius: 6,
+            offset: const Offset(0, 0),
+          ),
+        ],
       ),
       child: Stack(
         children: [
           // Resize handles
-          Positioned(
-            top: -4,
-            right: -4,
-            child: _buildResizeHandle(),
-          ),
+          Positioned(top: -4, right: -4, child: _buildResizeHandle()),
           // Delete button
-          Positioned(
-            top: -12,
-            right: -12,
-            child: _buildDeleteButton(),
-          ),
+          Positioned(top: -12, right: -12, child: _buildDeleteButton()),
         ],
       ),
     );
@@ -197,11 +198,7 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 1),
         ),
-        child: const Icon(
-          Icons.drag_indicator,
-          size: 10,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.drag_indicator, size: 10, color: Colors.white),
       ),
     );
   }
@@ -217,19 +214,16 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 1),
         ),
-        child: const Icon(
-          Icons.close,
-          size: 12,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.close, size: 12, color: Colors.white),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentPosition = widget.textBox.position + (_dragOffset ?? Offset.zero);
-    
+    final currentPosition =
+        widget.textBox.position + (_dragOffset ?? Offset.zero);
+
     return Positioned(
       left: currentPosition.dx,
       top: currentPosition.dy,
@@ -250,42 +244,69 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
               height: widget.textBox.size.height,
               padding: widget.textBox.padding,
               decoration: BoxDecoration(
-                color: widget.isEditing
-                  ? Colors.white.withOpacity(0.95) // Brighter when editing
-                  : (widget.textBox.backgroundColor.opacity > 0 
-                      ? widget.textBox.backgroundColor 
-                      : Colors.white.withOpacity(0.9)),
-                border: widget.isEditing
-                  ? Border.all(
-                      color: Colors.blue.withOpacity(0.6),
-                      width: 2.0,
-                    ) // Blue border when editing
-                  : (widget.textBox.hasBorder
-                      ? Border.all(
-                          color: widget.textBox.borderColor,
-                          width: widget.textBox.borderWidth,
-                        )
-                      : Border.all(
-                          color: Colors.grey.withOpacity(0.3),
-                          width: 1.0,
-                        )),
+                color:
+                    widget.isEditing
+                        ? Colors.white.withOpacity(
+                          0.95,
+                        ) // Brighter when editing
+                        : (widget.textBox.backgroundColor.opacity > 0
+                            ? widget.textBox.backgroundColor
+                            : Colors.white.withOpacity(0.9)),
+                border:
+                    widget.isEditing
+                        ? Border.all(
+                          color: Colors.blue.withOpacity(0.6),
+                          width: 2.0,
+                        ) // Blue border when editing
+                        : (widget.textBox.hasBorder
+                            ? Border.all(
+                              color: widget.textBox.borderColor,
+                              width: widget.textBox.borderWidth,
+                            )
+                            : Border.all(
+                              color: Colors.grey.withOpacity(0.3),
+                              width: 1.0,
+                            )),
                 borderRadius: widget.textBox.borderRadius,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(widget.isEditing ? 0.15 : 0.1),
+                    color: Colors.black.withOpacity(
+                      widget.isEditing ? 0.15 : 0.1,
+                    ),
                     blurRadius: widget.isEditing ? 6 : 4,
                     offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: widget.isEditing
-                ? _buildEditingField()
-                : _buildDisplayText(),
+              child:
+                  widget.isEditing ? _buildEditingField() : _buildDisplayText(),
             ),
-            
+
             // Selection border and controls
-            if (widget.isSelected && !widget.isEditing)
+            if (widget.isSelected && !widget.isEditing) ...[
               _buildSelectionBorder(),
+              _buildFormatPanel(),
+              // Debug indicator
+              Positioned(
+                top: -20,
+                left: -10,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text(
+                    'SELECTED',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -324,13 +345,185 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
   Widget _buildDisplayText() {
     return Text(
       widget.textBox.text.isEmpty ? 'Text' : widget.textBox.text,
-      style: widget.textBox.text.isEmpty 
-        ? widget.textBox.textStyle.copyWith(color: Colors.grey)
-        : widget.textBox.textStyle,
+      style:
+          widget.textBox.text.isEmpty
+              ? widget.textBox.textStyle.copyWith(color: Colors.grey)
+              : widget.textBox.textStyle,
       textAlign: widget.textBox.textAlign,
       maxLines: null,
       overflow: TextOverflow.visible,
     );
+  }
+
+  Widget _buildFormatPanel() {
+    return Positioned(
+      bottom: widget.textBox.size.height + 10, // Position below the text box
+      left: 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.blue.withOpacity(0.3), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Background color options
+            _buildColorButton(Colors.transparent, 'No Fill', () {
+              _updateTextBoxStyle(backgroundColor: Colors.transparent);
+            }),
+            _buildColorButton(Colors.white, 'White', () {
+              _updateTextBoxStyle(backgroundColor: Colors.white);
+            }),
+            _buildColorButton(Colors.yellow.shade100, 'Yellow', () {
+              _updateTextBoxStyle(backgroundColor: Colors.yellow.shade100);
+            }),
+            _buildColorButton(Colors.blue.shade100, 'Blue', () {
+              _updateTextBoxStyle(backgroundColor: Colors.blue.shade100);
+            }),
+
+            const SizedBox(width: 8),
+            Container(width: 1, height: 20, color: Colors.grey.shade300),
+            const SizedBox(width: 8),
+
+            // Border options
+            _buildBorderButton('No Border', () {
+              _updateTextBoxStyle(hasBorder: false);
+            }),
+            _buildBorderButton('Border', () {
+              _updateTextBoxStyle(
+                hasBorder: true,
+                borderColor: Colors.black,
+                borderWidth: 1.0,
+              );
+            }),
+
+            const SizedBox(width: 8),
+            Container(width: 1, height: 20, color: Colors.grey.shade300),
+            const SizedBox(width: 8),
+
+            // Text style options
+            _buildTextStyleButton(Icons.format_bold, 'Bold', () {
+              _updateTextStyle(fontWeight: FontWeight.bold);
+            }),
+            _buildTextStyleButton(Icons.format_italic, 'Italic', () {
+              _updateTextStyle(fontStyle: FontStyle.italic);
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildColorButton(Color color, String tooltip, VoidCallback onTap) {
+    return Tooltip(
+      message: tooltip,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 24,
+          height: 24,
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          decoration: BoxDecoration(
+            color: color,
+            border: Border.all(
+              color:
+                  color == Colors.transparent
+                      ? Colors.grey
+                      : Colors.grey.shade300,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child:
+              color == Colors.transparent
+                  ? Icon(Icons.block, size: 16, color: Colors.grey.shade600)
+                  : null,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBorderButton(String text, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(text, style: const TextStyle(fontSize: 12)),
+      ),
+    );
+  }
+
+  Widget _buildTextStyleButton(
+    IconData icon,
+    String tooltip,
+    VoidCallback onTap,
+  ) {
+    return Tooltip(
+      message: tooltip,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 28,
+          height: 28,
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Icon(icon, size: 16, color: Colors.grey.shade700),
+        ),
+      ),
+    );
+  }
+
+  void _updateTextBoxStyle({
+    Color? backgroundColor,
+    bool? hasBorder,
+    Color? borderColor,
+    double? borderWidth,
+  }) {
+    final updatedTextBox = widget.textBox.copyWith(
+      backgroundColor: backgroundColor,
+      hasBorder: hasBorder,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      updatedAt: DateTime.now(),
+    );
+    widget.onUpdate(updatedTextBox);
+  }
+
+  void _updateTextStyle({
+    FontWeight? fontWeight,
+    FontStyle? fontStyle,
+    Color? color,
+    double? fontSize,
+  }) {
+    final currentStyle = widget.textBox.textStyle;
+    final newStyle = currentStyle.copyWith(
+      fontWeight: fontWeight,
+      fontStyle: fontStyle,
+      color: color,
+      fontSize: fontSize,
+    );
+
+    final updatedTextBox = widget.textBox.copyWith(
+      textStyle: newStyle,
+      updatedAt: DateTime.now(),
+    );
+    widget.onUpdate(updatedTextBox);
   }
 }
 
@@ -370,19 +563,20 @@ class _TextBoxOverlayState extends State<TextBoxOverlay> {
       width: widget.canvasSize.width,
       height: widget.canvasSize.height,
       child: Stack(
-        children: widget.textBoxes.map((textBox) {
-          return TextBoxWidget(
-            key: ValueKey(textBox.id),
-            textBox: textBox,
-            isSelected: widget.selectedTextBoxId == textBox.id,
-            isEditing: widget.editingTextBoxId == textBox.id,
-            onUpdate: widget.onTextBoxUpdate,
-            onDelete: widget.onTextBoxDelete,
-            onSelect: widget.onTextBoxSelect,
-            onStartEdit: widget.onStartEdit,
-            onEndEdit: widget.onEndEdit,
-          );
-        }).toList(),
+        children:
+            widget.textBoxes.map((textBox) {
+              return TextBoxWidget(
+                key: ValueKey(textBox.id),
+                textBox: textBox,
+                isSelected: widget.selectedTextBoxId == textBox.id,
+                isEditing: widget.editingTextBoxId == textBox.id,
+                onUpdate: widget.onTextBoxUpdate,
+                onDelete: widget.onTextBoxDelete,
+                onSelect: widget.onTextBoxSelect,
+                onStartEdit: widget.onStartEdit,
+                onEndEdit: widget.onEndEdit,
+              );
+            }).toList(),
       ),
     );
   }
