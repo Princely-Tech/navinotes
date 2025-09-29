@@ -219,7 +219,13 @@ class _PageNavigatorState extends State<PageNavigator> {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      color: Colors.white,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.grey.shade50, Colors.grey.shade100],
+        ),
+      ),
       child: _buildFullSizeThumbnail(page),
     );
   }
@@ -237,25 +243,32 @@ class _PageNavigatorState extends State<PageNavigator> {
         final scaleX = availableWidth / pageDimensions.width;
         final scaleY = availableHeight / pageDimensions.height;
 
-        // Use the smaller scale to ensure the page fits entirely
-        final scale = math.min(scaleX, scaleY);
+        // Use the larger scale to ensure the page covers/fills the entire space
+        final scale = math.max(scaleX, scaleY);
 
         return ClipRRect(
           borderRadius: BorderRadius.circular(4),
-          child: Transform.scale(
-            scale: scale,
-            child: Container(
-              width: pageDimensions.width,
-              height: pageDimensions.height,
-              child: IgnorePointer(
-                child: NotePageContent(
-                  key: ValueKey('thumbnail_${page.id}'),
-                  page: page,
-                  vm: widget.vm,
-                  backgroundColor: Colors.white,
-                  inputWidth: pageDimensions.width,
-                  inputHeight: pageDimensions.height,
-                  isThumbnail: true,
+          child: SizedBox(
+            width: availableWidth,
+            height: availableHeight,
+            child: OverflowBox(
+              alignment: Alignment.center,
+              child: Transform.scale(
+                scale: scale,
+                child: Container(
+                  width: pageDimensions.width,
+                  height: pageDimensions.height,
+                  child: IgnorePointer(
+                    child: NotePageContent(
+                      key: ValueKey('thumbnail_${page.id}'),
+                      page: page,
+                      vm: widget.vm,
+                      backgroundColor: Colors.white,
+                      inputWidth: pageDimensions.width,
+                      inputHeight: pageDimensions.height,
+                      isThumbnail: true,
+                    ),
+                  ),
                 ),
               ),
             ),
