@@ -30,11 +30,15 @@ class NoteCreationVm extends ChangeNotifier {
   TextEditingController titleController = TextEditingController();
 
   final DrawingController _drawingController = DrawingController();
-  final AudioPlayer _audioPlayer = AudioPlayer();
   final AudioRecorder _audioRecorder = AudioRecorder();
+  final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isRecording = false;
   bool _isPlaying = false;
   String? _recordingPath;
+  int? _currentlyPlayingIndex;
+  double _playbackSpeed = 1.0;
+  Duration _currentPosition = Duration.zero;
+  Duration _totalDuration = Duration.zero;
   NoteMode _currentMode = NoteMode.text;
   bool _isTextBoxMode = false;
   String? _selectedTextBoxTool;
@@ -76,9 +80,57 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Add these fields to the class
-  int? _currentlyPlayingIndex;
+  // Getters for voice playback
   int? get currentlyPlayingIndex => _currentlyPlayingIndex;
+  double get playbackSpeed => _playbackSpeed;
+  Duration get currentPosition => _currentPosition;
+  Duration get totalDuration => _totalDuration;
+
+  // Voice playback control methods
+  Future<void> setPlaybackSpeed(double speed) async {
+    _playbackSpeed = speed;
+    if (_isPlaying) {
+      await _audioPlayer.setSpeed(speed);
+    }
+    notifyListeners();
+  }
+
+  Future<void> seekToPosition(Duration position) async {
+    _currentPosition = position;
+    if (_isPlaying) {
+      await _audioPlayer.seek(position);
+    }
+    notifyListeners();
+  }
+
+  Future<void> updateVoiceNoteName(int index, String newName) async {
+    if (content == null || index < 0 || index >= content!.voiceNotes.length) {
+      return;
+    }
+
+    try {
+      final updatedVoiceNotes = List<VoiceNote>.from(content!.voiceNotes);
+      final oldVoiceNote = updatedVoiceNotes[index];
+      final updatedVoiceNote = VoiceNote(
+        name: newName,
+        createdAt: oldVoiceNote.createdAt,
+        file: oldVoiceNote.file,
+        duration: oldVoiceNote.duration,
+        fileSize: oldVoiceNote.fileSize,
+      );
+      updatedVoiceNotes[index] = updatedVoiceNote;
+
+      content = content!.getUpdatedContent(
+        voiceNotes: updatedVoiceNotes,
+        updatedAt: generateUnixTimestamp(),
+      );
+
+      await updateContentInDb();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error updating voice note name: $e');
+    }
+  }
 
   // Update the togglePlayback method
   Future<void> toggleVoiceNotePlayback(int index) async {
@@ -94,16 +146,26 @@ class NoteCreationVm extends ChangeNotifier {
       if (content?.voiceNotes.isNotEmpty ?? false) {
         final voiceNote = content!.voiceNotes[index];
         await _audioPlayer.setFilePath(voiceNote.file);
+        await _audioPlayer.setSpeed(_playbackSpeed);
         await _audioPlayer.play();
 
         _currentlyPlayingIndex = index;
         _isPlaying = true;
+        _totalDuration = voiceNote.duration ?? Duration.zero;
+        _currentPosition = Duration.zero;
+
+        // Listen for position changes
+        _audioPlayer.positionStream.listen((position) {
+          _currentPosition = position;
+          notifyListeners();
+        });
 
         // Listen for playback completion
         _audioPlayer.playerStateStream.listen((state) {
           if (state.processingState == ProcessingState.completed) {
             _isPlaying = false;
             _currentlyPlayingIndex = null;
+            _currentPosition = Duration.zero;
             notifyListeners();
           }
         });
