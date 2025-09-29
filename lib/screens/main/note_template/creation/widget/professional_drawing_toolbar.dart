@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
+import 'package:navinotes/screens/main/note_template/creation/models/stylus_settings.dart';
 import '../models/drawing_tools.dart';
 import '../vm.dart';
 import 'custom_paint_contents.dart';
@@ -128,7 +129,7 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
       case DrawingToolType.textUnderline:
         // Text tools are handled by the text box system, not drawing controller
         widget.vm.selectTextBoxTool(toolType.toString());
-        
+
         // Automatically add a text box at the center of the canvas
         _addTextBoxAtCenter(toolType);
         return; // Don't update drawing controller for text tools
@@ -215,8 +216,11 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
 
             const SizedBox(width: 8),
 
-            // Stylus Settings (if stylus is connected)
-            if (widget.vm.isStylusConnected) _buildStylusSettingsButton(),
+            // Stylus Controls (if stylus is connected)
+            if (widget.vm.isStylusConnected) ...[
+              const SizedBox(width: 8),
+              _buildStylusToolbar(),
+            ],
 
             // Add some padding at the end
             const SizedBox(width: 16),
@@ -612,11 +616,11 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
     // Get canvas dimensions (assuming standard A4 dimensions as fallback)
     const double canvasWidth = 595.0;
     const double canvasHeight = 842.0;
-    
+
     // Calculate center position
     const double centerX = canvasWidth / 2;
     const double centerY = canvasHeight / 2;
-    
+
     // Offset the text box so it's centered (text box is 120x40 by default)
     const double textBoxWidth = 120.0;
     const double textBoxHeight = 40.0;
@@ -624,7 +628,7 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
       centerX - (textBoxWidth / 2),
       centerY - (textBoxHeight / 2),
     );
-    
+
     // Determine text content based on tool type
     String defaultText = 'Text';
     switch (toolType) {
@@ -646,12 +650,14 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
       default:
         defaultText = 'Text';
     }
-    
-    debugPrint('Adding text box at center: $centerPosition with text: $defaultText');
-    
+
+    debugPrint(
+      'Adding text box at center: $centerPosition with text: $defaultText',
+    );
+
     // Add the text box to the canvas
     widget.vm.addTextBox(centerPosition, text: defaultText);
-    
+
     // Automatically start editing the new text box with a slight delay for smooth transition
     Future.delayed(const Duration(milliseconds: 100), () {
       final textBoxManager = widget.vm.textBoxManager;
@@ -665,14 +671,16 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
   Widget _buildStylusSettingsButton() {
     return Container(
       decoration: BoxDecoration(
-        color: widget.vm.stylusSettings.pressureSensitivityEnabled 
-            ? Colors.blue.withOpacity(0.1) 
-            : Colors.grey.withOpacity(0.1),
+        color:
+            widget.vm.stylusSettings.pressureSensitivityEnabled
+                ? Colors.blue.withOpacity(0.1)
+                : Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: widget.vm.stylusSettings.pressureSensitivityEnabled 
-              ? Colors.blue.withOpacity(0.3) 
-              : Colors.grey.withOpacity(0.3),
+          color:
+              widget.vm.stylusSettings.pressureSensitivityEnabled
+                  ? Colors.blue.withOpacity(0.3)
+                  : Colors.grey.withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -680,7 +688,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
-          onTap: () => _showStylusSettingsDialog(),
+          onTap: () {
+            debugPrint('InkWell onTap triggered for stylus settings');
+            _showStylusSettingsDialog();
+          },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             child: Row(
@@ -689,14 +700,18 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
                 Icon(
                   Icons.edit,
                   size: 16,
-                  color: widget.vm.stylusSettings.pressureSensitivityEnabled 
-                      ? Colors.blue 
-                      : Colors.grey[600],
+                  color:
+                      widget.vm.stylusSettings.pressureSensitivityEnabled
+                          ? Colors.blue
+                          : Colors.grey[600],
                 ),
                 const SizedBox(width: 4),
                 if (widget.vm.stylusSettings.pressureSensitivityEnabled)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 1,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.green.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(4),
@@ -723,13 +738,248 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => StylusSettingsDialog(
-        initialSettings: widget.vm.stylusSettings,
-        onSettingsChanged: (settings) {
-          widget.vm.updateStylusSettings(settings);
-          widget.vm.saveStylusSettings();
-        },
+      builder: (context) {
+        debugPrint('Building StylusSettingsDialog...');
+        return StylusSettingsDialog(
+          initialSettings: widget.vm.stylusSettings,
+          onSettingsChanged: (settings) {
+            debugPrint('Stylus settings changed: $settings');
+            widget.vm.updateStylusSettings(settings);
+            widget.vm.saveStylusSettings();
+          },
+        );
+      },
+    );
+  }
+
+  /// Build compact stylus toolbar with essential controls
+  Widget _buildStylusToolbar() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.withOpacity(0.3), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Stylus type indicator
+          _buildStylusTypeIndicator(),
+
+          const SizedBox(width: 8),
+
+          // Pressure sensitivity toggle
+          _buildPressureToggle(),
+
+          const SizedBox(width: 8),
+
+          // Palm rejection level indicator
+          _buildPalmRejectionIndicator(),
+
+          const SizedBox(width: 8),
+
+          // Settings button
+          _buildCompactSettingsButton(),
+        ],
       ),
     );
+  }
+
+  /// Build stylus type indicator
+  Widget _buildStylusTypeIndicator() {
+    final stylusType = widget.vm.detectedStylusType;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            stylusType.icon,
+            size: 12,
+            color: Theme.of(context).primaryColor,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            stylusType == StylusInputType.applePencil
+                ? 'Pencil'
+                : stylusType == StylusInputType.samsungSPen
+                ? 'S Pen'
+                : 'Stylus',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Build pressure sensitivity toggle
+  Widget _buildPressureToggle() {
+    final isEnabled = widget.vm.stylusSettings.pressureSensitivityEnabled;
+    return GestureDetector(
+      onTap: () {
+        final newSettings = widget.vm.stylusSettings.copyWith(
+          pressureSensitivityEnabled: !isEnabled,
+        );
+        widget.vm.updateStylusSettings(newSettings);
+        widget.vm.saveStylusSettings();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color:
+              isEnabled
+                  ? Theme.of(context).primaryColor.withOpacity(0.2)
+                  : Colors.grey.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color:
+                isEnabled
+                    ? Theme.of(context).primaryColor.withOpacity(0.5)
+                    : Colors.grey.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.speed,
+              size: 12,
+              color:
+                  isEnabled ? Theme.of(context).primaryColor : Colors.grey[600],
+            ),
+            const SizedBox(width: 2),
+            Text(
+              'P',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color:
+                    isEnabled
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Build palm rejection level indicator
+  Widget _buildPalmRejectionIndicator() {
+    final level = widget.vm.stylusSettings.palmRejectionLevel;
+    final isActive = level != PalmRejectionLevel.off;
+
+    return GestureDetector(
+      onTap: () => _cyclePalmRejectionLevel(),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        decoration: BoxDecoration(
+          color:
+              isActive
+                  ? Colors.orange.withOpacity(0.2)
+                  : Colors.grey.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color:
+                isActive
+                    ? Colors.orange.withOpacity(0.5)
+                    : Colors.grey.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.back_hand,
+              size: 12,
+              color: isActive ? Colors.orange[700] : Colors.grey[600],
+            ),
+            const SizedBox(width: 2),
+            Text(
+              _getPalmRejectionLevelText(level),
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: isActive ? Colors.orange[700] : Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Build compact settings button
+  Widget _buildCompactSettingsButton() {
+    return GestureDetector(
+      onTap: () => _showStylusSettingsDialog(),
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: Colors.blue.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: Colors.blue.withOpacity(0.3), width: 1),
+        ),
+        child: Icon(Icons.tune, size: 14, color: Colors.blue[700]),
+      ),
+    );
+  }
+
+  /// Cycle through palm rejection levels
+  void _cyclePalmRejectionLevel() {
+    final currentLevel = widget.vm.stylusSettings.palmRejectionLevel;
+    PalmRejectionLevel nextLevel;
+
+    switch (currentLevel) {
+      case PalmRejectionLevel.off:
+        nextLevel = PalmRejectionLevel.low;
+        break;
+      case PalmRejectionLevel.low:
+        nextLevel = PalmRejectionLevel.medium;
+        break;
+      case PalmRejectionLevel.medium:
+        nextLevel = PalmRejectionLevel.high;
+        break;
+      case PalmRejectionLevel.high:
+        nextLevel = PalmRejectionLevel.maximum;
+        break;
+      case PalmRejectionLevel.maximum:
+        nextLevel = PalmRejectionLevel.off;
+        break;
+    }
+
+    final newSettings = widget.vm.stylusSettings.copyWith(
+      palmRejectionLevel: nextLevel,
+    );
+    widget.vm.updateStylusSettings(newSettings);
+    widget.vm.saveStylusSettings();
+  }
+
+  /// Get palm rejection level text
+  String _getPalmRejectionLevelText(PalmRejectionLevel level) {
+    switch (level) {
+      case PalmRejectionLevel.off:
+        return 'Off';
+      case PalmRejectionLevel.low:
+        return 'L';
+      case PalmRejectionLevel.medium:
+        return 'M';
+      case PalmRejectionLevel.high:
+        return 'H';
+      case PalmRejectionLevel.maximum:
+        return 'Max';
+    }
   }
 }
