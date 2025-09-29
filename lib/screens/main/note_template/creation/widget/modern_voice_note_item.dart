@@ -130,17 +130,19 @@ class _ModernVoiceNoteItemState extends State<ModernVoiceNoteItem>
                             ),
                             border: OutlineInputBorder(),
                           ),
-                          onSubmitted: (value) {
-                            setState(() {
-                              _isEditingName = false;
-                            });
+                          onSubmitted: (value)  async {
+                          
                             if (value.trim().isNotEmpty &&
                                 value.trim() != widget.voiceNote.name) {
-                              widget.vm.updateVoiceNoteName(
+                              await widget.vm.updateVoiceNoteName(
                                 widget.index,
                                 value.trim(),
                               );
                             }
+
+                              setState(()  {
+                              _isEditingName = false;
+                            });
                           },
                           autofocus: true,
                         )

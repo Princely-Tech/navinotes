@@ -12,89 +12,93 @@ Widget buildVoiceRecorder(
     width: double.infinity,
     height: double.infinity,
     color: Colors.grey[50], // Plain background independent of note pages
-    padding: const EdgeInsets.all(24),
-    child: Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 600, maxHeight: 700),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Recording controls
-            Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey[200],
-              ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  if (vm.isRecording)
-                    const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      strokeWidth: 4,
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: Column(
+            children: [
+              // Recording controls
+              Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey[200],
+                ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (vm.isRecording)
+                      const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                        strokeWidth: 4,
+                      ),
+                    Icon(
+                      Icons.mic,
+                      size: 64,
+                      color: vm.isRecording ? Colors.red : Colors.grey[600],
                     ),
-                  Icon(
-                    Icons.mic,
-                    size: 64,
-                    color: vm.isRecording ? Colors.red : Colors.grey[600],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Recording status
-            Text(
-              vm.isRecording
-                  ? 'Recording...'
-                  : vm.hasRecording
-                  ? 'Tap to record a new voice note'
-                  : 'Tap to record your first voice note',
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 24),
-
-            // Record/Stop button
-            AppButton(
-              mainAxisSize: MainAxisSize.min,
-              loading: vm.isCreatingNote,
-              onTap: vm.toggleRecording,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(999)),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              color: vm.isRecording ? Colors.red : AppTheme.vividRose,
-              text: vm.isRecording ? 'Stop Recording' : 'Record',
-              prefix: Icon(Icons.add, color: AppTheme.white, size: 25),
-            ),
-            const SizedBox(height: 24),
-            // List of recorded voice notes
-            if (vm.content?.voiceNotes.isNotEmpty ?? false) ...[
-              Row(
-                children: [
-                  const Text(
-                    'Your Voice Notes',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    '${vm.content!.voiceNotes.length} ${vm.content!.voiceNotes.length == 1 ? 'note' : 'notes'}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
-              Flexible(
-                child: ListView.builder(
+              // Recording status
+              Text(
+                vm.isRecording
+                    ? 'Recording...'
+                    : vm.hasRecording
+                    ? 'Tap to record a new voice note'
+                    : 'Tap to record your first voice note',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 24),
+
+              // Record/Stop button
+              AppButton(
+                mainAxisSize: MainAxisSize.min,
+                loading: vm.isCreatingNote,
+                onTap: vm.toggleRecording,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(999)),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                color: vm.isRecording ? Colors.red : AppTheme.vividRose,
+                text: vm.isRecording ? 'Stop Recording' : 'Record',
+                prefix: Icon(Icons.add, color: AppTheme.white, size: 25),
+              ),
+              const SizedBox(height: 24),
+              // List of recorded voice notes
+              if (vm.content?.voiceNotes.isNotEmpty ?? false) ...[
+                Row(
+                  children: [
+                    const Text(
+                      'Your Voice Notes',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '${vm.content!.voiceNotes.length} ${vm.content!.voiceNotes.length == 1 ? 'note' : 'notes'}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: vm.content!.voiceNotes.length,
                   itemBuilder: (context, index) {
                     final voiceNote = vm.content!.voiceNotes[index];
@@ -149,17 +153,17 @@ Widget buildVoiceRecorder(
                     );
                   },
                 ),
-              ),
-            ] else if (!vm.isRecording) ...[
-              const Text(
-                'No voice notes recorded yet',
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: Colors.grey,
+              ] else if (!vm.isRecording) ...[
+                const Text(
+                  'No voice notes recorded yet',
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-            ],
-          ], // <- Added missing closing bracket for Column children
+              ],
+            ], // <- Added missing closing bracket for Column children
+          ),
         ),
       ),
     ),

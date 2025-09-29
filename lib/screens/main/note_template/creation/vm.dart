@@ -107,33 +107,55 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   Future<void> updateVoiceNoteName(int index, String newName) async {
-    if (content == null || index < 0 || index >= content!.voiceNotes.length) {
+  // Validate input
+  if (content == null || 
+      index < 0 || 
+      index >= content!.voiceNotes.length || 
+      newName.trim().isEmpty) {
+    return;
+  }
+
+  try {
+    final oldVoiceNote = content!.voiceNotes[index];
+    
+    // Check if name actually changed
+    if (oldVoiceNote.name == newName) {
       return;
     }
 
-    try {
-      final updatedVoiceNotes = List<VoiceNote>.from(content!.voiceNotes);
-      final oldVoiceNote = updatedVoiceNotes[index];
-      final updatedVoiceNote = VoiceNote(
-        name: newName,
-        createdAt: oldVoiceNote.createdAt,
-        file: oldVoiceNote.file,
-        duration: oldVoiceNote.duration,
-        fileSize: oldVoiceNote.fileSize,
-      );
-      updatedVoiceNotes[index] = updatedVoiceNote;
+    // Create new list to ensure immutability
+    final updatedVoiceNotes = List<VoiceNote>.from(content!.voiceNotes);
+    
+    // Create new voice note with updated name
+    final updatedVoiceNote = VoiceNote(
+      name: newName.trim(),
+      createdAt: oldVoiceNote.createdAt,
+      file: oldVoiceNote.file,
+      duration: oldVoiceNote.duration,
+      fileSize: oldVoiceNote.fileSize,
+    );
+    
+    // Update the list
+    updatedVoiceNotes[index] = updatedVoiceNote;
 
-      content = content!.getUpdatedContent(
-        voiceNotes: updatedVoiceNotes,
-        updatedAt: generateUnixTimestamp(),
-      );
+    // Update content
+    content = content!.getUpdatedContent(
+      voiceNotes: updatedVoiceNotes,
+      updatedAt: generateUnixTimestamp(),
+    );
 
-      await updateContentInDb();
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error updating voice note name: $e');
-    }
+    // Save to database
+    await updateContentInDb(showSnackBar: false);
+    
+    // Notify listeners after successful update
+    notifyListeners();
+    
+  } catch (e) {
+    debugPrint('Error updating voice note name: $e');
+    // Consider showing an error to the user
+    rethrow;
   }
+}
 
   // Update the togglePlayback method
   Future<void> toggleVoiceNotePlayback(int index) async {
