@@ -161,7 +161,7 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
     widget.onDelete(widget.textBox.id);
   }
 
-  Widget _buildSelectionBorder() {
+  Widget _buildSelectionOverlay() {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.blue, width: 3.0),
@@ -175,11 +175,34 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
         ],
       ),
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           // Resize handles
           Positioned(top: -4, right: -4, child: _buildResizeHandle()),
           // Delete button
           Positioned(top: -12, right: -12, child: _buildDeleteButton()),
+          // Format panel
+          Positioned(bottom: -60, left: 0, child: _buildCompactFormatPanel()),
+          // Selection indicator
+          Positioned(
+            top: -20,
+            left: -10,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'SELECTED',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -283,30 +306,8 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
             ),
 
             // Selection border and controls
-            if (widget.isSelected && !widget.isEditing) ...[
-              _buildSelectionBorder(),
-              _buildFormatPanel(),
-              // Debug indicator
-              Positioned(
-                top: -20,
-                left: -10,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'SELECTED',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            if (widget.isSelected && !widget.isEditing)
+              _buildSelectionOverlay(),
           ],
         ),
       ),
@@ -355,70 +356,61 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
     );
   }
 
-  Widget _buildFormatPanel() {
-    return Positioned(
-      bottom: widget.textBox.size.height + 10, // Position below the text box
-      left: 0,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.blue.withOpacity(0.3), width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Background color options
-            _buildColorButton(Colors.transparent, 'No Fill', () {
-              _updateTextBoxStyle(backgroundColor: Colors.transparent);
-            }),
-            _buildColorButton(Colors.white, 'White', () {
-              _updateTextBoxStyle(backgroundColor: Colors.white);
-            }),
-            _buildColorButton(Colors.yellow.shade100, 'Yellow', () {
-              _updateTextBoxStyle(backgroundColor: Colors.yellow.shade100);
-            }),
-            _buildColorButton(Colors.blue.shade100, 'Blue', () {
-              _updateTextBoxStyle(backgroundColor: Colors.blue.shade100);
-            }),
-
-            const SizedBox(width: 8),
-            Container(width: 1, height: 20, color: Colors.grey.shade300),
-            const SizedBox(width: 8),
-
-            // Border options
-            _buildBorderButton('No Border', () {
-              _updateTextBoxStyle(hasBorder: false);
-            }),
-            _buildBorderButton('Border', () {
+  Widget _buildCompactFormatPanel() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.blue.withOpacity(0.3), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Essential color options only
+          _buildColorButton(Colors.transparent, 'Clear', () {
+            _updateTextBoxStyle(backgroundColor: Colors.transparent);
+          }),
+          _buildColorButton(Colors.yellow.shade100, 'Highlight', () {
+            _updateTextBoxStyle(backgroundColor: Colors.yellow.shade100);
+          }),
+          const SizedBox(width: 4),
+          // Border toggle
+          GestureDetector(
+            onTap: () {
               _updateTextBoxStyle(
-                hasBorder: true,
+                hasBorder: !widget.textBox.hasBorder,
                 borderColor: Colors.black,
                 borderWidth: 1.0,
               );
-            }),
-
-            const SizedBox(width: 8),
-            Container(width: 1, height: 20, color: Colors.grey.shade300),
-            const SizedBox(width: 8),
-
-            // Text style options
-            _buildTextStyleButton(Icons.format_bold, 'Bold', () {
-              _updateTextStyle(fontWeight: FontWeight.bold);
-            }),
-            _buildTextStyleButton(Icons.format_italic, 'Italic', () {
-              _updateTextStyle(fontStyle: FontStyle.italic);
-            }),
-          ],
-        ),
+            },
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color:
+                    widget.textBox.hasBorder
+                        ? Colors.blue.shade100
+                        : Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Icon(
+                Icons.border_all,
+                size: 16,
+                color:
+                    widget.textBox.hasBorder
+                        ? Colors.blue
+                        : Colors.grey.shade600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -452,43 +444,6 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
     );
   }
 
-  Widget _buildBorderButton(String text, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(text, style: const TextStyle(fontSize: 12)),
-      ),
-    );
-  }
-
-  Widget _buildTextStyleButton(
-    IconData icon,
-    String tooltip,
-    VoidCallback onTap,
-  ) {
-    return Tooltip(
-      message: tooltip,
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 28,
-          height: 28,
-          margin: const EdgeInsets.symmetric(horizontal: 2),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Icon(icon, size: 16, color: Colors.grey.shade700),
-        ),
-      ),
-    );
-  }
-
   void _updateTextBoxStyle({
     Color? backgroundColor,
     bool? hasBorder,
@@ -500,27 +455,6 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
       hasBorder: hasBorder,
       borderColor: borderColor,
       borderWidth: borderWidth,
-      updatedAt: DateTime.now(),
-    );
-    widget.onUpdate(updatedTextBox);
-  }
-
-  void _updateTextStyle({
-    FontWeight? fontWeight,
-    FontStyle? fontStyle,
-    Color? color,
-    double? fontSize,
-  }) {
-    final currentStyle = widget.textBox.textStyle;
-    final newStyle = currentStyle.copyWith(
-      fontWeight: fontWeight,
-      fontStyle: fontStyle,
-      color: color,
-      fontSize: fontSize,
-    );
-
-    final updatedTextBox = widget.textBox.copyWith(
-      textStyle: newStyle,
       updatedAt: DateTime.now(),
     );
     widget.onUpdate(updatedTextBox);
