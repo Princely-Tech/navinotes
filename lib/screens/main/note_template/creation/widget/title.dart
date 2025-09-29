@@ -119,47 +119,6 @@ Widget title() {
                             ],
                           ),
                         ),
-                        VisibleController(
-                          mobile: isNotNull(vm.content),
-                          child: FutureBuilder(
-                            future: DatabaseHelper.instance.getBoard(
-                              vm.content?.boardId ?? '',
-                            ),
-                            builder: (context, snapshot) {
-                              final board = snapshot.data;
-                              if (isNotNull(board)) {
-                                return Text.rich(
-                                  overflow: TextOverflow.ellipsis,
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: '• ',
-                                        style: TextStyle(
-                                          color: const Color(0xFF9CA3AF),
-                                          fontSize: 14.0,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.43,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: board!.name,
-                                        style: TextStyle(
-                                          color: const Color(0xFF4B5563),
-                                          fontSize: 14.0,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.43,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            },
-                          ),
-                        ),
                       ],
                     ),
                   ),

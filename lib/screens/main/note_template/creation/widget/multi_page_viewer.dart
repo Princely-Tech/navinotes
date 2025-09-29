@@ -230,7 +230,6 @@ class _MultiPageViewerState extends State<MultiPageViewer>
       maxScale: 2.0,
       constrained: false,
       clipBehavior: Clip.none,
-      boundaryMargin: const EdgeInsets.all(200),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -241,7 +240,6 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                 final isCurrentPage = index == vm.currentPageIndex;
 
                 return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                     border:
                         isCurrentPage
@@ -325,7 +323,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
 
     // Canvas background (carton/desk color)
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 60, vertical: 0),
+      padding: EdgeInsets.symmetric(horizontal: 60, vertical: 12),
       width: screenWidth * 0.95,
       height: screenHeight * 0.8,
       decoration: BoxDecoration(
@@ -353,7 +351,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red, width: 2.0),
+                // border: Border.all(color: Colors.red, width: 2.0),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.15),
