@@ -43,7 +43,8 @@ class NoteCreationVm extends ChangeNotifier {
 
   List<NotePage> get notePages => _notePages;
   int get currentPageIndex => _currentPageIndex;
-  NotePage? get currentPage => _notePages.isNotEmpty ? _notePages[_currentPageIndex] : null;
+  NotePage? get currentPage =>
+      _notePages.isNotEmpty ? _notePages[_currentPageIndex] : null;
 
   DrawingController get drawingController => getCurrentPageDrawingController();
   bool get isRecording => _isRecording;
@@ -162,12 +163,12 @@ class NoteCreationVm extends ChangeNotifier {
 
   void initialize() {
     richEditorController.readOnly = false;
-    
+
     // Add listener to main text controller for auto-save
     richEditorController.document.changes.listen((event) {
       _autoSaveCurrentPage();
     });
-    
+
     getContent().then((_) {
       _initializePages();
       _startAutoSave();
@@ -186,27 +187,30 @@ class NoteCreationVm extends ChangeNotifier {
     if (_notePages.isEmpty) {
       // Create first page if none exist
       addNewPage();
+    } else {
+      // Load content for the current page
+      _loadPageContent();
     }
   }
 
   DrawingController getCurrentPageDrawingController() {
     if (currentPage == null) return _drawingController;
-    
+
     final pageId = currentPage!.id;
     if (!_pageDrawingControllers.containsKey(pageId)) {
       final controller = DrawingController();
-      // Add listener to auto-save when drawing changes
-      controller.addListener(() {
-        _autoSaveCurrentPage();
-      });
+      // Don't add listeners to avoid interfering with drawing
       _pageDrawingControllers[pageId] = controller;
+      debugPrint('Created new drawing controller for page: $pageId');
+    } else {
+      debugPrint('Using existing drawing controller for page: $pageId');
     }
     return _pageDrawingControllers[pageId]!;
   }
 
   QuillController getCurrentPageTextController() {
     if (currentPage == null) return richEditorController;
-    
+
     final pageId = currentPage!.id;
     if (!_pageTextControllers.containsKey(pageId)) {
       final controller = QuillController.basic();
@@ -225,7 +229,7 @@ class NoteCreationVm extends ChangeNotifier {
       if (currentPage != null) {
         _saveCurrentPageContent();
       }
-      
+
       _currentPageIndex = index;
       _loadPageContent();
       notifyListeners();
@@ -234,10 +238,13 @@ class NoteCreationVm extends ChangeNotifier {
 
   void _loadPageContent() {
     if (currentPage == null) return;
-    
+
+    debugPrint('Loading content for current page: ${currentPage!.id}');
+
     // Load text content for current page
     final textController = getCurrentPageTextController();
-    if (currentPage!.textContent != null && currentPage!.textContent!.isNotEmpty) {
+    if (currentPage!.textContent != null &&
+        currentPage!.textContent!.isNotEmpty) {
       try {
         textController.document = Document.fromJson(
           jsonDecode(currentPage!.textContent!),
@@ -246,13 +253,18 @@ class NoteCreationVm extends ChangeNotifier {
         debugPrint('Error loading page text content: $e');
       }
     }
-    
+
     // Load drawing content for current page
     final drawingController = getCurrentPageDrawingController();
-    if (currentPage!.drawingData != null && currentPage!.drawingData!.isNotEmpty) {
+    if (currentPage!.drawingData != null &&
+        currentPage!.drawingData!.isNotEmpty) {
       try {
+        // debugPrint(
+        //   'Loading drawing data for page ${currentPage!.id}: ${currentPage!.drawingData}',
+        // );
         final List<dynamic> drawingData = jsonDecode(currentPage!.drawingData!);
         drawingController.clear();
+
         for (var item in drawingData) {
           if (item is Map<String, dynamic>) {
             final String type = item['type'] as String;
@@ -281,12 +293,32 @@ class NoteCreationVm extends ChangeNotifier {
 
             if (paintContent != null) {
               drawingController.addContent(paintContent);
+              debugPrint('Added paint content: $type');
             }
           }
         }
+        debugPrint('Loaded ${drawingData.length} drawing items');
+
+        // Force a refresh to ensure the drawing is displayed
+        notifyListeners();
+
+        // Additional delay to ensure the widget rebuilds with the new content
+        Future.delayed(const Duration(milliseconds: 100), () {
+          notifyListeners();
+          // Verify content was loaded
+          final currentController = getCurrentPageDrawingController();
+          debugPrint(
+            'Controller after load has ${currentController.getJsonList().length} items',
+          );
+        });
       } catch (e) {
         debugPrint('Error loading page drawing content: $e');
       }
+    } else {
+      debugPrint('No drawing data to load for page ${currentPage!.id}');
+      // Clear the drawing controller if no data
+      final drawingController = getCurrentPageDrawingController();
+      drawingController.clear();
     }
   }
 
@@ -299,7 +331,7 @@ class NoteCreationVm extends ChangeNotifier {
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
-    
+
     _notePages.add(newPage);
     _currentPageIndex = _notePages.length - 1;
     notifyListeners();
@@ -315,7 +347,7 @@ class NoteCreationVm extends ChangeNotifier {
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
-    
+
     _notePages.insert(index, newPage);
     _renumberPages();
     _currentPageIndex = index;
@@ -332,7 +364,7 @@ class NoteCreationVm extends ChangeNotifier {
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );
-    
+
     _notePages.insert(index + 1, newPage);
     _renumberPages();
     _currentPageIndex = index + 1;
@@ -348,20 +380,20 @@ class NoteCreationVm extends ChangeNotifier {
 
   void deletePage(int index) {
     if (_notePages.length <= 1) return; // Don't delete the last page
-    
+
     final pageToDelete = _notePages[index];
     _notePages.removeAt(index);
     _renumberPages();
-    
+
     // Clean up controllers
     _pageDrawingControllers.remove(pageToDelete.id);
     _pageTextControllers.remove(pageToDelete.id);
-    
+
     // Adjust current page index
     if (_currentPageIndex >= _notePages.length) {
       _currentPageIndex = _notePages.length - 1;
     }
-    
+
     notifyListeners();
   }
 
@@ -371,7 +403,7 @@ class NoteCreationVm extends ChangeNotifier {
       if (pageIndex != -1) {
         _notePages[pageIndex] = currentPage!.copyWith(format: newFormat);
         notifyListeners();
-        
+
         // Save to database
         updateContentInDb();
       }
@@ -384,7 +416,7 @@ class NoteCreationVm extends ChangeNotifier {
       if (pageIndex != -1) {
         _notePages[pageIndex] = currentPage!.copyWith(template: newTemplate);
         notifyListeners();
-        
+
         // Save to database
         updateContentInDb();
       }
@@ -394,7 +426,7 @@ class NoteCreationVm extends ChangeNotifier {
   void updateTemplate(BoardNoteTemplate newTemplate) {
     template = newTemplate;
     notifyListeners();
-    
+
     // Save template change to database
     updateContentInDb();
   }
@@ -411,7 +443,7 @@ class NoteCreationVm extends ChangeNotifier {
       createdAt: content?.createdAt ?? generateUnixTimestamp(),
       updatedAt: content?.updatedAt ?? generateUnixTimestamp(),
     );
-    
+
     _notePages = [page];
     _currentPageIndex = 0;
   }
@@ -454,11 +486,11 @@ class NoteCreationVm extends ChangeNotifier {
       if (content != null) {
         // Save current page content before updating
         await _saveCurrentPageContent();
-        
+
         // For backward compatibility, use the first page's content as main content
         String richEditorContent = '';
         String drawingContent = '';
-        
+
         if (_notePages.isNotEmpty) {
           final firstPage = _notePages.first;
           richEditorContent = firstPage.textContent ?? '';
@@ -518,37 +550,41 @@ class NoteCreationVm extends ChangeNotifier {
 
   Future<void> _saveCurrentPageContent() async {
     if (currentPage == null) return;
-    
+
     try {
       // Save current text content
       final textController = getCurrentPageTextController();
       final textContent = jsonEncode(
         textController.document.toDelta().toJson(),
       );
-      
+
       // Save current drawing content
       final drawingController = getCurrentPageDrawingController();
       String drawingContent = '[]';
       try {
         // Safely get drawing content, avoiding issues during active drawing
-        drawingContent = JsonEncoder.withIndent(
-          '  ',
-        ).convert(drawingController.getJsonList());
+        final jsonList = drawingController.getJsonList();
+        debugPrint(
+          'Saving drawing content for page ${currentPage!.id}: ${jsonList.length} items',
+        );
+        drawingContent = JsonEncoder.withIndent('  ').convert(jsonList);
+        debugPrint('Drawing content JSON: $drawingContent');
       } catch (e) {
         debugPrint('Error getting drawing content during save: $e');
         // Keep existing drawing data if there's an error
-        if (currentPage!.drawingData != null && currentPage!.drawingData!.isNotEmpty) {
+        if (currentPage!.drawingData != null &&
+            currentPage!.drawingData!.isNotEmpty) {
           drawingContent = currentPage!.drawingData!;
         }
       }
-      
+
       // Update current page
       final updatedPage = currentPage!.getUpdatedPage(
         textContent: textContent,
         drawingData: drawingContent,
         updatedAt: generateUnixTimestamp(),
       );
-      
+
       _notePages[_currentPageIndex] = updatedPage;
     } catch (e) {
       debugPrint('Error saving current page content: $e');
@@ -583,7 +619,7 @@ class NoteCreationVm extends ChangeNotifier {
     // Handle mode-specific initialization for current page
     final currentController = getCurrentPageTextController();
     currentController.readOnly = true;
-    
+
     if (mode == NoteMode.text) {
       currentController.readOnly = false;
     } else if (mode == NoteMode.voice) {
@@ -723,6 +759,25 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> manualSaveAndReload() async {
+    // Manual save and reload for debugging
+    debugPrint('Manual save and reload triggered');
+    await _saveCurrentPageContent();
+    _loadPageContent();
+    notifyListeners();
+  }
+
+  void debugDrawingController() {
+    // Debug method to check controller state
+    final controller = getCurrentPageDrawingController();
+    final items = controller.getJsonList();
+    debugPrint('Current page: ${currentPage?.id}');
+    debugPrint('Controller has ${items.length} items');
+    for (int i = 0; i < items.length; i++) {
+      debugPrint('Item $i: ${items[i]['type']}');
+    }
+  }
+
   void setDrawingState(bool isDrawing) {
     _isDrawing = isDrawing;
     if (!isDrawing) {
@@ -735,16 +790,16 @@ class NoteCreationVm extends ChangeNotifier {
 
   Timer? _debounceTimer;
   bool _isDrawing = false;
-  
+
   void _autoSaveCurrentPage() {
     // Auto-save the current page when content changes
     if (currentPage != null) {
       // Cancel previous timer to debounce rapid changes
       _debounceTimer?.cancel();
-      
+
       // Use a longer debounce for drawing mode to avoid interfering with active drawing
       final debounceMs = currentMode == NoteMode.drawing ? 1000 : 500;
-      
+
       // Use a timer to debounce rapid changes
       _debounceTimer = Timer(Duration(milliseconds: debounceMs), () async {
         // Don't save if we're in the middle of drawing to avoid interference
@@ -844,13 +899,20 @@ class NoteCreationVm extends ChangeNotifier {
         if (content!.metaData.containsKey('pages')) {
           try {
             final pagesData = content!.metaData['pages'] as List<dynamic>;
-            _notePages = pagesData
-                .map((pageData) => NotePage.fromMap(Map<String, dynamic>.from(pageData)))
-                .toList();
-            
+            _notePages =
+                pagesData
+                    .map(
+                      (pageData) =>
+                          NotePage.fromMap(Map<String, dynamic>.from(pageData)),
+                    )
+                    .toList();
+
             if (content!.metaData.containsKey('currentPageIndex')) {
               _currentPageIndex = content!.metaData['currentPageIndex'] as int;
-              _currentPageIndex = _currentPageIndex.clamp(0, _notePages.length - 1);
+              _currentPageIndex = _currentPageIndex.clamp(
+                0,
+                _notePages.length - 1,
+              );
             }
           } catch (e) {
             debugPrint('Error loading pages data: $e');
@@ -898,6 +960,10 @@ class NoteCreationVm extends ChangeNotifier {
       }
     } finally {
       updateFetchingContent(false);
+      // Load content for current page after everything is loaded
+      if (_notePages.isNotEmpty) {
+        _loadPageContent();
+      }
     }
   }
 
@@ -1051,7 +1117,7 @@ class NoteCreationVm extends ChangeNotifier {
     summaryController.dispose();
     focusAreaController.dispose();
     summaryLengthController.dispose();
-    
+
     // Dispose page controllers to prevent memory leaks
     for (final controller in _pageDrawingControllers.values) {
       controller.dispose();
@@ -1061,7 +1127,7 @@ class NoteCreationVm extends ChangeNotifier {
     }
     _pageDrawingControllers.clear();
     _pageTextControllers.clear();
-    
+
     super.dispose();
   }
 }

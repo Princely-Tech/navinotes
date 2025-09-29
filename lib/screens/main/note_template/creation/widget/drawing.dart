@@ -32,10 +32,7 @@ Widget buildDrawingBoard(
       width: validWidth,
       height: validHeight,
       child: DrawingBoardWithCursor(
-        key: ValueKey(
-          'drawing_${vm.currentPageIndex}_${vm.drawingController.hashCode}',
-        ),
-        controller: vm.drawingController,
+        controller: vm.getCurrentPageDrawingController(),
         width: validWidth,
         height: validHeight,
         vm: vm,
@@ -180,33 +177,12 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
   @override
   void initState() {
     super.initState();
-    // Listen to drawing controller changes to trigger rebuilds
-    widget.controller.addListener(_onDrawingChanged);
-  }
-
-  @override
-  void didUpdateWidget(DrawingBoardWithCursor oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.controller != widget.controller) {
-      // Remove listener from old controller
-      oldWidget.controller.removeListener(_onDrawingChanged);
-      // Add listener to new controller
-      widget.controller.addListener(_onDrawingChanged);
-    }
+    // Don't add listeners to avoid rebuilds during drawing
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_onDrawingChanged);
     super.dispose();
-  }
-
-  void _onDrawingChanged() {
-    if (mounted) {
-      setState(() {
-        // Trigger rebuild when drawing content changes
-      });
-    }
   }
 
   @override
@@ -240,15 +216,11 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
       onPointerDown: (e) {
         if (mounted) {
           setState(() => _cursorPos = e.localPosition);
-          // Notify VM that drawing has started
-          widget.vm.setDrawingState(true);
         }
       },
       onPointerUp: (e) {
         if (mounted) {
           setState(() => _cursorPos = null);
-          // Notify VM that drawing has ended
-          widget.vm.setDrawingState(false);
         }
       },
       child: RepaintBoundary(

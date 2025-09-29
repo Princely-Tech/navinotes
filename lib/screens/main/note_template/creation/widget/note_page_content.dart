@@ -129,11 +129,11 @@ class _NotePageContentState extends State<NotePageContent> {
       case NoteMode.text:
         // Validate dimensions to prevent "Invalid image dimensions" error
         final validWidth =
-            widget.inputWidth.isFinite && widget.inputWidth > 0
+            widget.inputWidth.isFinite && widget.inputWidth > 10
                 ? widget.inputWidth
                 : 595.0;
         final validHeight =
-            widget.inputHeight.isFinite && widget.inputHeight > 0
+            widget.inputHeight.isFinite && widget.inputHeight > 10
                 ? widget.inputHeight
                 : 842.0;
 
@@ -159,11 +159,11 @@ class _NotePageContentState extends State<NotePageContent> {
       case NoteMode.drawing:
         // Validate dimensions to prevent "Invalid image dimensions" error
         final validWidth =
-            widget.inputWidth.isFinite && widget.inputWidth > 0
+            widget.inputWidth.isFinite && widget.inputWidth > 10
                 ? widget.inputWidth
                 : 595.0;
         final validHeight =
-            widget.inputHeight.isFinite && widget.inputHeight > 0
+            widget.inputHeight.isFinite && widget.inputHeight > 10
                 ? widget.inputHeight
                 : 842.0;
 
@@ -231,16 +231,24 @@ class _NotePageContentState extends State<NotePageContent> {
 
     // Validate dimensions to prevent "Invalid image dimensions" error
     final validWidth =
-        widget.inputWidth.isFinite && widget.inputWidth > 0
+        widget.inputWidth.isFinite && widget.inputWidth > 10
             ? widget.inputWidth
             : 595.0;
     final validHeight =
-        widget.inputHeight.isFinite && widget.inputHeight > 0
+        widget.inputHeight.isFinite && widget.inputHeight > 10
             ? widget.inputHeight
             : 842.0;
+    
+    debugPrint('NotePageContent dimensions: width=$validWidth, height=$validHeight, isThumbnail=${widget.isThumbnail}');
 
     // For thumbnails with very small dimensions, skip DrawingBoard to avoid errors
     if (widget.isThumbnail && (validWidth < 50 || validHeight < 50)) {
+      return const SizedBox.shrink();
+    }
+    
+    // Additional safety check for invalid dimensions
+    if (validWidth < 10 || validHeight < 10 || !validWidth.isFinite || !validHeight.isFinite) {
+      debugPrint('Skipping DrawingBoard due to invalid dimensions: $validWidth x $validHeight');
       return const SizedBox.shrink();
     }
 
@@ -287,15 +295,17 @@ class _NotePageContentState extends State<NotePageContent> {
           height: validHeight,
           child: IgnorePointer(
             ignoring: true, // Make it non-interactive in read mode
-            child: DrawingBoard(
-              controller: drawingController,
-              background: Container(
-                width: validWidth,
-                height: validHeight,
-                color: Colors.transparent,
+            child: RepaintBoundary(
+              child: DrawingBoard(
+                controller: drawingController,
+                background: Container(
+                  width: validWidth,
+                  height: validHeight,
+                  color: Colors.transparent,
+                ),
+                showDefaultActions: false,
+                showDefaultTools: false,
               ),
-              showDefaultActions: false,
-              showDefaultTools: false,
             ),
           ),
         ),

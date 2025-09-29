@@ -87,9 +87,8 @@ class _MultiPageViewerState extends State<MultiPageViewer>
           }
         });
 
-        return Expanded(
-          child: Stack(
-            children: [
+        return Stack(
+          children: [
               // Main PageView with enhanced panning
               PageView.builder(
                 controller: _pageController,
@@ -118,7 +117,6 @@ class _MultiPageViewerState extends State<MultiPageViewer>
               // Page indicator dots
               _buildPageIndicator(vm),
             ],
-          ),
         );
       },
     );
