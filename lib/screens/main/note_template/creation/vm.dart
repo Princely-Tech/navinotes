@@ -12,6 +12,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'managers/text_box_manager.dart';
 import 'models/drawing_tools.dart';
+import 'models/stylus_settings.dart';
+import 'controllers/pressure_drawing_controller.dart';
 
 enum NoteMode { text, drawing, voice, read }
 
@@ -30,6 +32,10 @@ class NoteCreationVm extends ChangeNotifier {
   TextEditingController titleController = TextEditingController();
 
   final DrawingController _drawingController = DrawingController();
+  
+  // Stylus settings and pressure-sensitive controllers
+  StylusSettings _stylusSettings = const StylusSettings();
+  final Map<String, PressureDrawingController> _pagePressureControllers = <String, PressureDrawingController>{};
   final AudioRecorder _audioRecorder = AudioRecorder();
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isRecording = false;
@@ -279,6 +285,9 @@ class NoteCreationVm extends ChangeNotifier {
     richEditorController.document.changes.listen((event) {
       _autoSaveCurrentPage();
     });
+
+    // Load stylus settings
+    loadStylusSettings();
 
     getContent().then((_) {
       _initializePages();
@@ -1376,9 +1385,100 @@ class NoteCreationVm extends ChangeNotifier {
     for (final controller in _pageTextControllers.values) {
       controller.dispose();
     }
+    for (final controller in _pagePressureControllers.values) {
+      controller.dispose();
+    }
     _pageDrawingControllers.clear();
     _pageTextControllers.clear();
+    _pagePressureControllers.clear();
 
     super.dispose();
+  }
+
+  // Stylus Settings Methods
+  
+  /// Get current stylus settings
+  StylusSettings get stylusSettings => _stylusSettings;
+  
+  /// Update stylus settings
+  void updateStylusSettings(StylusSettings settings) {
+    _stylusSettings = settings;
+    
+    // Update all pressure controllers with new settings
+    for (final controller in _pagePressureControllers.values) {
+      controller.updateStylusSettings(settings);
+    }
+    
+    notifyListeners();
+  }
+  
+  /// Get pressure-sensitive drawing controller for current page
+  PressureDrawingController getCurrentPagePressureController() {
+    if (currentPage == null) {
+      // Return a temporary controller for pages that don't exist yet
+      return PressureDrawingController(stylusSettings: _stylusSettings);
+    }
+
+    final pageId = currentPage!.id;
+    if (!_pagePressureControllers.containsKey(pageId)) {
+      final controller = PressureDrawingController(stylusSettings: _stylusSettings);
+      _pagePressureControllers[pageId] = controller;
+      debugPrint('Created new pressure drawing controller for page: $pageId');
+    } else {
+      debugPrint('Using existing pressure drawing controller for page: $pageId');
+    }
+    return _pagePressureControllers[pageId]!;
+  }
+  
+  /// Show stylus settings dialog
+  void showStylusSettings() {
+    // This method would be called from the UI to show the settings dialog
+    notifyListeners();
+  }
+  
+  /// Reset stylus settings to defaults
+  void resetStylusSettings() {
+    updateStylusSettings(const StylusSettings());
+  }
+  
+  /// Load stylus settings from storage
+  Future<void> loadStylusSettings() async {
+    try {
+      // In a full implementation, you would load from SharedPreferences or database
+      // For now, we'll use default settings
+      final defaultSettings = const StylusSettings();
+      updateStylusSettings(defaultSettings);
+    } catch (e) {
+      debugPrint('Error loading stylus settings: $e');
+      // Fallback to default settings
+      updateStylusSettings(const StylusSettings());
+    }
+  }
+  
+  /// Save stylus settings to storage
+  Future<void> saveStylusSettings() async {
+    try {
+      // In a full implementation, you would save to SharedPreferences or database
+      final json = _stylusSettings.toJson();
+      debugPrint('Saving stylus settings: $json');
+      // await SharedPreferences.getInstance().then((prefs) => 
+      //   prefs.setString('stylus_settings', jsonEncode(json)));
+    } catch (e) {
+      debugPrint('Error saving stylus settings: $e');
+    }
+  }
+  
+  /// Check if stylus is connected (platform-specific implementation needed)
+  bool get isStylusConnected {
+    // This would need platform-specific implementation
+    // For now, return true to enable stylus features
+    return true;
+  }
+  
+  /// Get stylus input type based on platform and device
+  StylusInputType get detectedStylusType {
+    // This would need platform-specific detection
+    // For now, return generic stylus
+    return StylusInputType.genericStylus;
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_drawing_board/paint_contents.dart';
 import '../models/drawing_tools.dart';
 import '../vm.dart';
 import 'custom_paint_contents.dart';
+import 'stylus_settings_dialog.dart';
 
 class ProfessionalDrawingToolbar extends StatefulWidget {
   final NoteCreationVm vm;
@@ -211,6 +212,11 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
 
             // Undo/Redo
             _buildUndoRedoButtons(),
+
+            const SizedBox(width: 8),
+
+            // Stylus Settings (if stylus is connected)
+            if (widget.vm.isStylusConnected) _buildStylusSettingsButton(),
 
             // Add some padding at the end
             const SizedBox(width: 16),
@@ -653,5 +659,77 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
         widget.vm.startEditingTextBox(textBoxManager.selectedTextBoxId!);
       }
     });
+  }
+
+  /// Build stylus settings button
+  Widget _buildStylusSettingsButton() {
+    return Container(
+      decoration: BoxDecoration(
+        color: widget.vm.stylusSettings.pressureSensitivityEnabled 
+            ? Colors.blue.withOpacity(0.1) 
+            : Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: widget.vm.stylusSettings.pressureSensitivityEnabled 
+              ? Colors.blue.withOpacity(0.3) 
+              : Colors.grey.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => _showStylusSettingsDialog(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.edit,
+                  size: 16,
+                  color: widget.vm.stylusSettings.pressureSensitivityEnabled 
+                      ? Colors.blue 
+                      : Colors.grey[600],
+                ),
+                const SizedBox(width: 4),
+                if (widget.vm.stylusSettings.pressureSensitivityEnabled)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'P',
+                      style: TextStyle(
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Show stylus settings dialog
+  void _showStylusSettingsDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => StylusSettingsDialog(
+        initialSettings: widget.vm.stylusSettings,
+        onSettingsChanged: (settings) {
+          widget.vm.updateStylusSettings(settings);
+          widget.vm.saveStylusSettings();
+        },
+      ),
+    );
   }
 }

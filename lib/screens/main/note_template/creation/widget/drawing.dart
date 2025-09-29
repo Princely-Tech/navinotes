@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:navinotes/screens/main/note_template/creation/vm.dart';
 import 'professional_drawing_toolbar.dart';
+import 'pressure_drawing_widget.dart';
+import 'stylus_settings_dialog.dart';
+import '../models/stylus_settings.dart';
 
 Widget buildDrawingBoard(
   NoteCreationVm vm,
@@ -28,6 +31,17 @@ Widget buildDrawingBoard(
 
   debugPrint('buildDrawingBoard: Using dimensions $validWidth x $validHeight');
 
+  // Use pressure-sensitive drawing widget if stylus settings are enabled
+  if (vm.stylusSettings.pressureSensitivityEnabled || vm.isStylusConnected) {
+    return PressureDrawingWidget(
+      controller: vm.getCurrentPagePressureController(),
+      width: validWidth,
+      height: validHeight,
+      vm: vm,
+    );
+  }
+
+  // Fallback to regular drawing board
   return IgnorePointer(
     ignoring: vm.currentMode != NoteMode.drawing,
     child: Container(
@@ -48,8 +62,95 @@ Widget buildDrawingToolbar({required NoteCreationVm vm}) {
     top: 0,
     left: 0,
     right: 0,
-    child: ProfessionalDrawingToolbar(vm: vm),
+    child: Column(
+      children: [
+        ProfessionalDrawingToolbar(vm: vm),
+        if (vm.isStylusConnected) _buildStylusToolbar(vm),
+      ],
+    ),
   );
+}
+
+Widget _buildStylusToolbar(NoteCreationVm vm) {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.9),
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Stylus indicator
+        Icon(
+          vm.detectedStylusType.icon,
+          size: 16,
+          color: Colors.blue,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          vm.detectedStylusType.displayName,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: Colors.blue,
+          ),
+        ),
+        const SizedBox(width: 12),
+        
+        // Pressure sensitivity indicator
+        if (vm.stylusSettings.pressureSensitivityEnabled)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Text(
+              'PRESSURE',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+          ),
+        
+        const SizedBox(width: 8),
+        
+        // Settings button
+        GestureDetector(
+          onTap: () => _showStylusSettings(vm),
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Icon(
+              Icons.settings,
+              size: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+void _showStylusSettings(NoteCreationVm vm) {
+  // This would be called from a context where we have access to BuildContext
+  // For now, we'll call the VM method
+  vm.showStylusSettings();
 }
 
 class DrawingBoardWithCursor extends StatefulWidget {
@@ -180,4 +281,19 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
       ),
     );
   }
+}
+
+/// Helper function to show stylus settings dialog
+void showStylusSettingsDialog(BuildContext context, NoteCreationVm vm) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => StylusSettingsDialog(
+      initialSettings: vm.stylusSettings,
+      onSettingsChanged: (settings) {
+        vm.updateStylusSettings(settings);
+        vm.saveStylusSettings();
+      },
+    ),
+  );
 }
