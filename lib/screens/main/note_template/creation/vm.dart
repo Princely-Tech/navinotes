@@ -162,6 +162,12 @@ class NoteCreationVm extends ChangeNotifier {
 
   void initialize() {
     richEditorController.readOnly = false;
+    
+    // Add listener to main text controller for auto-save
+    richEditorController.document.changes.listen((event) {
+      _autoSaveCurrentPage();
+    });
+    
     getContent().then((_) {
       _initializePages();
       _startAutoSave();
@@ -203,13 +209,23 @@ class NoteCreationVm extends ChangeNotifier {
     
     final pageId = currentPage!.id;
     if (!_pageTextControllers.containsKey(pageId)) {
-      _pageTextControllers[pageId] = QuillController.basic();
+      final controller = QuillController.basic();
+      // Add listener to auto-save when text changes
+      controller.document.changes.listen((event) {
+        _autoSaveCurrentPage();
+      });
+      _pageTextControllers[pageId] = controller;
     }
     return _pageTextControllers[pageId]!;
   }
 
   void setCurrentPageIndex(int index) {
     if (index >= 0 && index < _notePages.length) {
+      // Save current page content before switching
+      if (currentPage != null) {
+        _saveCurrentPageContent();
+      }
+      
       _currentPageIndex = index;
       _loadPageContent();
       notifyListeners();
@@ -697,12 +713,19 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  Timer? _debounceTimer;
+  
   void _autoSaveCurrentPage() {
-    // Auto-save the current page when drawing changes
+    // Auto-save the current page when content changes
     if (currentPage != null) {
+      // Cancel previous timer to debounce rapid changes
+      _debounceTimer?.cancel();
+      
       // Use a timer to debounce rapid changes
-      Timer(const Duration(milliseconds: 500), () {
-        _saveCurrentPageContent();
+      _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+        await _saveCurrentPageContent();
+        // Also save to database to prevent data loss
+        await updateContentInDb(showSnackBar: false);
       });
     }
   }
@@ -992,6 +1015,7 @@ class NoteCreationVm extends ChangeNotifier {
   void dispose() {
     updateContentInDb(showSnackBar: false);
     _autoSaveTimer?.cancel();
+    _debounceTimer?.cancel();
     _audioRecorder.dispose();
     _audioPlayer.dispose();
     titleController.dispose();

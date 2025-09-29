@@ -8,11 +8,8 @@ class PageNavigator extends StatefulWidget {
   final NoteCreationVm vm;
   final VoidCallback onClose;
 
-  const PageNavigator({
-    Key? key,
-    required this.vm,
-    required this.onClose,
-  }) : super(key: key);
+  const PageNavigator({Key? key, required this.vm, required this.onClose})
+    : super(key: key);
 
   @override
   State<PageNavigator> createState() => _PageNavigatorState();
@@ -41,12 +38,10 @@ class _PageNavigatorState extends State<PageNavigator> {
         children: [
           // Header
           _buildHeader(),
-          
+
           // Pages grid
-          Expanded(
-            child: _buildPagesGrid(),
-          ),
-          
+          Expanded(child: _buildPagesGrid()),
+
           // Selection actions (shown when in selection mode)
           if (isSelectionMode) _buildSelectionActions(),
         ],
@@ -58,9 +53,7 @@ class _PageNavigatorState extends State<PageNavigator> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200),
-        ),
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
       ),
       child: Row(
         children: [
@@ -72,18 +65,12 @@ class _PageNavigatorState extends State<PageNavigator> {
             const SizedBox(width: 8),
             Text(
               '${selectedPageIds.length} selected',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
           ] else ...[
             const Text(
               'Pages',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const Spacer(),
             IconButton(
@@ -118,7 +105,12 @@ class _PageNavigatorState extends State<PageNavigator> {
     );
   }
 
-  Widget _buildPageThumbnail(NotePage page, int index, bool isSelected, bool isCurrent) {
+  Widget _buildPageThumbnail(
+    NotePage page,
+    int index,
+    bool isSelected,
+    bool isCurrent,
+  ) {
     return GestureDetector(
       onTap: () => _onPageTap(page, index),
       onLongPress: () => _onPageLongPress(page),
@@ -126,12 +118,18 @@ class _PageNavigatorState extends State<PageNavigator> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isCurrent 
-                ? Colors.blue 
-                : isSelected 
-                    ? Colors.red 
+            color:
+                isCurrent
+                    ? Colors.blue
+                    : isSelected
+                    ? Colors.red
                     : Colors.grey.shade300,
-            width: isCurrent ? 3 : isSelected ? 2 : 1,
+            width:
+                isCurrent
+                    ? 3
+                    : isSelected
+                    ? 2
+                    : 1,
           ),
           boxShadow: [
             BoxShadow(
@@ -147,7 +145,7 @@ class _PageNavigatorState extends State<PageNavigator> {
             children: [
               // Page thumbnail
               _buildPageThumbnailContent(page),
-              
+
               // Selection overlay
               if (isSelected)
                 Container(
@@ -160,14 +158,17 @@ class _PageNavigatorState extends State<PageNavigator> {
                     ),
                   ),
                 ),
-              
+
               // Current page indicator
               if (isCurrent && !isSelectionMode)
                 Positioned(
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.blue,
                       borderRadius: BorderRadius.circular(12),
@@ -182,13 +183,16 @@ class _PageNavigatorState extends State<PageNavigator> {
                     ),
                   ),
                 ),
-              
+
               // Page number
               Positioned(
                 bottom: 8,
                 left: 8,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(8),
@@ -251,15 +255,12 @@ class _PageNavigatorState extends State<PageNavigator> {
     );
   }
 
-
   Widget _buildSelectionActions() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
-        border: Border(
-          top: BorderSide(color: Colors.grey.shade200),
-        ),
+        border: Border(top: BorderSide(color: Colors.grey.shade200)),
       ),
       child: Row(
         children: [
@@ -336,47 +337,48 @@ class _PageNavigatorState extends State<PageNavigator> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Pages'),
-        content: Text(
-          'Are you sure you want to delete ${selectedPageIds.length} page(s)? This action cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _confirmDeletePages();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete Pages'),
+            content: Text(
+              'Are you sure you want to delete ${selectedPageIds.length} page(s)? This action cannot be undone.',
             ),
-            child: const Text('Delete'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _confirmDeletePages();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Delete'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   void _confirmDeletePages() {
     // Get indices of pages to delete and sort in descending order
     final indicesToDelete = <int>[];
-    
+
     for (final pageId in selectedPageIds) {
       final index = widget.vm.notePages.indexWhere((page) => page.id == pageId);
       if (index != -1) {
         indicesToDelete.add(index);
       }
     }
-    
+
     // Sort indices in descending order to delete from highest to lowest
     // This prevents index shifting issues when deleting multiple pages
     indicesToDelete.sort((a, b) => b.compareTo(a));
-    
+
     // Delete pages from highest index to lowest
     for (final index in indicesToDelete) {
       widget.vm.deletePage(index);
@@ -384,7 +386,7 @@ class _PageNavigatorState extends State<PageNavigator> {
 
     final deletedCount = indicesToDelete.length;
     _exitSelectionMode();
-    
+
     // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
