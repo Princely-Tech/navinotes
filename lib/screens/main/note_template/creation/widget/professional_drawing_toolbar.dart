@@ -223,8 +223,8 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
             ],
 
             // Debug button for testing stylus features (development only)
-            const SizedBox(width: 8),
-            _buildDebugButton(),
+            // const SizedBox(width: 8),
+            // _buildDebugButton(),
 
             // Add some padding at the end
             const SizedBox(width: 16),
@@ -977,10 +977,7 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
       decoration: BoxDecoration(
         color: Colors.orange.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: Colors.orange.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.orange.withOpacity(0.3), width: 1),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -992,11 +989,7 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.bug_report,
-                size: 16,
-                color: Colors.orange,
-              ),
+              Icon(Icons.bug_report, size: 16, color: Colors.orange),
               SizedBox(width: 4),
               Text(
                 'Test',

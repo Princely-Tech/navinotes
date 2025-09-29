@@ -834,7 +834,7 @@ class NoteCreationVm extends ChangeNotifier {
           );
         }
         drawingContent = JsonEncoder.withIndent('  ').convert(jsonList);
-        debugPrint('Drawing content JSON: $drawingContent');
+        debugPrint('Drawing content JSON');
       } catch (e) {
         debugPrint('Error getting drawing content during save: $e');
         // Keep existing drawing data if there's an error
