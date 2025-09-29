@@ -76,18 +76,27 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
   }
 
   void _startEditing() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _focusNode.requestFocus();
-        _textController.selection = TextSelection(
-          baseOffset: 0,
-          extentOffset: _textController.text.length,
-        );
-      }
-    });
+    // Immediate focus request for smoother transition
+    if (mounted) {
+      _focusNode.requestFocus();
+      
+      // Use a shorter delay for better responsiveness
+      Future.delayed(const Duration(milliseconds: 50), () {
+        if (mounted && _focusNode.hasFocus) {
+          _textController.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: _textController.text.length,
+          );
+        }
+      });
+    }
   }
 
   void _finishEditing() {
+    // Unfocus immediately for smooth transition
+    _focusNode.unfocus();
+    
+    // Update text if changed
     if (_textController.text != widget.textBox.text) {
       final updatedTextBox = widget.textBox.copyWith(
         text: _textController.text,
@@ -95,19 +104,24 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
       );
       widget.onUpdate(updatedTextBox);
     }
+    
+    // Notify parent to exit edit mode
     widget.onEndEdit?.call();
   }
 
   void _handleTap() {
+    debugPrint('TextBox tap detected - ID: ${widget.textBox.id}');
     widget.onSelect(widget.textBox.id);
   }
 
   void _handleDoubleTap() {
+    debugPrint('TextBox double tap detected - Starting edit mode for ID: ${widget.textBox.id}');
     widget.onSelect(widget.textBox.id);
     widget.onStartEdit?.call();
   }
 
   void _handlePanStart(DragStartDetails details) {
+    debugPrint('TextBox drag start - ID: ${widget.textBox.id}, position: ${details.localPosition}');
     _dragStart = details.localPosition;
     _dragOffset = Offset.zero;
     widget.onSelect(widget.textBox.id);
@@ -119,11 +133,14 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
     setState(() {
       _dragOffset = details.localPosition - _dragStart!;
     });
+    debugPrint('TextBox dragging - offset: $_dragOffset');
   }
 
   void _handlePanEnd(DragEndDetails details) {
+    debugPrint('TextBox drag end - final offset: $_dragOffset');
     if (_dragOffset != null && _dragOffset != Offset.zero) {
       final newPosition = widget.textBox.position + _dragOffset!;
+      debugPrint('TextBox moved to new position: $newPosition');
       final updatedTextBox = widget.textBox.copyWith(
         position: newPosition,
         updatedAt: DateTime.now(),
@@ -225,20 +242,41 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            // Main text box container
-            Container(
+            // Main text box container with smooth transitions
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
               width: widget.textBox.size.width,
               height: widget.textBox.size.height,
               padding: widget.textBox.padding,
               decoration: BoxDecoration(
-                color: widget.textBox.backgroundColor,
-                border: widget.textBox.hasBorder
+                color: widget.isEditing
+                  ? Colors.white.withOpacity(0.95) // Brighter when editing
+                  : (widget.textBox.backgroundColor.opacity > 0 
+                      ? widget.textBox.backgroundColor 
+                      : Colors.white.withOpacity(0.9)),
+                border: widget.isEditing
                   ? Border.all(
-                      color: widget.textBox.borderColor,
-                      width: widget.textBox.borderWidth,
-                    )
-                  : null,
+                      color: Colors.blue.withOpacity(0.6),
+                      width: 2.0,
+                    ) // Blue border when editing
+                  : (widget.textBox.hasBorder
+                      ? Border.all(
+                          color: widget.textBox.borderColor,
+                          width: widget.textBox.borderWidth,
+                        )
+                      : Border.all(
+                          color: Colors.grey.withOpacity(0.3),
+                          width: 1.0,
+                        )),
                 borderRadius: widget.textBox.borderRadius,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(widget.isEditing ? 0.15 : 0.1),
+                    blurRadius: widget.isEditing ? 6 : 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: widget.isEditing
                 ? _buildEditingField()
@@ -262,13 +300,24 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
       textAlign: widget.textBox.textAlign,
       maxLines: null,
       expands: true,
+      autofocus: false, // Prevent auto-focus conflicts
+      enableInteractiveSelection: true,
+      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.multiline,
+      cursorColor: Colors.blue,
+      cursorWidth: 2.0,
+      cursorRadius: const Radius.circular(1.0),
+      showCursor: true,
       decoration: const InputDecoration(
         border: InputBorder.none,
         contentPadding: EdgeInsets.zero,
         isDense: true,
+        filled: false,
+        hintText: null,
       ),
       onSubmitted: (_) => _finishEditing(),
       onTapOutside: (_) => _finishEditing(),
+      onEditingComplete: () => _finishEditing(),
     );
   }
 

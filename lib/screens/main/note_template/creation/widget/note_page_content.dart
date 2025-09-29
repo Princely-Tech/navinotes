@@ -11,6 +11,7 @@ import 'package:navinotes/screens/main/note_template/creation/widget/squared_rul
 import 'package:navinotes/screens/main/note_template/creation/widget/dotted.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/voice.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/text_box_widget.dart';
+import 'package:navinotes/screens/main/note_template/creation/models/text_box.dart';
 
 class NotePageContent extends StatefulWidget {
   final NotePage page;
@@ -155,6 +156,10 @@ class _NotePageContentState extends State<NotePageContent> {
               child: buildTextEditor(vm, validWidth, validHeight),
             ),
           ),
+          // Text box overlay (read-only in text mode)
+          Positioned.fill(
+            child: _buildTextBoxOverlay(vm, validWidth, validHeight, readOnly: true),
+          ),
         ];
       case NoteMode.drawing:
         // Validate dimensions to prevent "Invalid image dimensions" error
@@ -179,7 +184,7 @@ class _NotePageContentState extends State<NotePageContent> {
           // Drawing layer (interactive) - expandable for drawing
           Positioned.fill(
             child: IgnorePointer(
-              ignoring: false,
+              ignoring: vm.isTextBoxMode || vm.textBoxManager.hasSelection,
               child: Container(
                 width: validWidth,
                 height: validHeight,
@@ -189,12 +194,28 @@ class _NotePageContentState extends State<NotePageContent> {
           ),
           // Text box overlay (interactive)
           Positioned.fill(
-            child: _buildTextBoxOverlay(vm, validWidth, validHeight),
+            child: _buildTextBoxOverlay(vm, validWidth, validHeight, readOnly: false),
           ),
         ];
       case NoteMode.read:
         // In read mode, show static content only
-        return [_buildStaticTextContent(), _buildStaticDrawingContent()];
+        final validWidth =
+            widget.inputWidth.isFinite && widget.inputWidth > 10
+                ? widget.inputWidth
+                : 595.0;
+        final validHeight =
+            widget.inputHeight.isFinite && widget.inputHeight > 10
+                ? widget.inputHeight
+                : 842.0;
+        
+        return [
+          _buildStaticTextContent(), 
+          _buildStaticDrawingContent(),
+          // Text box overlay (read-only in read mode)
+          Positioned.fill(
+            child: _buildTextBoxOverlay(vm, validWidth, validHeight, readOnly: true),
+          ),
+        ];
       case NoteMode.voice:
         // In voice mode, show voice recorder as full page
         return [_buildVoiceRecorderPage(vm)];
@@ -406,10 +427,10 @@ class _NotePageContentState extends State<NotePageContent> {
     }
   }
 
-  Widget _buildTextBoxOverlay(NoteCreationVm vm, double width, double height) {
-    // Only show text boxes for the current page
-    if (!_isCurrentPage(vm)) {
-      return const SizedBox.shrink();
+  Widget _buildTextBoxOverlay(NoteCreationVm vm, double width, double height, {bool readOnly = false}) {
+    // For non-current pages or thumbnails, show static text boxes
+    if (!_isCurrentPage(vm) || widget.isThumbnail) {
+      return _buildStaticTextBoxContent(width, height);
     }
 
     return Consumer<NoteCreationVm>(
@@ -417,10 +438,14 @@ class _NotePageContentState extends State<NotePageContent> {
         final textBoxManager = vm.textBoxManager;
 
         return GestureDetector(
-          onTapDown: (details) {
-            // Handle tap to add text box or clear selection
+          onTapDown: readOnly ? null : (details) {
+            // Handle tap to add text box or clear selection (only in interactive mode)
             final position = details.localPosition;
             final tappedTextBox = textBoxManager.getTextBoxAtPosition(position);
+            
+            debugPrint('TextBoxOverlay: Tap detected at $position');
+            debugPrint('TextBoxOverlay: Tapped text box: ${tappedTextBox?.id}');
+            debugPrint('TextBoxOverlay: Current text boxes count: ${textBoxManager.textBoxes.length}');
 
             if (tappedTextBox == null) {
               // Check if we're in text box mode
@@ -437,31 +462,34 @@ class _NotePageContentState extends State<NotePageContent> {
                 vm.addTextBox(position);
               } else {
                 // Clear selection
+                debugPrint('Clearing text box selection');
                 vm.clearTextBoxSelection();
               }
+            } else {
+              debugPrint('Tapped on existing text box: ${tappedTextBox.id}');
             }
           },
           child: TextBoxOverlay(
             textBoxes: textBoxManager.textBoxes,
-            selectedTextBoxId: textBoxManager.selectedTextBoxId,
-            editingTextBoxId: textBoxManager.editingTextBoxId,
+            selectedTextBoxId: readOnly ? null : textBoxManager.selectedTextBoxId,
+            editingTextBoxId: readOnly ? null : textBoxManager.editingTextBoxId,
             canvasSize: Size(width, height),
-            onTextBoxUpdate: (textBox) {
+            onTextBoxUpdate: readOnly ? (_) {} : (textBox) {
               textBoxManager.updateTextBox(textBox);
             },
-            onTextBoxDelete: (textBoxId) {
+            onTextBoxDelete: readOnly ? (_) {} : (textBoxId) {
               vm.deleteTextBox(textBoxId);
             },
-            onTextBoxSelect: (textBoxId) {
+            onTextBoxSelect: readOnly ? (_) {} : (textBoxId) {
               vm.selectTextBox(textBoxId);
             },
-            onStartEdit: () {
+            onStartEdit: readOnly ? null : () {
               // Start editing the selected text box
               if (textBoxManager.selectedTextBoxId != null) {
                 vm.startEditingTextBox(textBoxManager.selectedTextBoxId!);
               }
             },
-            onEndEdit: () {
+            onEndEdit: readOnly ? null : () {
               vm.stopEditingTextBox();
             },
           ),
@@ -473,5 +501,74 @@ class _NotePageContentState extends State<NotePageContent> {
   String? _getSelectedTextTool(NoteCreationVm vm) {
     // Check if we're in text box mode and return the selected tool
     return vm.isTextBoxMode ? vm.selectedTextBoxTool : null;
+  }
+
+  Widget _buildStaticTextBoxContent(double width, double height) {
+    if (widget.page.textBoxData == null || widget.page.textBoxData!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    try {
+      final List<dynamic> textBoxList = jsonDecode(widget.page.textBoxData!);
+      
+      return SizedBox(
+        width: width,
+        height: height,
+        child: Stack(
+          children: textBoxList.map<Widget>((json) {
+            try {
+              final textBox = TextBox.fromJson(json as Map<String, dynamic>);
+              
+              return Positioned(
+                left: textBox.position.dx,
+                top: textBox.position.dy,
+                child: Container(
+                  width: textBox.size.width,
+                  height: textBox.size.height,
+                  padding: textBox.padding,
+                  decoration: BoxDecoration(
+                    color: textBox.backgroundColor.opacity > 0 
+                      ? textBox.backgroundColor 
+                      : Colors.white.withOpacity(0.9),
+                    border: textBox.hasBorder
+                      ? Border.all(
+                          color: textBox.borderColor,
+                          width: textBox.borderWidth,
+                        )
+                      : Border.all(
+                          color: Colors.grey.withOpacity(0.3),
+                          width: 1.0,
+                        ),
+                    borderRadius: textBox.borderRadius,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    textBox.text.isEmpty ? 'Text' : textBox.text,
+                    style: textBox.text.isEmpty 
+                      ? textBox.textStyle.copyWith(color: Colors.grey)
+                      : textBox.textStyle,
+                    textAlign: textBox.textAlign,
+                    maxLines: null,
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+              );
+            } catch (e) {
+              debugPrint('Error rendering static text box: $e');
+              return const SizedBox.shrink();
+            }
+          }).toList(),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error loading static text box content: $e');
+      return const SizedBox.shrink();
+    }
   }
 }

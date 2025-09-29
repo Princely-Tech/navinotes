@@ -127,6 +127,9 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
       case DrawingToolType.textUnderline:
         // Text tools are handled by the text box system, not drawing controller
         widget.vm.selectTextBoxTool(toolType.toString());
+        
+        // Automatically add a text box at the center of the canvas
+        _addTextBoxAtCenter(toolType);
         return; // Don't update drawing controller for text tools
       default:
         controller.setPaintContent(SimpleLine());
@@ -596,5 +599,59 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
                 : null,
       ),
     );
+  }
+
+  /// Automatically add a text box at the center of the canvas
+  void _addTextBoxAtCenter(DrawingToolType toolType) {
+    // Get canvas dimensions (assuming standard A4 dimensions as fallback)
+    const double canvasWidth = 595.0;
+    const double canvasHeight = 842.0;
+    
+    // Calculate center position
+    const double centerX = canvasWidth / 2;
+    const double centerY = canvasHeight / 2;
+    
+    // Offset the text box so it's centered (text box is 120x40 by default)
+    const double textBoxWidth = 120.0;
+    const double textBoxHeight = 40.0;
+    final Offset centerPosition = Offset(
+      centerX - (textBoxWidth / 2),
+      centerY - (textBoxHeight / 2),
+    );
+    
+    // Determine text content based on tool type
+    String defaultText = 'Text';
+    switch (toolType) {
+      case DrawingToolType.textBox:
+        defaultText = 'Text';
+        break;
+      case DrawingToolType.textCallout:
+        defaultText = 'Callout';
+        break;
+      case DrawingToolType.textBold:
+        defaultText = 'Bold Text';
+        break;
+      case DrawingToolType.textItalic:
+        defaultText = 'Italic Text';
+        break;
+      case DrawingToolType.textUnderline:
+        defaultText = 'Underlined Text';
+        break;
+      default:
+        defaultText = 'Text';
+    }
+    
+    debugPrint('Adding text box at center: $centerPosition with text: $defaultText');
+    
+    // Add the text box to the canvas
+    widget.vm.addTextBox(centerPosition, text: defaultText);
+    
+    // Automatically start editing the new text box with a slight delay for smooth transition
+    Future.delayed(const Duration(milliseconds: 100), () {
+      final textBoxManager = widget.vm.textBoxManager;
+      if (textBoxManager.selectedTextBoxId != null) {
+        widget.vm.startEditingTextBox(textBoxManager.selectedTextBoxId!);
+      }
+    });
   }
 }
