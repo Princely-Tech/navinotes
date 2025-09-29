@@ -94,7 +94,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
               PageView.builder(
                 controller: _pageController,
                 physics:
-                    _isZoomedOut(vm)
+                    _isZoomedOut(vm) || vm.currentMode == NoteMode.drawing
                         ? const NeverScrollableScrollPhysics()
                         : const PageScrollPhysics(),
                 onPageChanged: (index) {
@@ -339,7 +339,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
             maxScale: 3.0,
             constrained: false,
             clipBehavior: Clip.none,
-            panEnabled: true,
+            panEnabled: vm.currentMode != NoteMode.drawing,
             scaleEnabled: true,
             boundaryMargin:
                 _getCurrentScale(page) < 1.0
