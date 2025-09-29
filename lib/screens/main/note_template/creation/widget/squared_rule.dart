@@ -1,19 +1,12 @@
 import 'package:navinotes/packages.dart';
-import '../vm.dart';
 
 class SquaredNoteBackground extends StatelessWidget {
   const SquaredNoteBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NoteCreationVm>(
-      builder: (_, vm, _) {
-        return VisibleController(
-          mobile: vm.template == noteTemplateSquared,
-          child: CustomPaint(size: Size.infinite, painter: GraphPaperPainter()),
-        );
-      },
-    );
+    // Always show the squared background - no need for Consumer
+    return CustomPaint(size: Size.infinite, painter: GraphPaperPainter());
   }
 }
 

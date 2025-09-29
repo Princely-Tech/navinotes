@@ -1,19 +1,12 @@
 import 'package:navinotes/packages.dart';
-import '../vm.dart';
 
 class LinedNoteBackground extends StatelessWidget {
   const LinedNoteBackground({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NoteCreationVm>(
-      builder: (_, vm, _) {
-        return VisibleController(
-          mobile: vm.template == noteTemplateLined,
-          child: CustomPaint(size: Size.infinite, painter: LinedPaperPainter()),
-        );
-      },
-    );
+    // Always show the lined background - no need for Consumer
+    return CustomPaint(size: Size.infinite, painter: LinedPaperPainter());
   }
 }
 

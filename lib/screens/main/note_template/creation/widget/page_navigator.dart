@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import 'package:navinotes/models/note_page.dart';
 import 'package:navinotes/screens/main/note_template/creation/vm.dart';
 import 'package:navinotes/screens/main/note_template/creation/widget/note_page_content.dart';
@@ -215,43 +216,52 @@ class _PageNavigatorState extends State<PageNavigator> {
   }
 
   Widget _buildPageThumbnailContent(NotePage page) {
-    // Calculate thumbnail dimensions (scaled down version of actual page)
-    final pageDimensions = page.format.actualDimensions;
-    final scale = 0.15; // Scale down to 15% for thumbnail
-    final thumbnailWidth = pageDimensions.width * scale;
-    final thumbnailHeight = pageDimensions.height * scale;
-
     return Container(
       width: double.infinity,
       height: double.infinity,
       color: Colors.white,
-      child: Center(
-        child: Container(
-          width: thumbnailWidth,
-          height: thumbnailHeight,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300, width: 0.5),
-          ),
-          child: ClipRect(
-            child: Transform.scale(
-              scale: scale,
-              child: Container(
-                width: pageDimensions.width,
-                height: pageDimensions.height,
-                child: IgnorePointer(
-                  child: NotePageContent(
-                    page: page,
-                    vm: widget.vm,
-                    backgroundColor: Colors.white,
-                    inputWidth: pageDimensions.width,
-                    inputHeight: pageDimensions.height,
-                  ),
+      child: _buildFullSizeThumbnail(page),
+    );
+  }
+
+  Widget _buildFullSizeThumbnail(NotePage page) {
+    // Get the actual page dimensions to calculate the proper scale
+    final pageDimensions = page.format.actualDimensions;
+    
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate scale to fill the available space while maintaining aspect ratio
+        final availableWidth = constraints.maxWidth;
+        final availableHeight = constraints.maxHeight;
+        
+        final scaleX = availableWidth / pageDimensions.width;
+        final scaleY = availableHeight / pageDimensions.height;
+        
+        // Use the smaller scale to ensure the page fits entirely
+        final scale = math.min(scaleX, scaleY);
+        
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Transform.scale(
+            scale: scale,
+            child: Container(
+              width: pageDimensions.width,
+              height: pageDimensions.height,
+              child: IgnorePointer(
+                child: NotePageContent(
+                  key: ValueKey('thumbnail_${page.id}'),
+                  page: page,
+                  vm: widget.vm,
+                  backgroundColor: Colors.white,
+                  inputWidth: pageDimensions.width,
+                  inputHeight: pageDimensions.height,
+                  isThumbnail: true,
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

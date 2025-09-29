@@ -17,6 +17,7 @@ class NotePageContent extends StatefulWidget {
   final Color backgroundColor;
   final double inputWidth;
   final double inputHeight;
+  final bool isThumbnail;
 
   const NotePageContent({
     Key? key,
@@ -25,6 +26,7 @@ class NotePageContent extends StatefulWidget {
     required this.backgroundColor,
     required this.inputWidth,
     required this.inputHeight,
+    this.isThumbnail = false,
   }) : super(key: key);
 
   @override
@@ -42,47 +44,43 @@ class _NotePageContentState extends State<NotePageContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NoteCreationVm>(
-      builder: (context, vm, child) {
-        return Listener(
-          onPointerDown: (_) => _safeSetState(() => fingerCount++),
-          onPointerUp:
-              (_) => _safeSetState(
-                () => fingerCount = (fingerCount - 1).clamp(0, 10),
-              ),
-          child: Stack(
+    // Use the vm passed as parameter instead of Consumer to avoid provider scope issues
+    final vm = widget.vm;
+    return Listener(
+      onPointerDown: (_) => _safeSetState(() => fingerCount++),
+      onPointerUp:
+          (_) => _safeSetState(
+        () => fingerCount = (fingerCount - 1).clamp(0, 10),
+      ),
+      child: Stack(
+        children: [
+          // Fixed page content (no scrolling - like real paper)
+          Stack(
             children: [
-              // Fixed page content (no scrolling - like real paper)
-              Stack(
-                children: [
-                  // Background pattern based on page template
-                  Container(
-                    width: widget.inputWidth,
-                    height: widget.inputHeight,
-                    color: widget.backgroundColor,
-                    child: _buildTemplateBackground(),
-                  ),
-
-                  // Page content based on mode (expandable to show all content)
-                  Container(
-                    width: widget.inputWidth,
-                    height: widget.inputHeight,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: getPageContent(vm),
-                    ),
-                  ),
-                ],
+              // Background pattern based on page template
+              Container(
+                width: widget.inputWidth,
+                height: widget.inputHeight,
+                color: widget.backgroundColor,
+                child: _buildTemplateBackground(),
               ),
 
-              // Page number indicator
-              _buildPageNumber(),
-
-              // Toolbars are now centralized above the pages
+              // Page content based on mode (expandable to show all content)
+              Container(
+                width: widget.inputWidth,
+                height: widget.inputHeight,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: getPageContent(vm),
+                ),
+              ),
             ],
           ),
-        );
-      },
+
+          // Page number indicator (only for multi-page view)
+          if (widget.vm.notePages.length > 1) _buildPageNumber(),
+        ],
+      ),
     );
   }
 
@@ -113,6 +111,11 @@ class _NotePageContentState extends State<NotePageContent> {
   }
 
   List<Widget> getPageContent(NoteCreationVm vm) {
+    // For thumbnails, always show static content to avoid GlobalKey conflicts
+    if (widget.isThumbnail) {
+      return [_buildStaticTextContent(), _buildStaticDrawingContent()];
+    }
+
     // Only show interactive content for the current page
     final isCurrentPage = _isCurrentPage(vm);
 
@@ -236,6 +239,11 @@ class _NotePageContentState extends State<NotePageContent> {
             ? widget.inputHeight
             : 842.0;
 
+    // For thumbnails with very small dimensions, skip DrawingBoard to avoid errors
+    if (widget.isThumbnail && (validWidth < 50 || validHeight < 50)) {
+      return const SizedBox.shrink();
+    }
+
     try {
       // Create a read-only DrawingController for this page
       final drawingController = DrawingController();
@@ -311,14 +319,14 @@ class _NotePageContentState extends State<NotePageContent> {
 
   Widget _buildTemplateBackground() {
     // Use the current page from ViewModel to get the latest template
-    return Consumer<NoteCreationVm>(
-      builder: (context, vm, child) {
-        final currentPage = vm.notePages.firstWhere(
-          (page) => page.id == widget.page.id,
-          orElse: () => widget.page,
-        );
+    // Since we already have vm passed as parameter, use it directly
+    final vm = widget.vm;
+    final currentPage = vm.notePages.firstWhere(
+      (page) => page.id == widget.page.id,
+      orElse: () => widget.page,
+    );
 
-        switch (currentPage.template.type) {
+    switch (currentPage.template.type) {
           case NoteTemplateType.lined:
             return ClipRect(
               child: SizedBox(
@@ -359,7 +367,5 @@ class _NotePageContentState extends State<NotePageContent> {
             // Blank template - no background pattern
             return const SizedBox.shrink();
         }
-      },
-    );
   }
 }
