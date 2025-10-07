@@ -72,6 +72,9 @@ class MindMapVmBridge extends MindMapVm {
   /// Center view on content
   void centerViewOnContent() => _boardVm.centerViewOnContent();
 
+  /// Get content by ID
+  Content? getContentById(String contentId) => _boardVm.getContentById(contentId);
+
   // Delegate methods to BoardMindMapVm
   @override
   MindMapNode addNodeWithContent({

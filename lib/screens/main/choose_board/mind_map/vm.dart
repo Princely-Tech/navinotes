@@ -1376,4 +1376,10 @@ class MindMapVm extends ChangeNotifier {
       );
     }
   }
+
+  /// Get content by ID - default implementation returns null
+  /// Override in subclasses that have access to content
+  Content? getContentById(String contentId) {
+    return null;
+  }
 }

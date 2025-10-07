@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/settings/board_theme.dart';
+import 'package:navinotes/settings/enums.dart';
+import 'package:navinotes/widgets/content_preview_widget.dart';
 import 'package:provider/provider.dart';
 import 'vm.dart';
 
@@ -132,6 +134,8 @@ class MindMapNodeWidget extends StatelessWidget {
                 }
               },
               child: _buildShapedNode(
+                context: context,
+                vm: vm,
                 node: node,
                 isConnectingFrom: isConnectingFrom,
                 elevation: elevation,
@@ -392,6 +396,8 @@ class MindMapNodeWidget extends StatelessWidget {
   }
 
   Widget _buildShapedNode({
+    required BuildContext context,
+    required MindMapVm vm,
     required MindMapNode node,
     required bool isConnectingFrom,
     required double elevation,
@@ -401,21 +407,37 @@ class MindMapNodeWidget extends StatelessWidget {
     required List<BoxShadow>? glowShadow,
     required dynamic themeValues,
   }) {
-    final text = Text(
-      node.text,
-      style: TextStyle(
-        color: node.textColor.withOpacity(node.opacity),
-        fontSize: node.fontSize,
-        fontWeight: _toFontWeight(node.fontWeight),
-        fontFamily: node.fontFamily,
-      ),
-      softWrap: true,
-      maxLines: null, // allow wrapping to multiple lines
-      overflow: TextOverflow.clip, // keep within node height
-      textAlign: TextAlign.center,
-    );
-
-    final content = Padding(padding: const EdgeInsets.all(8.0), child: text);
+    
+    // Get the content associated with this node
+    final nodeContent = node.contentID != null ? vm.getContentById(node.contentID!) : null;
+    
+    Widget content;
+    
+    if (nodeContent != null && nodeContent.type != AppContentType.mindmapNode) {
+      // Show content preview for non-mindMapNode types
+      content = ContentPreviewWidget(
+        content: nodeContent,
+        isCompact: true,
+        width: node.width - 16, // Account for padding
+        height: node.height - 16,
+      );
+    } else {
+      // Show traditional text for mindMapNode type or nodes without content
+      final text = Text(
+        node.text,
+        style: TextStyle(
+          color: node.textColor.withOpacity(node.opacity),
+          fontSize: node.fontSize,
+          fontWeight: _toFontWeight(node.fontWeight),
+          fontFamily: node.fontFamily,
+        ),
+        softWrap: true,
+        maxLines: null, // allow wrapping to multiple lines
+        overflow: TextOverflow.clip, // keep within node height
+        textAlign: TextAlign.center,
+      );
+      content = Padding(padding: const EdgeInsets.all(8.0), child: text);
+    }
 
     // Rect-like shapes handled with standard Material/Container
     if (_isRectLike(node.shape)) {

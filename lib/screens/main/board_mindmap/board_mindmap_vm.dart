@@ -663,6 +663,15 @@ class BoardMindMapVm extends ChangeNotifier {
   /// Check if initial centering is needed (for canvas to handle)
   bool get needsInitialCentering => _needsInitialCentering;
 
+  /// Get content by ID
+  Content? getContentById(String contentId) {
+    try {
+      return _contents.firstWhere((c) => c.id == contentId);
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// Get the center of the currently visible area in canvas coordinates
   Offset getCurrentViewportCenter() {
     if (_viewportSize == null || _transformationController == null) {
