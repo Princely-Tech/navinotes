@@ -3,10 +3,10 @@ import 'package:navinotes/models/board.dart';
 import 'package:navinotes/screens/main/board_mindmap/board_mindmap_vm.dart';
 import 'package:navinotes/screens/main/board_mindmap/mind_map_vm_bridge.dart';
 import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_canvas.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_documents.dart';
 import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_styling.dart';
 import 'package:navinotes/screens/main/choose_board/mind_map/vm.dart';
 import 'package:navinotes/settings/packages.dart';
+import 'package:navinotes/widgets/board/mind_map_content_panel.dart';
 import 'package:navinotes/widgets/index.dart';
 import 'package:provider/provider.dart';
 
@@ -56,13 +56,13 @@ class BoardMindMapScreen extends StatelessWidget {
                       ? AppTheme.white
                       : boardVm.boardTheme.values.backgroundColor,
               endDrawer: CustomDrawer(
+                child: MindMapContentPanel(boardTheme: boardVm.boardTheme),
+              ),
+              drawer: CustomDrawer(
                 child: MindMapStyling(
                   boardTheme: boardVm.boardTheme,
                   vm: bridgeVm,
                 ),
-              ),
-              drawer: CustomDrawer(
-                child: MindMapDocuments(boardTheme: boardVm.boardTheme),
               ),
               body: Column(
                 children: [
@@ -70,31 +70,33 @@ class BoardMindMapScreen extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        if (boardVm.isDocumentPanelVisible)
-                          VisibleController(
-                            mobile: false,
-                            desktop: true,
-                            child: WidthLimiter(
-                              mobile: 256,
-                              child: MindMapDocuments(
-                                boardTheme: boardVm.boardTheme,
-                              ),
+                        // Left panel - Node styling and customization
+                        VisibleController(
+                          mobile: false,
+                          desktop: true,
+                          child: WidthLimiter(
+                            mobile: 280,
+                            child: MindMapStyling(
+                              boardTheme: boardVm.boardTheme,
+                              vm: bridgeVm,
                             ),
                           ),
+                        ),
+                        // Center - Mind map canvas
                         Expanded(
                           child: Container(
                             color: Colors.transparent,
                             child: const MindMapCanvas(),
                           ),
                         ),
+                        // Right panel - Content preview
                         VisibleController(
                           mobile: false,
                           laptop: true,
                           child: WidthLimiter(
-                            mobile: 256,
-                            child: MindMapStyling(
+                            mobile: 320,
+                            child: MindMapContentPanel(
                               boardTheme: boardVm.boardTheme,
-                              vm: bridgeVm,
                             ),
                           ),
                         ),
@@ -134,7 +136,7 @@ class BoardMindMapScreen extends StatelessWidget {
                 spacing: 30,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _documentToggleButton(boardVm),
+                  _stylingToggleButton(boardVm),
                   _menuButton(boardVm),
                   Row(
                     children: [
@@ -212,7 +214,7 @@ class BoardMindMapScreen extends StatelessWidget {
     );
   }
 
-  Widget _documentToggleButton(BoardMindMapVm boardVm) {
+  Widget _stylingToggleButton(BoardMindMapVm boardVm) {
     Color color = AppTheme.darkMossGreen;
     switch (boardVm.boardTheme) {
       case BoardTheme.plain:
@@ -227,7 +229,7 @@ class BoardMindMapScreen extends StatelessWidget {
         padding: const EdgeInsets.only(right: 5),
         child: MenuButton(
           decoration: BoxDecoration(color: color),
-          onPressed: boardVm.toggleDocumentPanel,
+          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
       ),
     );
