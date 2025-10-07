@@ -66,6 +66,12 @@ class MindMapVmBridge extends MindMapVm {
   /// Clear the target view center after it's been applied
   void clearTargetViewCenter() => _boardVm.clearTargetViewCenter();
 
+  /// Check if initial centering is needed
+  bool get needsInitialCentering => _boardVm.needsInitialCentering;
+
+  /// Center view on content
+  void centerViewOnContent() => _boardVm.centerViewOnContent();
+
   // Delegate methods to BoardMindMapVm
   @override
   MindMapNode addNodeWithContent({
