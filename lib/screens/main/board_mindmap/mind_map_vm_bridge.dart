@@ -125,6 +125,62 @@ class MindMapVmBridge extends MindMapVm {
     _boardVm.cancelConnecting();
   }
 
+  @override
+  void startConnectingFrom(String nodeId) {
+    _boardVm.startConnectingFrom(nodeId);
+  }
+
+  @override
+  void finishConnecting(String targetNodeId) {
+    _boardVm.finishConnecting(targetNodeId);
+  }
+
+  @override
+  void updateNodeText(String nodeId, String newText) {
+    _boardVm.updateNodeText(nodeId, newText);
+  }
+
+  @override
+  Future<void> deleteNodeWithConfirmation(BuildContext context, String nodeId) {
+    return _boardVm.deleteNodeWithConfirmation(context, nodeId);
+  }
+
+  @override
+  Future<void> openAttachedContent(String nodeId) {
+    return _boardVm.openAttachedContent(nodeId);
+  }
+
+  @override
+  void removeAttachmentFromNode(String nodeId) {
+    _boardVm.removeAttachmentFromNode(nodeId);
+  }
+
+  @override
+  void startAttachToNode(String nodeId) {
+    _boardVm.startAttachToNode(nodeId);
+  }
+
+  @override
+  void openDrawer() {
+    _boardVm.openDrawer();
+  }
+
+  // Dragging methods - delegate to BoardMindMapVm
+  @override
+  void startDraggingNode(String nodeId) {
+    _boardVm.startDraggingNode(nodeId);
+  }
+
+  @override
+  void dragNodeByGlobal(String nodeId, Offset globalPosition) {
+    _boardVm.dragNodeByGlobal(nodeId, globalPosition);
+  }
+
+  @override
+  void stopDraggingNode() {
+    _boardVm.stopDraggingNode();
+  }
+
   // Zoom methods - delegate to bridge VM or provide defaults
   @override
   void zoomIn() {
@@ -176,9 +232,6 @@ class MindMapVmBridge extends MindMapVm {
   }
 
   // Drawer methods - not used in board context
-  @override
-  void openDrawer() {}
-
   @override
   void openEndDrawer() {}
 }

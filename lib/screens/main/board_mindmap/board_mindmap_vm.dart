@@ -14,20 +14,25 @@ import 'dart:math' as math;
 class BoardMindMapVm extends ChangeNotifier {
   final Board board;
 
-  // UI State
   bool _isLoading = true;
   bool _isDocumentPanelVisible = true;
 
   // Mind Map State
   MindMap _mindMap;
-  String? selectedNodeId;
-  String? selectedEdgeId;
-  String? connectingFromNodeId;
-  String? draggingNodeId;
+  String? _selectedNodeId;
+  String? _selectedEdgeId;
+  String? _connectingFromNodeId;
+  String? _draggingNodeId;
 
   // Canvas transform state
   double scale = 1.0;
   Offset? pointerLogical;
+
+  // Dragging state
+  Offset? _dragStartGlobal;
+  Offset? _dragStartNodePosition;
+  Size? _viewportSize;
+  TransformationController? _transformationController;
 
   // Content state
   List<Content> _contents = [];
@@ -37,6 +42,10 @@ class BoardMindMapVm extends ChangeNotifier {
   bool get isDocumentPanelVisible => _isDocumentPanelVisible;
   MindMap get mindMap => _mindMap;
   List<Content> get contents => _contents;
+  String? get selectedNodeId => _selectedNodeId;
+  String? get selectedEdgeId => _selectedEdgeId;
+  String? get connectingFromNodeId => _connectingFromNodeId;
+  String? get draggingNodeId => _draggingNodeId;
 
   BoardTheme get boardTheme {
     final boardType = board.boardType ?? BoardTypeCodes.plain;
@@ -258,29 +267,156 @@ class BoardMindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Update node text
+  void updateNodeText(String nodeId, String newText) {
+    final node = _mindMap.findNode(nodeId);
+    if (node != null) {
+      node.text = newText;
+      _saveMindMapChanges();
+      notifyListeners();
+    }
+  }
+
+  /// Delete node with confirmation dialog
+  Future<void> deleteNodeWithConfirmation(
+    BuildContext context,
+    String nodeId,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete Node'),
+            content: const Text(
+              'Are you sure you want to delete this node? This action cannot be undone.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text('Delete'),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed == true) {
+      // Remove all edges connected to this node
+      final edgesToRemove =
+          _mindMap.edges
+              .where(
+                (edge) => edge.sourceId == nodeId || edge.targetId == nodeId,
+              )
+              .toList();
+
+      for (final edge in edgesToRemove) {
+        _mindMap.removeEdge(edge.id);
+      }
+
+      // Remove the node
+      _mindMap.removeNode(nodeId);
+
+      // Clear selection if this node was selected
+      if (_selectedNodeId == nodeId) {
+        _selectedNodeId = null;
+      }
+
+      _saveMindMapChanges();
+      notifyListeners();
+    }
+  }
+
+  /// Open attached content for a node
+  Future<void> openAttachedContent(String nodeId) async {
+    final node = _mindMap.findNode(nodeId);
+    if (node?.contentID != null && node!.contentID!.isNotEmpty) {
+      final content = _contents.firstWhere(
+        (c) => c.id == node.contentID,
+        orElse:
+            () => Content(
+              id: '',
+              title: '',
+              boardId: board.id,
+              type: AppContentType.note,
+              createdAt: DateTime.now().millisecondsSinceEpoch,
+              updatedAt: DateTime.now().millisecondsSinceEpoch,
+              metaData: {},
+            ),
+      );
+
+      if (content.id.isNotEmpty) {
+        await NavigationHelper.navigateToContent(content);
+      }
+    }
+  }
+
+  /// Remove attachment from node
+  void removeAttachmentFromNode(String nodeId) {
+    final node = _mindMap.findNode(nodeId);
+    if (node != null) {
+      node.contentID = null;
+      _saveMindMapChanges();
+      notifyListeners();
+    }
+  }
+
+  /// Start attach mode for a node (placeholder - not used in board context)
+  void startAttachToNode(String nodeId) {
+    // In board context, attachments are automatically created when nodes are made
+    // This method is kept for compatibility but doesn't need implementation
+  }
+
+  /// Open drawer (placeholder - handled by screen)
+  void openDrawer() {
+    // This would be handled by the screen's scaffold key
+    // Kept for compatibility
+  }
+
   /// Select a node
   void selectNode(String? nodeId) {
-    selectedNodeId = nodeId;
-    selectedEdgeId = null;
+    _selectedNodeId = nodeId;
+    _selectedEdgeId = null;
     notifyListeners();
   }
 
   /// Select an edge
   void selectEdge(String? edgeId) {
-    selectedEdgeId = edgeId;
-    selectedNodeId = null;
+    _selectedEdgeId = edgeId;
+    _selectedNodeId = null;
     notifyListeners();
   }
 
   /// Start connecting from a node
   void startConnecting(String nodeId) {
-    connectingFromNodeId = nodeId;
+    _connectingFromNodeId = nodeId;
+    notifyListeners();
+  }
+
+  /// Start connecting from a node (alternative method name for compatibility)
+  void startConnectingFrom(String nodeId) {
+    _connectingFromNodeId = nodeId;
+    _selectedNodeId = nodeId; // Also select the node
     notifyListeners();
   }
 
   /// Cancel connecting
   void cancelConnecting() {
-    connectingFromNodeId = null;
+    _connectingFromNodeId = null;
+    notifyListeners();
+  }
+
+  /// Finish connecting to a target node
+  void finishConnecting(String targetNodeId) {
+    if (_connectingFromNodeId != null &&
+        _connectingFromNodeId != targetNodeId) {
+      // Create connection between nodes
+      connectNodes(sourceId: _connectingFromNodeId!, targetId: targetNodeId);
+    }
+    _connectingFromNodeId = null;
     notifyListeners();
   }
 
@@ -292,15 +428,69 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Update pointer position for drawing temporary edge
   void updatePointerFromVisual(Offset visualPosition) {
-    // Convert visual position to logical coordinates
-    pointerLogical = visualPosition;
+    if (_transformationController == null) {
+      pointerLogical = visualPosition;
+      notifyListeners();
+      return;
+    }
+
+    final matrix = _transformationController!.value;
+    final scale = matrix.getMaxScaleOnAxis();
+    final translation = matrix.getTranslation();
+
+    // Convert visual to logical coordinates
+    pointerLogical = Offset(
+      (visualPosition.dx - translation.x) / scale,
+      (visualPosition.dy - translation.y) / scale,
+    );
+
     notifyListeners();
   }
 
   /// Try to select edge at visual position
   bool trySelectEdgeAtVisual(Offset visualPosition) {
-    // Implementation for edge selection hit testing
-    // This would need to be implemented based on edge rendering logic
+    // Convert visual to logical coordinates
+    if (_transformationController == null) return false;
+
+    final matrix = _transformationController!.value;
+    final scale = matrix.getMaxScaleOnAxis();
+    final translation = matrix.getTranslation();
+
+    final logicalPosition = Offset(
+      (visualPosition.dx - translation.x) / scale,
+      (visualPosition.dy - translation.y) / scale,
+    );
+
+    // Check if any edge is close to this position
+    for (final edge in _mindMap.edges) {
+      final sourceNode = _mindMap.findNode(edge.sourceId);
+      final targetNode = _mindMap.findNode(edge.targetId);
+
+      if (sourceNode != null && targetNode != null) {
+        // Simple distance check to edge line
+        final sourceCenter = Offset(
+          sourceNode.position.dx + sourceNode.width / 2,
+          sourceNode.position.dy + sourceNode.height / 2,
+        );
+        final targetCenter = Offset(
+          targetNode.position.dx + targetNode.width / 2,
+          targetNode.position.dy + targetNode.height / 2,
+        );
+
+        // Check if point is close to line segment
+        final distance = _distanceToLineSegment(
+          logicalPosition,
+          sourceCenter,
+          targetCenter,
+        );
+        if (distance < 20) {
+          // 20 pixel tolerance
+          selectEdge(edge.id);
+          return true;
+        }
+      }
+    }
+
     return false;
   }
 
@@ -309,13 +499,32 @@ class BoardMindMapVm extends ChangeNotifier {
     Size viewportSize,
     TransformationController controller,
   ) {
-    // Update viewport information for coordinate transformations
+    _viewportSize = viewportSize;
+    _transformationController = controller;
   }
 
   /// Get the center of the currently visible area in canvas coordinates
   Offset getCurrentViewportCenter() {
-    // Default to canvas center if no viewport info
-    return const Offset(10000, 7500); // Center of canvas
+    if (_viewportSize == null || _transformationController == null) {
+      // Fallback to canvas center if no viewport info
+      return const Offset(10000, 7500);
+    }
+
+    final matrix = _transformationController!.value;
+    final scale = matrix.getMaxScaleOnAxis();
+    final translation = matrix.getTranslation();
+
+    // Calculate center of visible viewport in logical coordinates
+    final viewportCenter = Offset(
+      _viewportSize!.width / 2,
+      _viewportSize!.height / 2,
+    );
+    final logicalCenter = Offset(
+      (viewportCenter.dx - translation.x) / scale,
+      (viewportCenter.dy - translation.y) / scale,
+    );
+
+    return logicalCenter;
   }
 
   /// Save mind map changes to database
@@ -407,6 +616,104 @@ class BoardMindMapVm extends ChangeNotifier {
   /// Public method to center view on content (for manual triggering)
   void centerViewOnContent() {
     _centerViewOnNodes();
+  }
+
+  // ========== Dragging Methods ==========
+
+  /// Start dragging a node
+  void startDraggingNode(String nodeId) {
+    _draggingNodeId = nodeId;
+    _dragStartGlobal = null; // Reset for next drag
+    _dragStartNodePosition = null;
+    notifyListeners();
+  }
+
+  /// Move the dragging node using global position for accurate tracking
+  void dragNodeByGlobal(String nodeId, Offset globalPosition) {
+    if (_draggingNodeId != nodeId) return;
+    final node = _mindMap.findNode(nodeId);
+    if (node == null) return;
+
+    // Store the initial global position when dragging starts
+    if (_dragStartGlobal == null) {
+      _dragStartGlobal = globalPosition;
+      _dragStartNodePosition = node.position;
+      return;
+    }
+
+    // Calculate the delta from start position
+    final globalDelta = globalPosition - _dragStartGlobal!;
+
+    // Get current transformation matrix
+    if (_transformationController != null) {
+      final matrix = _transformationController!.value;
+      final scale = matrix.getMaxScaleOnAxis();
+
+      // Convert global delta to canvas coordinates
+      final canvasDelta = globalDelta / scale;
+
+      // Apply delta to original position
+      node.position = _constrainPosition(_dragStartNodePosition! + canvasDelta);
+
+      // Save changes and notify listeners
+      _saveMindMapChanges();
+      notifyListeners();
+    }
+  }
+
+  /// End dragging and persist position
+  void stopDraggingNode() {
+    if (_draggingNodeId != null) {
+      // Final save to ensure position is persisted
+      _saveMindMapChanges();
+    }
+
+    _draggingNodeId = null;
+    _dragStartGlobal = null;
+    _dragStartNodePosition = null;
+    notifyListeners();
+  }
+
+  /// Constrain node position to canvas bounds
+  Offset _constrainPosition(Offset position) {
+    const double canvasWidth = 20000;
+    const double canvasHeight = 15000;
+
+    final x = position.dx.clamp(
+      0.0,
+      canvasWidth - 200.0,
+    ); // Leave space for node width
+    final y = position.dy.clamp(
+      0.0,
+      canvasHeight - 200.0,
+    ); // Leave space for node height
+
+    return Offset(x, y);
+  }
+
+  /// Calculate distance from point to line segment
+  double _distanceToLineSegment(
+    Offset point,
+    Offset lineStart,
+    Offset lineEnd,
+  ) {
+    final dx = lineEnd.dx - lineStart.dx;
+    final dy = lineEnd.dy - lineStart.dy;
+    final length = math.sqrt(dx * dx + dy * dy);
+
+    if (length == 0) return (point - lineStart).distance;
+
+    final t = math.max(
+      0,
+      math.min(
+        1,
+        ((point.dx - lineStart.dx) * dx + (point.dy - lineStart.dy) * dy) /
+            (length * length),
+      ),
+    );
+    final projection = Offset(lineStart.dx + t * dx, lineStart.dy + t * dy);
+
+    return (point - projection).distance;
   }
 
   @override
