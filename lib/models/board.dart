@@ -1,4 +1,6 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/models/mind_map.dart';
+import 'dart:math' as math;
 
 class Board {
   final String id;
@@ -18,6 +20,9 @@ class Board {
   final List<CourseTimeline>? courseTimeLines;
   final CourseInfo? courseInfo;
   final String? syllabusContentId;
+
+  // Board Mind Map Data
+  final MindMap? mindMap;
 
   final bool
   coverImageNeedSync; // set this to true any time cover image is changed. The syncToBackend method will handle the rest.
@@ -41,6 +46,7 @@ class Board {
     this.syncedAt,
     this.coverImageNeedSync = false,
     this.syllabusContentId,
+    this.mindMap,
   }) : id = id ?? const Uuid().v4();
 
   Board copyWith({
@@ -60,9 +66,9 @@ class Board {
     int? syncedAt,
     List<CourseTimeline>? courseTimeLines,
     CourseInfo? courseInfo,
-
     bool? coverImageNeedSync,
     String? syllabusContentId,
+    MindMap? mindMap,
   }) {
     return Board(
       id: id ?? this.id,
@@ -84,6 +90,7 @@ class Board {
       courseInfo: courseInfo ?? this.courseInfo,
       coverImageNeedSync: coverImageNeedSync ?? this.coverImageNeedSync,
       syllabusContentId: syllabusContentId ?? this.syllabusContentId,
+      mindMap: mindMap ?? this.mindMap,
     );
   }
 
@@ -143,6 +150,7 @@ class Board {
     'synced_at': syncedAt,
     'cover_image_need_sync': coverImageNeedSync ? 1 : 0,
     'syllabus_content_id': syllabusContentId,
+    'mind_map_data': mindMap != null ? jsonEncode(mindMap!.toJson()) : null,
   };
 
   factory Board.fromMap(Map<String, dynamic> map) {
@@ -207,7 +215,33 @@ class Board {
       syllabusContentId: map['syllabus_content_id'],
       courseInfo: courseInfo,
       courseTimeLines: courseTimeLines,
+      mindMap: _parseMindMapData(map['mind_map_data']),
     );
+  }
+
+  /// Safely parse mind map data from database
+  static MindMap? _parseMindMapData(dynamic mindMapData) {
+    if (mindMapData == null) return null;
+    
+    try {
+      Map<String, dynamic> jsonData;
+      
+      if (mindMapData is String) {
+        if (mindMapData.trim().isEmpty) return null;
+        jsonData = jsonDecode(mindMapData);
+      } else if (mindMapData is Map<String, dynamic>) {
+        jsonData = mindMapData;
+      } else {
+        debugPrint('Invalid mind_map_data type: ${mindMapData.runtimeType}');
+        return null;
+      }
+      
+      return MindMap.fromJson(jsonData);
+    } catch (e) {
+      debugPrint('Error parsing mind map data: $e');
+      debugPrint('Mind map data: $mindMapData');
+      return null;
+    }
   }
 
   // Cache for board contents
@@ -278,6 +312,95 @@ class Board {
   void clearContentsCache() {
     _cachedContents = null;
     _hasFetchedContents = false;
+  }
+
+  /// Get or create the board's mind map
+  MindMap getOrCreateMindMap() {
+    return mindMap ?? MindMap(name: '$name Mind Map');
+  }
+
+  /// Update the board's mind map
+  Board updateMindMap(MindMap newMindMap) {
+    return copyWith(
+      mindMap: newMindMap,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
+  /// Add a content node to the board's mind map
+  Board addContentNode(Content content, {Offset? position}) {
+    final currentMindMap = getOrCreateMindMap();
+    
+    // Generate position if not provided
+    final nodePosition = position ?? _generateNodePosition(currentMindMap.nodes.length);
+    
+    // Determine node color based on content type
+    final nodeColor = _getNodeColorForContentType(content.type);
+    
+    final title = content.title.isNotEmpty ? content.title : (content.file ?? 'Untitled');
+    
+    // Add node directly to the mind map
+    currentMindMap.addNode(
+      text: title,
+      position: nodePosition,
+      color: nodeColor,
+      contentId: content.id,
+    );
+    
+    return updateMindMap(currentMindMap);
+  }
+
+  /// Remove a content node from the board's mind map
+  Board removeContentNode(String contentId) {
+    if (mindMap == null) return this;
+    
+    final nodeToRemove = mindMap!.nodes.where(
+      (node) => node.contentID == contentId,
+    ).firstOrNull;
+    
+    if (nodeToRemove == null) return this;
+    
+    final currentMindMap = mindMap!;
+    currentMindMap.removeNode(nodeToRemove.id);
+    
+    return updateMindMap(currentMindMap);
+  }
+
+  /// Generate a position for a new node
+  Offset _generateNodePosition(int nodeIndex) {
+    // Arrange nodes in a spiral pattern
+    const double centerX = 10000; // Center of canvas
+    const double centerY = 7500;
+    const double radius = 300;
+    const double angleStep = 2.4; // Radians between nodes
+    
+    if (nodeIndex == 0) {
+      return Offset(centerX, centerY);
+    }
+    
+    final angle = nodeIndex * angleStep;
+    final spiralRadius = radius + (nodeIndex * 50); // Expanding spiral
+    
+    return Offset(
+      centerX + spiralRadius * math.cos(angle),
+      centerY + spiralRadius * math.sin(angle),
+    );
+  }
+
+  /// Get node color based on content type
+  Color _getNodeColorForContentType(AppContentType type) {
+    switch (type) {
+      case AppContentType.note:
+        return Colors.blue;
+      case AppContentType.file:
+        return Colors.green;
+      case AppContentType.flashcardDeck:
+        return Colors.orange;
+      case AppContentType.mindmap:
+        return Colors.purple;
+      case AppContentType.notebook:
+        return Colors.teal;
+    }
   }
 
   // TODO: Thompson correct this. When you save the image/file to storage, extract it back here

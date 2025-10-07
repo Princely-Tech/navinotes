@@ -8,7 +8,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 1; // Increment this number
+  static const int _databaseVersion = 2; // Increment this number
 
   DatabaseHelper._init();
 
@@ -61,6 +61,7 @@ class DatabaseHelper {
       course_info TEXT,
       course_timelines TEXT,
       syllabus_content_id TEXT DEFAULT NULL,
+      mind_map_data TEXT,
       created_at INTEGER,
       updated_at INTEGER,
       synced_at INTEGER
@@ -114,7 +115,6 @@ class DatabaseHelper {
     )
     ''');
 
-
     await db.execute('''
     CREATE TABLE notebook_pages (
       id TEXT PRIMARY KEY,
@@ -154,7 +154,13 @@ class DatabaseHelper {
   }
 
   // Add this new method to handle database upgrades
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {}
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+     ALTER TABLE boards ADD COLUMN mind_map_data TEXT;
+      ''');
+    }
+  }
 
   // Example CRUD for Boards
   Future<bool> insertBoard(Board board) async {
@@ -164,8 +170,17 @@ class DatabaseHelper {
 
   Future<bool> insertContent(Content content) async {
     final db = await instance.database;
+
+    // Insert the content first
+    final result = 0 != await db.insert('contents', content.toMap());
+
+    if (result) {
+      // Auto-add content node to board's mind map
+      await _addContentNodeToBoard(content);
+    }
+
     // content.syncToBackend(apiServiceProvider); //TODO Work on synching created files to backend
-    return 0 != await db.insert('contents', content.toMap());
+    return result;
   }
 
   Future<bool> insertTags(Tag tag) async {
@@ -238,8 +253,20 @@ class DatabaseHelper {
 
   Future<bool> deleteContent(String contentId) async {
     final db = await instance.database;
-    return 0 !=
+
+    // Get the content before deleting to remove from mind map
+    final content = await getContentById(contentId);
+
+    final result =
+        0 !=
         await db.delete('contents', where: 'id = ?', whereArgs: [contentId]);
+
+    if (result && content != null) {
+      // Auto-remove content node from board's mind map
+      await _removeContentNodeFromBoard(content);
+    }
+
+    return result;
   }
 
   Future<List<Content>> getRecentContentsAcrossAllBoards({
@@ -363,7 +390,6 @@ class DatabaseHelper {
     return null;
   }
 
-
   // NotebookPage CRUD Operations
   Future<bool> insertNotebookPage(NotebookPage page) async {
     final db = await instance.database;
@@ -396,21 +422,63 @@ class DatabaseHelper {
 
   Future<bool> updateNotebookPage(NotebookPage page) async {
     final db = await instance.database;
-    return 0 != await db.update(
-      'notebook_pages',
-      page.toMap(),
-      where: 'id = ?',
-      whereArgs: [page.id],
-    );
+    return 0 !=
+        await db.update(
+          'notebook_pages',
+          page.toMap(),
+          where: 'id = ?',
+          whereArgs: [page.id],
+        );
   }
 
   Future<bool> deleteNotebookPage(String pageId) async {
     final db = await instance.database;
-    return 0 != await db.delete('notebook_pages', where: 'id = ?', whereArgs: [pageId]);
+    return 0 !=
+        await db.delete('notebook_pages', where: 'id = ?', whereArgs: [pageId]);
   }
 
   Future close() async {
     final db = await instance.database;
     db.close();
+  }
+
+  /// Automatically add a content node to the board's mind map
+  Future<void> _addContentNodeToBoard(Content content) async {
+    try {
+      // Get the board
+      final board = await getBoard(content.boardId);
+
+      // Add content node to board's mind map
+      final updatedBoard = board.addContentNode(content);
+
+      // Save the updated board
+      await updateBoard(updatedBoard);
+
+      debugPrint(
+        'Added content node ${content.id} to board ${board.id} mind map',
+      );
+    } catch (e) {
+      debugPrint('Error adding content node to board mind map: $e');
+    }
+  }
+
+  /// Automatically remove a content node from the board's mind map
+  Future<void> _removeContentNodeFromBoard(Content content) async {
+    try {
+      // Get the board
+      final board = await getBoard(content.boardId);
+
+      // Remove content node from board's mind map
+      final updatedBoard = board.removeContentNode(content.id);
+
+      // Save the updated board
+      await updateBoard(updatedBoard);
+
+      debugPrint(
+        'Removed content node ${content.id} from board ${board.id} mind map',
+      );
+    } catch (e) {
+      debugPrint('Error removing content node from board mind map: $e');
+    }
   }
 }

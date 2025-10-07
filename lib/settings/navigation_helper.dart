@@ -111,7 +111,11 @@ class NavigationHelper {
     bool replace = false,
     bool isNew = false,
   }) {
-    return navigateToBoardPopup(board, replace: replace);
+    // Navigate directly to board mind map instead of popup
+    if (replace) {
+      return NavigationHelper.pushReplacement(Routes.boardMindMap, arguments: board);
+    }
+    return NavigationHelper.push(Routes.boardMindMap, arguments: board);
   }
 
   static navigateToManualFlashCard(
