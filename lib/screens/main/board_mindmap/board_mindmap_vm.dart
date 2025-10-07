@@ -429,27 +429,45 @@ class BoardMindMapVm extends ChangeNotifier {
   /// Zoom in by 20%
   void zoomIn() {
     debugPrint('BoardMindMapVm: zoomIn called');
-    if (_transformationController != null) {
+    if (_transformationController != null && _viewportSize != null) {
       final currentMatrix = _transformationController!.value;
       final currentScale = currentMatrix.getMaxScaleOnAxis();
       final newScale = (currentScale * 1.2).clamp(0.1, 4.0);
 
       debugPrint('BoardMindMapVm: Zooming from $currentScale to $newScale');
 
-      // Get current translation to maintain position
+      // Get viewport center
+      final viewportCenter = Offset(
+        _viewportSize!.width / 2,
+        _viewportSize!.height / 2,
+      );
+
+      // Get current translation
       final translation = currentMatrix.getTranslation();
 
-      // Create new matrix with updated scale but same translation
+      // Calculate the point in canvas coordinates that's currently at viewport center
+      final canvasPoint = Offset(
+        (viewportCenter.dx - translation.x) / currentScale,
+        (viewportCenter.dy - translation.y) / currentScale,
+      );
+
+      // Calculate new translation to keep the same canvas point at viewport center
+      final newTranslation = Offset(
+        viewportCenter.dx - (canvasPoint.dx * newScale),
+        viewportCenter.dy - (canvasPoint.dy * newScale),
+      );
+
+      // Create new matrix with updated scale and adjusted translation
       final newMatrix =
           Matrix4.identity()
-            ..translate(translation.x, translation.y)
+            ..translate(newTranslation.dx, newTranslation.dy)
             ..scale(newScale);
 
       _transformationController!.value = newMatrix;
       setScale(newScale);
     } else {
       debugPrint(
-        'BoardMindMapVm: No transformation controller available for zoom',
+        'BoardMindMapVm: No transformation controller or viewport size available for zoom',
       );
     }
   }
@@ -457,27 +475,45 @@ class BoardMindMapVm extends ChangeNotifier {
   /// Zoom out by 20%
   void zoomOut() {
     debugPrint('BoardMindMapVm: zoomOut called');
-    if (_transformationController != null) {
+    if (_transformationController != null && _viewportSize != null) {
       final currentMatrix = _transformationController!.value;
       final currentScale = currentMatrix.getMaxScaleOnAxis();
       final newScale = (currentScale / 1.2).clamp(0.1, 4.0);
 
       debugPrint('BoardMindMapVm: Zooming from $currentScale to $newScale');
 
-      // Get current translation to maintain position
+      // Get viewport center
+      final viewportCenter = Offset(
+        _viewportSize!.width / 2,
+        _viewportSize!.height / 2,
+      );
+
+      // Get current translation
       final translation = currentMatrix.getTranslation();
 
-      // Create new matrix with updated scale but same translation
+      // Calculate the point in canvas coordinates that's currently at viewport center
+      final canvasPoint = Offset(
+        (viewportCenter.dx - translation.x) / currentScale,
+        (viewportCenter.dy - translation.y) / currentScale,
+      );
+
+      // Calculate new translation to keep the same canvas point at viewport center
+      final newTranslation = Offset(
+        viewportCenter.dx - (canvasPoint.dx * newScale),
+        viewportCenter.dy - (canvasPoint.dy * newScale),
+      );
+
+      // Create new matrix with updated scale and adjusted translation
       final newMatrix =
           Matrix4.identity()
-            ..translate(translation.x, translation.y)
+            ..translate(newTranslation.dx, newTranslation.dy)
             ..scale(newScale);
 
       _transformationController!.value = newMatrix;
       setScale(newScale);
     } else {
       debugPrint(
-        'BoardMindMapVm: No transformation controller available for zoom',
+        'BoardMindMapVm: No transformation controller or viewport size available for zoom',
       );
     }
   }
@@ -489,6 +525,11 @@ class BoardMindMapVm extends ChangeNotifier {
       _transformationController!.value = Matrix4.identity();
       setScale(1.0);
       debugPrint('BoardMindMapVm: Zoom reset to 1.0 and position centered');
+
+      // After reset, center on content if available
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _centerViewOnNodes();
+      });
     } else {
       scale = 1.0;
       notifyListeners();
