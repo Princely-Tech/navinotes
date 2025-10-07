@@ -116,6 +116,14 @@ class RecentNotesMain extends StatelessWidget {
           color: AppTheme.bloodFire,
         );
         break;
+
+      case AppContentType.mindmapNode:
+        icon = SVGImagePlaceHolder(
+          imagePath: Images.share,
+          size: 16,
+          color: AppTheme.bloodFire,
+        );
+        break;
     }
 
     // Format the updated date

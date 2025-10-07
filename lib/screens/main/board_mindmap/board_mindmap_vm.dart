@@ -12,7 +12,7 @@ import 'package:navinotes/settings/packages.dart';
 import 'dart:math' as math;
 
 class BoardMindMapVm extends ChangeNotifier {
-  final Board board;
+  Board board; // Make it mutable so we can update it with the latest mind map
 
   bool _isLoading = true;
   bool _isDocumentPanelVisible = true;
@@ -65,6 +65,12 @@ class BoardMindMapVm extends ChangeNotifier {
 
   BoardMindMapVm({required this.board})
     : _mindMap = board.getOrCreateMindMap() {
+    debugPrint(
+      'BoardMindMapVm: Constructor - loaded mind map with ${board.getOrCreateMindMap().nodes.length} nodes',
+    );
+    debugPrint(
+      'BoardMindMapVm: Board mind map data: ${board.mindMap != null ? "exists" : "null"}',
+    );
     _initialize();
   }
 
@@ -100,54 +106,78 @@ class BoardMindMapVm extends ChangeNotifier {
     }
   }
 
-  /// Initialize mind map with existing content as nodes
+  /// Initialize mind map with all content as nodes
   Future<void> _initializeMindMapWithContent() async {
     try {
       debugPrint(
-        'BoardMindMapVm: Creating nodes for ${_contents.length} content items',
+        'BoardMindMapVm: Initializing mind map with ${_contents.length} content items as nodes',
       );
 
-      // Get the current mind map and add nodes directly
-      final currentMindMap = board.getOrCreateMindMap();
+      // Create a fresh mind map and populate it from all content
+      final currentMindMap = MindMap(name: '${board.name} Mind Map');
 
-      for (int i = 0; i < _contents.length; i++) {
-        final content = _contents[i];
-        debugPrint(
-          'BoardMindMapVm: Adding node for content ${content.id} - ${content.title}',
+      int nodesWithPositions = 0;
+      int nodesNeedingPositions = 0;
+
+      // Convert all content to mind map nodes
+      for (final content in _contents) {
+        // Check if content already has mind map position
+        Offset position;
+        if (content.mindMapPosition != null) {
+          position = content.mindMapPosition!;
+          nodesWithPositions++;
+          debugPrint(
+            'BoardMindMapVm: Content ${content.id} (${content.title}) already has position ${position}',
+          );
+        } else {
+          // Generate new position for content without mind map data
+          position = _generateNodePosition(currentMindMap.nodes.length);
+          nodesNeedingPositions++;
+
+          // Update content with new mind map position
+          final color = _getNodeColorForContentType(content.type);
+          final updatedContent = content.getUpdatedContent(
+            mindMapX: position.dx,
+            mindMapY: position.dy,
+            nodeColor: '#${color.value.toRadixString(16).padLeft(8, '0')}',
+            nodeWidth: 200.0,
+            nodeHeight: 100.0,
+            connectedContentIds: '[]',
+            updatedAt: DateTime.now().millisecondsSinceEpoch,
+          );
+
+          // Save updated content to database
+          await DatabaseHelper.instance.updateContent(updatedContent);
+
+          // Update in local list
+          final index = _contents.indexWhere((c) => c.id == content.id);
+          if (index != -1) {
+            _contents[index] = updatedContent;
+          }
+
+          debugPrint(
+            'BoardMindMapVm: Generated position ${position} for content ${content.id} (${content.title})',
+          );
+        }
+
+        // Create mind map node from content
+        final node = _createNodeFromContent(
+          _contents.firstWhere((c) => c.id == content.id),
         );
-
-        // Generate position for this node
-        final position = _generateNodePosition(i);
-        final color = _getNodeColorForContentType(content.type);
-        final title =
-            content.title.isNotEmpty
-                ? content.title
-                : (content.file ?? 'Untitled');
-
-        // Add node to mind map
-        currentMindMap.addNode(
-          text: title,
-          position: position,
-          color: color,
-          contentId: content.id,
-        );
+        currentMindMap.nodes.add(node);
       }
 
       // Update the mind map reference
       _mindMap = currentMindMap;
 
-      // Save the updated board to database
-      final updatedBoard = board.updateMindMap(_mindMap);
-      await DatabaseHelper.instance.updateBoard(updatedBoard);
-
       debugPrint(
-        'BoardMindMapVm: Successfully initialized mind map with ${_contents.length} content nodes',
+        'BoardMindMapVm: Created mind map with ${_mindMap.nodes.length} nodes (${nodesWithPositions} had positions, ${nodesNeedingPositions} needed new positions)',
       );
 
-      // Center the view on the created nodes
+      // Center the view on all nodes
       _centerViewOnNodes();
     } catch (e) {
-      debugPrint('Error initializing mind map with content: $e');
+      debugPrint('Error initializing content-based mind map: $e');
       debugPrint('Stack trace: ${StackTrace.current}');
     }
   }
@@ -646,8 +676,23 @@ class BoardMindMapVm extends ChangeNotifier {
   /// Save mind map changes to database
   Future<void> _saveMindMapChanges() async {
     try {
+      debugPrint('BoardMindMapVm: Saving mind map changes...');
+      debugPrint('BoardMindMapVm: Mind map has ${_mindMap.nodes.length} nodes');
+
+      // Log current node positions
+      for (final node in _mindMap.nodes) {
+        debugPrint(
+          'BoardMindMapVm: Node ${node.id} (${node.text}) at position ${node.position}',
+        );
+      }
+
       final updatedBoard = board.updateMindMap(_mindMap);
       await DatabaseHelper.instance.updateBoard(updatedBoard);
+
+      // Update our board reference to the latest version
+      board = updatedBoard;
+
+      debugPrint('BoardMindMapVm: Mind map changes saved successfully');
     } catch (e) {
       debugPrint('Error saving mind map changes: $e');
     }
@@ -664,6 +709,8 @@ class BoardMindMapVm extends ChangeNotifier {
         return Colors.orange;
       case AppContentType.mindmap:
         return Colors.purple;
+      case AppContentType.mindmapNode:
+        return Colors.indigo; // Different color for mind map nodes
       case AppContentType.notebook:
         return Colors.teal;
     }
@@ -745,7 +792,7 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   /// Move the dragging node using global position for accurate tracking
-  void dragNodeByGlobal(String nodeId, Offset globalPosition) {
+  Future<void> dragNodeByGlobal(String nodeId, Offset globalPosition) async {
     if (_draggingNodeId != nodeId) return;
     final node = _mindMap.findNode(nodeId);
     if (node == null) return;
@@ -764,26 +811,25 @@ class BoardMindMapVm extends ChangeNotifier {
     if (_transformationController != null) {
       final matrix = _transformationController!.value;
       final scale = matrix.getMaxScaleOnAxis();
-
       // Convert global delta to canvas coordinates
       final canvasDelta = globalDelta / scale;
 
       // Apply delta to original position
-      node.position = _constrainPosition(_dragStartNodePosition! + canvasDelta);
+      final newPosition = _constrainPosition(
+        _dragStartNodePosition! + canvasDelta,
+      );
+      node.position = newPosition;
 
-      // Save changes and notify listeners
-      _saveMindMapChanges();
+      // Update the corresponding content's position
+      await _updateContentPosition(node.id, newPosition);
+
       notifyListeners();
     }
   }
 
   /// End dragging and persist position
   void stopDraggingNode() {
-    if (_draggingNodeId != null) {
-      // Final save to ensure position is persisted
-      _saveMindMapChanges();
-    }
-
+    // Position is already saved in dragNodeByGlobal via _updateContentPosition
     _draggingNodeId = null;
     _dragStartGlobal = null;
     _dragStartNodePosition = null;
@@ -830,6 +876,45 @@ class BoardMindMapVm extends ChangeNotifier {
     final projection = Offset(lineStart.dx + t * dx, lineStart.dy + t * dy);
 
     return (point - projection).distance;
+  }
+
+  // ========== Content-Based Mind Map Methods ==========
+
+  /// Create a mind map node from content
+  MindMapNode _createNodeFromContent(Content content) {
+    final position = content.mindMapPosition ?? const Offset(10000, 7500);
+    final color =
+        content.nodeColor != null
+            ? Color(int.parse(content.nodeColor!.replaceFirst('#', '0xff')))
+            : _getNodeColorForContentType(content.type);
+
+    return MindMapNode(
+      id: content.id,
+      text:
+          content.title.isNotEmpty
+              ? content.title
+              : (content.file ?? 'Untitled'),
+      position: position,
+      color: color,
+      width: content.nodeWidth ?? 200.0,
+      height: content.nodeHeight ?? 100.0,
+      contentID: content.id,
+    );
+  }
+
+  /// Update content position from node
+  Future<void> _updateContentPosition(String contentId, Offset position) async {
+    final content = _contents.firstWhere((c) => c.id == contentId);
+    final updatedContent = content.updateMindMapPosition(position);
+
+    // Update in database
+    await DatabaseHelper.instance.updateContent(updatedContent);
+
+    // Update in local list
+    final index = _contents.indexWhere((c) => c.id == contentId);
+    if (index != -1) {
+      _contents[index] = updatedContent;
+    }
   }
 
   @override

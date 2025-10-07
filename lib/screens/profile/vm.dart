@@ -79,6 +79,10 @@ class ProfileVm extends ChangeNotifier {
             case AppContentType.mindmap:
               mindMapsCount++;
               break;
+            case AppContentType.mindmapNode:
+              // Mind map nodes are counted as part of mind maps
+              mindMapsCount++;
+              break;
             case AppContentType.file:
               filesCount++;
               break;

@@ -92,6 +92,7 @@ enum AppContentType {
   note,
   notebook,
   mindmap,
+  mindmapNode, // Individual mind map node as content
 
   // syllabus,
   flashcardDeck,
@@ -106,6 +107,8 @@ enum AppContentType {
         return 'Notebook';
       case mindmap:
         return 'Mindmap';
+      case mindmapNode:
+        return 'Mind Map Node';
       // case syllabus:
       //   return 'Syllabus';
       case flashcardDeck:

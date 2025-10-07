@@ -8,7 +8,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 2; // Increment this number
+  static const int _databaseVersion = 3; // Increment this number
 
   DatabaseHelper._init();
 
@@ -100,7 +100,16 @@ class DatabaseHelper {
       file_need_sync INTEGER DEFAULT 0,
 
       updated_at INTEGER,
-      synced_at INTEGER
+      synced_at INTEGER,
+
+      -- Mind Map Node fields
+      mind_map_x REAL,
+      mind_map_y REAL,
+      connected_content_ids TEXT,
+      node_color TEXT,
+      node_shape TEXT,
+      node_width REAL,
+      node_height REAL
     )
     ''');
 
@@ -159,6 +168,17 @@ class DatabaseHelper {
       await db.execute('''
      ALTER TABLE boards ADD COLUMN mind_map_data TEXT;
       ''');
+    }
+    
+    if (oldVersion < 3) {
+      // Add mind map node fields to contents table
+      await db.execute('ALTER TABLE contents ADD COLUMN mind_map_x REAL;');
+      await db.execute('ALTER TABLE contents ADD COLUMN mind_map_y REAL;');
+      await db.execute('ALTER TABLE contents ADD COLUMN connected_content_ids TEXT;');
+      await db.execute('ALTER TABLE contents ADD COLUMN node_color TEXT;');
+      await db.execute('ALTER TABLE contents ADD COLUMN node_shape TEXT;');
+      await db.execute('ALTER TABLE contents ADD COLUMN node_width REAL;');
+      await db.execute('ALTER TABLE contents ADD COLUMN node_height REAL;');
     }
   }
 

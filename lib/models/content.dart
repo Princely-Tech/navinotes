@@ -36,6 +36,15 @@ class Content {
   final bool
   fileNeedSync; // set this to true any time file is changed. The syncToBackend method will handle the rest.
 
+  // Mind Map Node specific fields
+  final double? mindMapX; // X position on mind map canvas
+  final double? mindMapY; // Y position on mind map canvas
+  final String? connectedContentIds; // JSON array of connected content IDs
+  final String? nodeColor; // Hex color string for node
+  final String? nodeShape; // Shape enum as string
+  final double? nodeWidth; // Node width
+  final double? nodeHeight; // Node height
+
   Content({
     String? id,
     required this.title,
@@ -53,6 +62,14 @@ class Content {
     this.syncedAt,
     this.coverImageNeedSync = false,
     this.fileNeedSync = false,
+    // Mind Map Node fields
+    this.mindMapX,
+    this.mindMapY,
+    this.connectedContentIds,
+    this.nodeColor,
+    this.nodeShape,
+    this.nodeWidth,
+    this.nodeHeight,
   }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toMap() => {
@@ -72,6 +89,14 @@ class Content {
     'synced_at': syncedAt,
     'cover_image_need_sync': getIntFromBool(coverImageNeedSync),
     'file_need_sync': getIntFromBool(fileNeedSync),
+    // Mind Map Node fields
+    'mind_map_x': mindMapX,
+    'mind_map_y': mindMapY,
+    'connected_content_ids': connectedContentIds,
+    'node_color': nodeColor,
+    'node_shape': nodeShape,
+    'node_width': nodeWidth,
+    'node_height': nodeHeight,
   };
 
   factory Content.fromMap(Map<String, dynamic> map) {
@@ -116,6 +141,14 @@ class Content {
       syncedAt: map['synced_at'],
       coverImageNeedSync: getBoolFromInt(map['cover_image_need_sync']),
       fileNeedSync: getBoolFromInt(map['file_need_sync']),
+      // Mind Map Node fields
+      mindMapX: map['mind_map_x']?.toDouble(),
+      mindMapY: map['mind_map_y']?.toDouble(),
+      connectedContentIds: map['connected_content_ids'],
+      nodeColor: map['node_color'],
+      nodeShape: map['node_shape'],
+      nodeWidth: map['node_width']?.toDouble(),
+      nodeHeight: map['node_height']?.toDouble(),
     );
   }
 
@@ -130,6 +163,14 @@ class Content {
     int? syncedAt,
     bool? coverImageNeedSync,
     bool? fileNeedSync,
+    // Mind Map Node fields
+    double? mindMapX,
+    double? mindMapY,
+    String? connectedContentIds,
+    String? nodeColor,
+    String? nodeShape,
+    double? nodeWidth,
+    double? nodeHeight,
   }) {
     return Content(
       id: id,
@@ -148,6 +189,14 @@ class Content {
       syncedAt: syncedAt ?? this.syncedAt,
       coverImageNeedSync: coverImageNeedSync ?? this.coverImageNeedSync,
       fileNeedSync: fileNeedSync ?? this.fileNeedSync,
+      // Mind Map Node fields
+      mindMapX: mindMapX ?? this.mindMapX,
+      mindMapY: mindMapY ?? this.mindMapY,
+      connectedContentIds: connectedContentIds ?? this.connectedContentIds,
+      nodeColor: nodeColor ?? this.nodeColor,
+      nodeShape: nodeShape ?? this.nodeShape,
+      nodeWidth: nodeWidth ?? this.nodeWidth,
+      nodeHeight: nodeHeight ?? this.nodeHeight,
     );
   }
 
@@ -163,6 +212,14 @@ class Content {
     bool? coverImageNeedSync,
     bool? fileNeedSync,
     Map<String, dynamic>? metaData,
+    // Mind Map Node fields
+    double? mindMapX,
+    double? mindMapY,
+    String? connectedContentIds,
+    String? nodeColor,
+    String? nodeShape,
+    double? nodeWidth,
+    double? nodeHeight,
   }) {
     return Content(
       id: id,
@@ -181,6 +238,14 @@ class Content {
       syncedAt: syncedAt ?? this.syncedAt,
       coverImageNeedSync: coverImageNeedSync ?? this.coverImageNeedSync,
       fileNeedSync: fileNeedSync ?? this.fileNeedSync,
+      // Mind Map Node fields
+      mindMapX: mindMapX ?? this.mindMapX,
+      mindMapY: mindMapY ?? this.mindMapY,
+      connectedContentIds: connectedContentIds ?? this.connectedContentIds,
+      nodeColor: nodeColor ?? this.nodeColor,
+      nodeShape: nodeShape ?? this.nodeShape,
+      nodeWidth: nodeWidth ?? this.nodeWidth,
+      nodeHeight: nodeHeight ?? this.nodeHeight,
     );
   }
 
@@ -289,5 +354,66 @@ class Content {
 
   getMeta(key) {
     return metaData[key];
+  }
+
+  // Mind Map Node helper methods
+  
+  /// Check if this content is a mind map node
+  bool get isMindMapNode => type == AppContentType.mindmapNode;
+  
+  /// Get position as Offset for mind map nodes
+  Offset? get mindMapPosition {
+    if (mindMapX != null && mindMapY != null) {
+      return Offset(mindMapX!, mindMapY!);
+    }
+    return null;
+  }
+  
+  /// Get connected content IDs as a list
+  List<String> get connectedContentIdsList {
+    if (connectedContentIds == null || connectedContentIds!.isEmpty) {
+      return [];
+    }
+    try {
+      final List<dynamic> decoded = jsonDecode(connectedContentIds!);
+      return decoded.cast<String>();
+    } catch (e) {
+      debugPrint('Error parsing connected content IDs: $e');
+      return [];
+    }
+  }
+  
+  /// Update mind map position
+  Content updateMindMapPosition(Offset position) {
+    return getUpdatedContent(
+      mindMapX: position.dx,
+      mindMapY: position.dy,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+  
+  /// Update connected content IDs
+  Content updateConnectedContentIds(List<String> contentIds) {
+    return getUpdatedContent(
+      connectedContentIds: jsonEncode(contentIds),
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+  
+  /// Add a connection to another content
+  Content addConnection(String contentId) {
+    final currentConnections = connectedContentIdsList;
+    if (!currentConnections.contains(contentId)) {
+      currentConnections.add(contentId);
+      return updateConnectedContentIds(currentConnections);
+    }
+    return this;
+  }
+  
+  /// Remove a connection to another content
+  Content removeConnection(String contentId) {
+    final currentConnections = connectedContentIdsList;
+    currentConnections.remove(contentId);
+    return updateConnectedContentIds(currentConnections);
   }
 }
