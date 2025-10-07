@@ -111,9 +111,20 @@ class NavigationHelper {
     bool replace = false,
     bool isNew = false,
   }) {
+    return navigateToBoardPopup(board, replace: replace);
+  }
+
+  static Future navigateToMindmap(
+    Board board, {
+    bool replace = false,
+    bool isNew = false,
+  }) {
     // Navigate directly to board mind map instead of popup
     if (replace) {
-      return NavigationHelper.pushReplacement(Routes.boardMindMap, arguments: board);
+      return NavigationHelper.pushReplacement(
+        Routes.boardMindMap,
+        arguments: board,
+      );
     }
     return NavigationHelper.push(Routes.boardMindMap, arguments: board);
   }
@@ -183,16 +194,16 @@ class NavigationHelper {
       // final route = NoteUtils.getNoteCreationRoute(board.type);
       // push(route, arguments: {'content': content});
 
-
-       BoardNoteTemplate template = getNoteTemplateFromString(
+      BoardNoteTemplate template = getNoteTemplateFromString(
         content.metaData[ContentMetadataKey.template],
       );
 
       return navigateToNoteCreation(template, content.id, replace: replace);
-
     } else if (content.type == AppContentType.notebook) {
       // Get notebook pages for this content
-      final pages = await DatabaseHelper.instance.getPagesForNotebook(content.id);
+      final pages = await DatabaseHelper.instance.getPagesForNotebook(
+        content.id,
+      );
       push(Routes.notebook, arguments: {'content': content, 'pages': pages});
     } else if (content.type == AppContentType.mindmap) {
       push(Routes.mindMap, arguments: {'contentId': content.id});
@@ -263,7 +274,8 @@ class NavigationHelper {
     final adjective = adjectives[random.nextInt(adjectives.length)];
     final noun = nouns[random.nextInt(nouns.length)];
 
-    final title = '$adjective $noun ${DateTime.now().millisecondsSinceEpoch % 100}';
+    final title =
+        '$adjective $noun ${DateTime.now().millisecondsSinceEpoch % 100}';
     final id = await _createNewContent(
       AppContentType.flashcardDeck,
       board,
@@ -278,7 +290,7 @@ class NavigationHelper {
       board,
       'New Notebook',
     );
-    
+
     // Create an initial page for the notebook
     final defaultTemplate = PaperTemplates.getDefault();
     final initialPage = NotebookPage(
@@ -288,9 +300,9 @@ class NavigationHelper {
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
-    
+
     await DatabaseHelper.instance.insertNotebookPage(initialPage);
-    
+
     return navigateToContentById(id);
   }
 
