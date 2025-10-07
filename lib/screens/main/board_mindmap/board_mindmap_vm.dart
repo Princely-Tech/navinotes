@@ -87,9 +87,7 @@ class BoardMindMapVm extends ChangeNotifier {
         );
         await _initializeMindMapWithContent();
       } else {
-        debugPrint(
-          'BoardMindMapVm: No content found, mind map will be empty',
-        );
+        debugPrint('BoardMindMapVm: No content found, mind map will be empty');
       }
 
       debugPrint('BoardMindMapVm: Initialization completed successfully');
@@ -173,7 +171,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
       // Set flag to indicate we need initial centering
       _needsInitialCentering = true;
-      
+
       // Try immediate centering, but also set flag for canvas to handle
       _centerViewOnNodes();
     } catch (e) {
@@ -647,10 +645,12 @@ class BoardMindMapVm extends ChangeNotifier {
     debugPrint(
       'BoardMindMapVm: Viewport info updated - size: $viewportSize, controller set',
     );
-    
+
     // If we need initial centering or have a target view center waiting, apply it now
     if (_needsInitialCentering || _targetViewCenter != null) {
-      debugPrint('BoardMindMapVm: Applying centering now that controller is available (needsInitial: $_needsInitialCentering, hasTarget: ${_targetViewCenter != null})');
+      debugPrint(
+        'BoardMindMapVm: Applying centering now that controller is available (needsInitial: $_needsInitialCentering, hasTarget: ${_targetViewCenter != null})',
+      );
       _centerViewOnNodes();
       _needsInitialCentering = false; // Clear the flag
     }
@@ -791,28 +791,33 @@ class BoardMindMapVm extends ChangeNotifier {
     // If transformation controller is available, apply centering immediately
     if (_transformationController != null && _viewportSize != null) {
       debugPrint('BoardMindMapVm: Applying immediate centering transformation');
-      
+
       // Calculate the translation needed to center the content
       final viewportCenter = Offset(
         _viewportSize!.width / 2,
         _viewportSize!.height / 2,
       );
-      
+
       // Current scale
       final currentScale = _transformationController!.value.getMaxScaleOnAxis();
-      
+
       // Calculate translation to center the nodes
-      final translation = viewportCenter - Offset(centerX * currentScale, centerY * currentScale);
-      
+      final translation =
+          viewportCenter -
+          Offset(centerX * currentScale, centerY * currentScale);
+
       // Create new transformation matrix
-      final newMatrix = Matrix4.identity()
-        ..translate(translation.dx, translation.dy)
-        ..scale(currentScale);
-      
+      final newMatrix =
+          Matrix4.identity()
+            ..translate(translation.dx, translation.dy)
+            ..scale(currentScale);
+
       _transformationController!.value = newMatrix;
       debugPrint('BoardMindMapVm: Applied centering transformation');
     } else {
-      debugPrint('BoardMindMapVm: Transformation controller or viewport size not available, storing target center');
+      debugPrint(
+        'BoardMindMapVm: Transformation controller or viewport size not available, storing target center',
+      );
     }
 
     notifyListeners();

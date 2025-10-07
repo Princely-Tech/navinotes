@@ -58,29 +58,53 @@ class BoardMindMapScreen extends StatelessWidget {
               endDrawer: CustomDrawer(
                 child: MindMapContentPanel(boardTheme: boardVm.boardTheme),
               ),
-              drawer: CustomDrawer(
-                child: MindMapStyling(
-                  boardTheme: boardVm.boardTheme,
-                  vm: bridgeVm,
-                ),
-              ),
+
               body: Column(
                 children: [
                   _buildBoardMindMapHeader(boardVm, bridgeVm),
                   Expanded(
                     child: Row(
                       children: [
-                        // Left panel - Node styling and customization
-                        VisibleController(
-                          mobile: false,
-                          desktop: true,
-                          child: WidthLimiter(
-                            mobile: 280,
-                            child: MindMapStyling(
-                              boardTheme: boardVm.boardTheme,
-                              vm: bridgeVm,
-                            ),
-                          ),
+                        // Left panel - Node styling (only show when mindmapNode is selected)
+                        Consumer<MindMapVm>(
+                          builder: (context, mindMapVm, child) {
+                            // Check if there's a selected mindmapNode
+                            final selectedNode =
+                                mindMapVm.selectedNodeId != null
+                                    ? mindMapVm.mindMap.findNode(
+                                      mindMapVm.selectedNodeId!,
+                                    )
+                                    : null;
+                            final selectedContent =
+                                selectedNode?.contentID != null
+                                    ? mindMapVm.getContentById(
+                                      selectedNode!.contentID!,
+                                    )
+                                    : null;
+
+                            // Only show styling panel for mindmapNode content type
+                            final isMindMapNode =
+                                selectedContent?.type ==
+                                    AppContentType.mindmapNode ||
+                                (selectedNode != null &&
+                                    selectedContent == null);
+
+                            if (!isMindMapNode) {
+                              return const SizedBox.shrink();
+                            }
+
+                            return VisibleController(
+                              mobile: false,
+                              desktop: true,
+                              child: WidthLimiter(
+                                mobile: 280,
+                                child: MindMapStyling(
+                                  boardTheme: boardVm.boardTheme,
+                                  vm: bridgeVm,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         // Center - Mind map canvas
                         Expanded(
@@ -157,7 +181,7 @@ class BoardMindMapScreen extends StatelessWidget {
                 spacing: 30,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _stylingToggleButton(boardVm),
+                  // _stylingToggleButton(boardVm),
                   _menuButton(boardVm),
                   Row(
                     children: [
@@ -235,7 +259,7 @@ class BoardMindMapScreen extends StatelessWidget {
     );
   }
 
-  Widget _stylingToggleButton(BoardMindMapVm boardVm) {
+  Widget stylingToggleButton(BoardMindMapVm boardVm) {
     Color color = AppTheme.darkMossGreen;
     switch (boardVm.boardTheme) {
       case BoardTheme.plain:
