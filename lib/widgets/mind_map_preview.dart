@@ -5,6 +5,21 @@ import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
 
 /// Reusable widget for displaying a mind map preview
+///
+/// Shows a visual preview of a board's mind map with:
+/// - Simplified node visualization using CustomPainter
+/// - Statistics overlay showing node and connection counts
+/// - Click-to-navigate functionality to open the full mind map
+/// - Professional card design with gradient overlay
+///
+/// Usage:
+/// ```dart
+/// MindMapPreview(
+///   board: myBoard,
+///   height: 140,
+///   onTap: () => NavigationHelper.navigateToMindmap(myBoard),
+/// )
+/// ```
 class MindMapPreview extends StatelessWidget {
   final Board board;
   final double? width;
@@ -114,7 +129,7 @@ class MindMapPreview extends StatelessWidget {
                 const Spacer(),
                 Icon(
                   Icons.arrow_forward_ios,
-                  size: 16,
+                  size: 16.0,
                   color: AppTheme.lightGray,
                 ),
               ],
@@ -145,7 +160,7 @@ class MindMapPreview extends StatelessWidget {
         Text(
           '$count $label',
           style: AppTheme.text.copyWith(
-            fontSize: 12,
+            fontSize: 12.0,
             color: AppTheme.white,
             fontWeight: getFontWeight(500),
           ),
