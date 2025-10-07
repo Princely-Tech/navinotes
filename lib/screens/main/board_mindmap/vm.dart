@@ -1044,11 +1044,7 @@ class MindMapVm extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    if (content.type != AppContentType.mindmap) {
-      _isLoading = false;
-      notifyListeners();
-      return;
-    }
+
     contentId = content.id;
     baseContent = content;
     title = content.title;

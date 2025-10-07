@@ -121,7 +121,7 @@ class NatureNotePageMain extends StatelessWidget {
                     ),
                     child: Center(
                       child: Icon(
-                        content.type == AppContentType.mindmap
+                        content.type == AppContentType.mindmapNode
                             ? Icons.account_tree
                             : content.type == AppContentType.file
                             ? Icons.insert_drive_file
@@ -197,7 +197,7 @@ class NatureNotePageMain extends StatelessWidget {
                       ),
                       child: Center(
                         child: Icon(
-                          content.type == AppContentType.mindmap
+                          content.type == AppContentType.mindmapNode
                               ? Icons.account_tree
                               : content.type == AppContentType.file
                               ? Icons.insert_drive_file

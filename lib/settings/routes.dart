@@ -67,27 +67,6 @@ Map<String, WidgetBuilder> routes = {
   Routes.profile: (context) => ProfileScreen(),
   Routes.notifications: (context) => NotificationsScreen(),
   Routes.boardMindMap: (context) => BoardMindMapScreen(),
-
-
-  // NavigationHelper.push(
-  //                       Routes.mindMap,
-  //                       arguments: {'contentId': 5},
-  //                     ),
-  Routes.mindMap: (context) {
-    final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is Map<String, dynamic>) {
-      final String? contentId = args['contentId'] as String?;
-      debugPrint('Route to Mind map contentId: $contentId');
-      if (contentId != null) {
-        return MindMapScreen(contentId: contentId);
-      }
-    }
-    // Fallback UI if arguments are missing
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mind Map')),
-      body: const Center(child: Text('Error loading mind map.')),
-    );
-  },
 };
 
 class Routes {
@@ -148,10 +127,8 @@ class Routes {
   static const flashcardStudy = 'flashcardStudy';
   static const flashCardAiCreation = 'flashCardAiCreation';
   static const flashCards = 'flashCards';
-  static const mindMap = 'mindMap';
   static const profile = 'profile';
   static const notifications = 'notifications';
-  static const notebook = 'notebook';
   static const boardMindMap = 'boardMindMap';
   // static const flashCards = 'flashCards';
   // static const flashCards = 'flashCards';

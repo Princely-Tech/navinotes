@@ -58,14 +58,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
                                               AppContentType.note,
                                         )
                                         .toList();
-                                final mindMaps =
-                                    allContents
-                                        .where(
-                                          (content) =>
-                                              content.type ==
-                                              AppContentType.mindmap,
-                                        )
-                                        .toList();
+                               
                                 final flashCardDecks =
                                     allContents
                                         .where(
@@ -79,7 +72,6 @@ class BoardNaturePopupScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     _recentNotesSection(notes),
-                                    _mindMapsSection(mindMaps),
                                     _flashCardsDeckSection(flashCardDecks),
                                   ],
                                 );
@@ -1380,56 +1372,6 @@ class BoardNaturePopupScreen extends StatelessWidget {
       },
     );
   }
-
-  Widget _mindMapsSection(List<Content> mindMaps) {
-    return Consumer<BoardEditVm>(
-      builder: (context, vm, _) {
-        return _section(
-          title: 'Board Mind Map',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      onTap: () => NavigationHelper.navigateToMindmap(vm.board),
-                      mainAxisSize: MainAxisSize.min,
-                      color: const Color(0xFF4A7C59),
-                      text: 'Open Mind Map',
-                      minHeight: 40,
-                      prefix: Icon(
-                        Icons.open_in_new,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w500,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // Show the board's mind map preview
-              MindMapPreview(
-                board: vm.board,
-                height: 140,
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   Widget _flashCardsDeckSection(List<Content> flashCardDecks) {
     // Sort by updated date (most recent first)
     flashCardDecks.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));

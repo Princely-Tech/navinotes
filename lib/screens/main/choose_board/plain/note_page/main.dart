@@ -12,36 +12,39 @@ class BoardPlainNotePageMain extends StatelessWidget {
           children: [
             _header(vm),
             Expanded(
-              child: vm.fetchingContent
-                  ? Center(child: CircularProgressIndicator())
-                  : ScrollableController(
-                      mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
-                      child: vm.pageDisplayFormat == PageDisplayFormat.grid
-                          ? CustomGrid(
-                              children: [
-                                ...vm.contents.map(
-                                  (content) => _noteCard(content: content),
+              child:
+                  vm.fetchingContent
+                      ? Center(child: CircularProgressIndicator())
+                      : ScrollableController(
+                        mobilePadding: EdgeInsets.all(defaultHorizontalPadding),
+                        child:
+                            vm.pageDisplayFormat == PageDisplayFormat.grid
+                                ? CustomGrid(
+                                  children: [
+                                    ...vm.contents.map(
+                                      (content) => _noteCard(content: content),
+                                    ),
+                                    CreateCard(
+                                      width: double.infinity,
+                                      onTap: () => vm.gotToCreateNotePage(),
+                                      text: 'Create New Note Page',
+                                    ),
+                                  ],
+                                )
+                                : Column(
+                                  children: [
+                                    ...vm.contents.map(
+                                      (content) =>
+                                          _noteListItem(content: content),
+                                    ),
+                                    CreateCard(
+                                      width: double.infinity,
+                                      onTap: () => vm.gotToCreateNotePage(),
+                                      text: 'Create New Note Page',
+                                    ),
+                                  ],
                                 ),
-                                CreateCard(
-                                  width: double.infinity,
-                                  onTap: () => vm.gotToCreateNotePage(),
-                                  text: 'Create New Note Page',
-                                ),
-                              ],
-                            )
-                          : Column(
-                              children: [
-                                ...vm.contents.map(
-                                  (content) => _noteListItem(content: content),
-                                ),
-                                CreateCard(
-                                  width: double.infinity,
-                                  onTap: () => vm.gotToCreateNotePage(),
-                                  text: 'Create New Note Page',
-                                ),
-                              ],
-                            ),
-                    ),
+                      ),
             ),
           ],
         );
@@ -49,11 +52,10 @@ class BoardPlainNotePageMain extends StatelessWidget {
     );
   }
 
-
   Widget _noteCard({required Content content}) {
     IconData contentIcon;
     switch (content.type) {
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         contentIcon = Icons.account_tree;
         break;
       case AppContentType.file:
@@ -136,7 +138,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
   Widget _noteListItem({required Content content}) {
     IconData contentIcon;
     switch (content.type) {
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         contentIcon = Icons.account_tree;
         break;
       case AppContentType.file:
@@ -249,7 +251,7 @@ class BoardPlainNotePageMain extends StatelessWidget {
   }
 
   Widget _sortBy() {
-    return Consumer<BoardNotePageVm>( 
+    return Consumer<BoardNotePageVm>(
       builder: (_, vm, _) {
         return ValueListenableBuilder(
           valueListenable: vm.sortByController,

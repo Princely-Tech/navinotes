@@ -42,7 +42,8 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 final mindMaps =
                     allContents
                         .where(
-                          (content) => content.type == AppContentType.mindmap,
+                          (content) =>
+                              content.type == AppContentType.mindmapNode,
                         )
                         .toList();
 

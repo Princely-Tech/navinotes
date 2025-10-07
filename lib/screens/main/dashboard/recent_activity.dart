@@ -211,7 +211,7 @@ class _RecentActivityState extends State<RecentActivity> {
     switch (type) {
       case AppContentType.note:
         return Icons.note;
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         return Icons.account_tree;
       case AppContentType.flashcardDeck:
         return Icons.quiz;
@@ -226,7 +226,7 @@ class _RecentActivityState extends State<RecentActivity> {
     switch (type) {
       case AppContentType.note:
         return AppTheme.vividBlue;
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         return AppTheme.vitalGreen;
       case AppContentType.flashcardDeck:
         return AppTheme.orange;
@@ -241,7 +241,7 @@ class _RecentActivityState extends State<RecentActivity> {
     switch (type) {
       case AppContentType.note:
         return 'NOTE';
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         return 'MIND MAP';
       case AppContentType.flashcardDeck:
         return 'FLASHCARDS';

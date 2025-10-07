@@ -199,14 +199,9 @@ class NavigationHelper {
       );
 
       return navigateToNoteCreation(template, content.id, replace: replace);
-    } else if (content.type == AppContentType.notebook) {
-      // Get notebook pages for this content
-      final pages = await DatabaseHelper.instance.getPagesForNotebook(
-        content.id,
-      );
-      push(Routes.notebook, arguments: {'content': content, 'pages': pages});
-    } else if (content.type == AppContentType.mindmap) {
-      push(Routes.mindMap, arguments: {'contentId': content.id});
+    } else if (content.type == AppContentType.mindmapNode) {
+      var board = await content.getBoard();
+      navigateToMindmap(board);
     } else if (content.type == AppContentType.file) {
       handleFileNavigation(content);
     } else if (content.type == AppContentType.flashcardDeck) {
@@ -259,12 +254,7 @@ class NavigationHelper {
   }
 
   static createAndNavigateToNewMindMap(Board board) async {
-    final id = await _createNewContent(
-      AppContentType.mindmap,
-      board,
-      'New Mind Map',
-    );
-    return navigateToContentById(id);
+    return navigateToMindmap(board);
   }
 
   static createAndNavigateToNewFlashCard(Board board) async {
@@ -285,25 +275,7 @@ class NavigationHelper {
   }
 
   static createAndNavigateToNewNotebook(Board board) async {
-    final id = await _createNewContent(
-      AppContentType.notebook,
-      board,
-      'New Notebook',
-    );
-
-    // Create an initial page for the notebook
-    final defaultTemplate = PaperTemplates.getDefault();
-    final initialPage = NotebookPage(
-      notebookId: id,
-      pageNumber: 1,
-      template: defaultTemplate,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
-    );
-
-    await DatabaseHelper.instance.insertNotebookPage(initialPage);
-
-    return navigateToContentById(id);
+    return gotToNewNoteTemplate(board);
   }
 
   static Future<String> _createNewContent(

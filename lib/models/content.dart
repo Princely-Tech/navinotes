@@ -357,10 +357,10 @@ class Content {
   }
 
   // Mind Map Node helper methods
-  
+
   /// Check if this content is a mind map node
   bool get isMindMapNode => type == AppContentType.mindmapNode;
-  
+
   /// Get position as Offset for mind map nodes
   Offset? get mindMapPosition {
     if (mindMapX != null && mindMapY != null) {
@@ -368,7 +368,7 @@ class Content {
     }
     return null;
   }
-  
+
   /// Get connected content IDs as a list
   List<String> get connectedContentIdsList {
     if (connectedContentIds == null || connectedContentIds!.isEmpty) {
@@ -382,7 +382,7 @@ class Content {
       return [];
     }
   }
-  
+
   /// Update mind map position
   Content updateMindMapPosition(Offset position) {
     return getUpdatedContent(
@@ -391,7 +391,7 @@ class Content {
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
   }
-  
+
   /// Update connected content IDs
   Content updateConnectedContentIds(List<String> contentIds) {
     return getUpdatedContent(
@@ -399,7 +399,7 @@ class Content {
       updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
   }
-  
+
   /// Add a connection to another content
   Content addConnection(String contentId) {
     final currentConnections = connectedContentIdsList;
@@ -409,7 +409,7 @@ class Content {
     }
     return this;
   }
-  
+
   /// Remove a connection to another content
   Content removeConnection(String contentId) {
     final currentConnections = connectedContentIdsList;

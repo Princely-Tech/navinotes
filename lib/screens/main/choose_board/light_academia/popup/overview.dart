@@ -48,7 +48,8 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                               allContents
                                   .where(
                                     (content) =>
-                                        content.type == AppContentType.mindmap,
+                                        content.type ==
+                                        AppContentType.mindmapNode,
                                   )
                                   .toList();
                           final flashCardDecks =
@@ -1172,10 +1173,7 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                 ],
               ),
               // Show the board's mind map preview
-              MindMapPreview(
-                board: vm.board,
-                height: 140,
-              ),
+              MindMapPreview(board: vm.board, height: 140),
             ],
           ),
         );
@@ -1310,7 +1308,6 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildFlashCardDeckItem(Content deck) {
     return InkWell(

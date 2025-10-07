@@ -18,25 +18,28 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                 Expanded(
                   child: ScrollableController(
                     mobilePadding: EdgeInsets.only(bottom: 30, top: 20),
-                    child: vm.pageDisplayFormat == PageDisplayFormat.grid
-                        ? CustomGrid(
-                            wrapWithIntrinsicHeight: false,
-                            children: [
-                              ...vm.contents.map((content) => _noteCard(content)),
-                              _createNewNoteCard(vm),
-                            ],
-                          )
-                        : Column(
-                            children: [
-                              ...vm.contents.map(
-                                (content) => Padding(
-                                  padding: EdgeInsets.only(bottom: 15),
-                                  child: _noteListItem(content: content),
+                    child:
+                        vm.pageDisplayFormat == PageDisplayFormat.grid
+                            ? CustomGrid(
+                              wrapWithIntrinsicHeight: false,
+                              children: [
+                                ...vm.contents.map(
+                                  (content) => _noteCard(content),
                                 ),
-                              ),
-                              _createNewNoteCard(vm),
-                            ],
-                          ),
+                                _createNewNoteCard(vm),
+                              ],
+                            )
+                            : Column(
+                              children: [
+                                ...vm.contents.map(
+                                  (content) => Padding(
+                                    padding: EdgeInsets.only(bottom: 15),
+                                    child: _noteListItem(content: content),
+                                  ),
+                                ),
+                                _createNewNoteCard(vm),
+                              ],
+                            ),
                   ),
                 ),
               ],
@@ -57,9 +60,7 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
             child: CustomCard(
               addBorder: true,
               addCardShadow: true,
-              decoration: BoxDecoration(
-                color: AppTheme.almondCream,
-              ),
+              decoration: BoxDecoration(color: AppTheme.almondCream),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 15,
@@ -70,11 +71,7 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                       color: AppTheme.royalGold.withAlpha(0x19),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      Icons.add,
-                      color: AppTheme.royalGold,
-                      size: 20,
-                    ),
+                    child: Icon(Icons.add, color: AppTheme.royalGold, size: 20),
                   ),
                   Text(
                     'Create New Note Page',
@@ -102,9 +99,7 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
           child: CustomCard(
             addCardShadow: true,
             addBorder: true,
-            decoration: BoxDecoration(
-              color: AppTheme.almondCream,
-            ),
+            decoration: BoxDecoration(color: AppTheme.almondCream),
             padding: EdgeInsets.all(15),
             child: Row(
               spacing: 15,
@@ -125,11 +120,11 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                     ),
                     child: Center(
                       child: Icon(
-                        content.type == AppContentType.mindmap
+                        content.type == AppContentType.mindmapNode
                             ? Icons.account_tree
                             : content.type == AppContentType.file
-                                ? Icons.insert_drive_file
-                                : Icons.note,
+                            ? Icons.insert_drive_file
+                            : Icons.note,
                         color: const Color(0xFF654321),
                         size: 24,
                       ),
@@ -202,11 +197,11 @@ class BoardLightAcadNotePageMain extends StatelessWidget {
                           ),
                           child: Center(
                             child: Icon(
-                              content.type == AppContentType.mindmap
+                              content.type == AppContentType.mindmapNode
                                   ? Icons.account_tree
                                   : content.type == AppContentType.file
-                                      ? Icons.insert_drive_file
-                                      : Icons.note,
+                                  ? Icons.insert_drive_file
+                                  : Icons.note,
                               color: const Color(0xFF654321),
                               size: 32,
                             ),

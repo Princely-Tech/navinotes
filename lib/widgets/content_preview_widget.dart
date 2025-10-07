@@ -33,15 +33,16 @@ class ContentPreviewWidget extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.grey.shade300),
-        boxShadow: isCompact
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+        boxShadow:
+            isCompact
+                ? null
+                : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -58,10 +59,6 @@ class ContentPreviewWidget extends StatelessWidget {
         return _buildFilePreview();
       case AppContentType.flashcardDeck:
         return _buildFlashcardPreview();
-      case AppContentType.notebook:
-        return _buildNotebookPreview();
-      case AppContentType.mindmap:
-        return _buildMindMapPreview();
       case AppContentType.mindmapNode:
         return _buildMindMapNodePreview();
     }
@@ -86,18 +83,12 @@ class ContentPreviewWidget extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           // Content preview
-          Expanded(
-            child: _buildQuillContentPreview(),
-          ),
+          Expanded(child: _buildQuillContentPreview()),
           // Note icon
           if (isCompact)
             Align(
               alignment: Alignment.bottomRight,
-              child: Icon(
-                Icons.note,
-                size: 16,
-                color: Colors.blue.shade400,
-              ),
+              child: Icon(Icons.note, size: 16, color: Colors.blue.shade400),
             ),
         ],
       ),
@@ -120,7 +111,7 @@ class ContentPreviewWidget extends StatelessWidget {
       // Parse Quill document
       final doc = quill.Document.fromJson(jsonDecode(content.content!));
       final plainText = doc.toPlainText();
-      
+
       return Text(
         plainText.trim(),
         style: TextStyle(
@@ -149,7 +140,7 @@ class ContentPreviewWidget extends StatelessWidget {
   Widget _buildFilePreview() {
     final fileName = content.file ?? content.title;
     final fileExtension = fileName.split('.').last.toLowerCase();
-    
+
     return Container(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -268,53 +259,12 @@ class ContentPreviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMindMapPreview() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.purple.shade100,
-            Colors.purple.shade50,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.hub,
-            size: isCompact ? 24 : 32,
-            color: Colors.purple.shade700,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            content.title.isNotEmpty ? content.title : 'Mind Map',
-            style: TextStyle(
-              fontSize: isCompact ? 12 : 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.purple.shade800,
-            ),
-            maxLines: isCompact ? 2 : 3,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildMindMapNodePreview() {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Colors.indigo.shade100,
-            Colors.indigo.shade50,
-          ],
+          colors: [Colors.indigo.shade100, Colors.indigo.shade50],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

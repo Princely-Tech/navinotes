@@ -74,16 +74,25 @@ class BoardMindMapScreen extends StatelessWidget {
                         Consumer<MindMapVm>(
                           builder: (context, mindMapVm, child) {
                             // Check if there's a selected mindmapNode
-                            final selectedNode = mindMapVm.selectedNodeId != null
-                                ? mindMapVm.mindMap.findNode(mindMapVm.selectedNodeId!)
-                                : null;
-                            final selectedContent = selectedNode?.contentID != null
-                                ? mindMapVm.getContentById(selectedNode!.contentID!)
-                                : null;
-                            
+                            final selectedNode =
+                                mindMapVm.selectedNodeId != null
+                                    ? mindMapVm.mindMap.findNode(
+                                      mindMapVm.selectedNodeId!,
+                                    )
+                                    : null;
+                            final selectedContent =
+                                selectedNode?.contentID != null
+                                    ? mindMapVm.getContentById(
+                                      selectedNode!.contentID!,
+                                    )
+                                    : null;
+
                             // Only show styling panel for mindmapNode content type
-                            final isMindMapNode = selectedContent?.type == AppContentType.mindmapNode ||
-                                (selectedNode != null && selectedContent == null);
+                            final isMindMapNode =
+                                selectedContent?.type ==
+                                    AppContentType.mindmapNode ||
+                                (selectedNode != null &&
+                                    selectedContent == null);
 
                             if (!isMindMapNode) {
                               return const SizedBox.shrink();

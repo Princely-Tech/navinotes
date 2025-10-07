@@ -88,7 +88,7 @@ class RecentNotesMain extends StatelessWidget {
           color: AppTheme.tealStone,
         );
         break;
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         icon = SVGImagePlaceHolder(
           imagePath: Images.share,
           size: 16,
@@ -102,13 +102,6 @@ class RecentNotesMain extends StatelessWidget {
           color: AppTheme.vividBlue,
         );
         break;
-      case AppContentType.notebook:
-        icon = SVGImagePlaceHolder(
-          imagePath: Images.book,
-          size: 16,
-          color: AppTheme.vanillaDust,
-        );
-        break;
       case AppContentType.file:
         icon = SVGImagePlaceHolder(
           imagePath: Images.pdf,
@@ -117,13 +110,6 @@ class RecentNotesMain extends StatelessWidget {
         );
         break;
 
-      case AppContentType.mindmapNode:
-        icon = SVGImagePlaceHolder(
-          imagePath: Images.share,
-          size: 16,
-          color: AppTheme.bloodFire,
-        );
-        break;
     }
 
     // Format the updated date

@@ -103,7 +103,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
   Widget _recentItem({required Content content}) {
     IconData contentIcon;
     switch (content.type) {
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         contentIcon = Icons.account_tree;
         break;
       case AppContentType.file:

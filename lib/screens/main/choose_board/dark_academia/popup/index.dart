@@ -90,7 +90,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                                         .where(
                                           (content) =>
                                               content.type ==
-                                              AppContentType.mindmap,
+                                              AppContentType.mindmapNode,
                                         )
                                         .toList();
 

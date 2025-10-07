@@ -50,7 +50,7 @@ class MindMapVmBridge extends MindMapVm {
       id: 'board-${_boardVm.board.id}',
       title: _boardVm.board.name,
       boardId: _boardVm.board.id,
-      type: AppContentType.mindmap,
+      type: AppContentType.mindmapNode,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       metaData: {},

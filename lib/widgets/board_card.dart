@@ -38,7 +38,7 @@ class BoardCard extends StatelessWidget {
                         .toList();
                 final mindMaps =
                     contents
-                        .where((c) => c.type == AppContentType.mindmap)
+                        .where((c) => c.type == AppContentType.mindmapNode)
                         .toList();
 
                 final decks =

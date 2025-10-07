@@ -73,14 +73,9 @@ class ProfileVm extends ChangeNotifier {
         for (final content in contents) {
           switch (content.type) {
             case AppContentType.note:
-            case AppContentType.notebook:
               notesCount++;
               break;
-            case AppContentType.mindmap:
-              mindMapsCount++;
-              break;
             case AppContentType.mindmapNode:
-              // Mind map nodes are counted as part of mind maps
               mindMapsCount++;
               break;
             case AppContentType.file:
@@ -132,14 +127,16 @@ class ProfileVm extends ChangeNotifier {
   Future<void> deleteAccount(String reason) async {
     try {
       _setLoading(true);
-      
+
       // For now, just clear local data and logout since API endpoint may not be available
       // TODO: Implement actual API call when endpoint is available
       if (apiServiceProvider != null) {
         // Future API implementation would go here
-        debugPrint('API call for account deletion would be made here with reason: $reason');
+        debugPrint(
+          'API call for account deletion would be made here with reason: $reason',
+        );
       }
-      
+
       // Clear local data by deleting all boards and their contents
       final boards = await DatabaseHelper.instance.getAllBoards();
       for (final board in boards) {
@@ -150,19 +147,19 @@ class ProfileVm extends ChangeNotifier {
       }
       // Clear session data
       await sessionManager.clearSession();
-      
+
       if (context.mounted) {
         MessageDisplayService.showMessage(
-          context, 
-          'Account data cleared successfully'
+          context,
+          'Account data cleared successfully',
         );
         NavigationHelper.pushAndRemoveUntil(Routes.auth);
       }
     } catch (e) {
       if (context.mounted) {
         MessageDisplayService.showErrorMessage(
-          context, 
-          'Failed to delete account: $e'
+          context,
+          'Failed to delete account: $e',
         );
       }
     } finally {

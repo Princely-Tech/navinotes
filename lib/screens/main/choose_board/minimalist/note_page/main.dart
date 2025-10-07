@@ -16,23 +16,24 @@ class MinimalistNotePageMain extends StatelessWidget {
               Expanded(
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.only(bottom: 30),
-                  child: vm.pageDisplayFormat == PageDisplayFormat.grid
-                      ? CustomGrid(
-                          children: [
-                            ...vm.contents.map(
-                              (content) => _noteCard(content: content),
-                            ),
-                            _createNewCard(),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            ...vm.contents.map(
-                              (content) => _noteListItem(content: content),
-                            ),
-                            _createNewCard(),
-                          ],
-                        ),
+                  child:
+                      vm.pageDisplayFormat == PageDisplayFormat.grid
+                          ? CustomGrid(
+                            children: [
+                              ...vm.contents.map(
+                                (content) => _noteCard(content: content),
+                              ),
+                              _createNewCard(),
+                            ],
+                          )
+                          : Column(
+                            children: [
+                              ...vm.contents.map(
+                                (content) => _noteListItem(content: content),
+                              ),
+                              _createNewCard(),
+                            ],
+                          ),
                 ),
               ),
             ],
@@ -72,9 +73,7 @@ class MinimalistNotePageMain extends StatelessWidget {
                       ),
                       Text(
                         'Create New Note Page',
-                        style: AppTheme.text.copyWith(
-                          color: AppTheme.asbestos,
-                        ),
+                        style: AppTheme.text.copyWith(color: AppTheme.asbestos),
                       ),
                     ],
                   ),
@@ -90,7 +89,7 @@ class MinimalistNotePageMain extends StatelessWidget {
   Widget _noteCard({required Content content}) {
     IconData contentIcon;
     switch (content.type) {
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         contentIcon = Icons.account_tree;
         break;
       case AppContentType.file:
@@ -165,7 +164,7 @@ class MinimalistNotePageMain extends StatelessWidget {
   Widget _noteListItem({required Content content}) {
     IconData contentIcon;
     switch (content.type) {
-      case AppContentType.mindmap:
+      case AppContentType.mindmapNode:
         contentIcon = Icons.account_tree;
         break;
       case AppContentType.file:

@@ -59,7 +59,9 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
                                     leading: const Icon(Icons.book_outlined),
                                     title: const Text('New Notebook'),
                                     onTap: () {
-                                      NavigationHelper.createAndNavigateToNewNotebook(vm.board);
+                                      NavigationHelper.createAndNavigateToNewNotebook(
+                                        vm.board,
+                                      );
                                     },
                                   ),
                                 ],
@@ -68,9 +70,10 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
                           ),
                           AppButton(
                             onTap:
-                                () => NavigationHelper.createAndNavigateToNewMindMap(
-                                  vm.board,
-                                ),
+                                () =>
+                                    NavigationHelper.createAndNavigateToNewMindMap(
+                                      vm.board,
+                                    ),
                             color: AppTheme.almondCream,
                             borderColor: AppTheme.royalGold.withAlpha(0x4C),
                             child: Expanded(
@@ -146,7 +149,7 @@ class BoardLightAcadNotePageAside extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
           ),
           child: Icon(
-            content.type == AppContentType.mindmap
+            content.type == AppContentType.mindmapNode
                 ? Icons.account_tree
                 : content.type == AppContentType.file
                 ? Icons.insert_drive_file

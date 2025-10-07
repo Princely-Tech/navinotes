@@ -15,26 +15,27 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                 mobilePadding: EdgeInsets.symmetric(
                   vertical: defaultHorizontalPadding,
                 ),
-                child: vm.pageDisplayFormat == PageDisplayFormat.grid
-                    ? CustomGrid(
-                        children: [
-                          ...vm.contents.map(
-                            (content) => _noteCard(content: content),
-                          ),
-                          _createNewNoteCard(vm),
-                        ],
-                      )
-                    : Column(
-                        children: [
-                          ...vm.contents.map(
-                            (content) => Padding(
-                              padding: EdgeInsets.only(bottom: 15),
-                              child: _noteListItem(content: content),
+                child:
+                    vm.pageDisplayFormat == PageDisplayFormat.grid
+                        ? CustomGrid(
+                          children: [
+                            ...vm.contents.map(
+                              (content) => _noteCard(content: content),
                             ),
-                          ),
-                          _createNewNoteCard(vm),
-                        ],
-                      ),
+                            _createNewNoteCard(vm),
+                          ],
+                        )
+                        : Column(
+                          children: [
+                            ...vm.contents.map(
+                              (content) => Padding(
+                                padding: EdgeInsets.only(bottom: 15),
+                                child: _noteListItem(content: content),
+                              ),
+                            ),
+                            _createNewNoteCard(vm),
+                          ],
+                        ),
               ),
             ),
           ],
@@ -72,11 +73,7 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     padding: EdgeInsets.zero,
-                    child: Icon(
-                      Icons.add,
-                      color: AppTheme.royalGold,
-                      size: 30,
-                    ),
+                    child: Icon(Icons.add, color: AppTheme.royalGold, size: 30),
                   ),
                   Text(
                     'Create New Note Page',
@@ -128,11 +125,11 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                     ),
                     child: Center(
                       child: Icon(
-                        content.type == AppContentType.mindmap
+                        content.type == AppContentType.mindmapNode
                             ? Icons.account_tree
                             : content.type == AppContentType.file
-                                ? Icons.insert_drive_file
-                                : Icons.note,
+                            ? Icons.insert_drive_file
+                            : Icons.note,
                         color: AppTheme.burntLeather,
                         size: 24,
                       ),
@@ -210,11 +207,11 @@ class DarkAcademiaCreateNoteMain extends StatelessWidget {
                       ),
                       child: Center(
                         child: Icon(
-                          content.type == AppContentType.mindmap
+                          content.type == AppContentType.mindmapNode
                               ? Icons.account_tree
                               : content.type == AppContentType.file
-                                  ? Icons.insert_drive_file
-                                  : Icons.note,
+                              ? Icons.insert_drive_file
+                              : Icons.note,
                           color: AppTheme.burntLeather,
                           size: 32,
                         ),

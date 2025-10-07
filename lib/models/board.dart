@@ -288,12 +288,6 @@ class Board {
         .toList();
   }
 
-  getAllMindMaps() {
-    return _cachedContents!
-        .where((c) => c.type == AppContentType.mindmap)
-        .toList();
-  }
-
   getAllFiles() {
     return _cachedContents!
         .where((c) => c.type == AppContentType.file)
@@ -396,12 +390,8 @@ class Board {
         return Colors.green;
       case AppContentType.flashcardDeck:
         return Colors.orange;
-      case AppContentType.mindmap:
-        return Colors.purple;
       case AppContentType.mindmapNode:
-        return Colors.indigo; // Different color for mind map nodes
-      case AppContentType.notebook:
-        return Colors.teal;
+        return Colors.indigo;
     }
   }
 

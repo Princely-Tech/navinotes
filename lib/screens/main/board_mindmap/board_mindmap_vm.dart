@@ -725,13 +725,9 @@ class BoardMindMapVm extends ChangeNotifier {
       case AppContentType.file:
         return Colors.green;
       case AppContentType.flashcardDeck:
-        return Colors.orange;
-      case AppContentType.mindmap:
         return Colors.purple;
       case AppContentType.mindmapNode:
-        return Colors.indigo; // Different color for mind map nodes
-      case AppContentType.notebook:
-        return Colors.teal;
+        return Colors.indigo; 
     }
   }
 
