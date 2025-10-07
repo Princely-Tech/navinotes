@@ -84,15 +84,15 @@ class BoardMindMapVm extends ChangeNotifier {
       _contents = await DatabaseHelper.instance.getAllContents(board.id);
       debugPrint('BoardMindMapVm: Loaded ${_contents.length} contents');
 
-      // Initialize mind map with existing content nodes if mind map is empty
-      if (_mindMap.nodes.isEmpty && _contents.isNotEmpty) {
+      // Always initialize mind map with content-based approach
+      if (_contents.isNotEmpty) {
         debugPrint(
-          'BoardMindMapVm: Initializing mind map with ${_contents.length} content items',
+          'BoardMindMapVm: Initializing content-based mind map with ${_contents.length} content items',
         );
         await _initializeMindMapWithContent();
       } else {
         debugPrint(
-          'BoardMindMapVm: Mind map already has ${_mindMap.nodes.length} nodes',
+          'BoardMindMapVm: No content found, mind map will be empty',
         );
       }
 
