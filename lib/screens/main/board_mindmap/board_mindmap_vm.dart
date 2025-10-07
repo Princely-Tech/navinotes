@@ -13,31 +13,31 @@ import 'dart:math' as math;
 
 class BoardMindMapVm extends ChangeNotifier {
   final Board board;
-  
+
   // UI State
   bool _isLoading = true;
   bool _isDocumentPanelVisible = true;
-  
+
   // Mind Map State
   MindMap _mindMap;
   String? selectedNodeId;
   String? selectedEdgeId;
   String? connectingFromNodeId;
   String? draggingNodeId;
-  
+
   // Canvas transform state
   double scale = 1.0;
   Offset? pointerLogical;
-  
+
   // Content state
   List<Content> _contents = [];
-  
+
   // Getters
   bool get isLoading => _isLoading;
   bool get isDocumentPanelVisible => _isDocumentPanelVisible;
   MindMap get mindMap => _mindMap;
   List<Content> get contents => _contents;
-  
+
   BoardTheme get boardTheme {
     final boardType = board.boardType ?? BoardTypeCodes.plain;
     switch (boardType) {
@@ -54,28 +54,32 @@ class BoardMindMapVm extends ChangeNotifier {
     }
   }
 
-  BoardMindMapVm({required this.board}) 
+  BoardMindMapVm({required this.board})
     : _mindMap = board.getOrCreateMindMap() {
     _initialize();
   }
 
   Future<void> _initialize() async {
     debugPrint('BoardMindMapVm: Starting initialization for board ${board.id}');
-    
+
     try {
       // Load board contents
       debugPrint('BoardMindMapVm: Loading contents for board ${board.id}');
       _contents = await DatabaseHelper.instance.getAllContents(board.id);
       debugPrint('BoardMindMapVm: Loaded ${_contents.length} contents');
-      
+
       // Initialize mind map with existing content nodes if mind map is empty
       if (_mindMap.nodes.isEmpty && _contents.isNotEmpty) {
-        debugPrint('BoardMindMapVm: Initializing mind map with ${_contents.length} content items');
+        debugPrint(
+          'BoardMindMapVm: Initializing mind map with ${_contents.length} content items',
+        );
         await _initializeMindMapWithContent();
       } else {
-        debugPrint('BoardMindMapVm: Mind map already has ${_mindMap.nodes.length} nodes');
+        debugPrint(
+          'BoardMindMapVm: Mind map already has ${_mindMap.nodes.length} nodes',
+        );
       }
-      
+
       debugPrint('BoardMindMapVm: Initialization completed successfully');
       _isLoading = false;
       notifyListeners();
@@ -90,20 +94,27 @@ class BoardMindMapVm extends ChangeNotifier {
   /// Initialize mind map with existing content as nodes
   Future<void> _initializeMindMapWithContent() async {
     try {
-      debugPrint('BoardMindMapVm: Creating nodes for ${_contents.length} content items');
-      
+      debugPrint(
+        'BoardMindMapVm: Creating nodes for ${_contents.length} content items',
+      );
+
       // Get the current mind map and add nodes directly
       final currentMindMap = board.getOrCreateMindMap();
-      
+
       for (int i = 0; i < _contents.length; i++) {
         final content = _contents[i];
-        debugPrint('BoardMindMapVm: Adding node for content ${content.id} - ${content.title}');
-        
+        debugPrint(
+          'BoardMindMapVm: Adding node for content ${content.id} - ${content.title}',
+        );
+
         // Generate position for this node
         final position = _generateNodePosition(i);
         final color = _getNodeColorForContentType(content.type);
-        final title = content.title.isNotEmpty ? content.title : (content.file ?? 'Untitled');
-        
+        final title =
+            content.title.isNotEmpty
+                ? content.title
+                : (content.file ?? 'Untitled');
+
         // Add node to mind map
         currentMindMap.addNode(
           text: title,
@@ -112,15 +123,17 @@ class BoardMindMapVm extends ChangeNotifier {
           contentId: content.id,
         );
       }
-      
+
       // Update the mind map reference
       _mindMap = currentMindMap;
-      
+
       // Save the updated board to database
       final updatedBoard = board.updateMindMap(_mindMap);
       await DatabaseHelper.instance.updateBoard(updatedBoard);
-      
-      debugPrint('BoardMindMapVm: Successfully initialized mind map with ${_contents.length} content nodes');
+
+      debugPrint(
+        'BoardMindMapVm: Successfully initialized mind map with ${_contents.length} content nodes',
+      );
     } catch (e) {
       debugPrint('Error initializing mind map with content: $e');
       debugPrint('Stack trace: ${StackTrace.current}');
@@ -150,7 +163,7 @@ class BoardMindMapVm extends ChangeNotifier {
           await NavigationHelper.createAndNavigateToNewNotebook(board);
           break;
       }
-      
+
       // Refresh content after navigation returns
       await _refreshContent();
     } catch (e) {
@@ -162,11 +175,11 @@ class BoardMindMapVm extends ChangeNotifier {
   Future<void> _refreshContent() async {
     try {
       _contents = await DatabaseHelper.instance.getAllContents(board.id);
-      
+
       // Reload the board to get updated mind map
       final updatedBoard = await DatabaseHelper.instance.getBoard(board.id);
       _mindMap = updatedBoard.getOrCreateMindMap();
-      
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error refreshing content: $e');
@@ -186,7 +199,7 @@ class BoardMindMapVm extends ChangeNotifier {
       color: color,
       contentId: contentId,
     );
-    
+
     _saveMindMapChanges();
     notifyListeners();
     return node;
@@ -200,7 +213,7 @@ class BoardMindMapVm extends ChangeNotifier {
   }) {
     final content = _contents.firstWhere((c) => c.id == contentId);
     final color = _getNodeColorForContentType(content.type);
-    
+
     return addNode(
       text: text,
       position: logicalPosition,
@@ -222,7 +235,7 @@ class BoardMindMapVm extends ChangeNotifier {
       label: label,
       color: color,
     );
-    
+
     _saveMindMapChanges();
     notifyListeners();
     return edge;
@@ -289,7 +302,10 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   /// Update viewport info (called by canvas)
-  void updateViewportInfo(Size viewportSize, TransformationController controller) {
+  void updateViewportInfo(
+    Size viewportSize,
+    TransformationController controller,
+  ) {
     // Update viewport information for coordinate transformations
   }
 
@@ -332,14 +348,14 @@ class BoardMindMapVm extends ChangeNotifier {
     const double centerY = 7500;
     const double radius = 300;
     const double angleStep = 2.4; // Radians between nodes
-    
+
     if (nodeIndex == 0) {
       return Offset(centerX, centerY);
     }
-    
+
     final angle = nodeIndex * angleStep;
     final spiralRadius = radius + (nodeIndex * 50); // Expanding spiral
-    
+
     return Offset(
       centerX + spiralRadius * math.cos(angle),
       centerY + spiralRadius * math.sin(angle),

@@ -6,6 +6,7 @@ import 'package:navinotes/models/mind_map_edge.dart';
 import 'package:navinotes/screens/main/board_mindmap/board_mindmap_vm.dart';
 import 'package:navinotes/screens/main/choose_board/mind_map/vm.dart';
 import 'package:navinotes/settings/board_theme.dart';
+import 'package:navinotes/settings/enums.dart';
 
 /// Bridge class that adapts BoardMindMapVm to work with existing MindMapVm interface
 /// This allows us to reuse existing mind map widgets without major changes
@@ -43,7 +44,18 @@ class MindMapVmBridge extends MindMapVm {
   BoardTheme get boardTheme => _boardVm.boardTheme;
 
   @override
-  Content? get baseContent => null; // Not used in board context
+  Content? get baseContent {
+    // Create a dummy content with the board ID so MindMapDocuments can load contents
+    return Content(
+      id: 'board-${_boardVm.board.id}',
+      title: _boardVm.board.name,
+      boardId: _boardVm.board.id,
+      type: AppContentType.mindmap,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      metaData: {},
+    );
+  }
 
   @override
   bool get isLoading => _boardVm.isLoading;
