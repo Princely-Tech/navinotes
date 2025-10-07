@@ -329,6 +329,15 @@ class BoardMindMapScreen extends StatelessWidget {
           icon: const Icon(Icons.center_focus_strong, size: 18),
           constraints: BoxConstraints(minWidth: 32, minHeight: 32),
         ),
+        IconButton(
+          tooltip: 'Fit to content',
+          onPressed: () {
+            // Trigger view centering on content
+            boardVm.centerViewOnContent();
+          },
+          icon: const Icon(Icons.fit_screen, size: 18),
+          constraints: BoxConstraints(minWidth: 32, minHeight: 32),
+        ),
       ],
     );
   }

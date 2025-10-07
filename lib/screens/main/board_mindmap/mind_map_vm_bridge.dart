@@ -60,6 +60,12 @@ class MindMapVmBridge extends MindMapVm {
   @override
   bool get isLoading => _boardVm.isLoading;
 
+  /// Get the target view center for auto-centering on nodes
+  Offset? get targetViewCenter => _boardVm.targetViewCenter;
+
+  /// Clear the target view center after it's been applied
+  void clearTargetViewCenter() => _boardVm.clearTargetViewCenter();
+
   // Delegate methods to BoardMindMapVm
   @override
   MindMapNode addNodeWithContent({

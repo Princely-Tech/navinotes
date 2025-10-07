@@ -1481,105 +1481,65 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
   }
 
   Widget _mindMapsSection(List<Content> mindMaps) {
-    // Sort by updated date (most recent first)
-    mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-
-    return Container(
-      color: const Color(0xFF4A3426),
-      width: double.infinity,
-      child: ResponsiveHorizontalPadding(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 64),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return Container(
+          color: const Color(0xFF4A3426),
+          width: double.infinity,
+          child: ResponsiveHorizontalPadding(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 64),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Mind Maps',
-                    style: TextStyle(
-                      color: const Color(0xFFF7F3E9),
-                      fontSize: 30,
-                      fontFamily: 'Playfair Display',
-                      fontWeight: FontWeight.w700,
-                      height: 1.20,
-                    ),
-                  ),
-                  Consumer<BoardEditVm>(
-                    builder: (context, vm, _) {
-                      return AppButton.text(
-                        onTap: vm.createMindMap,
-                        text: 'Create Mind Map',
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Board Mind Map',
+                        style: TextStyle(
+                          color: const Color(0xFFF7F3E9),
+                          fontSize: 30,
+                          fontFamily: 'Playfair Display',
+                          fontWeight: FontWeight.w700,
+                          height: 1.20,
+                        ),
+                      ),
+                      AppButton.text(
+                        onTap: () => NavigationHelper.navigateToMindmap(vm.board),
+                        text: 'Open Mind Map',
                         style: TextStyle(
                           color: AppTheme.goldenSaffron,
                           fontSize: 16,
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w600,
                         ),
-                      );
-                    },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Visual representation of your board\'s knowledge',
+                    style: TextStyle(
+                      color: const Color(0xB2F7F3E9),
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      height: 1.50,
+                    ),
+                  ),
+                  SizedBox(height: 40),
+                  // Show the board's mind map preview
+                  MindMapPreview(
+                    board: vm.board,
+                    height: 160,
                   ),
                 ],
               ),
-              SizedBox(height: 8),
-              Text(
-                'Visual representations of your knowledge',
-                style: TextStyle(
-                  color: const Color(0xB2F7F3E9),
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
-                  height: 1.50,
-                ),
-              ),
-              SizedBox(height: 40),
-              if (mindMaps.isEmpty)
-                Column(
-                  children: [
-                    Text(
-                      'No mind maps yet. Create your first mind map to visualize connections.',
-                      style: TextStyle(
-                        color: const Color(0x99F7F3E9),
-                        fontSize: 16,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.italic,
-                        height: 1.5,
-                      ),
-                    ),
-                    SizedBox(height: 24),
-                    Consumer<BoardEditVm>(
-                      builder: (context, vm, _) {
-                        return AppButton(
-                          mainAxisSize: MainAxisSize.min,
-                          onTap: vm.createMindMap,
-                          color: const Color(0xFFC19B47),
-                          text: 'Create Mind Map',
-                          minHeight: 40,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                          style: TextStyle(
-                            color: const Color(0xFF2B1810),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                )
-              else
-                Column(
-                  spacing: 16,
-                  children:
-                      mindMaps.map((mindMap) => _mindMapItem(mindMap)).toList(),
-                ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -1745,71 +1705,6 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                     formatDate(
                       DateTime.fromMillisecondsSinceEpoch(
                         note.updatedAt * 1000,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontFamily: 'Inter',
-                      color: const Color(0x99F7F3E9),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _mindMapItem(Content mindMap) {
-    return InkWell(
-      onTap: () => NavigationHelper.navigateToContent(mindMap),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFF2B1810),
-          borderRadius: BorderRadius.circular(2),
-          border: Border.all(color: const Color(0x33C19B47), width: 1),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: const Color(0x33C19B47),
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: Icon(
-                Icons.account_tree,
-                size: 20,
-                color: AppTheme.goldenSaffron,
-              ),
-            ),
-            SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    mindMap.title.isNotEmpty
-                        ? mindMap.title
-                        : 'Untitled Mind Map',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Playfair Display',
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFFF7F3E9),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    formatDate(
-                      DateTime.fromMillisecondsSinceEpoch(
-                        mindMap.updatedAt * 1000,
                       ),
                     ),
                     style: TextStyle(

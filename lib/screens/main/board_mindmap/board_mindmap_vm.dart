@@ -134,6 +134,9 @@ class BoardMindMapVm extends ChangeNotifier {
       debugPrint(
         'BoardMindMapVm: Successfully initialized mind map with ${_contents.length} content nodes',
       );
+
+      // Center the view on the created nodes
+      _centerViewOnNodes();
     } catch (e) {
       debugPrint('Error initializing mind map with content: $e');
       debugPrint('Stack trace: ${StackTrace.current}');
@@ -360,6 +363,50 @@ class BoardMindMapVm extends ChangeNotifier {
       centerX + spiralRadius * math.cos(angle),
       centerY + spiralRadius * math.sin(angle),
     );
+  }
+
+  /// Center the view on existing nodes
+  void _centerViewOnNodes() {
+    if (_mindMap.nodes.isEmpty) return;
+
+    // Calculate the bounding box of all nodes
+    double minX = double.infinity;
+    double minY = double.infinity;
+    double maxX = double.negativeInfinity;
+    double maxY = double.negativeInfinity;
+
+    for (final node in _mindMap.nodes) {
+      minX = math.min(minX, node.position.dx);
+      minY = math.min(minY, node.position.dy);
+      maxX = math.max(maxX, node.position.dx + node.width);
+      maxY = math.max(maxY, node.position.dy + node.height);
+    }
+
+    // Calculate center of all nodes
+    final centerX = (minX + maxX) / 2;
+    final centerY = (minY + maxY) / 2;
+
+    debugPrint(
+      'BoardMindMapVm: Centering view on nodes at ($centerX, $centerY)',
+    );
+    debugPrint('BoardMindMapVm: Node bounds: ($minX, $minY) to ($maxX, $maxY)');
+
+    // Store the target center for the bridge to use
+    _targetViewCenter = Offset(centerX, centerY);
+    notifyListeners();
+  }
+
+  Offset? _targetViewCenter;
+  Offset? get targetViewCenter => _targetViewCenter;
+
+  /// Clear the target view center after it's been applied
+  void clearTargetViewCenter() {
+    _targetViewCenter = null;
+  }
+
+  /// Public method to center view on content (for manual triggering)
+  void centerViewOnContent() {
+    _centerViewOnNodes();
   }
 
   @override

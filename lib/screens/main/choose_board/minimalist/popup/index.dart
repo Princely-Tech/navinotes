@@ -824,60 +824,35 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
   Widget _mindMapsSection() {
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
-        return FutureBuilder<List<Content>>(
-          future: _getAllContents(vm.board.id),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SizedBox.shrink();
-            }
-
-            final allContents = snapshot.data ?? [];
-            final mindMaps =
-                allContents
-                    .where((content) => content.type == AppContentType.mindmap)
-                    .toList();
-
-            // Sort by updated date (most recent first)
-            mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-
-            return _section(
-              title: 'Mind Maps',
-              subTitle:
-                  mindMaps.isEmpty
-                      ? 'No mind maps yet. Create your first mind map to get started.'
-                      : 'Visual representations of your knowledge',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 16,
+        return _section(
+          title: 'Board Mind Map',
+          subTitle: 'Visual representation of your board\'s knowledge',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 16,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      AppButton.text(
-                        onTap: vm.createMindMap,
-                        text: 'Create Mind Map',
-                        style: TextStyle(
-                          color: const Color(0xFF00555A),
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (mindMaps.isNotEmpty)
-                    Column(
-                      spacing: 12,
-                      children:
-                          mindMaps
-                              .take(3)
-                              .map((mindMap) => _mindMapItem(mindMap))
-                              .toList(),
+                  AppButton.text(
+                    onTap: () => NavigationHelper.navigateToMindmap(vm.board),
+                    text: 'Open Mind Map',
+                    style: TextStyle(
+                      color: const Color(0xFF00555A),
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w300,
                     ),
+                  ),
                 ],
               ),
-            );
-          },
+              // Show the board's mind map preview
+              MindMapPreview(
+                board: vm.board,
+                height: 140,
+              ),
+            ],
+          ),
         );
       },
     );
@@ -1076,63 +1051,6 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
     );
   }
 
-  Widget _mindMapItem(Content mindMap) {
-    return InkWell(
-      onTap: () => NavigationHelper.navigateToContent(mindMap),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFF0F0F0)),
-          borderRadius: BorderRadius.circular(2),
-        ),
-        child: Row(
-          children: [
-            SVGImagePlaceHolder(
-              imagePath: Images.share,
-              size: 16,
-              color: const Color(0xFF00555A),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    mindMap.title.isNotEmpty
-                        ? mindMap.title
-                        : 'Untitled Mind Map',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xFF2C2C2C),
-                      fontFamily: 'Inter',
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    formatDate(
-                      DateTime.fromMillisecondsSinceEpoch(
-                        mindMap.updatedAt * 1000,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: const Color(0xFF6B6B6B),
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _flashCardDeckItem(Content deck) {
     return InkWell(

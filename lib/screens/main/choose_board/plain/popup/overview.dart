@@ -922,7 +922,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     ),
               ),
 
-              
               buildActionCard(
                 title: 'Import PDF',
                 description: 'Add research papers and reference materials',
@@ -1426,7 +1425,8 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     ),
                   ),
                   TextButton.icon(
-                    onPressed: () => NavigationHelper.navigateToMindmap(vm.board),
+                    onPressed:
+                        () => NavigationHelper.navigateToMindmap(vm.board),
                     icon: Icon(
                       Icons.open_in_new,
                       size: 16,
@@ -1444,10 +1444,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 ],
               ),
               // Show the board's mind map preview
-              MindMapPreview(
-                board: vm.board,
-                height: 140,
-              ),
+              MindMapPreview(board: vm.board, height: 140),
             ],
           ),
         );
@@ -1598,7 +1595,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
       return [];
     }
   }
-
 
   Widget _flashCardDeckItem(Content deck) {
     return InkWell(

@@ -1382,13 +1382,10 @@ class BoardNaturePopupScreen extends StatelessWidget {
   }
 
   Widget _mindMapsSection(List<Content> mindMaps) {
-    // Sort by updated date (most recent first)
-    mindMaps.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-
     return Consumer<BoardEditVm>(
       builder: (context, vm, _) {
         return _section(
-          title: 'Mind Maps',
+          title: 'Board Mind Map',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 16,
@@ -1398,16 +1395,13 @@ class BoardNaturePopupScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: AppButton(
-                      onTap: vm.createMindMap,
+                      onTap: () => NavigationHelper.navigateToMindmap(vm.board),
                       mainAxisSize: MainAxisSize.min,
                       color: const Color(0xFF4A7C59),
-                      text:
-                          mindMaps.isEmpty
-                              ? 'Create your first mind map'
-                              : 'Create new mind map',
+                      text: 'Open Mind Map',
                       minHeight: 40,
                       prefix: Icon(
-                        Icons.account_tree,
+                        Icons.open_in_new,
                         color: Colors.white,
                         size: 16,
                       ),
@@ -1424,25 +1418,11 @@ class BoardNaturePopupScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              if (mindMaps.isEmpty)
-                Text(
-                  'No mind maps yet. Create your first mind map to visualize your ideas.',
-                  style: TextStyle(
-                    color: const Color(0xFF6B7280),
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.italic,
-                  ),
-                )
-              else
-                Column(
-                  spacing: 8,
-                  children:
-                      mindMaps
-                          .take(5)
-                          .map((mindMap) => _buildMindMapItem(mindMap))
-                          .toList(),
-                ),
+              // Show the board's mind map preview
+              MindMapPreview(
+                board: vm.board,
+                height: 140,
+              ),
             ],
           ),
         );
@@ -1574,55 +1554,6 @@ class BoardNaturePopupScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMindMapItem(Content mindMap) {
-    return InkWell(
-      onTap: () => NavigationHelper.navigateToContent(mindMap),
-      child: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0x1A4A7C59),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0x4C4A7C59)),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.account_tree, size: 16, color: const Color(0xFF4A7C59)),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    mindMap.title.isNotEmpty
-                        ? mindMap.title
-                        : 'Untitled Mind Map',
-                    style: TextStyle(
-                      color: const Color(0xFF2D5016),
-                      fontSize: 14,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    formatUnixTimestamp(mindMap.updatedAt),
-                    style: TextStyle(
-                      color: const Color(0xFF6B7280),
-                      fontSize: 12,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildFlashCardDeckItem(Content deck) {
     return InkWell(

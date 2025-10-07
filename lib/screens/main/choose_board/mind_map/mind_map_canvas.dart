@@ -7,6 +7,7 @@ import 'vm.dart';
 import 'mind_map_node_widget.dart';
 import 'edge_painter.dart';
 import 'package:navinotes/models/content.dart';
+import 'package:navinotes/screens/main/board_mindmap/mind_map_vm_bridge.dart';
 
 class MindMapCanvas extends StatefulWidget {
   const MindMapCanvas({super.key});
@@ -36,6 +37,17 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
               constraints.biggest,
               _transformationController,
             );
+
+            // Check if we need to center the view on nodes (for BoardMindMapVm)
+            if (vm is MindMapVmBridge) {
+              final targetCenter = vm.targetViewCenter;
+              if (targetCenter != null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _centerViewOnPosition(targetCenter, constraints.biggest);
+                  vm.clearTargetViewCenter();
+                });
+              }
+            }
 
             return DragTarget<Object>(
               onWillAcceptWithDetails: (details) {
@@ -153,5 +165,21 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
         );
       }
     }
+  }
+
+  /// Center the view on a specific position
+  void _centerViewOnPosition(Offset targetCenter, Size viewportSize) {
+    // Calculate the transformation needed to center the target position
+    final viewportCenter = Offset(viewportSize.width / 2, viewportSize.height / 2);
+    final translation = viewportCenter - targetCenter;
+    
+    // Create transformation matrix with translation
+    final matrix = Matrix4.identity();
+    matrix.translate(translation.dx, translation.dy);
+    
+    // Apply the transformation
+    _transformationController.value = matrix;
+    
+    debugPrint('MindMapCanvas: Centered view on position $targetCenter');
   }
 }
