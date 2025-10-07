@@ -181,20 +181,20 @@ class MindMapVmBridge extends MindMapVm {
     _boardVm.stopDraggingNode();
   }
 
-  // Zoom methods - delegate to bridge VM or provide defaults
+  // Zoom methods - delegate to BoardMindMapVm
   @override
   void zoomIn() {
-    // Implement zoom in functionality or delegate to canvas
+    _boardVm.zoomIn();
   }
 
   @override
   void zoomOut() {
-    // Implement zoom out functionality or delegate to canvas
+    _boardVm.zoomOut();
   }
 
   @override
   void resetZoom() {
-    // Implement reset zoom functionality or delegate to canvas
+    _boardVm.resetZoom();
   }
 
   @override

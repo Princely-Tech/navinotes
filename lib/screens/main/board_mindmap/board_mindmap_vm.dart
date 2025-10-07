@@ -426,6 +426,78 @@ class BoardMindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Zoom in by 20%
+  void zoomIn() {
+    debugPrint('BoardMindMapVm: zoomIn called');
+    if (_transformationController != null) {
+      final currentMatrix = _transformationController!.value;
+      final currentScale = currentMatrix.getMaxScaleOnAxis();
+      final newScale = (currentScale * 1.2).clamp(0.1, 4.0);
+
+      debugPrint('BoardMindMapVm: Zooming from $currentScale to $newScale');
+
+      // Get current translation to maintain position
+      final translation = currentMatrix.getTranslation();
+
+      // Create new matrix with updated scale but same translation
+      final newMatrix =
+          Matrix4.identity()
+            ..translate(translation.x, translation.y)
+            ..scale(newScale);
+
+      _transformationController!.value = newMatrix;
+      setScale(newScale);
+    } else {
+      debugPrint(
+        'BoardMindMapVm: No transformation controller available for zoom',
+      );
+    }
+  }
+
+  /// Zoom out by 20%
+  void zoomOut() {
+    debugPrint('BoardMindMapVm: zoomOut called');
+    if (_transformationController != null) {
+      final currentMatrix = _transformationController!.value;
+      final currentScale = currentMatrix.getMaxScaleOnAxis();
+      final newScale = (currentScale / 1.2).clamp(0.1, 4.0);
+
+      debugPrint('BoardMindMapVm: Zooming from $currentScale to $newScale');
+
+      // Get current translation to maintain position
+      final translation = currentMatrix.getTranslation();
+
+      // Create new matrix with updated scale but same translation
+      final newMatrix =
+          Matrix4.identity()
+            ..translate(translation.x, translation.y)
+            ..scale(newScale);
+
+      _transformationController!.value = newMatrix;
+      setScale(newScale);
+    } else {
+      debugPrint(
+        'BoardMindMapVm: No transformation controller available for zoom',
+      );
+    }
+  }
+
+  /// Reset zoom to 100% and center position
+  void resetZoom() {
+    debugPrint('BoardMindMapVm: resetZoom called');
+    if (_transformationController != null) {
+      _transformationController!.value = Matrix4.identity();
+      setScale(1.0);
+      debugPrint('BoardMindMapVm: Zoom reset to 1.0 and position centered');
+    } else {
+      scale = 1.0;
+      notifyListeners();
+      debugPrint(
+        'BoardMindMapVm: Scale reset to 1.0 (no transformation controller)',
+      );
+    }
+  }
+
   /// Update pointer position for drawing temporary edge
   void updatePointerFromVisual(Offset visualPosition) {
     if (_transformationController == null) {
@@ -501,6 +573,9 @@ class BoardMindMapVm extends ChangeNotifier {
   ) {
     _viewportSize = viewportSize;
     _transformationController = controller;
+    debugPrint(
+      'BoardMindMapVm: Viewport info updated - size: $viewportSize, controller set',
+    );
   }
 
   /// Get the center of the currently visible area in canvas coordinates
