@@ -4,10 +4,6 @@ import 'package:navinotes/models/content.dart';
 import 'package:navinotes/models/mind_map.dart';
 import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/models/mind_map_edge.dart';
-import 'package:navinotes/settings/board_theme.dart';
-import 'package:navinotes/settings/db_helpers.dart';
-import 'package:navinotes/settings/enums.dart';
-import 'package:navinotes/settings/navigation_helper.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'dart:math' as math;
 

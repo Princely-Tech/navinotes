@@ -89,16 +89,37 @@ class BoardMindMapScreen extends StatelessWidget {
                             child: const MindMapCanvas(),
                           ),
                         ),
-                        // Right panel - Content preview
-                        VisibleController(
-                          mobile: false,
-                          laptop: true,
-                          child: WidthLimiter(
-                            mobile: 320,
-                            child: MindMapContentPanel(
-                              boardTheme: boardVm.boardTheme,
-                            ),
-                          ),
+                        // Right panel - Content preview (only show when content is selected)
+                        Consumer<MindMapVm>(
+                          builder: (context, mindMapVm, child) {
+                            // Check if there's a selected node with content
+                            final selectedNode =
+                                mindMapVm.selectedNodeId != null
+                                    ? mindMapVm.mindMap.findNode(
+                                      mindMapVm.selectedNodeId!,
+                                    )
+                                    : null;
+                            final hasSelectedContent =
+                                selectedNode?.contentID != null ||
+                                (selectedNode != null &&
+                                    selectedNode.text.isNotEmpty);
+
+                            // Only show panel if there's selected content
+                            if (!hasSelectedContent) {
+                              return const SizedBox.shrink();
+                            }
+
+                            return VisibleController(
+                              mobile: false,
+                              laptop: true,
+                              child: WidthLimiter(
+                                mobile: 320,
+                                child: MindMapContentPanel(
+                                  boardTheme: boardVm.boardTheme,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
