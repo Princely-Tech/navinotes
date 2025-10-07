@@ -1,6 +1,6 @@
-import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_documents.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_header.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_styling.dart';
+import 'mind_map_documents.dart';
+import 'mind_map_header.dart';
+import 'mind_map_styling.dart';
 
 import 'main.dart';
 import 'vm.dart';

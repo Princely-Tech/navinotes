@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:navinotes/models/board.dart';
 import 'package:navinotes/screens/main/board_mindmap/board_mindmap_vm.dart';
 import 'package:navinotes/screens/main/board_mindmap/mind_map_vm_bridge.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_canvas.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/mind_map_styling.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/vm.dart';
+import 'mind_map_canvas.dart';
+import 'mind_map_styling.dart';
+import 'vm.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/board/mind_map_content_panel.dart';
 import 'package:navinotes/widgets/index.dart';
@@ -58,7 +58,12 @@ class BoardMindMapScreen extends StatelessWidget {
               endDrawer: CustomDrawer(
                 child: MindMapContentPanel(boardTheme: boardVm.boardTheme),
               ),
-
+              drawer: CustomDrawer(
+                child: MindMapStyling(
+                  boardTheme: boardVm.boardTheme,
+                  vm: bridgeVm,
+                ),
+              ),
               body: Column(
                 children: [
                   _buildBoardMindMapHeader(boardVm, bridgeVm),
@@ -69,25 +74,16 @@ class BoardMindMapScreen extends StatelessWidget {
                         Consumer<MindMapVm>(
                           builder: (context, mindMapVm, child) {
                             // Check if there's a selected mindmapNode
-                            final selectedNode =
-                                mindMapVm.selectedNodeId != null
-                                    ? mindMapVm.mindMap.findNode(
-                                      mindMapVm.selectedNodeId!,
-                                    )
-                                    : null;
-                            final selectedContent =
-                                selectedNode?.contentID != null
-                                    ? mindMapVm.getContentById(
-                                      selectedNode!.contentID!,
-                                    )
-                                    : null;
-
+                            final selectedNode = mindMapVm.selectedNodeId != null
+                                ? mindMapVm.mindMap.findNode(mindMapVm.selectedNodeId!)
+                                : null;
+                            final selectedContent = selectedNode?.contentID != null
+                                ? mindMapVm.getContentById(selectedNode!.contentID!)
+                                : null;
+                            
                             // Only show styling panel for mindmapNode content type
-                            final isMindMapNode =
-                                selectedContent?.type ==
-                                    AppContentType.mindmapNode ||
-                                (selectedNode != null &&
-                                    selectedContent == null);
+                            final isMindMapNode = selectedContent?.type == AppContentType.mindmapNode ||
+                                (selectedNode != null && selectedContent == null);
 
                             if (!isMindMapNode) {
                               return const SizedBox.shrink();
@@ -259,7 +255,7 @@ class BoardMindMapScreen extends StatelessWidget {
     );
   }
 
-  Widget stylingToggleButton(BoardMindMapVm boardVm) {
+  Widget _stylingToggleButton(BoardMindMapVm boardVm) {
     Color color = AppTheme.darkMossGreen;
     switch (boardVm.boardTheme) {
       case BoardTheme.plain:

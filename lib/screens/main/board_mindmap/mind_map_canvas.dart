@@ -7,7 +7,7 @@ import 'vm.dart';
 import 'mind_map_node_widget.dart';
 import 'edge_painter.dart';
 import 'package:navinotes/models/content.dart';
-import 'package:navinotes/screens/main/board_mindmap/mind_map_vm_bridge.dart';
+import 'mind_map_vm_bridge.dart';
 
 class MindMapCanvas extends StatefulWidget {
   const MindMapCanvas({super.key});

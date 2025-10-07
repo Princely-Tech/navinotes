@@ -1,7 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/models/content.dart';
 import 'package:navinotes/widgets/content_preview_widget.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/vm.dart';
+import 'package:navinotes/screens/main/board_mindmap/vm.dart';
 import 'package:provider/provider.dart';
 
 enum MindMapBorderStyleItem {

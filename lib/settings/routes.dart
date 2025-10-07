@@ -1,11 +1,10 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/index.dart';
+import 'package:navinotes/screens/main/board_mindmap/index.dart';
 import 'package:navinotes/screens/main/board_mindmap/board_mindmap_screen.dart';
 import 'package:navinotes/screens/main/flashcards/ai/index.dart';
 import 'package:navinotes/screens/main/flashcards/index.dart';
 import 'package:navinotes/screens/notifications/index.dart';
 import 'package:navinotes/screens/pomodora/index.dart';
-import 'package:navinotes/models/notebook_page.dart';
 import 'package:navinotes/screens/profile/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
 

@@ -4,7 +4,7 @@ import 'package:navinotes/models/mind_map.dart';
 import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/models/mind_map_edge.dart';
 import 'package:navinotes/screens/main/board_mindmap/board_mindmap_vm.dart';
-import 'package:navinotes/screens/main/choose_board/mind_map/vm.dart';
+import 'vm.dart';
 import 'package:navinotes/settings/board_theme.dart';
 import 'package:navinotes/settings/enums.dart';
 
