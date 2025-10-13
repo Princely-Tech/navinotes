@@ -1,41 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/content.dart';
-import 'package:navinotes/screens/main/board_mindmap/vm.dart';
+import 'package:navinotes/screens/main/board_mindmap/board_mindmap_vm.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/content_preview_widget.dart';
 import 'package:navinotes/widgets/index.dart';
 import 'package:provider/provider.dart';
 
 TextStyle get titleTextStyle => AppTheme.text.copyWith(
-      color: AppTheme.wetAsphalt,
-      fontWeight: getFontWeight(500),
-      height: 1.43,
-    );
+  color: AppTheme.wetAsphalt,
+  fontWeight: getFontWeight(500),
+  height: 1.43,
+);
 
 class MindMapContentPanel extends StatelessWidget {
-  const MindMapContentPanel({
-    super.key,
-    required this.boardTheme,
-  });
+  const MindMapContentPanel({super.key, required this.boardTheme});
 
   final BoardTheme boardTheme;
 
   @override
   Widget build(BuildContext context) {
     final themeValues = boardTheme.values;
-    Color bgColor = themeValues.backgroundColor == AppTheme.transparent
-        ? AppTheme.ghostWhite
-        : themeValues.backgroundColor;
+    Color bgColor =
+        themeValues.backgroundColor == AppTheme.transparent
+            ? AppTheme.ghostWhite
+            : themeValues.backgroundColor;
 
-    return Consumer<MindMapVm>(
+    return Consumer<BoardMindMapVm>(
       builder: (context, vm, child) {
         // Get selected node and its content
-        final selectedNode = vm.selectedNodeId != null
-            ? vm.mindMap.findNode(vm.selectedNodeId!)
-            : null;
-        final selectedContent = selectedNode?.contentID != null
-            ? vm.getContentById(selectedNode!.contentID!)
-            : null;
+        final selectedNode =
+            vm.selectedNodeId != null
+                ? vm.mindMap.findNode(vm.selectedNodeId!)
+                : null;
+        final selectedContent =
+            selectedNode?.contentID != null
+                ? vm.getContentById(selectedNode!.contentID!)
+                : null;
 
         return Container(
           decoration: BoxDecoration(
@@ -71,7 +71,7 @@ class MindMapContentPanel extends StatelessWidget {
     );
   }
 
-  Widget _contentPreview(Content content, MindMapVm vm) {
+  Widget _contentPreview(Content content, BoardMindMapVm vm) {
     return _section(
       title: 'Content Preview',
       child: Column(

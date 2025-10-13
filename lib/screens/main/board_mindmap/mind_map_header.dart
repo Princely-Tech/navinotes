@@ -1,5 +1,5 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
+import 'board_mindmap_vm.dart';
 
 class MindMapHeader extends StatelessWidget {
   const MindMapHeader({
@@ -16,7 +16,7 @@ class MindMapHeader extends StatelessWidget {
   final BoardTheme boardTheme;
   final VoidCallback? toggleDocumentPanel;
   final bool isDocumentPanelVisible;
-  final MindMapVm mindMapVm;
+  final BoardMindMapVm mindMapVm;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +95,7 @@ class MindMapHeader extends StatelessWidget {
     );
   }
 
-  Widget _title(MindMapVm vm) {
+  Widget _title(BoardMindMapVm vm) {
     final themeValues = boardTheme.values;
     return Text(
       vm.title,
@@ -108,7 +108,7 @@ class MindMapHeader extends StatelessWidget {
     );
   }
 
-  void _editTitle(BuildContext context, MindMapVm vm) {
+  void _editTitle(BuildContext context, BoardMindMapVm vm) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:navinotes/models/mind_map_edge.dart';
 import 'package:navinotes/packages.dart';
 import 'package:provider/provider.dart';
-import 'vm.dart';
+import 'board_mindmap_vm.dart';
 import 'package:navinotes/models/mind_map_node.dart';
 
 enum MindMapBorderStyleItem {
@@ -37,7 +37,7 @@ TextStyle getTitleTextStyle(BoardTheme boardTheme) {
 class MindMapStyling extends StatelessWidget {
   const MindMapStyling({super.key, required this.boardTheme, required this.vm});
   final BoardTheme boardTheme;
-  final MindMapVm vm;
+  final BoardMindMapVm vm;
   @override
   Widget build(BuildContext context) {
     final themeValues = boardTheme.values;
@@ -57,7 +57,7 @@ class MindMapStyling extends StatelessWidget {
           Expanded(
             child: ScrollableController(
               mobilePadding: EdgeInsets.all(15),
-              child: Consumer<MindMapVm>(
+              child: Consumer<BoardMindMapVm>(
                 builder: (_, vm, __) {
                   final bool showEdgeStyling = vm.selectedEdgeId != null;
                   return Column(
@@ -101,7 +101,7 @@ class MindMapStyling extends StatelessWidget {
               boardTheme: boardTheme,
               child: ScrollableController(
                 scrollDirection: Axis.horizontal,
-                child: Consumer<MindMapVm>(
+                child: Consumer<BoardMindMapVm>(
                   builder: (_, vm, __) {
                     return Row(
                       spacing: 10,
@@ -130,7 +130,7 @@ class MindMapStyling extends StatelessWidget {
             _titleSection(
               title: 'Line Thickness',
               boardTheme: boardTheme,
-              child: Consumer<MindMapVm>(
+              child: Consumer<BoardMindMapVm>(
                 builder: (_, vm, __) {
                   final edge =
                       vm.selectedEdgeId == null
@@ -151,7 +151,7 @@ class MindMapStyling extends StatelessWidget {
             _titleSection(
               title: 'Line Opacity',
               boardTheme: boardTheme,
-              child: Consumer<MindMapVm>(
+              child: Consumer<BoardMindMapVm>(
                 builder: (_, vm, __) {
                   final edge =
                       vm.selectedEdgeId == null
@@ -173,7 +173,7 @@ class MindMapStyling extends StatelessWidget {
             _titleSection(
               title: 'Actions',
               boardTheme: boardTheme,
-              child: Consumer<MindMapVm>(
+              child: Consumer<BoardMindMapVm>(
                 builder: (_, vm, __) {
                   return SizedBox(
                     width: double.infinity,
@@ -206,7 +206,7 @@ class MindMapStyling extends StatelessWidget {
     );
   }
 
-  Widget _nodeStyling(MindMapVm vm) {
+  Widget _nodeStyling(BoardMindMapVm vm) {
     return _section(
       title: 'Node Styling',
       child: Column(
@@ -270,7 +270,7 @@ class MindMapStyling extends StatelessWidget {
           ),
           _titleSection(
             title: 'Size (px)',
-            child: Consumer<MindMapVm>(
+            child: Consumer<BoardMindMapVm>(
               builder: (_, vm, __) {
                 final node =
                     vm.selectedNodeId == null
@@ -338,7 +338,7 @@ class MindMapStyling extends StatelessWidget {
           // ),
           _titleSection(
             title: 'Font Size',
-            child: Consumer<MindMapVm>(
+            child: Consumer<BoardMindMapVm>(
               builder: (_, vm, __) {
                 final node =
                     vm.selectedNodeId == null
@@ -361,7 +361,7 @@ class MindMapStyling extends StatelessWidget {
             padding: const EdgeInsets.only(top: 10),
             child: _section(
               title: 'Opacity',
-              child: Consumer<MindMapVm>(
+              child: Consumer<BoardMindMapVm>(
                 builder: (_, vm, __) {
                   final node =
                       vm.selectedNodeId == null
@@ -404,7 +404,7 @@ class MindMapStyling extends StatelessWidget {
                     ),
                   ],
                 ),
-                Consumer<MindMapVm>(
+                Consumer<BoardMindMapVm>(
                   builder: (_, vm, __) {
                     final node =
                         vm.selectedNodeId == null
@@ -457,7 +457,7 @@ class MindMapStyling extends StatelessWidget {
 Widget _colorDot({
   required Color color,
   required Function(Color) onTap,
-  required MindMapVm vm,
+  required BoardMindMapVm vm,
 }) {
   return InkWell(
     onTap: () => onTap(color),
@@ -548,14 +548,14 @@ class _MindMapFontWeightSelectState extends State<MindMapFontWeightSelect> {
     setState(() {
       selectedFontWeight = fontWeight;
     });
-    final vm = context.read<MindMapVm>();
+    final vm = context.read<BoardMindMapVm>();
     final int weight = _weightToInt(fontWeight);
     vm.updateSelectedNodeFontWeight(weight);
   }
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<MindMapVm>();
+    final vm = context.watch<BoardMindMapVm>();
     final node =
         vm.selectedNodeId == null
             ? null
@@ -644,13 +644,13 @@ class _MindMapBorderStyleSelectState extends State<MindMapBorderStyleSelect> {
     setState(() {
       borderStyleItem = item;
     });
-    final vm = context.read<MindMapVm>();
+    final vm = context.read<BoardMindMapVm>();
     vm.updateSelectedNodeBorderStyle(_toModelBorder(item));
   }
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<MindMapVm>();
+    final vm = context.watch<BoardMindMapVm>();
     final node =
         vm.selectedNodeId == null
             ? null
@@ -722,7 +722,7 @@ class _MindMapShapeSelectState extends State<MindMapShapeSelect> {
 
   void updateShape(MindMapShape shape) {
     setState(() => selectedShape = shape);
-    final vm = context.read<MindMapVm>();
+    final vm = context.read<BoardMindMapVm>();
     vm.updateSelectedNodeShape(shape);
     // For legacy rounded/sharp choices, also sync a sensible borderRadius
     if (shape == MindMapShape.rounded) vm.updateSelectedNodeBorderRadius(8.0);
@@ -732,7 +732,7 @@ class _MindMapShapeSelectState extends State<MindMapShapeSelect> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<MindMapVm>();
+    final vm = context.watch<BoardMindMapVm>();
     final node =
         vm.selectedNodeId == null
             ? null
@@ -926,13 +926,13 @@ class _LineTypeSelectState extends State<LineTypeSelect> {
 
   void updateLine(EdgeLineType line) {
     setState(() => selectedLine = line);
-    final vm = context.read<MindMapVm>();
+    final vm = context.read<BoardMindMapVm>();
     vm.updateSelectedEdgeType(line);
   }
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.watch<MindMapVm>();
+    final vm = context.watch<BoardMindMapVm>();
     final edge =
         vm.selectedEdgeId == null
             ? null

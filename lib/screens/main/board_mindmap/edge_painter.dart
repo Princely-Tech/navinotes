@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/models/mind_map_edge.dart';
-import 'vm.dart';
+import 'board_mindmap_vm.dart';
 
 class EdgePainter extends CustomPainter {
-  final MindMapVm vm;
+  final BoardMindMapVm vm;
   EdgePainter(this.vm) : super(repaint: vm);
 
   @override

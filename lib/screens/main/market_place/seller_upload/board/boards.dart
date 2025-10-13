@@ -58,18 +58,12 @@ class SellerSelectBoards extends StatelessWidget {
                     children: [
                       Flexible(
                         child: CustomTag(
-                          '0 notes', // TODO: Get actual note count
+                          '${board.getAllNotes().length} notes', // TODO: Get actual note count
                           color: AppTheme.paleBlue,
                           textColor: AppTheme.electricIndigo,
                         ),
                       ),
-                      Flexible(
-                        child: CustomTag(
-                          '0 mindmaps', // TODO: Get actual mindmap count
-                          color: AppTheme.lightMintGreen,
-                          textColor: AppTheme.emeraldGreen,
-                        ),
-                      ),
+                      
                     ],
                   ),
                 ],

@@ -36,9 +36,9 @@ class BoardCard extends StatelessWidget {
                     contents
                         .where((c) => c.type == AppContentType.note)
                         .toList();
-                final mindMaps =
+                final files =
                     contents
-                        .where((c) => c.type == AppContentType.mindmapNode)
+                        .where((c) => c.type == AppContentType.file)
                         .toList();
 
                 final decks =
@@ -75,10 +75,9 @@ class BoardCard extends StatelessWidget {
                               color: AppTheme.paleBlue,
                               textColor: AppTheme.electricIndigo,
                             ),
-
                             Flexible(
                               child: CustomTag(
-                                '${mindMaps.length} mindmaps',
+                                '${decks.length} decks',
                                 color: AppTheme.lightMintGreen,
                                 textColor: AppTheme.emeraldGreen,
                               ),
@@ -86,7 +85,7 @@ class BoardCard extends StatelessWidget {
 
                             Flexible(
                               child: CustomTag(
-                                '${decks.length} decks',
+                                '${files.length} files',
                                 color: AppTheme.lightMintGreen,
                                 textColor: AppTheme.emeraldGreen,
                               ),

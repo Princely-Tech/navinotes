@@ -222,10 +222,10 @@ class Board {
   /// Safely parse mind map data from database
   static MindMap? _parseMindMapData(dynamic mindMapData) {
     if (mindMapData == null) return null;
-    
+
     try {
       Map<String, dynamic> jsonData;
-      
+
       if (mindMapData is String) {
         if (mindMapData.trim().isEmpty) return null;
         jsonData = jsonDecode(mindMapData);
@@ -235,7 +235,7 @@ class Board {
         debugPrint('Invalid mind_map_data type: ${mindMapData.runtimeType}');
         return null;
       }
-      
+
       return MindMap.fromJson(jsonData);
     } catch (e) {
       debugPrint('Error parsing mind map data: $e');
@@ -274,7 +274,7 @@ class Board {
       return _cachedContents!;
     }
 
-    final db =  DatabaseHelper.instance;
+    final db = DatabaseHelper.instance;
     _cachedContents = await db.getAllContents(id);
 
     _hasFetchedContents = true;
@@ -324,15 +324,17 @@ class Board {
   /// Add a content node to the board's mind map
   Board addContentNode(Content content, {Offset? position}) {
     final currentMindMap = getOrCreateMindMap();
-    
+
     // Generate position if not provided
-    final nodePosition = position ?? _generateNodePosition(currentMindMap.nodes.length);
-    
+    final nodePosition =
+        position ?? _generateNodePosition(currentMindMap.nodes.length);
+
     // Determine node color based on content type
     final nodeColor = _getNodeColorForContentType(content.type);
-    
-    final title = content.title.isNotEmpty ? content.title : (content.file ?? 'Untitled');
-    
+
+    final title =
+        content.title.isNotEmpty ? content.title : (content.file ?? 'Untitled');
+
     // Add node directly to the mind map
     currentMindMap.addNode(
       text: title,
@@ -340,23 +342,22 @@ class Board {
       color: nodeColor,
       contentId: content.id,
     );
-    
+
     return updateMindMap(currentMindMap);
   }
 
   /// Remove a content node from the board's mind map
   Board removeContentNode(String contentId) {
     if (mindMap == null) return this;
-    
-    final nodeToRemove = mindMap!.nodes.where(
-      (node) => node.contentID == contentId,
-    ).firstOrNull;
-    
+
+    final nodeToRemove =
+        mindMap!.nodes.where((node) => node.contentID == contentId).firstOrNull;
+
     if (nodeToRemove == null) return this;
-    
+
     final currentMindMap = mindMap!;
     currentMindMap.removeNode(nodeToRemove.id);
-    
+
     return updateMindMap(currentMindMap);
   }
 
@@ -367,14 +368,14 @@ class Board {
     const double centerY = 7500;
     const double radius = 300;
     const double angleStep = 2.4; // Radians between nodes
-    
+
     if (nodeIndex == 0) {
       return Offset(centerX, centerY);
     }
-    
+
     final angle = nodeIndex * angleStep;
     final spiralRadius = radius + (nodeIndex * 50); // Expanding spiral
-    
+
     return Offset(
       centerX + spiralRadius * math.cos(angle),
       centerY + spiralRadius * math.sin(angle),

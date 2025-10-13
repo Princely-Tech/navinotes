@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/board.dart';
 import 'package:navinotes/screens/main/board_mindmap/board_mindmap_vm.dart';
-import 'package:navinotes/screens/main/board_mindmap/mind_map_vm_bridge.dart';
 import 'mind_map_canvas.dart';
 import 'mind_map_styling.dart';
-import 'vm.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/board/mind_map_content_panel.dart';
 import 'package:navinotes/widgets/index.dart';
@@ -20,7 +18,7 @@ class BoardMindMapScreen extends StatelessWidget {
     final Board board = ModalRoute.of(context)?.settings.arguments as Board;
 
     return ChangeNotifierProvider(
-      create: (_) => BoardMindMapVm(board: board),
+      create: (_) => BoardMindMapVm(board: board, scaffoldKey: _scaffoldKey),
       child: Consumer<BoardMindMapVm>(
         builder: (_, boardVm, __) {
           // Show loading while initializing
@@ -43,11 +41,8 @@ class BoardMindMapScreen extends StatelessWidget {
             );
           }
 
-          // Create bridge to adapt BoardMindMapVm to MindMapVm interface
-          final bridgeVm = MindMapVmBridge(boardVm);
-
-          return ChangeNotifierProvider<MindMapVm>.value(
-            value: bridgeVm,
+          return ChangeNotifierProvider<BoardMindMapVm>.value(
+            value: boardVm,
             child: ScaffoldFrame(
               scaffoldKey: _scaffoldKey,
               backgroundColor:
@@ -61,17 +56,17 @@ class BoardMindMapScreen extends StatelessWidget {
               drawer: CustomDrawer(
                 child: MindMapStyling(
                   boardTheme: boardVm.boardTheme,
-                  vm: bridgeVm,
+                  vm: boardVm,
                 ),
               ),
               body: Column(
                 children: [
-                  _buildBoardMindMapHeader(boardVm, bridgeVm),
+                  _buildBoardMindMapHeader(boardVm),
                   Expanded(
                     child: Row(
                       children: [
                         // Left panel - Node styling (only show when mindmapNode is selected)
-                        Consumer<MindMapVm>(
+                        Consumer<BoardMindMapVm>(
                           builder: (context, mindMapVm, child) {
                             // Check if there's a selected mindmapNode
                             final selectedNode =
@@ -105,7 +100,7 @@ class BoardMindMapScreen extends StatelessWidget {
                                 mobile: 280,
                                 child: MindMapStyling(
                                   boardTheme: boardVm.boardTheme,
-                                  vm: bridgeVm,
+                                  vm: boardVm,
                                 ),
                               ),
                             );
@@ -119,7 +114,7 @@ class BoardMindMapScreen extends StatelessWidget {
                           ),
                         ),
                         // Right panel - Content preview (only show when content is selected)
-                        Consumer<MindMapVm>(
+                        Consumer<BoardMindMapVm>(
                           builder: (context, mindMapVm, child) {
                             // Check if there's a selected node with content
                             final selectedNode =
@@ -162,7 +157,7 @@ class BoardMindMapScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBoardMindMapHeader(BoardMindMapVm boardVm, MindMapVm bridgeVm) {
+  Widget _buildBoardMindMapHeader(BoardMindMapVm boardVm) {
     final themeValues = boardVm.boardTheme.values;
     return Container(
       decoration: themeValues.mainHeaderDecoration.copyWith(
@@ -220,7 +215,7 @@ class BoardMindMapScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  _boardMindMapControlButtons(context, boardVm, bridgeVm),
+                  _boardMindMapControlButtons(context, boardVm),
                 ],
               ),
             ),
@@ -288,7 +283,6 @@ class BoardMindMapScreen extends StatelessWidget {
   Widget _boardMindMapControlButtons(
     BuildContext context,
     BoardMindMapVm boardVm,
-    MindMapVm bridgeVm,
   ) {
     return Row(
       spacing: 8,
@@ -297,8 +291,8 @@ class BoardMindMapScreen extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () {
             // Add node at center of currently visible viewport
-            final centerPosition = bridgeVm.getCurrentViewportCenter();
-            bridgeVm.addNodeAt(
+            final centerPosition = boardVm.getCurrentViewportCenter();
+            boardVm.addNodeAt(
               text: 'New node',
               logicalPosition: centerPosition,
             );
@@ -365,19 +359,19 @@ class BoardMindMapScreen extends StatelessWidget {
         // Zoom controls
         IconButton(
           tooltip: 'Zoom in',
-          onPressed: bridgeVm.zoomIn,
+          onPressed: boardVm.zoomIn,
           icon: const Icon(Icons.zoom_in, size: 18),
           constraints: BoxConstraints(minWidth: 32, minHeight: 32),
         ),
         IconButton(
           tooltip: 'Zoom out',
-          onPressed: bridgeVm.zoomOut,
+          onPressed: boardVm.zoomOut,
           icon: const Icon(Icons.zoom_out, size: 18),
           constraints: BoxConstraints(minWidth: 32, minHeight: 32),
         ),
         IconButton(
           tooltip: 'Reset zoom & pan',
-          onPressed: bridgeVm.resetZoom,
+          onPressed: boardVm.resetZoom,
           icon: const Icon(Icons.center_focus_strong, size: 18),
           constraints: BoxConstraints(minWidth: 32, minHeight: 32),
         ),

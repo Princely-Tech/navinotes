@@ -1,5 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/screens/main/board_mindmap/index.dart';
 import 'package:navinotes/screens/main/board_mindmap/board_mindmap_screen.dart';
 import 'package:navinotes/screens/main/flashcards/ai/index.dart';
 import 'package:navinotes/screens/main/flashcards/index.dart';

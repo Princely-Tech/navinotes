@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:provider/provider.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'vm.dart';
+import 'board_mindmap_vm.dart';
 import 'mind_map_node_widget.dart';
 import 'edge_painter.dart';
 import 'package:navinotes/models/content.dart';
-import 'mind_map_vm_bridge.dart';
 
 class MindMapCanvas extends StatefulWidget {
   const MindMapCanvas({super.key});
@@ -28,7 +27,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MindMapVm>(
+    return Consumer<BoardMindMapVm>(
       builder: (_, vm, __) {
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -38,22 +37,20 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
               _transformationController,
             );
 
-            // Check if we need to center the view on nodes (for BoardMindMapVm)
-            if (vm is MindMapVmBridge) {
-              final targetCenter = vm.targetViewCenter;
-              final needsInitialCentering = vm.needsInitialCentering;
-              
-              if (targetCenter != null || needsInitialCentering) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (targetCenter != null) {
-                    _centerViewOnPosition(targetCenter, constraints.biggest);
-                    vm.clearTargetViewCenter();
-                  } else if (needsInitialCentering) {
-                    // Force centering by calling the VM method
-                    vm.centerViewOnContent();
-                  }
-                });
-              }
+            // Check if we need to center the view on nodes
+            final targetCenter = vm.targetViewCenter;
+            final needsInitialCentering = vm.needsInitialCentering;
+            
+            if (targetCenter != null || needsInitialCentering) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (targetCenter != null) {
+                  _centerViewOnPosition(targetCenter, constraints.biggest);
+                  vm.clearTargetViewCenter();
+                } else if (needsInitialCentering) {
+                  // Force centering by calling the VM method
+                  vm.centerViewOnContent();
+                }
+              });
             }
 
             return DragTarget<Object>(
@@ -109,8 +106,8 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                           }
                         },
                         child: Container(
-                          width: MindMapVm.canvasWidth,
-                          height: MindMapVm.canvasHeight,
+                          width: BoardMindMapVm.canvasWidth,
+                          height: BoardMindMapVm.canvasHeight,
                           color: AppTheme.transparent,
                           child: Stack(
                             children: [
@@ -145,7 +142,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
 
   void _handleDrop(
     BuildContext context,
-    MindMapVm vm,
+    BoardMindMapVm vm,
     dynamic data,
     Offset offset,
   ) {

@@ -1,8 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/models/content.dart';
+import 'package:navinotes/screens/main/board_mindmap/board_mindmap_vm.dart';
 import 'package:navinotes/widgets/content_preview_widget.dart';
-import 'package:navinotes/screens/main/board_mindmap/vm.dart';
-import 'package:provider/provider.dart';
 
 enum MindMapBorderStyleItem {
   shadow,
@@ -43,7 +42,7 @@ class MindMapRight extends StatelessWidget {
       default:
     }
 
-    return Consumer<MindMapVm>(
+    return Consumer<BoardMindMapVm>(
       builder: (context, vm, child) {
         // Get selected node and its content
         final selectedNode =

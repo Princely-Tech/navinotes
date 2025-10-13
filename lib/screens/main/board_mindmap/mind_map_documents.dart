@@ -1,5 +1,5 @@
 import 'package:navinotes/packages.dart';
-import 'vm.dart';
+import 'board_mindmap_vm.dart';
 
 class MindMapDocuments extends StatefulWidget {
   const MindMapDocuments({super.key, required this.boardTheme});
@@ -29,13 +29,9 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
 
   Future<void> _loadContents() async {
     try {
-      final vm = Provider.of<MindMapVm>(context, listen: false);
+      final vm = Provider.of<BoardMindMapVm>(context, listen: false);
 
-      if (vm.baseContent == null) return;
-
-      final data = await DatabaseHelper.instance.getAllContents(
-        vm.baseContent!.boardId,
-      );
+      final data = await DatabaseHelper.instance.getAllContents(vm.board.id);
       final decks =
           data.where((d) => d.type == AppContentType.flashcardDeck).toList();
 
@@ -232,7 +228,7 @@ class _MindMapDocumentsState extends State<MindMapDocuments> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          final vm = Provider.of<MindMapVm>(context, listen: false);
+          final vm = Provider.of<BoardMindMapVm>(context, listen: false);
           final targetNodeId = vm.attachingNodeId;
           if (targetNodeId != null && content.id.isNotEmpty) {
             vm.attachContentToNodeById(targetNodeId, content.id);
@@ -303,7 +299,7 @@ Widget _tappableDeckRow({
     child: GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        final vm = Provider.of<MindMapVm>(context, listen: false);
+        final vm = Provider.of<BoardMindMapVm>(context, listen: false);
         final targetNodeId = vm.attachingNodeId;
         if (targetNodeId != null && deck.id.isNotEmpty) {
           vm.attachContentToNodeById(targetNodeId, deck.id);

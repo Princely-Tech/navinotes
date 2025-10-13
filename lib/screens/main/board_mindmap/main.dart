@@ -1,7 +1,7 @@
 // mind_map_main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'vm.dart';
+import 'board_mindmap_vm.dart';
 import 'mind_map_canvas.dart';
 
 class MindMapMain extends StatelessWidget {
@@ -9,7 +9,7 @@ class MindMapMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MindMapVm>(
+    return Consumer<BoardMindMapVm>(
       builder: (_, vm, __) {
         return Container(
           color: Colors.transparent,

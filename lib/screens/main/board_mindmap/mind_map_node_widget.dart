@@ -7,7 +7,7 @@ import 'package:navinotes/settings/board_theme.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/widgets/content_preview_widget.dart';
 import 'package:provider/provider.dart';
-import 'vm.dart';
+import 'board_mindmap_vm.dart';
 
 class MindMapNodeWidget extends StatelessWidget {
   final MindMapNode node;
@@ -15,7 +15,7 @@ class MindMapNodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final vm = Provider.of<MindMapVm>(context);
+    final vm = Provider.of<BoardMindMapVm>(context);
     final isSelected = vm.selectedNodeId == node.id;
     final isConnectingFrom = vm.connectingFromNodeId == node.id;
     final isAttaching = vm.attachingNodeId == node.id;
@@ -397,7 +397,7 @@ class MindMapNodeWidget extends StatelessWidget {
 
   Widget _buildShapedNode({
     required BuildContext context,
-    required MindMapVm vm,
+    required BoardMindMapVm vm,
     required MindMapNode node,
     required bool isConnectingFrom,
     required double elevation,
@@ -407,12 +407,12 @@ class MindMapNodeWidget extends StatelessWidget {
     required List<BoxShadow>? glowShadow,
     required dynamic themeValues,
   }) {
-    
     // Get the content associated with this node
-    final nodeContent = node.contentID != null ? vm.getContentById(node.contentID!) : null;
-    
+    final nodeContent =
+        node.contentID != null ? vm.getContentById(node.contentID!) : null;
+
     Widget content;
-    
+
     if (nodeContent != null && nodeContent.type != AppContentType.mindmapNode) {
       // Show content preview for non-mindMapNode types
       content = ContentPreviewWidget(
