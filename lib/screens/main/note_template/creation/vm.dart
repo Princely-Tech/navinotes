@@ -297,6 +297,15 @@ class NoteCreationVm extends ChangeNotifier {
     if (_notePages.isEmpty) {
       // Create first page if none exist
       addNewPage();
+    } else {
+      // Load content for the current page when app starts
+      debugPrint('Initializing content for current page: ${currentPage?.id}');
+      final controller = getCurrentPageController();
+      if (controller != null) {
+        debugPrint(
+          'Page controller created and content loaded for: ${controller.page.id}',
+        );
+      }
     }
   }
 
@@ -403,13 +412,28 @@ class NoteCreationVm extends ChangeNotifier {
 
   void setCurrentPageIndex(int index) {
     if (index >= 0 && index < _notePages.length) {
+      debugPrint('Switching from page $_currentPageIndex to page $index');
+
       // Force save current page before switching
-      getCurrentPageController()?.forceSave();
-      
+      final currentController = getCurrentPageController();
+      if (currentController != null) {
+        debugPrint(
+          'Saving current page ${currentController.page.id} before switch',
+        );
+        currentController.forceSave();
+      }
+
       // Save to database when switching pages
       updateContentInDb();
 
       _currentPageIndex = index;
+
+      // Load content for new page
+      final newController = getCurrentPageController();
+      if (newController != null) {
+        debugPrint('Loaded controller for new page ${newController.page.id}');
+      }
+
       notifyListeners();
     }
   }
@@ -420,7 +444,9 @@ class NoteCreationVm extends ChangeNotifier {
       _notePages[index] = updatedPage;
     }
 
-    debugPrint('Updated page ${updatedPage.id} in memory (not saved to DB yet)');
+    debugPrint(
+      'Updated page ${updatedPage.id} in memory (not saved to DB yet)',
+    );
     // Note: Only update in-memory data, DB save happens on explicit save or page exit
   }
 
@@ -1013,7 +1039,18 @@ class NoteCreationVm extends ChangeNotifier {
       }
     } finally {
       updateFetchingContent(false);
-      // Page controllers will load content automatically when accessed
+      // Load content for current page after everything is loaded
+      if (_notePages.isNotEmpty) {
+        debugPrint(
+          'Loading content for current page after DB load: ${currentPage?.id}',
+        );
+        final controller = getCurrentPageController();
+        if (controller != null) {
+          debugPrint(
+            'Current page controller loaded with content: ${controller.page.id}',
+          );
+        }
+      }
       // Notify listeners to rebuild the UI
       notifyListeners();
     }

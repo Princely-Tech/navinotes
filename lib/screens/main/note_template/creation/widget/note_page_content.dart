@@ -162,7 +162,7 @@ class _NotePageContentState extends State<NotePageContent> {
                 : 842.0;
 
         return [
-          // Drawing layer (non-interactive in text mode)
+          // Drawing layer (non-interactive in text mode) - bottom layer
           IgnorePointer(
             ignoring: true,
             child: SizedBox(
@@ -171,17 +171,17 @@ class _NotePageContentState extends State<NotePageContent> {
               child: buildDrawingBoard(vm, validWidth, validHeight),
             ),
           ),
-          // Text editor (interactive) - expandable to show all content
+          // Text box overlay (read-only in text mode) - middle layer
+          Positioned.fill(
+            child: _buildTextBoxOverlay(vm, validWidth, validHeight, readOnly: true),
+          ),
+          // Text editor (interactive) - TOP layer for easy tapping
           Positioned.fill(
             child: Container(
               width: validWidth,
               height: validHeight,
               child: buildTextEditor(vm, validWidth, validHeight),
             ),
-          ),
-          // Text box overlay (read-only in text mode)
-          Positioned.fill(
-            child: _buildTextBoxOverlay(vm, validWidth, validHeight, readOnly: true),
           ),
         ];
       case NoteMode.drawing:
