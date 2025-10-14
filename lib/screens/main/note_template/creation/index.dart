@@ -26,33 +26,47 @@ class NoteCreationScreen extends StatelessWidget {
       },
       child: Consumer<NoteCreationVm>(
         builder: (_, vm, _) {
-          return ScaffoldFrame(
-            // backgroundColor: AppTheme.white,
-            backgroundColor: AppTheme.white,
-            scaffoldKey: _scaffoldKey,
-            endDrawer: CustomDrawer(child: NoteCreationRight()),
-            drawer: CustomDrawer(child: NoteCreationLeft()),
-            body: Stack(
-              children: [
-                ResponsiveSection(
-                  mobile: NoteCreationMain(),
-                  desktop: Row(
-                    children: [
-                      VisibleController(
-                        mobile: false,
-                        largeDesktop: true,
-                        child: WidthLimiter(
-                          mobile: 255,
-                          child: NoteCreationLeft(),
+          return PopScope(
+            canPop: false, // Handle pop manually
+            onPopInvoked: (bool didPop) async {
+              if (didPop) return;
+              
+              // Save current page and database before exiting
+              await vm.onScreenExit();
+              
+              // Now allow the pop
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: ScaffoldFrame(
+              // backgroundColor: AppTheme.white,
+              backgroundColor: AppTheme.white,
+              scaffoldKey: _scaffoldKey,
+              endDrawer: CustomDrawer(child: NoteCreationRight()),
+              drawer: CustomDrawer(child: NoteCreationLeft()),
+              body: Stack(
+                children: [
+                  ResponsiveSection(
+                    mobile: NoteCreationMain(),
+                    desktop: Row(
+                      children: [
+                        VisibleController(
+                          mobile: false,
+                          largeDesktop: true,
+                          child: WidthLimiter(
+                            mobile: 255,
+                            child: NoteCreationLeft(),
+                          ),
                         ),
-                      ),
-                      Expanded(child: NoteCreationMain()),
-                      WidthLimiter(mobile: 255, child: NoteCreationRight()),
-                    ],
+                        Expanded(child: NoteCreationMain()),
+                        WidthLimiter(mobile: 255, child: NoteCreationRight()),
+                      ],
+                    ),
                   ),
-                ),
-                NoteAiSection(),
-              ],
+                  NoteAiSection(),
+                ],
+              ),
             ),
           );
         },

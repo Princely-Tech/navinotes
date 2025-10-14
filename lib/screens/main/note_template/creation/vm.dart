@@ -869,6 +869,43 @@ class NoteCreationVm extends ChangeNotifier {
     await updateContentInDb(showSnackBar: true);
   }
 
+  /// Force save current page synchronously (for dispose)
+  void _forceSaveCurrentPageSync() {
+    try {
+      debugPrint('Force saving current page synchronously before dispose');
+      final currentController = getCurrentPageController();
+      if (currentController != null) {
+        // Force immediate save without waiting (synchronous)
+        currentController.forceSave();
+        debugPrint(
+          'Current page ${currentController.page.id} saved synchronously',
+        );
+      }
+    } catch (e) {
+      debugPrint('Error in synchronous page save: $e');
+    }
+  }
+
+  /// Call this method when screen is about to be popped/exited
+  Future<void> onScreenExit() async {
+    try {
+      debugPrint('Screen exit triggered - saving current page and database');
+
+      // Force save current page first
+      final currentController = getCurrentPageController();
+      if (currentController != null) {
+        await currentController.forceSave();
+        debugPrint('Current page ${currentController.page.id} saved on exit');
+      }
+
+      // Save to database
+      await updateContentInDb(showSnackBar: false);
+      debugPrint('Database save completed on screen exit');
+    } catch (e) {
+      debugPrint('Error saving on screen exit: $e');
+    }
+  }
+
   void debugDrawingController() {
     // Debug method to check controller state
     final controller = getCurrentPageController()?.activeDrawingController;
@@ -1202,11 +1239,23 @@ class NoteCreationVm extends ChangeNotifier {
 
   @override
   void dispose() {
-    updateContentInDb(showSnackBar: false);
-    _autoSaveTimer?.cancel();
-    _debounceTimer?.cancel();
-    _positionSubscription?.cancel();
-    _playerStateSubscription?.cancel();
+    try {
+      // Force save current page immediately (synchronous)
+      _forceSaveCurrentPageSync();
+
+      // Cancel timers first to prevent new auto-saves
+      _autoSaveTimer?.cancel();
+      _debounceTimer?.cancel();
+      _positionSubscription?.cancel();
+      _playerStateSubscription?.cancel();
+
+      // Try to save to database (fire and forget since dispose must be sync)
+      updateContentInDb(showSnackBar: false).catchError((error) {
+        debugPrint('Error saving to DB during dispose: $error');
+      });
+    } catch (e) {
+      debugPrint('Error during dispose save: $e');
+    }
 
     // Dispose all page controllers
     // Create a copy to avoid concurrent modification
