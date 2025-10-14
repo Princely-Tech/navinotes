@@ -78,9 +78,18 @@ class PageController extends ChangeNotifier {
           _textController.document = Document.fromJson(
             jsonDecode(_page.textContent!),
           );
+          // Move cursor to end of existing text
+          _moveCursorToEnd();
         } catch (e) {
           debugPrint('Error loading page text content: $e');
         }
+      } else {
+        // For empty pages, position cursor at the beginning (ready for typing)
+        _textController.updateSelection(
+          const TextSelection.collapsed(offset: 0),
+          ChangeSource.local,
+        );
+        debugPrint('Positioned cursor at start for empty page');
       }
 
       // Load drawing content
@@ -276,6 +285,27 @@ class PageController extends ChangeNotifier {
   void clearTextBoxSelection() {
     _textBoxManager.clearSelection();
     notifyListeners();
+  }
+
+  /// Move cursor to end of text content
+  void _moveCursorToEnd() {
+    try {
+      final length = _textController.document.length;
+      if (length > 0) {
+        _textController.updateSelection(
+          TextSelection.collapsed(offset: length - 1),
+          ChangeSource.local,
+        );
+        debugPrint('Moved cursor to end of text (position: ${length - 1})');
+      }
+    } catch (e) {
+      debugPrint('Error moving cursor to end: $e');
+    }
+  }
+
+  /// Public method to move cursor to end (for external calls)
+  void moveCursorToEnd() {
+    _moveCursorToEnd();
   }
 
   @override

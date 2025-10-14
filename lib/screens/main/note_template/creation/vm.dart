@@ -713,6 +713,9 @@ class NoteCreationVm extends ChangeNotifier {
 
     if (mode == NoteMode.text) {
       currentController.readOnly = false;
+      // Move cursor to end of existing text when switching to text mode
+      final pageController = getCurrentPageController();
+      pageController?.moveCursorToEnd();
     } else if (mode == NoteMode.voice) {
       _initRecorder();
     }
