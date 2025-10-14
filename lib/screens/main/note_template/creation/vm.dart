@@ -3,14 +3,8 @@ import 'package:navinotes/packages.dart';
 import 'package:navinotes/models/note_page.dart';
 import 'package:navinotes/models/page_format.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'managers/text_box_manager.dart';
 import 'models/drawing_tools.dart';
 import 'models/stylus_settings.dart';
@@ -29,7 +23,6 @@ class NoteCreationVm extends ChangeNotifier {
     required this.creationProp,
     required this.context,
   }) : template = creationProp?.template ?? noteTemplateBlank;
-  final FocusNode titleFocusNode = FocusNode();
   TextEditingController titleController = TextEditingController();
 
   final DrawingController _drawingController = DrawingController();
@@ -284,6 +277,7 @@ class NoteCreationVm extends ChangeNotifier {
 
     // Add listener to main text controller for auto-save
     richEditorController.document.changes.listen((event) {
+      debugPrint('Rich text changed');
       _autoSaveCurrentPage();
     });
 
@@ -295,12 +289,6 @@ class NoteCreationVm extends ChangeNotifier {
       _startAutoSave();
     });
     notifyListeners();
-
-    titleFocusNode.addListener(() {
-      if (!titleFocusNode.hasFocus) {
-        updateContentInDb(showSnackBar: false);
-      }
-    });
   }
 
   // Multi-page methods
@@ -1279,10 +1267,11 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   void _startAutoSave() {
-    _autoSaveTimer?.cancel();
-    _autoSaveTimer = Timer.periodic(_autoSaveInterval, (_) {
-      updateContentInDb(showSnackBar: false);
-    });
+    // ZZZ: commented all
+    // _autoSaveTimer?.cancel();
+    // _autoSaveTimer = Timer.periodic(_autoSaveInterval, (_) {
+    //   updateContentInDb(showSnackBar: false);
+    // });
   }
 
   Future<void> save() async {
@@ -1406,7 +1395,6 @@ class NoteCreationVm extends ChangeNotifier {
     _audioRecorder.dispose();
     _audioPlayer.dispose();
     titleController.dispose();
-    titleFocusNode.dispose();
     _drawingController.dispose();
     summaryController.dispose();
     focusAreaController.dispose();

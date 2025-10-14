@@ -51,27 +51,50 @@ class _RecordingIndicatorState extends State<RecordingIndicator>
   @override
   void dispose() {
     widget.vm.removeListener(_onRecordingStateChanged);
-    _pulseController.dispose();
+    // Stop any running animations before disposing
+    try {
+      _pulseController.stop();
+      _pulseController.reset();
+      _pulseController.dispose();
+    } catch (e) {
+      debugPrint('Error disposing pulse animation controller: $e');
+    }
     super.dispose();
   }
 
   void _onRecordingStateChanged() {
-    if (widget.vm.isRecording && !_pulseController.isAnimating) {
-      _startRecording();
-    } else if (!widget.vm.isRecording && _pulseController.isAnimating) {
-      _stopRecording();
+    if (!mounted) return; // Don't update if widget is disposed
+    
+    try {
+      if (widget.vm.isRecording && !_pulseController.isAnimating) {
+        _startRecording();
+      } else if (!widget.vm.isRecording && _pulseController.isAnimating) {
+        _stopRecording();
+      }
+    } catch (e) {
+      debugPrint('Error updating recording state: $e');
     }
   }
 
   void _startRecording() {
-    _recordingStartTime = DateTime.now();
-    _pulseController.repeat(reverse: true);
+    if (!mounted) return;
+    
+    try {
+      _recordingStartTime = DateTime.now();
+      _pulseController.repeat(reverse: true);
+    } catch (e) {
+      debugPrint('Error starting recording animation: $e');
+    }
   }
 
   void _stopRecording() {
-    _recordingStartTime = null;
-    _pulseController.stop();
-    _pulseController.reset();
+    try {
+      _recordingStartTime = null;
+      _pulseController.stop();
+      _pulseController.reset();
+    } catch (e) {
+      debugPrint('Error stopping recording animation: $e');
+    }
   }
 
   String _getRecordingDuration() {

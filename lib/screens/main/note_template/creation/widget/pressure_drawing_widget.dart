@@ -56,7 +56,14 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
 
   @override
   void dispose() {
-    _cursorAnimationController.dispose();
+    // Stop any running animations before disposing
+    try {
+      _cursorAnimationController.stop();
+      _cursorAnimationController.reset();
+      _cursorAnimationController.dispose();
+    } catch (e) {
+      debugPrint('Error disposing cursor animation controller: $e');
+    }
     super.dispose();
   }
 
@@ -280,12 +287,21 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
   }
 
   void _updateCursorVisibility() {
+    // Check if widget is still mounted and controller is not disposed
+    if (!mounted) return;
+    
     final shouldShow = _shouldShowCursor();
     
-    if (shouldShow && _cursorAnimationController.status != AnimationStatus.forward) {
-      _cursorAnimationController.forward();
-    } else if (!shouldShow && _cursorAnimationController.status != AnimationStatus.reverse) {
-      _cursorAnimationController.reverse();
+    // Only animate if controller is not disposed
+    try {
+      if (shouldShow && _cursorAnimationController.status != AnimationStatus.forward) {
+        _cursorAnimationController.forward();
+      } else if (!shouldShow && _cursorAnimationController.status != AnimationStatus.reverse) {
+        _cursorAnimationController.reverse();
+      }
+    } catch (e) {
+      // Animation controller was disposed, ignore the error
+      debugPrint('Animation controller disposed during cursor update: $e');
     }
   }
 
