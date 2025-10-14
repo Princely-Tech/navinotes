@@ -29,9 +29,9 @@ class PageController extends ChangeNotifier {
     required NotePage page,
     required Function(NotePage) onPageUpdated,
     required StylusSettings stylusSettings,
-  })  : _page = page,
-        _onPageUpdated = onPageUpdated,
-        _stylusSettings = stylusSettings {
+  }) : _page = page,
+       _onPageUpdated = onPageUpdated,
+       _stylusSettings = stylusSettings {
     _initializeControllers();
     _loadPageContent();
   }
@@ -45,8 +45,8 @@ class PageController extends ChangeNotifier {
 
   /// Get the appropriate drawing controller based on stylus settings
   DrawingController get activeDrawingController {
-    return _stylusSettings.pressureSensitivityEnabled 
-        ? _pressureController.drawingController 
+    return _stylusSettings.pressureSensitivityEnabled
+        ? _pressureController.drawingController
         : _drawingController;
   }
 
@@ -57,7 +57,13 @@ class PageController extends ChangeNotifier {
 
     // Initialize drawing controllers
     _drawingController = DrawingController();
-    _pressureController = PressureDrawingController(stylusSettings: _stylusSettings);
+    _pressureController = PressureDrawingController(
+      stylusSettings: _stylusSettings,
+    );
+    
+    // Add listeners for drawing controller changes (for in-memory auto-save)
+    _drawingController.addListener(_scheduleAutoSave);
+    _pressureController.addListener(_scheduleAutoSave);
 
     // Initialize text box manager
     _textBoxManager = TextBoxManager();
@@ -99,7 +105,7 @@ class PageController extends ChangeNotifier {
   void _loadDrawingContent(String drawingData) {
     try {
       final List<dynamic> data = jsonDecode(drawingData);
-      
+
       // Clear both controllers
       _drawingController.clear();
       _pressureController.clear();
@@ -149,7 +155,7 @@ class PageController extends ChangeNotifier {
 
   void _scheduleAutoSave() {
     if (_isDisposed) return;
-    
+
     _autoSaveTimer?.cancel();
     _autoSaveTimer = Timer(const Duration(milliseconds: 500), () {
       if (!_isDisposed) {
@@ -186,7 +192,9 @@ class PageController extends ChangeNotifier {
       // Notify parent about the update
       _onPageUpdated(updatedPage);
 
-      debugPrint('Auto-saved page ${_page.id}: ${jsonList.length} drawing items, ${textBoxList.length} text boxes');
+      debugPrint(
+        'Auto-saved page ${_page.id}: text: ${textContentJson}, drawing: ${jsonList.length} items, text boxes: ${textBoxList.length}',
+      );
     } catch (e) {
       debugPrint('Error auto-saving page content: $e');
     }
@@ -274,16 +282,21 @@ class PageController extends ChangeNotifier {
   void dispose() {
     _isDisposed = true;
     _autoSaveTimer?.cancel();
-    
+
     // Force final save before disposal
     _savePageContent();
-    
+
+    // Remove listeners before disposing
+    _drawingController.removeListener(_scheduleAutoSave);
+    _pressureController.removeListener(_scheduleAutoSave);
+    _textBoxManager.removeListener(_scheduleAutoSave);
+
     // Dispose controllers
     _textController.dispose();
     _drawingController.dispose();
     _pressureController.dispose();
     _textBoxManager.dispose();
-    
+
     super.dispose();
   }
 }

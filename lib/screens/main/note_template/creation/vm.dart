@@ -405,6 +405,9 @@ class NoteCreationVm extends ChangeNotifier {
     if (index >= 0 && index < _notePages.length) {
       // Force save current page before switching
       getCurrentPageController()?.forceSave();
+      
+      // Save to database when switching pages
+      updateContentInDb();
 
       _currentPageIndex = index;
       notifyListeners();
@@ -416,6 +419,9 @@ class NoteCreationVm extends ChangeNotifier {
     if (index != -1) {
       _notePages[index] = updatedPage;
     }
+
+    debugPrint('Updated page ${updatedPage.id} in memory (not saved to DB yet)');
+    // Note: Only update in-memory data, DB save happens on explicit save or page exit
   }
 
   NotePage addNewPage() {
@@ -819,7 +825,17 @@ class NoteCreationVm extends ChangeNotifier {
     // Manual save for debugging
     debugPrint('Manual save triggered');
     await getCurrentPageController()?.forceSave();
+    await updateContentInDb(showSnackBar: true);
     notifyListeners();
+  }
+
+  /// Explicit save method for save button
+  Future<void> saveToDatabase() async {
+    debugPrint('Explicit save to database triggered');
+    // Force save current page content first
+    await getCurrentPageController()?.forceSave();
+    // Then save to database
+    await updateContentInDb(showSnackBar: true);
   }
 
   void debugDrawingController() {
