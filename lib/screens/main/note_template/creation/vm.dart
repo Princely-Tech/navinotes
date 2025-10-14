@@ -615,7 +615,9 @@ class NoteCreationVm extends ChangeNotifier {
     try {
       if (content != null) {
         // Force save all page controllers before updating
-        for (final controller in _pageControllers.values) {
+        // Create a copy of controllers to avoid concurrent modification
+        final controllers = List.from(_pageControllers.values);
+        for (final controller in controllers) {
           await controller.forceSave();
         }
 
@@ -1204,7 +1206,9 @@ class NoteCreationVm extends ChangeNotifier {
     _playerStateSubscription?.cancel();
 
     // Dispose all page controllers
-    for (final controller in _pageControllers.values) {
+    // Create a copy to avoid concurrent modification
+    final controllers = List.from(_pageControllers.values);
+    for (final controller in controllers) {
       controller.dispose();
     }
     _pageControllers.clear();
@@ -1229,7 +1233,9 @@ class NoteCreationVm extends ChangeNotifier {
     _stylusSettings = settings;
 
     // Update all page controllers with new settings
-    for (final controller in _pageControllers.values) {
+    // Create a copy to avoid concurrent modification
+    final controllers = List.from(_pageControllers.values);
+    for (final controller in controllers) {
       controller.updateStylusSettings(settings);
     }
 
