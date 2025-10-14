@@ -8,7 +8,7 @@ import 'package:just_audio/just_audio.dart';
 import 'managers/text_box_manager.dart';
 import 'models/drawing_tools.dart';
 import 'models/stylus_settings.dart';
-import 'controllers/pressure_drawing_controller.dart';
+import 'controllers/page_controller.dart' as page_ctrl;
 
 enum NoteMode { text, drawing, voice, read }
 
@@ -27,10 +27,10 @@ class NoteCreationVm extends ChangeNotifier {
 
   final DrawingController _drawingController = DrawingController();
 
-  // Stylus settings and pressure-sensitive controllers
+  // Stylus settings
   StylusSettings _stylusSettings = const StylusSettings();
-  final Map<String, PressureDrawingController> _pagePressureControllers =
-      <String, PressureDrawingController>{};
+
+  // Audio recording
   final AudioRecorder _audioRecorder = AudioRecorder();
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isRecording = false;
@@ -43,6 +43,8 @@ class NoteCreationVm extends ChangeNotifier {
   DateTime? _lastPositionUpdate;
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<PlayerState>? _playerStateSubscription;
+
+  // UI state
   NoteMode _currentMode = NoteMode.text;
   bool _isTextBoxMode = false;
   String? _selectedTextBoxTool;
@@ -55,16 +57,15 @@ class NoteCreationVm extends ChangeNotifier {
   // Multi-page functionality
   List<NotePage> _notePages = [];
   int _currentPageIndex = 0;
-  Map<String, DrawingController> _pageDrawingControllers = {};
-  Map<String, QuillController> _pageTextControllers = {};
-  Map<String, TextBoxManager> _pageTextBoxManagers = {};
+  Map<String, page_ctrl.PageController> _pageControllers = {};
 
   List<NotePage> get notePages => _notePages;
   int get currentPageIndex => _currentPageIndex;
   NotePage? get currentPage =>
       _notePages.isNotEmpty ? _notePages[_currentPageIndex] : null;
 
-  DrawingController get drawingController => getCurrentPageDrawingController();
+  DrawingController get drawingController =>
+      getCurrentPageController()?.activeDrawingController ?? _drawingController;
   bool get isRecording => _isRecording;
   bool get isPlaying => _isPlaying;
   bool get hasRecording => _recordingPath != null;
@@ -296,93 +297,59 @@ class NoteCreationVm extends ChangeNotifier {
     if (_notePages.isEmpty) {
       // Create first page if none exist
       addNewPage();
-    } else {
-      // Load content for the current page
-      _loadPageContent();
     }
   }
 
-  DrawingController getCurrentPageDrawingController() {
-    if (currentPage == null) return _drawingController;
+  page_ctrl.PageController? getCurrentPageController() {
+    if (currentPage == null) return null;
 
     final pageId = currentPage!.id;
-    if (!_pageDrawingControllers.containsKey(pageId)) {
-      final controller = DrawingController();
-      // Don't add listeners to avoid interfering with drawing
-      _pageDrawingControllers[pageId] = controller;
-      debugPrint('Created new drawing controller for page: $pageId');
-    } else {
-      debugPrint('Using existing drawing controller for page: $pageId');
+    if (!_pageControllers.containsKey(pageId)) {
+      final controller = page_ctrl.PageController(
+        page: currentPage!,
+        onPageUpdated: _updatePageInList,
+        stylusSettings: _stylusSettings,
+      );
+      _pageControllers[pageId] = controller;
+      debugPrint('Created new page controller for page: $pageId');
     }
-    return _pageDrawingControllers[pageId]!;
+    return _pageControllers[pageId]!;
   }
 
   QuillController getCurrentPageTextController() {
-    if (currentPage == null) return richEditorController;
-
-    final pageId = currentPage!.id;
-    if (!_pageTextControllers.containsKey(pageId)) {
-      final controller = QuillController.basic();
-      // Add listener to auto-save when text changes
-      controller.document.changes.listen((event) {
-        _autoSaveCurrentPage();
-      });
-      _pageTextControllers[pageId] = controller;
-    }
-    return _pageTextControllers[pageId]!;
+    return getCurrentPageController()?.textController ?? richEditorController;
   }
 
   TextBoxManager getCurrentPageTextBoxManager() {
-    if (currentPage == null) {
-      // Return a temporary manager for pages that don't exist yet
-      return TextBoxManager();
-    }
-
-    final pageId = currentPage!.id;
-    if (!_pageTextBoxManagers.containsKey(pageId)) {
-      final manager = TextBoxManager();
-      // Add listener to auto-save when text boxes change
-      manager.addListener(() {
-        _autoSaveCurrentPage();
-      });
-      _pageTextBoxManagers[pageId] = manager;
-    }
-    return _pageTextBoxManagers[pageId]!;
+    return getCurrentPageController()?.textBoxManager ?? TextBoxManager();
   }
 
-  // Text box management methods
+  // Text box management methods - delegate to page controller
   void addTextBox(Offset position, {String? text}) {
     debugPrint('Adding text box at position: $position');
-    final manager = getCurrentPageTextBoxManager();
-    final textBox = manager.addTextBox(position, text: text);
-    debugPrint('Text box created with ID: ${textBox.id}');
+    getCurrentPageController()?.addTextBox(position, text: text);
     notifyListeners();
   }
 
   void selectTextBox(String? textBoxId) {
-    final manager = getCurrentPageTextBoxManager();
-    manager.selectTextBox(textBoxId);
+    getCurrentPageController()?.selectTextBox(textBoxId);
   }
 
   void startEditingTextBox(String textBoxId) {
-    final manager = getCurrentPageTextBoxManager();
-    manager.startEditing(textBoxId);
+    getCurrentPageController()?.startEditingTextBox(textBoxId);
   }
 
   void stopEditingTextBox() {
-    final manager = getCurrentPageTextBoxManager();
-    manager.stopEditing();
+    getCurrentPageController()?.stopEditingTextBox();
   }
 
   void deleteTextBox(String textBoxId) {
-    final manager = getCurrentPageTextBoxManager();
-    manager.deleteTextBox(textBoxId);
+    getCurrentPageController()?.deleteTextBox(textBoxId);
     notifyListeners();
   }
 
   void clearTextBoxSelection() {
-    final manager = getCurrentPageTextBoxManager();
-    manager.clearSelection();
+    getCurrentPageController()?.clearTextBoxSelection();
   }
 
   // Get text box manager for current page
@@ -436,118 +403,18 @@ class NoteCreationVm extends ChangeNotifier {
 
   void setCurrentPageIndex(int index) {
     if (index >= 0 && index < _notePages.length) {
-      // Save current page content before switching
-      if (currentPage != null) {
-        _saveCurrentPageContent();
-      }
+      // Force save current page before switching
+      getCurrentPageController()?.forceSave();
 
       _currentPageIndex = index;
-      _loadPageContent();
       notifyListeners();
     }
   }
 
-  void _loadPageContent() {
-    if (currentPage == null) return;
-
-    debugPrint('Loading content for current page: ${currentPage!.id}');
-
-    // Load text content for current page
-    final textController = getCurrentPageTextController();
-    if (currentPage!.textContent != null &&
-        currentPage!.textContent!.isNotEmpty) {
-      try {
-        textController.document = Document.fromJson(
-          jsonDecode(currentPage!.textContent!),
-        );
-      } catch (e) {
-        debugPrint('Error loading page text content: $e');
-      }
-    }
-
-    // Load drawing content for current page
-    final drawingController = getCurrentPageDrawingController();
-    if (currentPage!.drawingData != null &&
-        currentPage!.drawingData!.isNotEmpty) {
-      try {
-        // debugPrint(
-        //   'Loading drawing data for page ${currentPage!.id}: ${currentPage!.drawingData}',
-        // );
-        final List<dynamic> drawingData = jsonDecode(currentPage!.drawingData!);
-        drawingController.clear();
-
-        for (var item in drawingData) {
-          if (item is Map<String, dynamic>) {
-            final String type = item['type'] as String;
-            PaintContent? paintContent;
-
-            switch (type) {
-              case 'SimpleLine':
-                paintContent = SimpleLine.fromJson(item);
-                break;
-              case 'SmoothLine':
-                paintContent = SmoothLine.fromJson(item);
-                break;
-              case 'StraightLine':
-                paintContent = StraightLine.fromJson(item);
-                break;
-              case 'Rectangle':
-                paintContent = Rectangle.fromJson(item);
-                break;
-              case 'Circle':
-                paintContent = Circle.fromJson(item);
-                break;
-              case 'Eraser':
-                paintContent = Eraser.fromJson(item);
-                break;
-            }
-
-            if (paintContent != null) {
-              drawingController.addContent(paintContent);
-              debugPrint('Added paint content: $type');
-            }
-          }
-        }
-        debugPrint('Loaded ${drawingData.length} drawing items');
-
-        // Force a refresh to ensure the drawing is displayed
-        notifyListeners();
-
-        // Additional delay to ensure the widget rebuilds with the new content
-        Future.delayed(const Duration(milliseconds: 100), () {
-          notifyListeners();
-          // Verify content was loaded
-          final currentController = getCurrentPageDrawingController();
-          debugPrint(
-            'Controller after load has ${currentController.getJsonList().length} items',
-          );
-        });
-      } catch (e) {
-        debugPrint('Error loading page drawing content: $e');
-      }
-    } else {
-      debugPrint('No drawing data to load for page ${currentPage!.id}');
-      // Clear the drawing controller if no data
-      final drawingController = getCurrentPageDrawingController();
-      drawingController.clear();
-    }
-
-    // Load text box content for current page
-    final textBoxManager = getCurrentPageTextBoxManager();
-    if (currentPage!.textBoxData != null &&
-        currentPage!.textBoxData!.isNotEmpty) {
-      try {
-        debugPrint('Loading text box data for page ${currentPage!.id}');
-        final List<dynamic> textBoxData = jsonDecode(currentPage!.textBoxData!);
-        textBoxManager.loadFromJson(textBoxData);
-        debugPrint('Loaded ${textBoxData.length} text boxes');
-      } catch (e) {
-        debugPrint('Error loading page text box content: $e');
-      }
-    } else {
-      debugPrint('No text box data to load for page ${currentPage!.id}');
-      // Clear text boxes if no data
-      textBoxManager.clearAll();
+  void _updatePageInList(NotePage updatedPage) {
+    final index = _notePages.indexWhere((page) => page.id == updatedPage.id);
+    if (index != -1) {
+      _notePages[index] = updatedPage;
     }
   }
 
@@ -613,29 +480,11 @@ class NoteCreationVm extends ChangeNotifier {
     final pageToDelete = _notePages[index];
     _notePages.removeAt(index);
 
-    // Clean up the drawing controller for the deleted page
+    // Clean up the page controller for the deleted page
     final pageId = pageToDelete.id;
-    if (_pageDrawingControllers.containsKey(pageId)) {
-      _pageDrawingControllers[pageId]?.dispose();
-      _pageDrawingControllers.remove(pageId);
-    }
-
-    // Clean up the text controller for the deleted page
-    if (_pageTextControllers.containsKey(pageId)) {
-      _pageTextControllers[pageId]?.dispose();
-      _pageTextControllers.remove(pageId);
-    }
-
-    // Clean up pressure controller for the deleted page
-    if (_pagePressureControllers.containsKey(pageId)) {
-      _pagePressureControllers[pageId]?.dispose();
-      _pagePressureControllers.remove(pageId);
-    }
-
-    // Clean up text box manager for the deleted page
-    if (_pageTextBoxManagers.containsKey(pageId)) {
-      _pageTextBoxManagers[pageId]?.dispose();
-      _pageTextBoxManagers.remove(pageId);
+    if (_pageControllers.containsKey(pageId)) {
+      _pageControllers[pageId]?.dispose();
+      _pageControllers.remove(pageId);
     }
 
     // Adjust current page index if necessary
@@ -733,8 +582,10 @@ class NoteCreationVm extends ChangeNotifier {
   Future<void> updateContentInDb({bool showSnackBar = false}) async {
     try {
       if (content != null) {
-        // Save current page content before updating
-        await _saveCurrentPageContent();
+        // Force save all page controllers before updating
+        for (final controller in _pageControllers.values) {
+          await controller.forceSave();
+        }
 
         // For backward compatibility, use the first page's content as main content
         String richEditorContent = '';
@@ -794,73 +645,6 @@ class NoteCreationVm extends ChangeNotifier {
           'Could not update content!',
         );
       }
-    }
-  }
-
-  Future<void> _saveCurrentPageContent() async {
-    if (currentPage == null) return;
-
-    try {
-      // Save text content
-      final textContent = richEditorController.document.toDelta().toJson();
-      final textContentJson = JsonEncoder.withIndent('  ').convert(textContent);
-
-      // Save drawing content - prioritize pressure controller if stylus is enabled
-      String drawingContent = '[]';
-      try {
-        List<Map<String, dynamic>> jsonList;
-        if (_stylusSettings.pressureSensitivityEnabled &&
-            _pagePressureControllers.containsKey(currentPage!.id)) {
-          jsonList = _pagePressureControllers[currentPage!.id]!.getJsonList();
-          debugPrint(
-            'Saving pressure-sensitive drawing content for page ${currentPage!.id}: ${jsonList.length} items',
-          );
-        } else {
-          jsonList = getCurrentPageDrawingController().getJsonList();
-          debugPrint(
-            'Saving regular drawing content for page ${currentPage!.id}: ${jsonList.length} items',
-          );
-        }
-        drawingContent = JsonEncoder.withIndent('  ').convert(jsonList);
-        debugPrint('Drawing content JSON');
-      } catch (e) {
-        debugPrint('Error getting drawing content during save: $e');
-        // Keep existing drawing data if there's an error
-        if (currentPage!.drawingData != null &&
-            currentPage!.drawingData!.isNotEmpty) {
-          drawingContent = currentPage!.drawingData!;
-        }
-      }
-
-      // Save current text box content
-      final textBoxManager = getCurrentPageTextBoxManager();
-      String textBoxContent = '[]';
-      try {
-        final textBoxList = textBoxManager.toJson();
-        debugPrint(
-          'Saving text box content for page ${currentPage!.id}: ${textBoxList.length} items',
-        );
-        textBoxContent = JsonEncoder.withIndent('  ').convert(textBoxList);
-      } catch (e) {
-        debugPrint('Error getting text box content during save: $e');
-        // Keep existing text box data if there's an error
-        if (currentPage!.textBoxData != null &&
-            currentPage!.textBoxData!.isNotEmpty) {
-          textBoxContent = currentPage!.textBoxData!;
-        }
-      }
-
-      // Update current page
-      final updatedPage = currentPage!.copyWith(
-        textContent: textContentJson,
-        drawingData: drawingContent,
-        textBoxData: textBoxContent,
-        updatedAt: generateUnixTimestamp(),
-      );
-
-      _notePages[_currentPageIndex] = updatedPage;
-    } catch (e) {
-      debugPrint('Error saving current page content: $e');
     }
   }
 
@@ -1022,8 +806,7 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   void clearDrawing() {
-    final controller = getCurrentPageDrawingController();
-    controller.clear();
+    getCurrentPageController()?.clearDrawing();
     notifyListeners();
   }
 
@@ -1033,56 +816,37 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   Future<void> manualSaveAndReload() async {
-    // Manual save and reload for debugging
-    debugPrint('Manual save and reload triggered');
-    await _saveCurrentPageContent();
-    _loadPageContent();
+    // Manual save for debugging
+    debugPrint('Manual save triggered');
+    await getCurrentPageController()?.forceSave();
     notifyListeners();
   }
 
   void debugDrawingController() {
     // Debug method to check controller state
-    final controller = getCurrentPageDrawingController();
-    final items = controller.getJsonList();
-    debugPrint('Current page: ${currentPage?.id}');
-    debugPrint('Controller has ${items.length} items');
-    for (int i = 0; i < items.length; i++) {
-      debugPrint('Item $i: ${items[i]['type']}');
+    final controller = getCurrentPageController()?.activeDrawingController;
+    if (controller != null) {
+      final items = controller.getJsonList();
+      debugPrint('Current page: ${currentPage?.id}');
+      debugPrint('Controller has ${items.length} items');
+      for (int i = 0; i < items.length; i++) {
+        debugPrint('Item $i: ${items[i]['type']}');
+      }
+    } else {
+      debugPrint('No active drawing controller');
     }
   }
 
   void setDrawingState(bool isDrawing) {
-    _isDrawing = isDrawing;
-    if (!isDrawing) {
-      // When drawing ends, trigger a save after a short delay
-      Timer(const Duration(milliseconds: 100), () {
-        _autoSaveCurrentPage();
-      });
-    }
+    // Drawing state is now handled by individual PageControllers
+    // This method is kept for compatibility but does nothing
   }
 
   Timer? _debounceTimer;
-  bool _isDrawing = false;
 
   void _autoSaveCurrentPage() {
-    // Auto-save the current page when content changes
-    if (currentPage != null) {
-      // Cancel previous timer to debounce rapid changes
-      _debounceTimer?.cancel();
-
-      // Use a longer debounce for drawing mode to avoid interfering with active drawing
-      final debounceMs = currentMode == NoteMode.drawing ? 1000 : 500;
-
-      // Use a timer to debounce rapid changes
-      _debounceTimer = Timer(Duration(milliseconds: debounceMs), () async {
-        // Don't save if we're in the middle of drawing to avoid interference
-        if (!_isDrawing) {
-          await _saveCurrentPageContent();
-          // Also save to database to prevent data loss
-          await updateContentInDb(showSnackBar: false);
-        }
-      });
-    }
+    // Auto-save is now handled by individual PageControllers
+    // This method is kept for compatibility but does nothing
   }
 
   void openDrawer() {
@@ -1233,15 +997,15 @@ class NoteCreationVm extends ChangeNotifier {
       }
     } finally {
       updateFetchingContent(false);
-      // Load content for current page after everything is loaded
-      if (_notePages.isNotEmpty) {
-        _loadPageContent();
-      }
+      // Page controllers will load content automatically when accessed
+      // Notify listeners to rebuild the UI
+      notifyListeners();
     }
   }
 
   void _setCreateNoteLoading(bool loading) {
     isCreatingNote = loading;
+    // Notify listeners to rebuild the UI
     notifyListeners();
   }
 
@@ -1386,11 +1150,11 @@ class NoteCreationVm extends ChangeNotifier {
     _positionSubscription?.cancel();
     _playerStateSubscription?.cancel();
 
-    // Dispose all pressure controllers
-    for (final controller in _pagePressureControllers.values) {
+    // Dispose all page controllers
+    for (final controller in _pageControllers.values) {
       controller.dispose();
     }
-    _pagePressureControllers.clear();
+    _pageControllers.clear();
 
     _audioRecorder.dispose();
     _audioPlayer.dispose();
@@ -1409,142 +1173,14 @@ class NoteCreationVm extends ChangeNotifier {
 
   /// Update stylus settings
   void updateStylusSettings(StylusSettings settings) {
-    final wasEnabled = _stylusSettings.pressureSensitivityEnabled;
-    final isEnabled = settings.pressureSensitivityEnabled;
-
     _stylusSettings = settings;
 
-    // Update all pressure controllers with new settings
-    for (final controller in _pagePressureControllers.values) {
+    // Update all page controllers with new settings
+    for (final controller in _pageControllers.values) {
       controller.updateStylusSettings(settings);
     }
 
-    // If pressure sensitivity was toggled, sync drawing data between controllers
-    if (wasEnabled != isEnabled && currentPage != null) {
-      _syncDrawingControllers();
-    }
-
     notifyListeners();
-  }
-
-  /// Sync drawing data between regular and pressure controllers
-  void _syncDrawingControllers() {
-    if (currentPage == null) return;
-
-    final pageId = currentPage!.id;
-    final regularController = getCurrentPageDrawingController();
-    final pressureController = getCurrentPagePressureController();
-
-    if (_stylusSettings.pressureSensitivityEnabled) {
-      // Switching to pressure mode - copy data from regular to pressure controller
-      final jsonList = regularController.getJsonList();
-      if (jsonList.isNotEmpty) {
-        pressureController.drawingController.clear();
-        for (final item in jsonList) {
-          final paintContent = _createPaintContentFromJson(item['type'], item);
-          if (paintContent != null) {
-            pressureController.addContent(paintContent);
-          }
-        }
-        debugPrint(
-          'Synced ${jsonList.length} items from regular to pressure controller',
-        );
-      }
-    } else {
-      // Switching to regular mode - copy data from pressure to regular controller
-      final jsonList = pressureController.getJsonList();
-      if (jsonList.isNotEmpty) {
-        regularController.clear();
-        for (final item in jsonList) {
-          final paintContent = _createPaintContentFromJson(item['type'], item);
-          if (paintContent != null) {
-            regularController.addContent(paintContent);
-          }
-        }
-        debugPrint(
-          'Synced ${jsonList.length} items from pressure to regular controller',
-        );
-      }
-    }
-  }
-
-  /// Get pressure-sensitive drawing controller for current page
-  PressureDrawingController getCurrentPagePressureController() {
-    if (currentPage == null) {
-      // Return a temporary controller for pages that don't exist yet
-      return PressureDrawingController(stylusSettings: _stylusSettings);
-    }
-
-    final pageId = currentPage!.id;
-    if (!_pagePressureControllers.containsKey(pageId)) {
-      final controller = PressureDrawingController(
-        stylusSettings: _stylusSettings,
-      );
-      _pagePressureControllers[pageId] = controller;
-
-      // Load existing drawing data if available
-      _loadDrawingDataToPressureController(controller, currentPage!);
-
-      debugPrint('Created new pressure drawing controller for page: $pageId');
-    } else {
-      debugPrint(
-        'Using existing pressure drawing controller for page: $pageId',
-      );
-    }
-    return _pagePressureControllers[pageId]!;
-  }
-
-  /// Load drawing data to pressure controller
-  void _loadDrawingDataToPressureController(
-    PressureDrawingController controller,
-    NotePage page,
-  ) {
-    if (page.drawingData != null && page.drawingData!.isNotEmpty) {
-      try {
-        final List<dynamic> drawingData = jsonDecode(page.drawingData!);
-        for (final item in drawingData) {
-          final type = item['type'] as String;
-          final paintContent = _createPaintContentFromJson(type, item);
-          if (paintContent != null) {
-            controller.addContent(paintContent);
-          }
-        }
-        debugPrint(
-          'Loaded ${drawingData.length} items to pressure controller for page ${page.id}',
-        );
-      } catch (e) {
-        debugPrint('Error loading drawing data to pressure controller: $e');
-      }
-    }
-  }
-
-  /// Create paint content from JSON data
-  PaintContent? _createPaintContentFromJson(
-    String type,
-    Map<String, dynamic> item,
-  ) {
-    try {
-      switch (type) {
-        case 'SimpleLine':
-          return SimpleLine.fromJson(item);
-        case 'SmoothLine':
-          return SmoothLine.fromJson(item);
-        case 'StraightLine':
-          return StraightLine.fromJson(item);
-        case 'Rectangle':
-          return Rectangle.fromJson(item);
-        case 'Circle':
-          return Circle.fromJson(item);
-        case 'Eraser':
-          return Eraser.fromJson(item);
-        default:
-          debugPrint('Unknown paint content type: $type');
-          return null;
-      }
-    } catch (e) {
-      debugPrint('Error creating paint content from JSON: $e');
-      return null;
-    }
   }
 
   /// Show stylus settings dialog
@@ -1727,17 +1363,15 @@ class NoteCreationVm extends ChangeNotifier {
     );
     debugPrint('Palm rejection level: ${_stylusSettings.palmRejectionLevel}');
     debugPrint('Stylus capabilities: $stylusCapabilities');
-    debugPrint(
-      'Current page has pressure controller: ${currentPage != null && _pagePressureControllers.containsKey(currentPage!.id)}',
-    );
 
-    if (currentPage != null) {
+    final pageController = getCurrentPageController();
+    debugPrint('Current page has controller: ${pageController != null}');
+
+    if (pageController != null) {
       final regularItems =
-          getCurrentPageDrawingController().getJsonList().length;
+          pageController.drawingController.getJsonList().length;
       final pressureItems =
-          _pagePressureControllers.containsKey(currentPage!.id)
-              ? _pagePressureControllers[currentPage!.id]!.getJsonList().length
-              : 0;
+          pageController.pressureController.getJsonList().length;
       debugPrint('Regular controller items: $regularItems');
       debugPrint('Pressure controller items: $pressureItems');
     }

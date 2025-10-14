@@ -75,7 +75,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
   }
 
   void _setPaintContent(DrawingToolType toolType) {
-    final controller = widget.vm.getCurrentPageDrawingController();
+    final pageController = widget.vm.getCurrentPageController();
+    if (pageController == null) return;
+    
+    final controller = pageController.activeDrawingController;
 
     switch (toolType) {
       case DrawingToolType.simpleLine:
@@ -371,9 +374,12 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
               divisions: 19,
               onChanged: (value) {
                 widget.vm.setStrokeWidth(value);
-                widget.vm.getCurrentPageDrawingController().setStyle(
-                  strokeWidth: value,
-                );
+                final pageController = widget.vm.getCurrentPageController();
+                if (pageController != null) {
+                  pageController.activeDrawingController.setStyle(
+                    strokeWidth: value,
+                  );
+                }
               },
             ),
           ),
@@ -383,7 +389,9 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
   }
 
   Widget _buildUndoRedoButtons() {
-    final controller = widget.vm.getCurrentPageDrawingController();
+    final pageController = widget.vm.getCurrentPageController();
+    if (pageController == null) return const SizedBox.shrink();
+    final controller = pageController.activeDrawingController;
 
     return Row(
       children: [
@@ -586,7 +594,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
     return GestureDetector(
       onTap: () {
         widget.vm.setSelectedColor(color);
-        widget.vm.getCurrentPageDrawingController().setStyle(color: color);
+        final pageController = widget.vm.getCurrentPageController();
+        if (pageController != null) {
+          pageController.activeDrawingController.setStyle(color: color);
+        }
         Navigator.pop(context);
       },
       child: Container(

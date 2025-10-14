@@ -31,10 +31,16 @@ Widget buildDrawingBoard(
 
   debugPrint('buildDrawingBoard: Using dimensions $validWidth x $validHeight');
 
+  // Get the active drawing controller from the current page controller
+  final pageController = vm.getCurrentPageController();
+  if (pageController == null) {
+    return Container(width: validWidth, height: validHeight, color: Colors.transparent);
+  }
+
   // Use pressure-sensitive drawing widget if stylus settings are enabled
   if (vm.stylusSettings.pressureSensitivityEnabled || vm.isStylusConnected) {
     return PressureDrawingWidget(
-      controller: vm.getCurrentPagePressureController(),
+      controller: pageController.pressureController,
       width: validWidth,
       height: validHeight,
       vm: vm,
@@ -48,7 +54,7 @@ Widget buildDrawingBoard(
       width: validWidth,
       height: validHeight,
       child: DrawingBoardWithCursor(
-        controller: vm.getCurrentPageDrawingController(),
+        controller: pageController.activeDrawingController,
         width: validWidth,
         height: validHeight,
         vm: vm,
