@@ -45,7 +45,7 @@ class NoteCreationVm extends ChangeNotifier {
   StreamSubscription<PlayerState>? _playerStateSubscription;
 
   // UI state
-  NoteMode _currentMode = NoteMode.text;
+  NoteMode _currentMode = NoteMode.read;
   bool _isTextBoxMode = false;
   String? _selectedTextBoxTool;
 
