@@ -19,7 +19,7 @@ class MindMapNodeWidget extends StatelessWidget {
     final isSelected = vm.selectedNodeId == node.id;
     final isConnectingFrom = vm.connectingFromNodeId == node.id;
     final isAttaching = vm.attachingNodeId == node.id;
-    final hasAttachment = node.contentID != null && node.contentID!.isNotEmpty;
+    // Attachment info moved to preview panel
     final themeValues = vm.boardTheme.values;
 
     final toneColor = _applyTone(
@@ -147,50 +147,7 @@ class MindMapNodeWidget extends StatelessWidget {
               ),
             ),
 
-            // Attachment indicator/button
-            if (hasAttachment)
-              Positioned(
-                left: 0,
-                top: 0,
-                child: Tooltip(
-                  message: 'Open attached document',
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () async {
-                      await vm.openAttachedContent(node.id);
-                    },
-                    child: SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: Center(
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[800]!.withValues(
-                              alpha: (isSelected) ? 0.5 : 0.1,
-                            ),
-                            shape: BoxShape.circle,
-                            border:
-                                (isSelected)
-                                    ? Border.all(
-                                      color: Colors.white,
-                                      width: 1.5,
-                                    )
-                                    : null,
-                          ),
-                          child: Icon(
-                            Icons.attach_file,
-                            size: 16,
-                            color: Colors.white.withValues(
-                              alpha: (isSelected) ? 1 : 0.6,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            // Attachment icon removed - now in preview panel
 
             if (isConnectingFrom)
               Positioned(
@@ -247,148 +204,7 @@ class MindMapNodeWidget extends StatelessWidget {
                 ),
               ),
 
-            // Selected toolbar under node: Attach, Link, Edit
-            if (isSelected)
-              Positioned(
-                left: 0,
-                right: 0,
-                top: node.height - 40,
-                child: Center(
-                  child: SizedBox(
-                    width: math.max(node.width, 270),
-                    // Use a Stack so a transparent absorber sits under the toolbar while buttons remain on top
-                    child: Stack(
-                      children: [
-                        // Background absorber to prevent clicks passing through to nodes behind
-                        Positioned.fill(
-                          child: Container(color: Colors.transparent),
-                        ),
-                        // Toolbar content on top
-                        Center(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Wrap(
-                              spacing: 8,
-                              runSpacing: 4,
-                              alignment: WrapAlignment.center,
-                              children: [
-                                _actionCircle(
-                                  tooltip:
-                                      hasAttachment
-                                          ? 'Remove attachment'
-                                          : 'Attach document',
-                                  color:
-                                      hasAttachment
-                                          ? Colors.redAccent
-                                          : Colors.grey[800]!,
-                                  icon:
-                                      hasAttachment
-                                          ? Icons.link_off
-                                          : Icons.attach_file,
-                                  iconColor: Colors.white,
-                                  onTap: () {
-                                    if (hasAttachment) {
-                                      vm.removeAttachmentFromNode(node.id);
-                                    } else {
-                                      vm.startAttachToNode(node.id);
-                                      vm.openDrawer();
-                                    }
-                                  },
-                                ),
-                                _actionCircle(
-                                  tooltip:
-                                      isConnectingFrom
-                                          ? 'Cancel link'
-                                          : 'Link to another node',
-                                  color:
-                                      isConnectingFrom
-                                          ? Colors.blueAccent
-                                          : Colors.grey[800]!,
-                                  icon: Icons.link,
-                                  iconColor: Colors.white,
-                                  onTap: () {
-                                    if (isConnectingFrom) {
-                                      vm.cancelConnecting();
-                                    } else {
-                                      vm.startConnectingFrom(node.id);
-                                    }
-                                  },
-                                ),
-                                _actionCircle(
-                                  tooltip: 'Edit text',
-                                  color: Colors.grey[800]!,
-                                  icon: Icons.edit,
-                                  iconColor: Colors.white,
-                                  onTap: () async {
-                                    final textController =
-                                        TextEditingController(text: node.text);
-                                    final newText = await showDialog<String>(
-                                      context: context,
-                                      builder:
-                                          (dialogContext) => AlertDialog(
-                                            title: const Text('Edit node text'),
-                                            content: TextField(
-                                              controller: textController,
-                                              autofocus: true,
-                                              minLines: 1,
-                                              maxLines: 4,
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed:
-                                                    () =>
-                                                        Navigator.of(
-                                                          dialogContext,
-                                                        ).pop(),
-                                                child: const Text('Cancel'),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed:
-                                                    () => Navigator.of(
-                                                      dialogContext,
-                                                    ).pop(textController.text),
-                                                child: const Text('Save'),
-                                              ),
-                                            ],
-                                          ),
-                                    );
-                                    if (newText != null &&
-                                        newText.trim().isNotEmpty) {
-                                      vm.updateNodeText(
-                                        node.id,
-                                        newText.trim(),
-                                      );
-                                    }
-                                  },
-                                ),
-                                _actionCircle(
-                                  tooltip: 'Delete node',
-                                  color: Colors.red,
-                                  icon: Icons.delete,
-                                  iconColor: Colors.white,
-                                  onTap: () async {
-                                    await vm.deleteNodeWithConfirmation(
-                                      context,
-                                      node.id,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+            // Action buttons moved to preview panel for cleaner node UI
           ],
         ),
       ),
@@ -596,43 +412,7 @@ class MindMapNodeWidget extends StatelessWidget {
     }
   }
 
-  Widget _actionCircle({
-    required String tooltip,
-    required Color color,
-    required IconData icon,
-    required Color iconColor,
-    required VoidCallback onTap,
-  }) {
-    return Tooltip(
-      message: tooltip,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTapDown: (_) {}, // claim gesture arena early
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            customBorder: const CircleBorder(),
-            onTap: onTap,
-            child: SizedBox(
-              width: 28,
-              height: 28,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 1.5),
-                  ),
-                  child: Icon(icon, size: 20, color: iconColor),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Action circle moved to preview panel
 }
 
 class _ShapeBorderPainter extends CustomPainter {
