@@ -11,11 +11,6 @@ import 'package:navinotes/models/mind_map.dart';
 import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/models/mind_map_edge.dart';
 import 'package:navinotes/settings/packages.dart';
-import 'package:navinotes/settings/db_helpers.dart';
-import 'package:navinotes/settings/enums.dart';
-import 'package:navinotes/settings/navigation_helper.dart';
-import 'package:navinotes/settings/board_theme.dart';
-import 'package:navinotes/settings/file_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -30,7 +25,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   bool _isLoading = true;
   bool _isDocumentPanelVisible = true;
-  bool _isStylingPanelVisible = false;  // Only show when design icon is clicked
+  bool _isStylingPanelVisible = false; // Only show when design icon is clicked
   bool _needsInitialCentering = false;
 
   // Mind Map State
@@ -523,7 +518,8 @@ class BoardMindMapVm extends ChangeNotifier {
       // Clear selection if this node was selected
       if (_selectedNodeId == nodeId) {
         _selectedNodeId = null;
-        _isStylingPanelVisible = false; // hide styling panel when selected node is deleted
+        _isStylingPanelVisible =
+            false; // hide styling panel when selected node is deleted
       }
 
       _saveMindMapChanges();
@@ -586,7 +582,8 @@ class BoardMindMapVm extends ChangeNotifier {
     _selectedEdgeId = edgeId;
     if (edgeId != null) {
       _selectedNodeId = null; // deselect nodes when edge is selected
-      _isStylingPanelVisible = false; // hide styling panel when edge is selected
+      _isStylingPanelVisible =
+          false; // hide styling panel when edge is selected
     }
     notifyListeners();
   }
@@ -763,8 +760,12 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Try to select edge at visual position
   bool trySelectEdgeAtVisual(Offset visualPosition) {
+    debugPrint("trySelectEdgeAtVisual");
     // Convert visual to logical coordinates
-    if (_transformationController == null) return false;
+    if (_transformationController == null) {
+      debugPrint("No _transformationController");
+      return false;
+    }
 
     final matrix = _transformationController!.value;
     final scale = matrix.getMaxScaleOnAxis();
@@ -800,6 +801,8 @@ class BoardMindMapVm extends ChangeNotifier {
         if (distance < 20) {
           // 20 pixel tolerance
           selectEdge(edge.id);
+          debugPrint("Selected Edge == ${edge.id}");
+
           return true;
         }
       }
@@ -870,7 +873,9 @@ class BoardMindMapVm extends ChangeNotifier {
   Future<void> _saveMindMapChanges() async {
     // In simplified architecture, all data is already saved in content records
     // This method is kept for compatibility but does nothing
-    debugPrint('BoardMindMapVm: Content-based architecture - no board mind map to save');
+    debugPrint(
+      'BoardMindMapVm: Content-based architecture - no board mind map to save',
+    );
   }
 
   /// Save node styling changes to corresponding content record
@@ -885,7 +890,8 @@ class BoardMindMapVm extends ChangeNotifier {
 
       // Create enhanced styling object for metaData storage
       final nodeStyleData = {
-        'textColor': '#${node.textColor.value.toRadixString(16).padLeft(8, '0')}',
+        'textColor':
+            '#${node.textColor.value.toRadixString(16).padLeft(8, '0')}',
         'fontSize': node.fontSize,
         'fontWeight': node.fontWeight,
         'opacity': node.opacity,
@@ -917,7 +923,9 @@ class BoardMindMapVm extends ChangeNotifier {
         _contents[index] = updatedContent;
       }
 
-      debugPrint('BoardMindMapVm: Saved ALL styling for node $nodeId (color: ${node.color}, shape: ${node.shape}, opacity: ${node.opacity})');
+      debugPrint(
+        'BoardMindMapVm: Saved ALL styling for node $nodeId (color: ${node.color}, shape: ${node.shape}, opacity: ${node.opacity})',
+      );
     } catch (e) {
       debugPrint('Error saving node styling to content: $e');
     }
@@ -1145,7 +1153,7 @@ class BoardMindMapVm extends ChangeNotifier {
         content.nodeColor != null
             ? Color(int.parse(content.nodeColor!.replaceFirst('#', '0xff')))
             : _getNodeColorForContentType(content.type);
-    
+
     // Parse saved shape or use default
     MindMapShape shape = MindMapShape.rounded;
     if (content.nodeShape != null) {
@@ -1160,8 +1168,9 @@ class BoardMindMapVm extends ChangeNotifier {
     }
 
     // Load enhanced styling from metaData
-    final nodeStyleData = content.metaData['nodeStyle'] as Map<String, dynamic>?;
-    
+    final nodeStyleData =
+        content.metaData['nodeStyle'] as Map<String, dynamic>?;
+
     // Parse advanced styling properties
     Color textColor = Colors.black;
     double fontSize = 14.0;
@@ -1175,16 +1184,21 @@ class BoardMindMapVm extends ChangeNotifier {
       try {
         // Parse text color
         if (nodeStyleData['textColor'] != null) {
-          textColor = Color(int.parse(nodeStyleData['textColor'].replaceFirst('#', '0xff')));
+          textColor = Color(
+            int.parse(nodeStyleData['textColor'].replaceFirst('#', '0xff')),
+          );
         }
-        
+
         // Parse numeric properties
         fontSize = (nodeStyleData['fontSize'] as num?)?.toDouble() ?? fontSize;
-        fontWeight = (nodeStyleData['fontWeight'] as num?)?.toInt() ?? fontWeight;
+        fontWeight =
+            (nodeStyleData['fontWeight'] as num?)?.toInt() ?? fontWeight;
         opacity = (nodeStyleData['opacity'] as num?)?.toDouble() ?? opacity;
-        colorTone = (nodeStyleData['colorTone'] as num?)?.toDouble() ?? colorTone;
-        borderRadius = (nodeStyleData['borderRadius'] as num?)?.toDouble() ?? borderRadius;
-        
+        colorTone =
+            (nodeStyleData['colorTone'] as num?)?.toDouble() ?? colorTone;
+        borderRadius =
+            (nodeStyleData['borderRadius'] as num?)?.toDouble() ?? borderRadius;
+
         // Parse border style
         if (nodeStyleData['borderStyle'] != null) {
           borderStyle = MindMapBorderStyle.values.firstWhere(
@@ -1197,7 +1211,9 @@ class BoardMindMapVm extends ChangeNotifier {
       }
     }
 
-    debugPrint('BoardMindMapVm: Loaded node ${content.id} with styling - opacity: $opacity, textColor: $textColor, fontSize: $fontSize');
+    debugPrint(
+      'BoardMindMapVm: Loaded node ${content.id} with styling - opacity: $opacity, textColor: $textColor, fontSize: $fontSize',
+    );
 
     return MindMapNode(
       id: content.id,
