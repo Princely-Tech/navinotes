@@ -883,12 +883,28 @@ class BoardMindMapVm extends ChangeNotifier {
       final content = _contents.where((c) => c.id == nodeId).firstOrNull;
       if (content == null) return;
 
-      // Update content with current node styling
-      final updatedContent = content.getUpdatedContent(
+      // Create enhanced styling object for metaData storage
+      final nodeStyleData = {
+        'textColor': '#${node.textColor.value.toRadixString(16).padLeft(8, '0')}',
+        'fontSize': node.fontSize,
+        'fontWeight': node.fontWeight,
+        'opacity': node.opacity,
+        'colorTone': node.colorTone,
+        'borderStyle': node.borderStyle.toString(),
+        'borderRadius': node.borderRadius,
+      };
+
+      // Update metaData with styling info
+      final updatedMetaData = Map<String, dynamic>.from(content.metaData);
+      updatedMetaData['nodeStyle'] = nodeStyleData;
+
+      // Update content with current node styling (basic fields + enhanced metaData)
+      final updatedContent = content.getUpdatedContentWithMeta(
         nodeColor: '#${node.color.value.toRadixString(16).padLeft(8, '0')}',
         nodeWidth: node.width,
         nodeHeight: node.height,
         nodeShape: node.shape.toString(),
+        metaData: updatedMetaData,
         updatedAt: DateTime.now().millisecondsSinceEpoch,
       );
 
@@ -901,7 +917,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _contents[index] = updatedContent;
       }
 
-      debugPrint('BoardMindMapVm: Saved styling for node $nodeId to content (color: ${node.color}, shape: ${node.shape})');
+      debugPrint('BoardMindMapVm: Saved ALL styling for node $nodeId (color: ${node.color}, shape: ${node.shape}, opacity: ${node.opacity})');
     } catch (e) {
       debugPrint('Error saving node styling to content: $e');
     }
@@ -1143,6 +1159,46 @@ class BoardMindMapVm extends ChangeNotifier {
       }
     }
 
+    // Load enhanced styling from metaData
+    final nodeStyleData = content.metaData['nodeStyle'] as Map<String, dynamic>?;
+    
+    // Parse advanced styling properties
+    Color textColor = Colors.black;
+    double fontSize = 14.0;
+    int fontWeight = 500;
+    double opacity = 1.0;
+    double colorTone = 0.0;
+    MindMapBorderStyle borderStyle = MindMapBorderStyle.none;
+    double borderRadius = 8.0;
+
+    if (nodeStyleData != null) {
+      try {
+        // Parse text color
+        if (nodeStyleData['textColor'] != null) {
+          textColor = Color(int.parse(nodeStyleData['textColor'].replaceFirst('#', '0xff')));
+        }
+        
+        // Parse numeric properties
+        fontSize = (nodeStyleData['fontSize'] as num?)?.toDouble() ?? fontSize;
+        fontWeight = (nodeStyleData['fontWeight'] as num?)?.toInt() ?? fontWeight;
+        opacity = (nodeStyleData['opacity'] as num?)?.toDouble() ?? opacity;
+        colorTone = (nodeStyleData['colorTone'] as num?)?.toDouble() ?? colorTone;
+        borderRadius = (nodeStyleData['borderRadius'] as num?)?.toDouble() ?? borderRadius;
+        
+        // Parse border style
+        if (nodeStyleData['borderStyle'] != null) {
+          borderStyle = MindMapBorderStyle.values.firstWhere(
+            (e) => e.toString() == nodeStyleData['borderStyle'],
+            orElse: () => MindMapBorderStyle.none,
+          );
+        }
+      } catch (e) {
+        debugPrint('Error parsing enhanced node styling: $e');
+      }
+    }
+
+    debugPrint('BoardMindMapVm: Loaded node ${content.id} with styling - opacity: $opacity, textColor: $textColor, fontSize: $fontSize');
+
     return MindMapNode(
       id: content.id,
       text:
@@ -1151,9 +1207,16 @@ class BoardMindMapVm extends ChangeNotifier {
               : (content.file ?? 'Untitled'),
       position: position,
       color: color,
+      textColor: textColor,
       width: content.nodeWidth ?? 200.0,
       height: content.nodeHeight ?? 100.0,
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      opacity: opacity,
+      colorTone: colorTone,
       shape: shape,
+      borderStyle: borderStyle,
+      borderRadius: borderRadius,
       contentID: content.id,
     );
   }
