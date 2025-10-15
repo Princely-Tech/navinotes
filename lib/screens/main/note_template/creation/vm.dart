@@ -907,28 +907,27 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   void debugDrawingController() {
-    // Debug method to check controller state and identify display vs save disconnect
+    // Debug method to check simplified single-controller state
     final pageController = getCurrentPageController();
     if (pageController != null) {
-      debugPrint('=== Drawing Controller Debug ===');
+      debugPrint('=== Simplified Drawing Controller Debug ===');
       debugPrint('Current page: ${currentPage?.id}');
       debugPrint('Pressure sensitivity enabled: ${_stylusSettings.pressureSensitivityEnabled}');
       
-      // Check the controllers being used
-      final regularController = pageController.drawingController;
-      final pressureControllerWrapper = pageController.pressureController;
-      final pressureWrappedController = pressureControllerWrapper.drawingController;
-      final activeController = pageController.activeDrawingController;
+      // Only one controller system now - the pressure controller
+      final pressureController = pageController.pressureController;
+      final drawingController = pressureController.drawingController;
+      final items = drawingController.getJsonList();
       
-      debugPrint('Regular controller: ${regularController.hashCode} - ${regularController.getJsonList().length} items');
-      debugPrint('Pressure wrapped controller: ${pressureWrappedController.hashCode} - ${pressureWrappedController.getJsonList().length} items');
-      debugPrint('Active controller: ${activeController.hashCode} - ${activeController.getJsonList().length} items');
+      debugPrint('Pressure controller: ${pressureController.hashCode}');
+      debugPrint('Wrapped drawing controller: ${drawingController.hashCode}');
+      debugPrint('Drawing items: ${items.length}');
       
-      // Check if they're the same instance
-      debugPrint('Active == PressureWrapped: ${identical(activeController, pressureWrappedController)}');
-      debugPrint('Active == Regular: ${identical(activeController, regularController)}');
+      if (items.isNotEmpty) {
+        debugPrint('First item type: ${items.first['type']}');
+      }
       
-      debugPrint('===============================');
+      debugPrint('=========================================');
     } else {
       debugPrint('No page controller found');
     }

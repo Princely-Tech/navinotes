@@ -9,15 +9,13 @@ import '../managers/text_box_manager.dart';
 import '../models/stylus_settings.dart';
 import 'pressure_drawing_controller.dart';
 
-/// Manages all controllers and state for a single page
 class PageController extends ChangeNotifier {
   final NotePage _page;
   final Function(NotePage) _onPageUpdated;
   final StylusSettings _stylusSettings;
 
-  // Controllers
+  // Private controllers
   late final QuillController _textController;
-  late final DrawingController _drawingController;
   late final PressureDrawingController _pressureController;
   late final TextBoxManager _textBoxManager;
 
@@ -39,20 +37,14 @@ class PageController extends ChangeNotifier {
   // Getters
   NotePage get page => _page;
   QuillController get textController => _textController;
-  DrawingController get drawingController => _drawingController;
+  DrawingController get drawingController =>
+      _pressureController.drawingController;
   PressureDrawingController get pressureController => _pressureController;
   TextBoxManager get textBoxManager => _textBoxManager;
 
-  /// Get the appropriate drawing controller based on stylus settings
-  // DrawingController get activeDrawingController {
-  //   return _stylusSettings.pressureSensitivityEnabled
-  //       ? _pressureController.drawingController
-  //       : _drawingController;
-  // }
+  /// Get the drawing controller (always use pressure controller now)
   DrawingController get activeDrawingController {
-    return _stylusSettings.pressureSensitivityEnabled
-        ? _drawingController
-        : pressureController.drawingController;
+    return _pressureController.drawingController;
   }
 
   void _initializeControllers() {
@@ -60,14 +52,12 @@ class PageController extends ChangeNotifier {
     _textController = QuillController.basic();
     _textController.document.changes.listen((_) => _scheduleAutoSave());
 
-    // Initialize drawing controllers
-    _drawingController = DrawingController();
+    // Initialize pressure drawing controller (which wraps a regular drawing controller)
     _pressureController = PressureDrawingController(
       stylusSettings: _stylusSettings,
     );
 
-    // Add listeners for drawing controller changes (for in-memory auto-save)
-    _drawingController.addListener(_scheduleAutoSave);
+    // Add listener for drawing controller changes (for in-memory auto-save)
     _pressureController.addListener(_scheduleAutoSave);
 
     // Initialize text box manager
@@ -120,16 +110,14 @@ class PageController extends ChangeNotifier {
     try {
       final List<dynamic> data = jsonDecode(drawingData);
 
-      // Clear both controllers
-      _drawingController.clear();
+      // Clear pressure controller (which handles the drawing)
       _pressureController.clear();
 
-      // Load content into both controllers for compatibility
+      // Load content into pressure controller
       for (var item in data) {
         if (item is Map<String, dynamic>) {
           final PaintContent? paintContent = _createPaintContentFromJson(item);
           if (paintContent != null) {
-            _drawingController.addContent(paintContent);
             _pressureController.addContent(paintContent);
           }
         }
@@ -227,7 +215,6 @@ class PageController extends ChangeNotifier {
 
   /// Clear all drawing content
   void clearDrawing() {
-    _drawingController.clear();
     _pressureController.clear();
     _scheduleAutoSave();
     notifyListeners();
@@ -322,13 +309,11 @@ class PageController extends ChangeNotifier {
     _savePageContent();
 
     // Remove listeners before disposing
-    _drawingController.removeListener(_scheduleAutoSave);
     _pressureController.removeListener(_scheduleAutoSave);
     _textBoxManager.removeListener(_scheduleAutoSave);
 
     // Dispose controllers
     _textController.dispose();
-    _drawingController.dispose();
     _pressureController.dispose();
     _textBoxManager.dispose();
 

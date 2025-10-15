@@ -41,29 +41,12 @@ Widget buildDrawingBoard(
     );
   }
 
-  // Use pressure-sensitive drawing widget if stylus settings are enabled
-  if (vm.stylusSettings.pressureSensitivityEnabled || vm.isStylusConnected) {
-    return PressureDrawingWidget(
-      controller: pageController.pressureController,
-      width: validWidth,
-      height: validHeight,
-      vm: vm,
-    );
-  }
-
-  // Fallback to regular drawing board
-  return IgnorePointer(
-    ignoring: vm.currentMode != NoteMode.drawing,
-    child: Container(
-      width: validWidth,
-      height: validHeight,
-      child: DrawingBoardWithCursor(
-        controller: pageController.activeDrawingController,
-        width: validWidth,
-        height: validHeight,
-        vm: vm,
-      ),
-    ),
+  // Always use pressure-sensitive drawing widget (handles both pressure and regular drawing)
+  return PressureDrawingWidget(
+    controller: pageController.pressureController,
+    width: validWidth,
+    height: validHeight,
+    vm: vm,
   );
 }
 
