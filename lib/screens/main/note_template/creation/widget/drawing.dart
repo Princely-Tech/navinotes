@@ -34,7 +34,11 @@ Widget buildDrawingBoard(
   // Get the active drawing controller from the current page controller
   final pageController = vm.getCurrentPageController();
   if (pageController == null) {
-    return Container(width: validWidth, height: validHeight, color: Colors.transparent);
+    return Container(
+      width: validWidth,
+      height: validHeight,
+      color: Colors.transparent,
+    );
   }
 
   // Use pressure-sensitive drawing widget if stylus settings are enabled

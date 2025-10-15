@@ -11,36 +11,35 @@ class PressureDrawingController extends ChangeNotifier {
   // Wrap the actual DrawingController
   late final DrawingController _drawingController;
   StylusSettings _stylusSettings;
-  
+
   // Pressure tracking
   final List<PressurePoint> _currentStroke = [];
   bool _isDrawing = false;
-  
+
   // Palm rejection
   final Set<int> _rejectedPointers = <int>{};
   final Map<int, Offset> _pointerPositions = <int, Offset>{};
   final Map<int, DateTime> _pointerStartTimes = <int, DateTime>{};
-  
+
   // Double tap detection
   DateTime? _lastTapTime;
   Offset? _lastTapPosition;
-  
+
   // Hover state
   bool _isHovering = false;
   Offset? _hoverPosition;
-  
+
   // Stroke smoothing
   final List<Offset> _smoothingBuffer = [];
-  
-  PressureDrawingController({
-    StylusSettings? stylusSettings,
-  }) : _stylusSettings = stylusSettings ?? const StylusSettings() {
+
+  PressureDrawingController({StylusSettings? stylusSettings})
+    : _stylusSettings = stylusSettings ?? const StylusSettings() {
     _drawingController = DrawingController();
   }
-  
+
   // Delegate methods to the wrapped controller
   DrawingController get drawingController => _drawingController;
-  
+
   // Expose common DrawingController methods
   void clear() => _drawingController.clear();
   void undo() => _drawingController.undo();
@@ -48,9 +47,11 @@ class PressureDrawingController extends ChangeNotifier {
   bool canUndo() => _drawingController.canUndo();
   bool canRedo() => _drawingController.canRedo();
   List<Map<String, dynamic>> getJsonList() => _drawingController.getJsonList();
-  void addContent(PaintContent content) => _drawingController.addContent(content);
-  void setPaintContent(PaintContent content) => _drawingController.setPaintContent(content);
-  
+  void addContent(PaintContent content) =>
+      _drawingController.addContent(content);
+  void setPaintContent(PaintContent content) =>
+      _drawingController.setPaintContent(content);
+
   // Add setStyle method for compatibility
   void setStyle({double? strokeWidth, Color? color}) {
     if (strokeWidth != null || color != null) {
@@ -89,7 +90,7 @@ class PressureDrawingController extends ChangeNotifier {
 
     // Start new stroke
     _startStroke(event);
-    
+
     return true;
   }
 
@@ -107,7 +108,7 @@ class PressureDrawingController extends ChangeNotifier {
     if (_isDrawing) {
       _continueStroke(event);
     }
-    
+
     return true;
   }
 
@@ -122,7 +123,7 @@ class PressureDrawingController extends ChangeNotifier {
     if (_isDrawing) {
       _endStroke(event);
     }
-    
+
     return true;
   }
 
@@ -149,21 +150,25 @@ class PressureDrawingController extends ChangeNotifier {
     }
 
     // Check if stylus-only mode is enabled and this isn't a stylus
-    if (_stylusSettings.stylusOnlyMode && event.kind != PointerDeviceKind.stylus) {
+    if (_stylusSettings.stylusOnlyMode &&
+        event.kind != PointerDeviceKind.stylus) {
       return true;
     }
 
     // Check if finger drawing is disabled and this is a touch
-    if (!_stylusSettings.fingerDrawingEnabled && event.kind == PointerDeviceKind.touch) {
+    if (!_stylusSettings.fingerDrawingEnabled &&
+        event.kind == PointerDeviceKind.touch) {
       return true;
     }
 
     // Palm rejection based on touch size and pressure
     if (event.kind == PointerDeviceKind.touch) {
-      final rejectionSensitivity = _stylusSettings.palmRejectionLevel.sensitivity;
-      
+      final rejectionSensitivity =
+          _stylusSettings.palmRejectionLevel.sensitivity;
+
       // Reject large touch areas (likely palm)
-      if (event.size > _stylusSettings.palmRejectionRadius * rejectionSensitivity) {
+      if (event.size >
+          _stylusSettings.palmRejectionRadius * rejectionSensitivity) {
         return true;
       }
 
@@ -175,7 +180,8 @@ class PressureDrawingController extends ChangeNotifier {
       // Check proximity to other active pointers (multi-touch palm detection)
       for (final otherPosition in _pointerPositions.values) {
         final distance = (event.localPosition - otherPosition).distance;
-        if (distance < _stylusSettings.palmRejectionRadius * rejectionSensitivity) {
+        if (distance <
+            _stylusSettings.palmRejectionRadius * rejectionSensitivity) {
           return true;
         }
       }
@@ -187,11 +193,11 @@ class PressureDrawingController extends ChangeNotifier {
   /// Handle double tap detection and actions
   void _handleDoubleTap(PointerDownEvent event) {
     final now = DateTime.now();
-    
+
     if (_lastTapTime != null && _lastTapPosition != null) {
       final timeDiff = now.difference(_lastTapTime!);
       final positionDiff = (event.localPosition - _lastTapPosition!).distance;
-      
+
       if (timeDiff <= _stylusSettings.doubleTapTimeout && positionDiff < 20.0) {
         // Execute double tap action
         _executeDoubleTapAction();
@@ -200,7 +206,7 @@ class PressureDrawingController extends ChangeNotifier {
         return;
       }
     }
-    
+
     _lastTapTime = now;
     _lastTapPosition = event.localPosition;
   }
@@ -222,10 +228,10 @@ class PressureDrawingController extends ChangeNotifier {
     _isDrawing = true;
     _currentStroke.clear();
     _smoothingBuffer.clear();
-    
+
     final pressurePoint = _createPressurePoint(event);
     _currentStroke.add(pressurePoint);
-    
+
     // Add the initial point to the drawing
     _addPointToDrawing(pressurePoint);
   }
@@ -233,10 +239,10 @@ class PressureDrawingController extends ChangeNotifier {
   /// Continue the current stroke
   void _continueStroke(PointerMoveEvent event) {
     if (!_isDrawing) return;
-    
+
     final pressurePoint = _createPressurePoint(event);
     _currentStroke.add(pressurePoint);
-    
+
     // Apply stroke smoothing if enabled
     if (_stylusSettings.strokeSmoothingEnabled) {
       _addSmoothedPoint(pressurePoint);
@@ -248,9 +254,9 @@ class PressureDrawingController extends ChangeNotifier {
   /// End the current stroke
   void _endStroke(PointerUpEvent event) {
     if (!_isDrawing) return;
-    
+
     _isDrawing = false;
-    
+
     // Finalize the stroke with any remaining smoothed points
     if (_stylusSettings.strokeSmoothingEnabled && _smoothingBuffer.isNotEmpty) {
       for (final point in _smoothingBuffer) {
@@ -258,7 +264,7 @@ class PressureDrawingController extends ChangeNotifier {
       }
       _smoothingBuffer.clear();
     }
-    
+
     _currentStroke.clear();
   }
 
@@ -267,11 +273,11 @@ class PressureDrawingController extends ChangeNotifier {
     double pressure = 1.0;
     double tiltX = 0.0;
     double tiltY = 0.0;
-    
+
     // Extract pressure information if available
     if (event is PointerDownEvent || event is PointerMoveEvent) {
       pressure = event.pressure;
-      
+
       // Note: tiltX and tiltY are not available in standard Flutter PointerEvent
       // They would need to be accessed through platform channels for specific devices
       // For now, we'll use default values
@@ -281,10 +287,10 @@ class PressureDrawingController extends ChangeNotifier {
         tiltY = 0.0; // Placeholder
       }
     }
-    
+
     // Apply stylus settings to pressure
     final adjustedPressure = _stylusSettings.getPressureValue(pressure);
-    
+
     return PressurePoint(
       offset: event.localPosition,
       pressure: adjustedPressure,
@@ -308,12 +314,12 @@ class PressureDrawingController extends ChangeNotifier {
   /// Add smoothed point using buffer
   void _addSmoothedPoint(PressurePoint point) {
     _smoothingBuffer.add(point.offset);
-    
+
     // Keep buffer size manageable
     if (_smoothingBuffer.length > 5) {
       _smoothingBuffer.removeAt(0);
     }
-    
+
     // Apply smoothing algorithm
     if (_smoothingBuffer.length >= 3) {
       final smoothedOffset = _calculateSmoothedPoint();
@@ -331,19 +337,20 @@ class PressureDrawingController extends ChangeNotifier {
   /// Calculate smoothed point using weighted average
   Offset _calculateSmoothedPoint() {
     if (_smoothingBuffer.length < 3) return _smoothingBuffer.last;
-    
+
     final smoothingFactor = _stylusSettings.smoothingLevel;
     double totalWeight = 0.0;
     double weightedX = 0.0;
     double weightedY = 0.0;
-    
+
     for (int i = 0; i < _smoothingBuffer.length; i++) {
-      final weight = math.pow(smoothingFactor, _smoothingBuffer.length - i - 1).toDouble();
+      final weight =
+          math.pow(smoothingFactor, _smoothingBuffer.length - i - 1).toDouble();
       totalWeight += weight;
       weightedX += _smoothingBuffer[i].dx * weight;
       weightedY += _smoothingBuffer[i].dy * weight;
     }
-    
+
     return Offset(weightedX / totalWeight, weightedY / totalWeight);
   }
 
@@ -352,40 +359,51 @@ class PressureDrawingController extends ChangeNotifier {
     // Get current drawing configuration - use default values
     const defaultStrokeWidth = 2.0;
     const defaultColor = Colors.black;
-    
+
     // Calculate pressure-adjusted stroke width
     double strokeWidth = defaultStrokeWidth;
     if (_stylusSettings.pressureSensitivityEnabled) {
       strokeWidth *= point.pressure;
     }
-    
+
     // Apply tilt adjustments
-    strokeWidth = _stylusSettings.getTiltAdjustedWidth(strokeWidth, point.tiltX, point.tiltY);
-    
+    strokeWidth = _stylusSettings.getTiltAdjustedWidth(
+      strokeWidth,
+      point.tiltX,
+      point.tiltY,
+    );
+
     // Calculate opacity
     double opacity = 1.0;
     if (_stylusSettings.tiltSensitivityEnabled) {
-      opacity = _stylusSettings.getTiltAdjustedOpacity(opacity, point.tiltX, point.tiltY);
+      opacity = _stylusSettings.getTiltAdjustedOpacity(
+        opacity,
+        point.tiltX,
+        point.tiltY,
+      );
     }
-    
+
     // Create paint content with pressure-adjusted properties
     final adjustedConfig = PressureDrawingConfig(
       strokeWidth: strokeWidth.clamp(0.1, 50.0),
       color: defaultColor.withValues(alpha: opacity),
     );
-    
+
     // Add to drawing using the wrapped controller
     _addPressureAwarePaintContent(point, adjustedConfig);
   }
 
   /// Add pressure-aware paint content
-  void _addPressureAwarePaintContent(PressurePoint point, PressureDrawingConfig config) {
+  void _addPressureAwarePaintContent(
+    PressurePoint point,
+    PressureDrawingConfig config,
+  ) {
     // Update the drawing controller's style with pressure-adjusted properties
     _drawingController.setStyle(
       strokeWidth: config.strokeWidth,
       color: config.color,
     );
-    
+
     // The actual drawing will be handled by the DrawingBoard widget
     // when it receives pointer events. We just need to ensure the
     // style is set correctly for pressure sensitivity.
@@ -394,7 +412,7 @@ class PressureDrawingController extends ChangeNotifier {
   /// Get hover information for cursor display
   HoverInfo? getHoverInfo() {
     if (!_isHovering || _hoverPosition == null) return null;
-    
+
     return HoverInfo(
       position: _hoverPosition!,
       visible: _stylusSettings.showCursor,
@@ -404,7 +422,8 @@ class PressureDrawingController extends ChangeNotifier {
   }
 
   /// Check if double tap action should be executed
-  bool get shouldExecuteDoubleTapAction => _lastTapTime == null && _lastTapPosition == null;
+  bool get shouldExecuteDoubleTapAction =>
+      _lastTapTime == null && _lastTapPosition == null;
 
   /// Get the configured double tap action
   DoubleTapAction get doubleTapAction => _stylusSettings.doubleTapAction;

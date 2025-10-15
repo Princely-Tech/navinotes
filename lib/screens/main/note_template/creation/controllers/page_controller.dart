@@ -60,7 +60,7 @@ class PageController extends ChangeNotifier {
     _pressureController = PressureDrawingController(
       stylusSettings: _stylusSettings,
     );
-    
+
     // Add listeners for drawing controller changes (for in-memory auto-save)
     _drawingController.addListener(_scheduleAutoSave);
     _pressureController.addListener(_scheduleAutoSave);

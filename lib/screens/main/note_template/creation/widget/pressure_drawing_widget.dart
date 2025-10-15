@@ -111,28 +111,51 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     return MouseRegion(
       onHover: (event) => _handleMouseHover(event),
       onExit: (event) => _handleMouseExit(event),
-      child: Listener(
-        onPointerDown: _handlePointerDown,
-        onPointerMove: _handlePointerMove,
-        onPointerUp: _handlePointerUp,
-        onPointerCancel: _handlePointerCancel,
-        child: RepaintBoundary(
-          child: Container(
+      child: RepaintBoundary(
+        child: Container(
           width: width,
           height: height,
-          child: DrawingBoard(
-            controller: widget.controller.drawingController,
-            background: Container(
-              width: width,
-              height: height,
-              color: Colors.transparent,
-            ),
-            showDefaultActions: false,
-            showDefaultTools: false,
+          child: Stack(
+            children: [
+              // Main drawing board - receives all drawing events
+              DrawingBoard(
+                controller: widget.controller.drawingController,
+                background: Container(
+                  width: width,
+                  height: height,
+                  color: Colors.transparent,
+                ),
+                showDefaultActions: false,
+                showDefaultTools: false,
+              ),
+              // Transparent overlay for pressure/stylus processing
+              Positioned.fill(
+                child: Listener(
+                  behavior: HitTestBehavior.translucent,
+                  onPointerDown: (event) {
+                    // Process pressure data but don't consume the event
+                    _handlePointerDown(event);
+                  },
+                  onPointerMove: (event) {
+                    // Process pressure data but don't consume the event
+                    _handlePointerMove(event);
+                  },
+                  onPointerUp: (event) {
+                    // Process pressure data but don't consume the event
+                    _handlePointerUp(event);
+                  },
+                  onPointerCancel: (event) {
+                    // Process pressure data but don't consume the event
+                    _handlePointerCancel(event);
+                  },
+                  child: const SizedBox.expand(),
+                ),
+              ),
+            ],
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _buildCursor() {
@@ -193,9 +216,10 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
   void _handlePointerDown(PointerDownEvent event) {
     _activePointers[event.pointer] = event.localPosition;
     
-    final handled = widget.controller.handlePointerDown(event);
+    // Process pressure data and styling (but don't consume the event)
+    final shouldProcess = widget.controller.handlePointerDown(event);
     
-    if (handled) {
+    if (shouldProcess) {
       _isDrawing = true;
       widget.vm.setDrawingState(true);
       
@@ -215,25 +239,29 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     }
     
     _updateCursorVisibility();
+    // Note: Don't consume the event - let it pass through to DrawingBoard
   }
 
   void _handlePointerMove(PointerMoveEvent event) {
     _activePointers[event.pointer] = event.localPosition;
     
-    final handled = widget.controller.handlePointerMove(event);
+    // Process pressure data (but don't consume the event)
+    final shouldProcess = widget.controller.handlePointerMove(event);
     
-    if (handled && _isDrawing) {
+    if (shouldProcess && _isDrawing) {
       // Apply pressure-sensitive styling in real-time
       _updateDrawingStyle(event);
       
       // Continue drawing stroke
       widget.vm.setDrawingState(true);
     }
+    // Note: Don't consume the event - let it pass through to DrawingBoard
   }
 
   void _handlePointerUp(PointerUpEvent event) {
     _activePointers.remove(event.pointer);
     
+    // Process pressure data (but don't consume the event)
     widget.controller.handlePointerUp(event);
     
     if (_isDrawing) {
@@ -247,6 +275,7 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     }
     
     _updateCursorVisibility();
+    // Note: Don't consume the event - let it pass through to DrawingBoard
   }
 
   void _handlePointerCancel(PointerCancelEvent event) {
@@ -258,6 +287,7 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     }
     
     _updateCursorVisibility();
+    // Note: Don't consume the event - let it pass through to DrawingBoard
   }
 
   void _handlePointerHover(PointerHoverEvent event) {
