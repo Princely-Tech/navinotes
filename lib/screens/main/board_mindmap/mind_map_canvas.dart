@@ -40,7 +40,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
             // Check if we need to center the view on nodes
             final targetCenter = vm.targetViewCenter;
             final needsInitialCentering = vm.needsInitialCentering;
-            
+
             if (targetCenter != null || needsInitialCentering) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (targetCenter != null) {
@@ -175,22 +175,30 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
   void _centerViewOnPosition(Offset targetCenter, Size viewportSize) {
     // Get current scale to preserve it
     final currentScale = _transformationController.value.getMaxScaleOnAxis();
-    
+
     // Calculate the transformation needed to center the target position
-    final viewportCenter = Offset(viewportSize.width / 2, viewportSize.height / 2);
-    
+    final viewportCenter = Offset(
+      viewportSize.width / 2,
+      viewportSize.height / 2,
+    );
+
     // Account for scale when calculating translation
-    final scaledTargetCenter = Offset(targetCenter.dx * currentScale, targetCenter.dy * currentScale);
+    final scaledTargetCenter = Offset(
+      targetCenter.dx * currentScale,
+      targetCenter.dy * currentScale,
+    );
     final translation = viewportCenter - scaledTargetCenter;
-    
+
     // Create transformation matrix with translation and preserve scale
     final matrix = Matrix4.identity();
     matrix.translate(translation.dx, translation.dy);
     matrix.scale(currentScale);
-    
+
     // Apply the transformation
     _transformationController.value = matrix;
-    
-    debugPrint('MindMapCanvas: Centered view on position $targetCenter with scale $currentScale');
+
+    debugPrint(
+      'MindMapCanvas: Centered view on position $targetCenter with scale $currentScale',
+    );
   }
 }
