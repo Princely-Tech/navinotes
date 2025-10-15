@@ -86,7 +86,7 @@ class _PageNavigatorState extends State<PageNavigator> {
 
   Widget _buildPagesGrid() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
