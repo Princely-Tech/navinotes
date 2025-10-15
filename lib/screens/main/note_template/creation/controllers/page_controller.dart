@@ -44,10 +44,15 @@ class PageController extends ChangeNotifier {
   TextBoxManager get textBoxManager => _textBoxManager;
 
   /// Get the appropriate drawing controller based on stylus settings
+  // DrawingController get activeDrawingController {
+  //   return _stylusSettings.pressureSensitivityEnabled
+  //       ? _pressureController.drawingController
+  //       : _drawingController;
+  // }
   DrawingController get activeDrawingController {
     return _stylusSettings.pressureSensitivityEnabled
-        ? _pressureController.drawingController
-        : _drawingController;
+        ? _drawingController
+        : pressureController.drawingController;
   }
 
   void _initializeControllers() {

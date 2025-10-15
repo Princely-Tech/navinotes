@@ -907,17 +907,30 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   void debugDrawingController() {
-    // Debug method to check controller state
-    final controller = getCurrentPageController()?.activeDrawingController;
-    if (controller != null) {
-      final items = controller.getJsonList();
+    // Debug method to check controller state and identify display vs save disconnect
+    final pageController = getCurrentPageController();
+    if (pageController != null) {
+      debugPrint('=== Drawing Controller Debug ===');
       debugPrint('Current page: ${currentPage?.id}');
-      debugPrint('Controller has ${items.length} items');
-      for (int i = 0; i < items.length; i++) {
-        debugPrint('Item $i: ${items[i]['type']}');
-      }
+      debugPrint('Pressure sensitivity enabled: ${_stylusSettings.pressureSensitivityEnabled}');
+      
+      // Check the controllers being used
+      final regularController = pageController.drawingController;
+      final pressureControllerWrapper = pageController.pressureController;
+      final pressureWrappedController = pressureControllerWrapper.drawingController;
+      final activeController = pageController.activeDrawingController;
+      
+      debugPrint('Regular controller: ${regularController.hashCode} - ${regularController.getJsonList().length} items');
+      debugPrint('Pressure wrapped controller: ${pressureWrappedController.hashCode} - ${pressureWrappedController.getJsonList().length} items');
+      debugPrint('Active controller: ${activeController.hashCode} - ${activeController.getJsonList().length} items');
+      
+      // Check if they're the same instance
+      debugPrint('Active == PressureWrapped: ${identical(activeController, pressureWrappedController)}');
+      debugPrint('Active == Regular: ${identical(activeController, regularController)}');
+      
+      debugPrint('===============================');
     } else {
-      debugPrint('No active drawing controller');
+      debugPrint('No page controller found');
     }
   }
 
