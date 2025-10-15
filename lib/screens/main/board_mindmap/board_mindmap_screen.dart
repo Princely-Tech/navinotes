@@ -65,11 +65,14 @@ class BoardMindMapScreen extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        // Left panel - Node styling (only show when design icon is clicked)
+                        // Left panel - Node styling (only show when design icon is clicked AND node is selected)
                         Consumer<BoardMindMapVm>(
                           builder: (context, mindMapVm, child) {
-                            // Show styling panel only when explicitly toggled via design icon
-                            if (!mindMapVm.isStylingPanelVisible) {
+                            // Check if there's a selected node
+                            final hasSelectedNode = mindMapVm.selectedNodeId != null;
+                            
+                            // Show styling panel only when node is selected AND design icon was clicked
+                            if (!mindMapVm.isStylingPanelVisible || !hasSelectedNode) {
                               return const SizedBox.shrink();
                             }
 

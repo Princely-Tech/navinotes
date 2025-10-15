@@ -523,6 +523,7 @@ class BoardMindMapVm extends ChangeNotifier {
       // Clear selection if this node was selected
       if (_selectedNodeId == nodeId) {
         _selectedNodeId = null;
+        _isStylingPanelVisible = false; // hide styling panel when selected node is deleted
       }
 
       _saveMindMapChanges();
@@ -569,6 +570,9 @@ class BoardMindMapVm extends ChangeNotifier {
     _selectedNodeId = nodeId;
     if (nodeId != null) {
       _selectedEdgeId = null; // deselect edges when node is selected
+    } else {
+      // Hide styling panel when no node is selected
+      _isStylingPanelVisible = false;
     }
     // if switching selection, exit attach mode
     if (_attachingNodeId != null && _attachingNodeId != nodeId) {
@@ -582,6 +586,7 @@ class BoardMindMapVm extends ChangeNotifier {
     _selectedEdgeId = edgeId;
     if (edgeId != null) {
       _selectedNodeId = null; // deselect nodes when edge is selected
+      _isStylingPanelVisible = false; // hide styling panel when edge is selected
     }
     notifyListeners();
   }
@@ -865,9 +870,41 @@ class BoardMindMapVm extends ChangeNotifier {
   Future<void> _saveMindMapChanges() async {
     // In simplified architecture, all data is already saved in content records
     // This method is kept for compatibility but does nothing
-    debugPrint(
-      'BoardMindMapVm: Content-based architecture - no board mind map to save',
-    );
+    debugPrint('BoardMindMapVm: Content-based architecture - no board mind map to save');
+  }
+
+  /// Save node styling changes to corresponding content record
+  Future<void> _saveNodeStylingToContent(String nodeId) async {
+    try {
+      final node = _mindMap.findNode(nodeId);
+      if (node == null) return;
+
+      // Find the corresponding content
+      final content = _contents.where((c) => c.id == nodeId).firstOrNull;
+      if (content == null) return;
+
+      // Update content with current node styling
+      final updatedContent = content.getUpdatedContent(
+        nodeColor: '#${node.color.value.toRadixString(16).padLeft(8, '0')}',
+        nodeWidth: node.width,
+        nodeHeight: node.height,
+        nodeShape: node.shape.toString(),
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+      );
+
+      // Save to database
+      await DatabaseHelper.instance.updateContent(updatedContent);
+
+      // Update in local list
+      final index = _contents.indexWhere((c) => c.id == nodeId);
+      if (index != -1) {
+        _contents[index] = updatedContent;
+      }
+
+      debugPrint('BoardMindMapVm: Saved styling for node $nodeId to content (color: ${node.color}, shape: ${node.shape})');
+    } catch (e) {
+      debugPrint('Error saving node styling to content: $e');
+    }
   }
 
   /// Get node color based on content type
@@ -1092,6 +1129,19 @@ class BoardMindMapVm extends ChangeNotifier {
         content.nodeColor != null
             ? Color(int.parse(content.nodeColor!.replaceFirst('#', '0xff')))
             : _getNodeColorForContentType(content.type);
+    
+    // Parse saved shape or use default
+    MindMapShape shape = MindMapShape.rounded;
+    if (content.nodeShape != null) {
+      try {
+        shape = MindMapShape.values.firstWhere(
+          (e) => e.toString() == content.nodeShape,
+          orElse: () => MindMapShape.rounded,
+        );
+      } catch (e) {
+        debugPrint('Error parsing node shape: $e');
+      }
+    }
 
     return MindMapNode(
       id: content.id,
@@ -1103,6 +1153,7 @@ class BoardMindMapVm extends ChangeNotifier {
       color: color,
       width: content.nodeWidth ?? 200.0,
       height: content.nodeHeight ?? 100.0,
+      shape: shape,
       contentID: content.id,
     );
   }
@@ -1367,7 +1418,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.color = color;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
@@ -1377,7 +1428,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.textColor = color;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
@@ -1387,7 +1438,7 @@ class BoardMindMapVm extends ChangeNotifier {
     if (node != null) {
       node.width = width;
       node.height = height;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(nodeId);
       notifyListeners();
     }
   }
@@ -1397,7 +1448,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.fontSize = fontSize;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
@@ -1407,7 +1458,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.opacity = opacity;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
@@ -1417,7 +1468,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.colorTone = tone;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
@@ -1427,7 +1478,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.fontWeight = weight;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
@@ -1437,7 +1488,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.borderStyle = style;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
@@ -1447,7 +1498,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.shape = shape;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
@@ -1457,7 +1508,7 @@ class BoardMindMapVm extends ChangeNotifier {
         _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.borderRadius = radius;
-      _saveMindMapChanges();
+      _saveNodeStylingToContent(node.id);
       notifyListeners();
     }
   }
