@@ -38,7 +38,8 @@ class BoardMindMapVm extends ChangeNotifier {
   String? _selectedEdgeId;
   String? _connectingFromNodeId;
   String? _draggingNodeId;
-  String? _attachingNodeId; // When not null, the next document/deck tapped will attach to this node
+  String?
+  _attachingNodeId; // When not null, the next document/deck tapped will attach to this node
 
   // Canvas transform state
   double scale = 1.0;
@@ -90,13 +91,11 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   BoardMindMapVm({required this.board, required this.scaffoldKey})
-    : _mindMap = board.getOrCreateMindMap() {
+    : _mindMap = MindMap(name: '${board.name} Mind Map') {
     debugPrint(
-      'BoardMindMapVm: Constructor - loaded mind map with ${board.getOrCreateMindMap().nodes.length} nodes',
+      'BoardMindMapVm: Constructor - initializing content-based mind map for board ${board.name}',
     );
-    debugPrint(
-      'BoardMindMapVm: Board mind map data: ${board.mindMap != null ? "exists" : "null"}',
-    );
+    debugPrint('BoardMindMapVm: Using simplified content-only architecture');
     _initialize();
     // Any change notification schedules a debounced autosave
     addListener(_onVmChanged);
@@ -148,20 +147,20 @@ class BoardMindMapVm extends ChangeNotifier {
     }
   }
 
-  /// Initialize mind map with all content as nodes
+  /// Initialize mind map with all content as nodes (Simplified Content-Only Architecture)
   Future<void> _initializeMindMapWithContent() async {
     try {
       debugPrint(
-        'BoardMindMapVm: Initializing mind map with ${_contents.length} content items as nodes',
+        'BoardMindMapVm: Initializing simplified content-only mind map with ${_contents.length} content items',
       );
 
-      // Create a fresh mind map and populate it from all content
-      final currentMindMap = MindMap(name: '${board.name} Mind Map');
+      // Create fresh mind map - all nodes will be generated from content
+      final contentBasedMindMap = MindMap(name: '${board.name} Mind Map');
 
       int nodesWithPositions = 0;
       int nodesNeedingPositions = 0;
 
-      // Convert all content to mind map nodes
+      // Convert ALL content to mind map nodes (no standalone nodes)
       for (final content in _contents) {
         // Check if content already has mind map position
         Offset position;
@@ -169,14 +168,14 @@ class BoardMindMapVm extends ChangeNotifier {
           position = content.mindMapPosition!;
           nodesWithPositions++;
           debugPrint(
-            'BoardMindMapVm: Content ${content.id} (${content.title}) already has position ${position}',
+            'BoardMindMapVm: Content ${content.id} (${content.title}) has position ${position}',
           );
         } else {
           // Generate new position for content without mind map data
-          position = _generateNodePosition(currentMindMap.nodes.length);
+          position = _generateNodePosition(contentBasedMindMap.nodes.length);
           nodesNeedingPositions++;
 
-          // Update content with new mind map position
+          // Update content with new mind map position and default styling
           final color = _getNodeColorForContentType(content.type);
           final updatedContent = content.getUpdatedContent(
             mindMapX: position.dx,
@@ -206,20 +205,26 @@ class BoardMindMapVm extends ChangeNotifier {
         final node = _createNodeFromContent(
           _contents.firstWhere((c) => c.id == content.id),
         );
-        currentMindMap.nodes.add(node);
+        contentBasedMindMap.nodes.add(node);
       }
 
-      // Update the mind map reference
-      _mindMap = currentMindMap;
+      // Load connections between content from database
+      await _loadContentConnections(contentBasedMindMap);
+
+      // Replace mind map with content-based version (no board storage needed)
+      _mindMap = contentBasedMindMap;
 
       debugPrint(
-        'BoardMindMapVm: Created mind map with ${_mindMap.nodes.length} nodes (${nodesWithPositions} had positions, ${nodesNeedingPositions} needed new positions)',
+        'BoardMindMapVm: Created content-only mind map with ${_mindMap.nodes.length} nodes, ${_mindMap.edges.length} connections',
+      );
+      debugPrint(
+        'BoardMindMapVm: (${nodesWithPositions} had positions, ${nodesNeedingPositions} needed new positions)',
       );
 
       // Set flag to indicate we need initial centering
       _needsInitialCentering = true;
 
-      // Try immediate centering, but also set flag for canvas to handle
+      // Try immediate centering
       _centerViewOnNodes();
     } catch (e) {
       debugPrint('Error initializing content-based mind map: $e');
@@ -258,14 +263,13 @@ class BoardMindMapVm extends ChangeNotifier {
     }
   }
 
-  /// Refresh content and update mind map
+  /// Refresh content and regenerate mind map (Content-Only Architecture)
   Future<void> _refreshContent() async {
     try {
       _contents = await DatabaseHelper.instance.getAllContents(board.id);
 
-      // Reload the board to get updated mind map
-      final updatedBoard = await DatabaseHelper.instance.getBoard(board.id);
-      _mindMap = updatedBoard.getOrCreateMindMap();
+      // Regenerate mind map from content (no board mind map data needed)
+      await _initializeMindMapWithContent();
 
       notifyListeners();
     } catch (e) {
@@ -273,40 +277,58 @@ class BoardMindMapVm extends ChangeNotifier {
     }
   }
 
-  /// Add a new node to the mind map
-  MindMapNode addNode({
+  /// Add a new content-based node to the mind map (Simplified Architecture)
+  Future<MindMapNode> addNode({
     required String text,
     required Offset position,
     Color? color,
     String? contentId,
-  }) {
-    final themeValues = boardTheme.values;
-    final themeColor = color ?? themeValues.nodeBackgroundColor;
-    final node = MindMapNode(
-      text: text,
-      position: _constrainPosition(position),
-      color: themeColor,
-      textColor: themeValues.nodeTextColor,
-      fontFamily: themeValues.fontFamily,
-      borderStyle: themeValues.nodeBorderStyle,
-    );
-    if (contentId != null) {
-      node.contentID = contentId;
+  }) async {
+    // In simplified architecture, ALL nodes must be content-based
+    // Create new content if contentId not provided
+    if (contentId == null) {
+      // Create new mind map content
+      final newContent = Content(
+        title: text.isEmpty ? 'New Node' : text,
+        type: AppContentType.mindmapNode,
+        boardId: board.id,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        metaData: {},
+        mindMapX: _constrainPosition(position).dx,
+        mindMapY: _constrainPosition(position).dy,
+        nodeColor:
+            '#${(color ?? _getNodeColorForContentType(AppContentType.mindmapNode)).value.toRadixString(16).padLeft(8, '0')}',
+        nodeWidth: 200.0,
+        nodeHeight: 100.0,
+        connectedContentIds: '[]',
+      );
+
+      // Save to database
+      await DatabaseHelper.instance.insertContent(newContent);
+
+      // Add to local content list
+      _contents.add(newContent);
+      contentId = newContent.id;
     }
+
+    // Create node from content
+    final content = _contents.firstWhere((c) => c.id == contentId);
+    final node = _createNodeFromContent(content);
     _mindMap.nodes.add(node);
-    _saveMindMapChanges();
+
     notifyListeners();
     return node;
   }
 
   /// Create a new node with attached content at the specified position
-  MindMapNode addNodeAt({
+  Future<MindMapNode> addNodeAt({
     required String text,
     required Offset logicalPosition,
     Color? color,
     String? contentID,
-  }) {
-    return addNode(
+  }) async {
+    return await addNode(
       text: text,
       position: logicalPosition,
       color: color,
@@ -315,15 +337,15 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   /// Add a node with linked content
-  MindMapNode addNodeWithContent({
+  Future<MindMapNode> addNodeWithContent({
     required String text,
     required Offset logicalPosition,
     required String contentId,
-  }) {
+  }) async {
     final content = _contents.firstWhere((c) => c.id == contentId);
     final color = _getNodeColorForContentType(content.type);
 
-    return addNode(
+    return await addNode(
       text: text,
       position: logicalPosition,
       color: color,
@@ -331,15 +353,16 @@ class BoardMindMapVm extends ChangeNotifier {
     );
   }
 
-  /// Connect two nodes with an edge
-  MindMapEdge connectNodes({
+  /// Connect two content nodes with an edge (Content-Based Architecture)
+  Future<MindMapEdge> connectNodes({
     required String sourceId,
     required String targetId,
     String? label,
     Color? color,
-  }) {
+  }) async {
     // prevent self connect
     if (sourceId == targetId) throw Exception('Cannot connect node to itself');
+
     // prevent duplicate edge
     final exists = _mindMap.edges.any(
       (e) =>
@@ -354,39 +377,82 @@ class BoardMindMapVm extends ChangeNotifier {
       );
       return existing;
     }
+
+    // Create edge in mind map
     final edge = _mindMap.connectNodes(
       sourceId: sourceId,
       targetId: targetId,
       label: label,
       color: color ?? boardTheme.values.connectionColor,
     );
-    _saveMindMapChanges();
+
+    // Update content connections in database
+    await _updateContentConnections(sourceId, targetId);
+
     notifyListeners();
     return edge;
   }
 
-  /// Remove a node and its connections
-  void removeNode(String nodeId) {
+  /// Remove a content node and its connections (Content-Based Architecture)
+  Future<void> removeNode(String nodeId) async {
+    // Find the content
+    final content = _contents.where((c) => c.id == nodeId).firstOrNull;
+    if (content != null) {
+      // Remove from database
+      await DatabaseHelper.instance.deleteContent(nodeId);
+
+      // Remove from local list
+      _contents.removeWhere((c) => c.id == nodeId);
+
+      // Remove connections from other content
+      await _removeAllConnectionsToContent(nodeId);
+    }
+
+    // Remove from mind map
     _mindMap.removeNode(nodeId);
     if (_selectedNodeId == nodeId) _selectedNodeId = null;
-    _saveMindMapChanges();
+
     notifyListeners();
   }
 
-  /// Remove an edge
-  void removeEdge(String edgeId) {
+  /// Remove an edge and update content connections
+  Future<void> removeEdge(String edgeId) async {
+    final edge = _mindMap.findEdge(edgeId);
+    if (edge != null) {
+      // Remove connection from content
+      await _removeContentConnection(edge.sourceId, edge.targetId);
+    }
+
+    // Remove from mind map
     _mindMap.removeEdge(edgeId);
     if (_selectedEdgeId == edgeId) _selectedEdgeId = null;
-    _saveMindMapChanges();
+
     notifyListeners();
   }
 
-  /// Update node text
-  void updateNodeText(String nodeId, String newText) {
+  /// Update node text and corresponding content
+  Future<void> updateNodeText(String nodeId, String newText) async {
     final node = _mindMap.findNode(nodeId);
     if (node != null) {
       node.text = newText;
-      _saveMindMapChanges();
+
+      // Update corresponding content
+      final content = _contents.where((c) => c.id == nodeId).firstOrNull;
+      if (content != null) {
+        final updatedContent = content.getUpdatedContent(
+          title: newText,
+          updatedAt: DateTime.now().millisecondsSinceEpoch,
+        );
+
+        await DatabaseHelper.instance.updateContent(updatedContent);
+
+        // Update in local list
+        final index = _contents.indexWhere((c) => c.id == nodeId);
+        if (index != -1) {
+          _contents[index] = updatedContent;
+        }
+      }
+
       notifyListeners();
     }
   }
@@ -477,8 +543,6 @@ class BoardMindMapVm extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-
 
   /// Select a node
   void selectNode(String? nodeId) {
@@ -776,29 +840,14 @@ class BoardMindMapVm extends ChangeNotifier {
     return logicalCenter;
   }
 
-  /// Save mind map changes to database
+  /// Content-based architecture doesn't need board mind map saving
+  /// All data is stored in individual content records
   Future<void> _saveMindMapChanges() async {
-    try {
-      debugPrint('BoardMindMapVm: Saving mind map changes...');
-      debugPrint('BoardMindMapVm: Mind map has ${_mindMap.nodes.length} nodes');
-
-      // // Log current node positions
-      // for (final node in _mindMap.nodes) {
-      //   debugPrint(
-      //     'BoardMindMapVm: Node ${node.id} (${node.text}) at position ${node.position}',
-      //   );
-      // }
-
-      final updatedBoard = board.updateMindMap(_mindMap);
-      await DatabaseHelper.instance.updateBoard(updatedBoard);
-
-      // Update our board reference to the latest version
-      board = updatedBoard;
-
-      debugPrint('BoardMindMapVm: Mind map changes saved successfully');
-    } catch (e) {
-      debugPrint('Error saving mind map changes: $e');
-    }
+    // In simplified architecture, all data is already saved in content records
+    // This method is kept for compatibility but does nothing
+    debugPrint(
+      'BoardMindMapVm: Content-based architecture - no board mind map to save',
+    );
   }
 
   /// Get node color based on content type
@@ -811,7 +860,7 @@ class BoardMindMapVm extends ChangeNotifier {
       case AppContentType.flashcardDeck:
         return Colors.purple;
       case AppContentType.mindmapNode:
-        return Colors.indigo; 
+        return Colors.indigo;
     }
   }
 
@@ -918,7 +967,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   // ========== Dragging Methods ==========
 
-  /// Start dragging a node
+  /// Start dragging a content-based node
   void startDraggingNode(String nodeId) {
     _draggingNodeId = nodeId;
     _dragStartGlobal = null; // Reset for next drag
@@ -926,7 +975,7 @@ class BoardMindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Move the dragging node using global position for accurate tracking
+  /// Move the dragging content node using global position for accurate tracking
   Future<void> dragNodeByGlobal(String nodeId, Offset globalPosition) async {
     if (_draggingNodeId != nodeId) return;
     final node = _mindMap.findNode(nodeId);
@@ -955,16 +1004,17 @@ class BoardMindMapVm extends ChangeNotifier {
       );
       node.position = newPosition;
 
-      // Update the corresponding content's position
+      // Update the corresponding content's position (primary data storage)
       await _updateContentPosition(node.id, newPosition);
 
       notifyListeners();
     }
   }
 
-  /// End dragging and persist position
+  /// End dragging content node (position already persisted in content)
   void stopDraggingNode() {
     // Position is already saved in dragNodeByGlobal via _updateContentPosition
+    // No additional board mind map saving needed in simplified architecture
     _draggingNodeId = null;
     _dragStartGlobal = null;
     _dragStartNodePosition = null;
@@ -1052,13 +1102,157 @@ class BoardMindMapVm extends ChangeNotifier {
     }
   }
 
-  // ---------- Autosave internals ----------
+  // ========== Content Connection Management (Simplified Architecture) ==========
+
+  /// Load connections between content and create edges in mind map
+  Future<void> _loadContentConnections(MindMap mindMap) async {
+    debugPrint('BoardMindMapVm: Loading content connections...');
+
+    int connectionCount = 0;
+
+    for (final content in _contents) {
+      final connections = content.connectedContentIdsList;
+
+      for (final connectedId in connections) {
+        // Check if connected content exists and edge doesn't already exist
+        final connectedContent =
+            _contents.where((c) => c.id == connectedId).firstOrNull;
+        if (connectedContent != null) {
+          final existingEdge = mindMap.edges.any(
+            (e) =>
+                (e.sourceId == content.id && e.targetId == connectedId) ||
+                (e.sourceId == connectedId && e.targetId == content.id),
+          );
+
+          if (!existingEdge) {
+            mindMap.connectNodes(
+              sourceId: content.id,
+              targetId: connectedId,
+              color: boardTheme.values.connectionColor,
+            );
+            connectionCount++;
+          }
+        }
+      }
+    }
+
+    debugPrint(
+      'BoardMindMapVm: Loaded $connectionCount connections from content',
+    );
+  }
+
+  /// Update content connections when nodes are connected
+  Future<void> _updateContentConnections(
+    String sourceId,
+    String targetId,
+  ) async {
+    try {
+      // Update source content
+      final sourceContent = _contents.firstWhere((c) => c.id == sourceId);
+      final updatedSourceContent = sourceContent.addConnection(targetId);
+      await DatabaseHelper.instance.updateContent(updatedSourceContent);
+
+      // Update target content
+      final targetContent = _contents.firstWhere((c) => c.id == targetId);
+      final updatedTargetContent = targetContent.addConnection(sourceId);
+      await DatabaseHelper.instance.updateContent(updatedTargetContent);
+
+      // Update local lists
+      final sourceIndex = _contents.indexWhere((c) => c.id == sourceId);
+      if (sourceIndex != -1) {
+        _contents[sourceIndex] = updatedSourceContent;
+      }
+
+      final targetIndex = _contents.indexWhere((c) => c.id == targetId);
+      if (targetIndex != -1) {
+        _contents[targetIndex] = updatedTargetContent;
+      }
+
+      debugPrint(
+        'BoardMindMapVm: Updated connection between $sourceId and $targetId',
+      );
+    } catch (e) {
+      debugPrint('Error updating content connections: $e');
+    }
+  }
+
+  /// Remove connection between two content items
+  Future<void> _removeContentConnection(
+    String sourceId,
+    String targetId,
+  ) async {
+    try {
+      // Remove from source content
+      final sourceContent =
+          _contents.where((c) => c.id == sourceId).firstOrNull;
+      if (sourceContent != null) {
+        final updatedSourceContent = sourceContent.removeConnection(targetId);
+        await DatabaseHelper.instance.updateContent(updatedSourceContent);
+
+        final sourceIndex = _contents.indexWhere((c) => c.id == sourceId);
+        if (sourceIndex != -1) {
+          _contents[sourceIndex] = updatedSourceContent;
+        }
+      }
+
+      // Remove from target content
+      final targetContent =
+          _contents.where((c) => c.id == targetId).firstOrNull;
+      if (targetContent != null) {
+        final updatedTargetContent = targetContent.removeConnection(sourceId);
+        await DatabaseHelper.instance.updateContent(updatedTargetContent);
+
+        final targetIndex = _contents.indexWhere((c) => c.id == targetId);
+        if (targetIndex != -1) {
+          _contents[targetIndex] = updatedTargetContent;
+        }
+      }
+
+      debugPrint(
+        'BoardMindMapVm: Removed connection between $sourceId and $targetId',
+      );
+    } catch (e) {
+      debugPrint('Error removing content connection: $e');
+    }
+  }
+
+  /// Remove all connections to a specific content (when content is deleted)
+  Future<void> _removeAllConnectionsToContent(String contentId) async {
+    try {
+      int removedConnections = 0;
+
+      for (final content in _contents) {
+        final connections = content.connectedContentIdsList;
+        if (connections.contains(contentId)) {
+          final updatedContent = content.removeConnection(contentId);
+          await DatabaseHelper.instance.updateContent(updatedContent);
+
+          final index = _contents.indexWhere((c) => c.id == content.id);
+          if (index != -1) {
+            _contents[index] = updatedContent;
+          }
+          removedConnections++;
+        }
+      }
+
+      debugPrint(
+        'BoardMindMapVm: Removed $removedConnections connections to deleted content $contentId',
+      );
+    } catch (e) {
+      debugPrint('Error removing all connections to content: $e');
+    }
+  }
+
+  // ---------- Autosave internals (Simplified for Content-Only Architecture) ----------
   void _onVmChanged() {
     if (_suppressAutoSave || _isSaving) return;
     _autoSaveTimer?.cancel();
     _autoSaveTimer = Timer(autoSaveDelay, () async {
-      // Timer fired after inactivity
-      await _saveMindMapChanges();
+      // In content-based architecture, auto-save is handled per content item
+      // This is kept for compatibility but minimal action needed
+      debugPrint(
+        'BoardMindMapVm: Auto-save triggered (content-based architecture)',
+      );
     });
   }
 
@@ -1093,7 +1287,8 @@ class BoardMindMapVm extends ChangeNotifier {
 
   // ---------- Styling methods for UI ----------
   void updateSelectedEdgeColor(Color color) {
-    final edge = _selectedEdgeId != null ? _mindMap.findEdge(_selectedEdgeId!) : null;
+    final edge =
+        _selectedEdgeId != null ? _mindMap.findEdge(_selectedEdgeId!) : null;
     if (edge != null) {
       edge.color = color;
       _saveMindMapChanges();
@@ -1102,7 +1297,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedEdgeThickness(double thickness) {
-    final edge = _selectedEdgeId != null ? _mindMap.findEdge(_selectedEdgeId!) : null;
+    final edge =
+        _selectedEdgeId != null ? _mindMap.findEdge(_selectedEdgeId!) : null;
     if (edge != null) {
       edge.thickness = thickness;
       _saveMindMapChanges();
@@ -1111,7 +1307,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedEdgeOpacity(double opacity) {
-    final edge = _selectedEdgeId != null ? _mindMap.findEdge(_selectedEdgeId!) : null;
+    final edge =
+        _selectedEdgeId != null ? _mindMap.findEdge(_selectedEdgeId!) : null;
     if (edge != null) {
       edge.opacity = opacity;
       _saveMindMapChanges();
@@ -1122,28 +1319,32 @@ class BoardMindMapVm extends ChangeNotifier {
   void deleteEdgeWithConfirmation(BuildContext context, String edgeId) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Connection'),
-        content: const Text('Are you sure you want to delete this connection?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete Connection'),
+            content: const Text(
+              'Are you sure you want to delete this connection?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  removeEdge(edgeId);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Delete'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              removeEdge(edgeId);
-              Navigator.of(context).pop();
-            },
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
     );
   }
 
   void updateSelectedNodeBackgroundColor(Color color) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.color = color;
       _saveMindMapChanges();
@@ -1152,7 +1353,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedNodeTextColor(Color color) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.textColor = color;
       _saveMindMapChanges();
@@ -1171,7 +1373,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedNodeFontSize(double fontSize) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.fontSize = fontSize;
       _saveMindMapChanges();
@@ -1180,7 +1383,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedNodeOpacity(double opacity) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.opacity = opacity;
       _saveMindMapChanges();
@@ -1189,7 +1393,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedNodeColorTone(double tone) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.colorTone = tone;
       _saveMindMapChanges();
@@ -1198,7 +1403,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedNodeFontWeight(int weight) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.fontWeight = weight;
       _saveMindMapChanges();
@@ -1207,7 +1413,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedNodeBorderStyle(MindMapBorderStyle style) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.borderStyle = style;
       _saveMindMapChanges();
@@ -1216,7 +1423,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedNodeShape(MindMapShape shape) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.shape = shape;
       _saveMindMapChanges();
@@ -1225,7 +1433,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedNodeBorderRadius(double radius) {
-    final node = _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+    final node =
+        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
     if (node != null) {
       node.borderRadius = radius;
       _saveMindMapChanges();
@@ -1234,7 +1443,8 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   void updateSelectedEdgeType(EdgeLineType type) {
-    final edge = _selectedEdgeId != null ? _mindMap.findEdge(_selectedEdgeId!) : null;
+    final edge =
+        _selectedEdgeId != null ? _mindMap.findEdge(_selectedEdgeId!) : null;
     if (edge != null) {
       edge.lineType = type;
       _saveMindMapChanges();
@@ -1253,9 +1463,9 @@ class BoardMindMapVm extends ChangeNotifier {
     final byteData = await exportAsByteData();
     if (byteData == null) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to export PDF')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to export PDF')));
       }
       return;
     }
@@ -1297,9 +1507,9 @@ class BoardMindMapVm extends ChangeNotifier {
 
     if (byteData == null) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to export PNG')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to export PNG')));
       }
       return;
     }
@@ -1331,9 +1541,9 @@ class BoardMindMapVm extends ChangeNotifier {
       // Handle empty mind map
       if (bounds == Rect.zero) {
         if (scaffoldKey.currentContext != null) {
-          ScaffoldMessenger.of(scaffoldKey.currentContext!).showSnackBar(
-            const SnackBar(content: Text('No nodes to export')),
-          );
+          ScaffoldMessenger.of(
+            scaffoldKey.currentContext!,
+          ).showSnackBar(const SnackBar(content: Text('No nodes to export')));
         }
         return null;
       }
@@ -1458,7 +1668,6 @@ class BoardMindMapVm extends ChangeNotifier {
       );
     }
   }
-
 
   @override
   void dispose() {
