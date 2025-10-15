@@ -69,15 +69,17 @@ class BoardMindMapScreen extends StatelessWidget {
                         Consumer<BoardMindMapVm>(
                           builder: (context, mindMapVm, child) {
                             // Check if there's a selected node
-                            final hasSelectedNode = mindMapVm.selectedNodeId != null;
-                            
+                            final hasSelectedNode =
+                                mindMapVm.selectedNodeId != null;
+
                             // Show styling panel only when node is selected AND design icon was clicked
-                            if (!mindMapVm.isStylingPanelVisible || !hasSelectedNode) {
+                            if (!mindMapVm.isStylingPanelVisible ||
+                                !hasSelectedNode) {
                               return const SizedBox.shrink();
                             }
 
                             return VisibleController(
-                              mobile: false,
+                              mobile: true,
                               desktop: true,
                               child: WidthLimiter(
                                 mobile: 280,
@@ -117,7 +119,7 @@ class BoardMindMapScreen extends StatelessWidget {
                             }
 
                             return VisibleController(
-                              mobile: false,
+                              mobile: true,
                               laptop: true,
                               child: WidthLimiter(
                                 mobile: 320,
@@ -165,7 +167,6 @@ class BoardMindMapScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   // _stylingToggleButton(boardVm),
-                  _menuButton(boardVm),
                   Row(
                     children: [
                       InkWell(
@@ -221,48 +222,6 @@ class BoardMindMapScreen extends StatelessWidget {
     );
   }
 
-  Widget _menuButton(BoardMindMapVm boardVm) {
-    Color color = AppTheme.darkMossGreen;
-    switch (boardVm.boardTheme) {
-      case BoardTheme.plain:
-        color = AppTheme.black;
-        break;
-      default:
-    }
-    return VisibleController(
-      mobile: true,
-      desktop: false,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: MenuButton(
-          decoration: BoxDecoration(color: color),
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-        ),
-      ),
-    );
-  }
-
-  Widget _stylingToggleButton(BoardMindMapVm boardVm) {
-    Color color = AppTheme.darkMossGreen;
-    switch (boardVm.boardTheme) {
-      case BoardTheme.plain:
-        color = AppTheme.black;
-        break;
-      default:
-    }
-    return VisibleController(
-      mobile: false,
-      desktop: true,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 5),
-        child: MenuButton(
-          decoration: BoxDecoration(color: color),
-          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-        ),
-      ),
-    );
-  }
-
   Widget _boardMindMapControlButtons(
     BuildContext context,
     BoardMindMapVm boardVm,
@@ -287,56 +246,6 @@ class BoardMindMapScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             textStyle: TextStyle(fontSize: 12),
           ),
-        ),
-
-        // Add Content button
-        PopupMenuButton<String>(
-          icon: Icon(Icons.library_add, size: 18),
-          tooltip: 'Add Content',
-          onSelected: (value) => boardVm.handleAddContent(value),
-          itemBuilder:
-              (context) => [
-                PopupMenuItem(
-                  value: 'note',
-                  child: Row(
-                    children: [
-                      Icon(Icons.note_add, size: 16),
-                      SizedBox(width: 8),
-                      Text('Add Note'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'file',
-                  child: Row(
-                    children: [
-                      Icon(Icons.upload_file, size: 16),
-                      SizedBox(width: 8),
-                      Text('Import File'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'flashcard',
-                  child: Row(
-                    children: [
-                      Icon(Icons.quiz, size: 16),
-                      SizedBox(width: 8),
-                      Text('Create Flashcards'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'notebook',
-                  child: Row(
-                    children: [
-                      Icon(Icons.book, size: 16),
-                      SizedBox(width: 8),
-                      Text('Create Notebook'),
-                    ],
-                  ),
-                ),
-              ],
         ),
 
         // Zoom controls
