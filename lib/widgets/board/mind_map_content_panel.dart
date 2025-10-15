@@ -46,10 +46,6 @@ class MindMapContentPanel extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Modern action header with buttons and attachment info
-              if (selectedNode != null)
-                _buildActionHeader(context, vm, selectedNode, selectedContent, themeValues),
-              
               // Content area
               Expanded(
                 child: ScrollableController(
@@ -70,6 +66,10 @@ class MindMapContentPanel extends StatelessWidget {
                   ),
                 ),
               ),
+              
+              // Modern action footer with buttons and attachment info
+              if (selectedNode != null)
+                _buildActionFooter(context, vm, selectedNode, selectedContent, themeValues),
             ],
           ),
         );
@@ -166,8 +166,8 @@ class MindMapContentPanel extends StatelessWidget {
 
   // ============ Modern UI Components ============
 
-  /// Professional action header with buttons and attachment info
-  Widget _buildActionHeader(BuildContext context, BoardMindMapVm vm, dynamic selectedNode, Content? selectedContent, dynamic themeValues) {
+  /// Professional action footer with buttons and attachment info
+  Widget _buildActionFooter(BuildContext context, BoardMindMapVm vm, dynamic selectedNode, Content? selectedContent, dynamic themeValues) {
     final hasAttachment = selectedNode?.contentID != null && selectedNode!.contentID!.isNotEmpty;
     final isConnectingFrom = vm.connectingFromNodeId == selectedNode?.id;
 
@@ -175,7 +175,7 @@ class MindMapContentPanel extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.grey[50],
-        border: Border(bottom: BorderSide(color: Colors.grey[200]!, width: 1)),
+        border: Border(top: BorderSide(color: Colors.grey[200]!, width: 1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,6 +251,12 @@ class MindMapContentPanel extends StatelessWidget {
                     vm.startConnectingFrom(selectedNode.id);
                   }
                 },
+              ),
+              _modernActionButton(
+                icon: Icons.palette_outlined,
+                label: vm.isStylingPanelVisible ? 'Hide Design' : 'Design',
+                color: vm.isStylingPanelVisible ? Colors.green[600]! : Colors.teal[600]!,
+                onTap: () => vm.toggleStylingPanel(),
               ),
               _modernActionButton(
                 icon: Icons.edit,

@@ -148,7 +148,6 @@ class MindMapNodeWidget extends StatelessWidget {
             ),
 
             // Attachment icon removed - now in preview panel
-
             if (isConnectingFrom)
               Positioned(
                 left: 0,

@@ -30,6 +30,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   bool _isLoading = true;
   bool _isDocumentPanelVisible = true;
+  bool _isStylingPanelVisible = false;  // Only show when design icon is clicked
   bool _needsInitialCentering = false;
 
   // Mind Map State
@@ -66,6 +67,7 @@ class BoardMindMapVm extends ChangeNotifier {
   // Getters
   bool get isLoading => _isLoading;
   bool get isDocumentPanelVisible => _isDocumentPanelVisible;
+  bool get isStylingPanelVisible => _isStylingPanelVisible;
   MindMap get mindMap => _mindMap;
   List<Content> get contents => _contents;
   String? get selectedNodeId => _selectedNodeId;
@@ -235,6 +237,24 @@ class BoardMindMapVm extends ChangeNotifier {
   /// Toggle document panel visibility
   void toggleDocumentPanel() {
     _isDocumentPanelVisible = !_isDocumentPanelVisible;
+    notifyListeners();
+  }
+
+  /// Toggle styling panel visibility
+  void toggleStylingPanel() {
+    _isStylingPanelVisible = !_isStylingPanelVisible;
+    notifyListeners();
+  }
+
+  /// Show styling panel
+  void showStylingPanel() {
+    _isStylingPanelVisible = true;
+    notifyListeners();
+  }
+
+  /// Hide styling panel
+  void hideStylingPanel() {
+    _isStylingPanelVisible = false;
     notifyListeners();
   }
 
