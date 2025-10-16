@@ -1,0 +1,88 @@
+import 'package:navinotes/packages.dart';
+import 'package:navinotes/screens/main/note_template/read/vm.dart';
+
+Widget buildEditorToolBar(NoteReadVm vm) {
+  return Positioned(
+    top: 0,
+    left: 0,
+    right: 0,
+    child: Container(
+      color: Colors.white,
+      child: QuillSimpleToolbar(
+        controller: vm.currentTextController,
+        //TODO check this didnt break stuff
+        config: buildCustomToolbarConfig(
+          showAlignmentButtons: true,
+          showFontSize: true,
+          showBoldButton: true,
+          showItalicButton: true,
+          showUnderLineButton: true,
+          showStrikeThrough: true,
+          showListBullets: true,
+          showListNumbers: true,
+          showUndo: true,
+          showRedo: true,
+        ),
+        // config: const QuillSimpleToolbarConfig(
+        //   showAlignmentButtons: true,
+        //   multiRowsDisplay: false,
+        //   customButtons: const [],
+        //   showFontFamily: false,
+        //   showFontSize: false,
+        //   showColorButton: false,
+        //   showBackgroundColorButton: false,
+        //   showClearFormat: false,
+        //   showBoldButton: true,
+        //   showItalicButton: true,
+        //   showUnderLineButton: true,
+        //   showStrikeThrough: true,
+        //   showCodeBlock: false,
+        //   showListNumbers: true,
+        //   showListBullets: true,
+        //   showListCheck: false,
+        //   showQuote: true,
+        //   showIndent: false,
+        //   showLink: false,
+        //   showSearchButton: false,
+        //   showDirection: false,
+        //   showHeaderStyle: false,
+        //   showUndo: true,
+        //   showRedo: true,
+        //   showSubscript: false,
+        //   showSuperscript: false,
+        //   showDividers: true,
+        //   showSmallButton: false,
+        // ),
+      ),
+    ),
+  );
+}
+
+Widget buildTextEditor(NoteReadVm vm, double inputWidth, double inputHeight) {
+  // Create a focus node that we can control
+  final focusNode = FocusNode();
+
+  // Request focus after the widget is built
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    focusNode.requestFocus();
+  });
+
+  return Container(
+    width: inputWidth,
+    height: inputHeight,
+    child: ResponsiveHorizontalPadding(
+      child: QuillEditor(
+        controller: vm.currentTextController,
+        scrollController: ScrollController(),
+        focusNode: focusNode,
+        config: const QuillEditorConfig(
+          placeholder: 'Start writing your note...',
+          showCursor: true,
+          padding: EdgeInsets.all(16.0),
+          expands: true,
+          scrollable: true,
+        ),
+      ),
+    ),
+  );
+}
