@@ -11,28 +11,13 @@ class NoteReadScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-        NoteReadVm vm = NoteReadVm(
-          content: content,
-          context: context,
-        );
+        NoteReadVm vm = NoteReadVm(content: content, context: context);
         vm.initialize();
         return vm;
       },
       child: Consumer<NoteReadVm>(
         builder: (_, vm, _) {
-          return ScaffoldFrame(
-            // backgroundColor: AppTheme.white,
-            backgroundColor: AppTheme.white,
-            scaffoldKey: _scaffoldKey,
-            body: Stack(
-              children: [
-                ResponsiveSection(
-                  mobile: NoteReadMain(),
-                  desktop: Row(children: [Expanded(child: NoteReadMain())]),
-                ),
-              ],
-            ),
-          );
+          return NoteReadMain();
         },
       ),
     );
