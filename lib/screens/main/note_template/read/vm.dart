@@ -11,13 +11,13 @@ enum NoteMode { text, drawing, voice, read }
 
 class NoteReadVm extends ChangeNotifier {
   BoardNoteTemplate template;
-  NoteCreationProp? creationProp;
+  Content? content;
   final dbHelper = DatabaseHelper.instance;
   final BuildContext context;
-  NoteReadVm({
-    required this.creationProp,
-    required this.context,
-  }) : template = creationProp?.template ?? noteTemplateBlank;
+  NoteReadVm({required this.content, required this.context})
+    : template = getNoteTemplateFromString(
+        content?.metaData[ContentMetadataKey.template],
+      );
 
   final DrawingController _drawingController = DrawingController();
 
@@ -334,7 +334,6 @@ class NoteReadVm extends ChangeNotifier {
     _currentPageIndex = 0;
   }
 
-  Content? content;
   bool fetchingContent = true;
 
   bool isCreatingNote = false;
@@ -396,13 +395,8 @@ class NoteReadVm extends ChangeNotifier {
   Future<void> getContent() async {
     try {
       updateFetchingContent(true);
-      Content? response = await dbHelper.getContentById(
-        creationProp!.contentId,
-      );
 
-      if (response != null) {
-        content = response;
-
+      if (content != null) {
         try {
           if (content!.drawing != null && content!.drawing!.isNotEmpty) {
             final List<dynamic> drawingData = jsonDecode(content!.drawing!);

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/content.dart';
+import 'package:navinotes/models/others.dart';
+import 'package:navinotes/screens/main/note_template/read/index.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
@@ -65,76 +67,8 @@ class ContentPreviewWidget extends StatelessWidget {
   }
 
   Widget _buildNotePreview() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title
-          Text(
-            content.title.isNotEmpty ? content.title : 'Untitled Note',
-            style: TextStyle(
-              fontSize: isCompact ? 12 : 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          // Content preview
-          Expanded(child: _buildQuillContentPreview()),
-          // Note icon
-          if (isCompact)
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Icon(Icons.note, size: 16, color: Colors.blue.shade400),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuillContentPreview() {
-    if (content.content == null || content.content!.isEmpty) {
-      return Text(
-        'Empty note',
-        style: TextStyle(
-          fontSize: isCompact ? 10 : 14,
-          color: Colors.grey.shade600,
-          fontStyle: FontStyle.italic,
-        ),
-      );
-    }
-
-    try {
-      // Parse Quill document
-      final doc = quill.Document.fromJson(jsonDecode(content.content!));
-      final plainText = doc.toPlainText();
-
-      return Text(
-        plainText.trim(),
-        style: TextStyle(
-          fontSize: isCompact ? 10 : 14,
-          color: Colors.black87,
-          height: 1.2,
-        ),
-        maxLines: isCompact ? 3 : 8,
-        overflow: TextOverflow.ellipsis,
-      );
-    } catch (e) {
-      // Fallback for non-Quill content
-      return Text(
-        content.content!,
-        style: TextStyle(
-          fontSize: isCompact ? 10 : 14,
-          color: Colors.black87,
-          height: 1.2,
-        ),
-        maxLines: isCompact ? 3 : 8,
-        overflow: TextOverflow.ellipsis,
-      );
-    }
+   
+    return NoteReadScreen(content: content);
   }
 
   Widget _buildFilePreview() {

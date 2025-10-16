@@ -3,8 +3,8 @@ import 'package:navinotes/screens/main/note_template/read/main.dart';
 import 'vm.dart';
 
 class NoteReadScreen extends StatelessWidget {
-  final NoteCreationProp? creationProp;
-  NoteReadScreen({super.key, this.creationProp});
+  final Content? content;
+  NoteReadScreen({super.key, this.content});
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -12,7 +12,7 @@ class NoteReadScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) {
         NoteReadVm vm = NoteReadVm(
-          creationProp: creationProp,
+          content: content,
           context: context,
         );
         vm.initialize();
