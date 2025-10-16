@@ -812,24 +812,40 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   /// Update viewport info (called by canvas)
+  // void updateViewportInfo(
+  //   Size viewportSize,
+  //   TransformationController controller,
+  // ) {
+  //   _viewportSize = viewportSize;
+  //   _transformationController = controller;
+  //   debugPrint(
+  //     'BoardMindMapVm: Viewport info updated - size: $viewportSize, controller set',
+  //   );
+
+  //   // If we need initial centering or have a target view center waiting, apply it now
+  //   if (_needsInitialCentering || _targetViewCenter != null) {
+  //     debugPrint(
+  //       'BoardMindMapVm: Applying centering now that controller is available (needsInitial: $_needsInitialCentering, hasTarget: ${_targetViewCenter != null})',
+  //     );
+  //     _centerViewOnNodes();
+  //     _needsInitialCentering = false; // Clear the flag
+  //   }
+  // }
+
   void updateViewportInfo(
     Size viewportSize,
     TransformationController controller,
   ) {
     _viewportSize = viewportSize;
     _transformationController = controller;
-    debugPrint(
-      'BoardMindMapVm: Viewport info updated - size: $viewportSize, controller set',
-    );
 
-    // If we need initial centering or have a target view center waiting, apply it now
-    if (_needsInitialCentering || _targetViewCenter != null) {
+    // Use post-frame callback for any notifications
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       debugPrint(
-        'BoardMindMapVm: Applying centering now that controller is available (needsInitial: $_needsInitialCentering, hasTarget: ${_targetViewCenter != null})',
+        'BoardMindMapVm: Viewport info updated - size: $viewportSize, controller set',
       );
-      _centerViewOnNodes();
-      _needsInitialCentering = false; // Clear the flag
-    }
+      _centerViewOnNodes(); // This will now be called after build completes
+    });
   }
 
   /// Check if initial centering is needed (for canvas to handle)
