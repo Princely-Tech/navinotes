@@ -312,6 +312,20 @@ class _MultiPageViewerState extends State<MultiPageViewer>
           else
             const SizedBox(width: 40),
 
+          // Mode toggle button in center
+          FloatingActionButton.small(
+            heroTag: "mode_toggle",
+            onPressed: () {
+              // Toggle between read and voice mode
+              vm.setMode(vm.currentMode == NoteMode.read ? NoteMode.voice : NoteMode.read);
+            },
+            backgroundColor: Colors.white.withOpacity(0.9),
+            child: Icon(
+              vm.currentMode == NoteMode.read ? Icons.mic : Icons.menu_book,
+              color: vm.currentMode == NoteMode.read ? Colors.blue : Colors.green,
+            ),
+          ),
+
           // Next page button
           if (vm.currentPageIndex < vm.notePages.length - 1)
             FloatingActionButton.small(
