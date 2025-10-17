@@ -93,7 +93,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
               ),
 
             // Page navigation controls
-            _buildPageControls(vm),
+            if (vm.currentMode != NoteMode.voice) _buildPageControls(vm),
 
             // Page indicator dots
             if (vm.currentMode != NoteMode.voice) _buildPageIndicator(vm),
