@@ -32,8 +32,14 @@ class ContentPreviewWidget extends StatelessWidget {
       width: containerWidth == double.infinity ? null : containerWidth,
       height: containerHeight == double.infinity ? null : containerHeight,
       constraints: BoxConstraints(
-        maxWidth: containerWidth == double.infinity ? double.infinity : containerWidth,
-        maxHeight: containerHeight == double.infinity ? double.infinity : containerHeight,
+        maxWidth:
+            containerWidth == double.infinity
+                ? double.infinity
+                : containerWidth,
+        maxHeight:
+            containerHeight == double.infinity
+                ? double.infinity
+                : containerHeight,
       ),
       decoration: BoxDecoration(
         color: Colors.white,

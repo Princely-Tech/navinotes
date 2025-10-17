@@ -234,7 +234,6 @@ class MindMapNodeWidget extends StatelessWidget {
         content: nodeContent,
         isCompact: true,
         width: node.width - 16, // Account for padding
-        height: node.height - 16,
       );
     } else {
       // Show traditional text for mindMapNode type or nodes without content
