@@ -67,10 +67,16 @@ class MindMapContentPanel extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               // Modern action footer with buttons and attachment info
               if (selectedNode != null)
-                _buildActionFooter(context, vm, selectedNode, selectedContent, themeValues),
+                _buildActionFooter(
+                  context,
+                  vm,
+                  selectedNode,
+                  selectedContent,
+                  themeValues,
+                ),
             ],
           ),
         );
@@ -114,8 +120,14 @@ class MindMapContentPanel extends StatelessWidget {
         children: [
           _infoCard([
             _infoRow('Type', 'MIND MAP NODE'),
-            _infoRow('Text', selectedNode.text.isNotEmpty ? selectedNode.text : 'No text'),
-            _infoRow('Position', '${selectedNode.position.dx.toInt()}, ${selectedNode.position.dy.toInt()}'),
+            _infoRow(
+              'Text',
+              selectedNode.text.isNotEmpty ? selectedNode.text : 'No text',
+            ),
+            _infoRow(
+              'Position',
+              '${selectedNode.position.dx.toInt()}, ${selectedNode.position.dy.toInt()}',
+            ),
           ]),
         ],
       ),
@@ -163,8 +175,15 @@ class MindMapContentPanel extends StatelessWidget {
   // ============ Modern UI Components ============
 
   /// Professional action footer with buttons and attachment info
-  Widget _buildActionFooter(BuildContext context, BoardMindMapVm vm, dynamic selectedNode, Content? selectedContent, dynamic themeValues) {
-    final hasAttachment = selectedNode?.contentID != null && selectedNode!.contentID!.isNotEmpty;
+  Widget _buildActionFooter(
+    BuildContext context,
+    BoardMindMapVm vm,
+    dynamic selectedNode,
+    Content? selectedContent,
+    dynamic themeValues,
+  ) {
+    final hasAttachment =
+        selectedNode?.contentID != null && selectedNode!.contentID!.isNotEmpty;
     final isConnectingFrom = vm.connectingFromNodeId == selectedNode?.id;
 
     return Container(
@@ -177,46 +196,7 @@ class MindMapContentPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header with attachment indicator
-          Row(
-            children: [
-              if (hasAttachment)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.green[100],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.green[300]!, width: 1),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.attach_file, size: 16, color: Colors.green[700]),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Attached',
-                        style: TextStyle(
-                          color: Colors.green[700],
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              const Spacer(),
-              Text(
-                'NODE ACTIONS',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.8,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          
+
           // Compact icon-only action buttons in single row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -224,7 +204,10 @@ class MindMapContentPanel extends StatelessWidget {
               _iconOnlyButton(
                 icon: isConnectingFrom ? Icons.close : Icons.link,
                 tooltip: isConnectingFrom ? 'Cancel Link' : 'Connect',
-                color: isConnectingFrom ? Colors.orange[600]! : Colors.indigo[600]!,
+                color:
+                    isConnectingFrom
+                        ? Colors.orange[600]!
+                        : Colors.indigo[600]!,
                 onTap: () {
                   if (isConnectingFrom) {
                     vm.cancelConnecting();
@@ -236,7 +219,10 @@ class MindMapContentPanel extends StatelessWidget {
               _iconOnlyButton(
                 icon: Icons.palette_outlined,
                 tooltip: vm.isStylingPanelVisible ? 'Hide Design' : 'Design',
-                color: vm.isStylingPanelVisible ? Colors.green[600]! : Colors.teal[600]!,
+                color:
+                    vm.isStylingPanelVisible
+                        ? Colors.green[600]!
+                        : Colors.teal[600]!,
                 onTap: () => vm.toggleStylingPanel(),
               ),
               _iconOnlyButton(
@@ -249,7 +235,9 @@ class MindMapContentPanel extends StatelessWidget {
                 icon: Icons.delete_outline,
                 tooltip: 'Delete',
                 color: Colors.red[600]!,
-                onTap: () => vm.deleteNodeWithConfirmation(context, selectedNode.id),
+                onTap:
+                    () =>
+                        vm.deleteNodeWithConfirmation(context, selectedNode.id),
               ),
             ],
           ),
@@ -279,11 +267,7 @@ class MindMapContentPanel extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: 16,
-                color: color,
-              ),
+              Icon(icon, size: 16, color: color),
               const SizedBox(height: 4),
               Text(
                 tooltip,
@@ -347,7 +331,10 @@ class MindMapContentPanel extends StatelessWidget {
                   onTap: () => NavigationHelper.navigateToContent(content),
                   borderRadius: BorderRadius.circular(4),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppTheme.steelBlue,
                       borderRadius: BorderRadius.circular(4),
@@ -355,11 +342,7 @@ class MindMapContentPanel extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.open_in_new,
-                          size: 12,
-                          color: Colors.white,
-                        ),
+                        Icon(Icons.open_in_new, size: 12, color: Colors.white),
                         const SizedBox(width: 4),
                         Text(
                           'Open',
@@ -427,35 +410,41 @@ class MindMapContentPanel extends StatelessWidget {
   }
 
   /// Edit node text dialog
-  Future<void> _editNodeText(BuildContext context, BoardMindMapVm vm, dynamic selectedNode) async {
+  Future<void> _editNodeText(
+    BuildContext context,
+    BoardMindMapVm vm,
+    dynamic selectedNode,
+  ) async {
     final textController = TextEditingController(text: selectedNode.text);
     final newText = await showDialog<String>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Edit Node Text'),
-        content: TextField(
-          controller: textController,
-          autofocus: true,
-          minLines: 1,
-          maxLines: 4,
-          decoration: const InputDecoration(
-            hintText: 'Enter node text...',
-            border: OutlineInputBorder(),
+      builder:
+          (dialogContext) => AlertDialog(
+            title: const Text('Edit Node Text'),
+            content: TextField(
+              controller: textController,
+              autofocus: true,
+              minLines: 1,
+              maxLines: 4,
+              decoration: const InputDecoration(
+                hintText: 'Enter node text...',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed:
+                    () => Navigator.of(dialogContext).pop(textController.text),
+                child: const Text('Save'),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(textController.text),
-            child: const Text('Save'),
-          ),
-        ],
-      ),
     );
-    
+
     if (newText != null && newText.trim().isNotEmpty) {
       await vm.updateNodeText(selectedNode.id, newText.trim());
     }
