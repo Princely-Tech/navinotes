@@ -87,43 +87,49 @@ class MindMapContentPanel extends StatelessWidget {
   Widget _contentPreview(Content content, BoardMindMapVm vm) {
     return _section(
       title: 'Content Preview',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Large content preview with fixed height
-          Container(
-            height: 500,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[300]!, width: 1),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: ContentPreviewWidget(
-              content: content,
-              isCompact: false,
-              width: double.infinity,
-              height: 300,
-            ),
-          ),
-          const SizedBox(height: 12),
-          // Action button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () => NavigationHelper.navigateToContent(content),
-              icon: const Icon(Icons.open_in_new, size: 18),
-              label: const Text('Open Content'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.steelBlue,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+      child: Builder(
+        builder: (context) {
+          final dynamicHeight = MediaQuery.of(context).size.height - 310;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Large content preview with dynamic height
+              Container(
+                height: dynamicHeight,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey[300]!, width: 1),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: ContentPreviewWidget(
+                  content: content,
+                  isCompact: false,
+                  width: double.infinity,
+                  height: dynamicHeight,
                 ),
               ),
-            ),
-          ),
-        ],
+              const SizedBox(height: 12),
+              // Action button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => NavigationHelper.navigateToContent(content),
+                  icon: const Icon(Icons.open_in_new, size: 18),
+                  label: const Text('Open Content'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.steelBlue,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
