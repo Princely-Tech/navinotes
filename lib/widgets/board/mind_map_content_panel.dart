@@ -92,7 +92,7 @@ class MindMapContentPanel extends StatelessWidget {
         children: [
           // Large content preview with fixed height
           Container(
-            height: 300,
+            height: 500,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.grey[300]!, width: 1),
@@ -316,7 +316,6 @@ class MindMapContentPanel extends StatelessWidget {
       ),
     );
   }
-
 
   /// Modern info row with label and value
   Widget _infoRow(String label, String value) {
