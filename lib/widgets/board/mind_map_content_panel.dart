@@ -52,7 +52,7 @@ class MindMapContentPanel extends StatelessWidget {
                 child: ScrollableController(
                   mobilePadding: EdgeInsets.all(15),
                   child: Column(
-                    spacing: 20,
+                    spacing: 8,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Show content preview if node is selected and has content
@@ -203,7 +203,7 @@ class MindMapContentPanel extends StatelessWidget {
     final isConnectingFrom = vm.connectingFromNodeId == selectedNode?.id;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
       decoration: BoxDecoration(
         color: Colors.grey[50],
         border: Border(top: BorderSide(color: Colors.grey[200]!, width: 1)),

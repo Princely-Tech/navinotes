@@ -33,6 +33,8 @@ class NoteReadVm extends ChangeNotifier {
   StreamSubscription<Duration>? _positionSubscription;
   StreamSubscription<PlayerState>? _playerStateSubscription;
 
+  bool showPageThumbnails = false;
+
   // UI state
   NoteMode _currentMode = NoteMode.read;
 

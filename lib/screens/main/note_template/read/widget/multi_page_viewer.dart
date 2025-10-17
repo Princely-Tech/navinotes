@@ -429,6 +429,10 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   }
 
   void _showPageNavigator(NoteReadVm vm) {
+    if (!vm.showPageThumbnails) {
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
