@@ -69,28 +69,28 @@ class _MultiPageViewerState extends State<MultiPageViewer>
 
         return Stack(
           children: [
-            // Show voice recorder independently when in voice mode
+            // Main PageView - always present to maintain controller connection
+            PageView.builder(
+              controller: _pageController,
+              physics:
+                  _isZoomedOut(vm) || vm.currentMode == NoteMode.drawing
+                      ? const NeverScrollableScrollPhysics()
+                      : const PageScrollPhysics(),
+              onPageChanged: (index) {
+                vm.setCurrentPageIndex(index);
+              },
+              itemCount: vm.notePages.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  child: _buildPageWithZoomAndPan(vm.notePages[index], vm),
+                );
+              },
+            ),
+
+            // Overlay voice recorder when in voice mode
             if (vm.currentMode == NoteMode.voice)
-              buildVoiceRecorder(vm, widget.backgroundColor, context)
-            else
-              // Main PageView with enhanced panning
-              PageView.builder(
-                controller: _pageController,
-                physics:
-                    _isZoomedOut(vm) || vm.currentMode == NoteMode.drawing
-                        ? const NeverScrollableScrollPhysics()
-                        : const PageScrollPhysics(),
-                onPageChanged: (index) {
-                  vm.setCurrentPageIndex(index);
-                },
-                itemCount: vm.notePages.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    child: _buildPageWithZoomAndPan(vm.notePages[index], vm),
-                  );
-                },
-              ),
+              buildVoiceRecorder(vm, widget.backgroundColor, context),
 
             // Page navigation controls
             if (vm.currentMode != NoteMode.voice) _buildPageControls(vm),
