@@ -122,7 +122,7 @@ class BoardMindMapScreen extends StatelessWidget {
                               mobile: true,
                               laptop: true,
                               child: WidthLimiter(
-                                mobile: 320,
+                                mobile: 500,
                                 child: MindMapContentPanel(
                                   boardTheme: boardVm.boardTheme,
                                 ),

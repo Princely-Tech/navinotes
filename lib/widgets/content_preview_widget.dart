@@ -29,8 +29,12 @@ class ContentPreviewWidget extends StatelessWidget {
     final containerHeight = height ?? (isCompact ? 80.0 : 200.0);
 
     return Container(
-      width: containerWidth,
-      height: containerHeight,
+      width: containerWidth == double.infinity ? null : containerWidth,
+      height: containerHeight == double.infinity ? null : containerHeight,
+      constraints: BoxConstraints(
+        maxWidth: containerWidth == double.infinity ? double.infinity : containerWidth,
+        maxHeight: containerHeight == double.infinity ? double.infinity : containerHeight,
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -67,7 +71,6 @@ class ContentPreviewWidget extends StatelessWidget {
   }
 
   Widget _buildNotePreview() {
-   
     return NoteReadScreen(content: content);
   }
 

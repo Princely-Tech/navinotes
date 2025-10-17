@@ -244,48 +244,52 @@ class MindMapRight extends StatelessWidget {
   Widget _contentPreview(Content content) {
     return _section(
       title: 'Content Preview',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Large content preview
-          ContentPreviewWidget(
-            content: content,
-            isCompact: false,
-            width: double.infinity,
-            height: 250,
-          ),
-          const SizedBox(height: 16),
-          // Content details
-          Text('Type: ${content.type.toString()}', style: titleTextStyle),
-          const SizedBox(height: 8),
-          if (content.tags != null && content.tags!.isNotEmpty)
-            Text('Tags: ${content.tags}', style: titleTextStyle),
-          const SizedBox(height: 16),
-          // Action buttons
-          Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  onTap: () {
-                    // TODO: Open content for editing
-                  },
-                  text: 'Edit Content',
-                  color: AppTheme.steelBlue,
-                ),
+      child: Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Expandable content preview that fills available height
+            Expanded(
+              child: ContentPreviewWidget(
+                content: content,
+                isCompact: false,
+                width: double.infinity,
+                height: double.infinity,
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: AppButton(
-                  onTap: () {
-                    // TODO: Remove content attachment
-                  },
-                  text: 'Detach',
-                  color: AppTheme.coralRed,
+            ),
+            const SizedBox(height: 16),
+            // Content details
+            Text('Type: ${content.type.toString()}', style: titleTextStyle),
+            const SizedBox(height: 8),
+            if (content.tags != null && content.tags!.isNotEmpty)
+              Text('Tags: ${content.tags}', style: titleTextStyle),
+            const SizedBox(height: 16),
+            // Action buttons
+            Row(
+              children: [
+                Expanded(
+                  child: AppButton(
+                    onTap: () {
+                      // TODO: Open content for editing
+                    },
+                    text: 'Edit Content',
+                    color: AppTheme.steelBlue,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: AppButton(
+                    onTap: () {
+                      // TODO: Remove content attachment
+                    },
+                    text: 'Detach',
+                    color: AppTheme.coralRed,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
