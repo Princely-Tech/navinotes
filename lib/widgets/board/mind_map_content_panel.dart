@@ -90,8 +90,9 @@ class MindMapContentPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Large content preview
+          // Large content preview with fixed height
           Container(
+            height: 300,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.grey[300]!, width: 1),
@@ -101,12 +102,27 @@ class MindMapContentPanel extends StatelessWidget {
               content: content,
               isCompact: false,
               width: double.infinity,
-              height: 280,
+              height: 300,
             ),
           ),
           const SizedBox(height: 12),
-          // Content details with modern styling and compact layout
-          _compactInfoCard(content),
+          // Action button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () => NavigationHelper.navigateToContent(content),
+              icon: const Icon(Icons.open_in_new, size: 18),
+              label: const Text('Open Content'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.steelBlue,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -301,80 +317,6 @@ class MindMapContentPanel extends StatelessWidget {
     );
   }
 
-  /// Compact info card with content details and open button
-  Widget _compactInfoCard(Content content) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey[200]!, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // First row: Type and Open button
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Type: ${content.type.name.toUpperCase()}',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => NavigationHelper.navigateToContent(content),
-                  borderRadius: BorderRadius.circular(4),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppTheme.steelBlue,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.open_in_new, size: 12, color: Colors.white),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Open',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          // Second row: Title
-          Text(
-            'Title: ${content.title.isNotEmpty ? content.title : 'Untitled'}',
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
 
   /// Modern info row with label and value
   Widget _infoRow(String label, String value) {
