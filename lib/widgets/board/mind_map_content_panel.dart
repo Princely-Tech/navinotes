@@ -215,30 +215,15 @@ class MindMapContentPanel extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           
-          // Professional action buttons
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          // Compact icon-only action buttons in single row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _modernActionButton(
-                icon: hasAttachment ? Icons.link_off : Icons.attach_file,
-                label: hasAttachment ? 'Detach' : 'Attach',
-                color: hasAttachment ? Colors.red[600]! : Colors.blue[600]!,
-                onTap: () {
-                  if (hasAttachment) {
-                    vm.removeAttachmentFromNode(selectedNode.id);
-                  } else {
-                    vm.startAttachToNode(selectedNode.id);
-                    // Open documents sidebar
-                    (context.findAncestorWidgetOfExactType<Scaffold>()?.key as GlobalKey<ScaffoldState>?)?.currentState?.openDrawer();
-                  }
-                },
-              ),
-              _modernActionButton(
+              _iconOnlyButton(
                 icon: isConnectingFrom ? Icons.close : Icons.link,
-                label: isConnectingFrom ? 'Cancel Link' : 'Connect',
+                tooltip: isConnectingFrom ? 'Cancel Link' : 'Connect',
                 color: isConnectingFrom ? Colors.orange[600]! : Colors.indigo[600]!,
                 onTap: () {
                   if (isConnectingFrom) {
@@ -248,21 +233,21 @@ class MindMapContentPanel extends StatelessWidget {
                   }
                 },
               ),
-              _modernActionButton(
+              _iconOnlyButton(
                 icon: Icons.palette_outlined,
-                label: vm.isStylingPanelVisible ? 'Hide Design' : 'Design',
+                tooltip: vm.isStylingPanelVisible ? 'Hide Design' : 'Design',
                 color: vm.isStylingPanelVisible ? Colors.green[600]! : Colors.teal[600]!,
                 onTap: () => vm.toggleStylingPanel(),
               ),
-              _modernActionButton(
+              _iconOnlyButton(
                 icon: Icons.edit,
-                label: 'Edit',
+                tooltip: 'Edit',
                 color: Colors.purple[600]!,
                 onTap: () => _editNodeText(context, vm, selectedNode),
               ),
-              _modernActionButton(
+              _iconOnlyButton(
                 icon: Icons.delete_outline,
-                label: 'Delete',
+                tooltip: 'Delete',
                 color: Colors.red[600]!,
                 onTap: () => vm.deleteNodeWithConfirmation(context, selectedNode.id),
               ),
@@ -273,10 +258,10 @@ class MindMapContentPanel extends StatelessWidget {
     );
   }
 
-  /// Modern action button with clean design
-  Widget _modernActionButton({
+  /// Compact action button with icon and label
+  Widget _iconOnlyButton({
     required IconData icon,
-    required String label,
+    required String tooltip,
     required Color color,
     required VoidCallback onTap,
   }) {
@@ -286,24 +271,28 @@ class MindMapContentPanel extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: color.withOpacity(0.3), width: 1),
           ),
-          child: Row(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: 6),
+              Icon(
+                icon,
+                size: 16,
+                color: color,
+              ),
+              const SizedBox(height: 4),
               Text(
-                label,
+                tooltip,
                 style: TextStyle(
+                  fontSize: 10,
                   color: color,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
