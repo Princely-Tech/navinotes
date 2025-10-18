@@ -46,15 +46,15 @@ class ContentCompactPreviewWidget extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: _buildContentPreview(),
+        child: _buildContentPreview(context),
       ),
     );
   }
 
-  Widget _buildContentPreview() {
+  Widget _buildContentPreview(BuildContext context) {
     switch (content.type) {
       case AppContentType.note:
-        return _buildNotePreview();
+        return _buildNotePreview(context);
       case AppContentType.file:
         return _buildFilePreview();
       case AppContentType.flashcardDeck:
@@ -64,77 +64,15 @@ class ContentCompactPreviewWidget extends StatelessWidget {
     }
   }
 
-  Widget _buildNotePreview() {
-    // Try to parse the first page from content metadata
-    NotePage? firstPage = _getFirstPage();
-    
-    if (firstPage == null) {
-      // Fallback to title if no pages found
-      return Container(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.note, size: 24, color: Colors.blue.shade600),
-            const SizedBox(height: 4),
-            Text(
-              content.title.isNotEmpty ? content.title : 'Note',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      );
-    }
-
-    // Create thumbnail of the first page that fills the entire space
-    return _buildPageThumbnail(firstPage);
-  }
-
-  NotePage? _getFirstPage() {
-    try {
-      // Try to get pages from content metadata
-      if (content.metaData.containsKey('pages')) {
-        final pagesData = content.metaData['pages'];
-        if (pagesData is List && pagesData.isNotEmpty) {
-          final firstPageData = pagesData[0];
-          if (firstPageData is Map<String, dynamic>) {
-            return NotePage.fromMap(firstPageData);
-          }
-        }
-      }
-      return null;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Widget _buildPageThumbnail(NotePage page) {
-    // Get the actual page dimensions to calculate the proper scale
-    final pageDimensions = page.format.actualDimensions;
-
+  Widget _buildNotePreview(BuildContext context) {
+    var vm = NoteReadVm(content: content, context: context);
+    vm.initialize();
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Create VM with proper context
-        final vm = _createDummyVm(context);
-        if (vm == null) {
-          // Fallback to simple page representation
-          return Container(
-            color: Colors.white,
-            child: Center(
-              child: Text(
-                'Page ${page.id}',
-                style: TextStyle(fontSize: 10, color: Colors.grey),
-              ),
-            ),
-          );
-        }
+        var page = vm.notePages.first;
+
+        // Get the actual page dimensions to calculate the proper scale
+        final pageDimensions = page.format.actualDimensions;
 
         // Calculate scale to fill the available space while maintaining aspect ratio
         final availableWidth = constraints.maxWidth;
@@ -143,7 +81,7 @@ class ContentCompactPreviewWidget extends StatelessWidget {
         final scaleX = availableWidth / pageDimensions.width;
         final scaleY = availableHeight / pageDimensions.height;
 
-        // Use the larger scale to ensure the page covers/fills the entire space (like page navigator)
+        // Use the larger scale to ensure the page covers/fills the entire space
         final scale = math.max(scaleX, scaleY);
 
         return ClipRRect(
@@ -160,13 +98,13 @@ class ContentCompactPreviewWidget extends StatelessWidget {
                   height: pageDimensions.height,
                   child: IgnorePointer(
                     child: NotePageContent(
-                      key: ValueKey('compact_thumbnail_${page.id}'),
+                      key: ValueKey('thumbnail_${page.id}'),
                       page: page,
                       vm: vm,
                       backgroundColor: Colors.white,
                       inputWidth: pageDimensions.width,
                       inputHeight: pageDimensions.height,
-                      isThumbnail: true,
+                      isThumbnail: false,
                     ),
                   ),
                 ),
@@ -176,18 +114,6 @@ class ContentCompactPreviewWidget extends StatelessWidget {
         );
       },
     );
-  }
-
-  // Create a minimal NoteReadVm for the thumbnail
-  NoteReadVm? _createDummyVm(BuildContext context) {
-    try {
-      return NoteReadVm(
-        content: content,
-        context: context,
-      );
-    } catch (e) {
-      return null;
-    }
   }
 
   Widget _buildFilePreview() {
