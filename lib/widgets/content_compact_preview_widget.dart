@@ -91,20 +91,23 @@ class ContentCompactPreviewWidget extends StatelessWidget {
             height: availableHeight,
             child: OverflowBox(
               alignment: Alignment.center,
-              child: Transform.scale(
-                scale: scale,
-                child: Container(
-                  width: pageDimensions.width,
-                  height: pageDimensions.height,
-                  child: IgnorePointer(
-                    child: NotePageContent(
-                      key: ValueKey('thumbnail_${page.id}'),
-                      page: page,
-                      vm: vm,
-                      backgroundColor: Colors.white,
-                      inputWidth: pageDimensions.width,
-                      inputHeight: pageDimensions.height,
-                      isThumbnail: false,
+              child: Container(
+                color: Colors.red,
+                child: Transform.scale(
+                  scale: scale,
+                  child: Container(
+                    width: pageDimensions.width,
+                    height: pageDimensions.height,
+                    child: IgnorePointer(
+                      child: NotePageContent(
+                        key: ValueKey('thumbnail_${page.id}'),
+                        page: page,
+                        vm: vm,
+                        backgroundColor: Colors.white,
+                        inputWidth: pageDimensions.width,
+                        inputHeight: pageDimensions.height,
+                        isThumbnail: true,
+                      ),
                     ),
                   ),
                 ),
