@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/content.dart';
-import 'package:navinotes/models/note_page.dart';
 import 'package:navinotes/screens/main/note_template/read/vm.dart';
 import 'package:navinotes/screens/main/note_template/read/widget/note_page_content.dart';
 import 'package:navinotes/settings/enums.dart';
@@ -23,7 +22,7 @@ class ContentCompactPreviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final containerWidth = width ?? 180.0;
-    final containerHeight = height ?? 80.0;
+    final containerHeight = double.infinity;
 
     return Container(
       width: containerWidth == double.infinity ? null : containerWidth,

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:navinotes/models/mind_map_node.dart';
+import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/board_theme.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/widgets/content_preview_widget.dart';
@@ -46,166 +47,166 @@ class MindMapNodeWidget extends StatelessWidget {
             ]
             : null;
 
+    final nodeContent =
+        node.contentID != null ? vm.getContentById(node.contentID!) : null;
+
     // Expand hit-test area to include space below the node for the toolbar
     return SizedBox(
       width: math.max(node.width, 270),
-      height: node.height + 56, // extra space for toolbar + margin
-      child: SizedBox(
-        width: math.max(node.width, 270),
-        height: node.height + 56,
-        child: Stack(
-          clipBehavior: Clip.none, // Allow children to overflow
-          children: [
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onDoubleTap: () async {
-                // edit label dialog
-                final textController = TextEditingController(text: node.text);
-                final newText = await showDialog<String>(
-                  context: context,
-                  builder:
-                      (dialogContext) => AlertDialog(
-                        title: const Text('Edit node text'),
-                        content: TextField(
-                          controller: textController,
-                          autofocus: true,
-                          minLines: 1,
-                          maxLines: 4,
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(dialogContext).pop(),
-                            child: const Text('Cancel'),
-                          ),
-                          ElevatedButton(
-                            onPressed:
-                                () => Navigator.of(
-                                  dialogContext,
-                                ).pop(textController.text),
-                            child: const Text('Save'),
-                          ),
-                        ],
-                      ),
-                );
-                if (newText != null && newText.trim().isNotEmpty) {
-                  vm.updateNodeText(node.id, newText.trim());
-                }
-              },
-              onTap: () {
-                if (vm.connectingFromNodeId != null) {
-                  // If we're in connection mode, finish the connection
-                  vm.finishConnecting(node.id);
-                } else {
-                  // Otherwise, just select the node
-                  vm.selectNode(node.id);
-                }
-              },
-              onLongPressStart: (details) {
-                // Start connection on long press
-                vm.startConnectingFrom(node.id);
-              },
-              onPanStart: (_) {
-                // Only start dragging if not in connection mode
-                if (vm.connectingFromNodeId == null) {
-                  vm.startDraggingNode(node.id);
-                }
-              },
-              onPanUpdate: (details) {
-                // If in connection mode, update pointer position
-                if (vm.connectingFromNodeId != null) {
-                  // Convert the local position to canvas coordinates
-                  final box = context.findRenderObject() as RenderBox;
-                  final localPosition = box.globalToLocal(
-                    details.globalPosition,
-                  );
-                  vm.updatePointerFromVisual(localPosition);
-                } else if (vm.draggingNodeId == node.id) {
-                  // Handle node dragging with proper coordinate transformation
-                  vm.dragNodeByGlobal(node.id, details.globalPosition);
-                }
-              },
-
-              onPanEnd: (_) {
-                if (vm.connectingFromNodeId == node.id) {
-                  // If we were connecting and didn't connect to another node, cancel
-                  vm.cancelConnecting();
-                } else if (vm.draggingNodeId == node.id) {
-                  vm.stopDraggingNode();
-                }
-              },
-              child: _buildShapedNode(
+      height:
+          nodeContent?.type == AppContentType.note
+              ? double.infinity
+              : node.height + 56, // extra space for toolbar + margin
+      child: Stack(
+        clipBehavior: Clip.none, // Allow children to overflow
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onDoubleTap: () async {
+              // edit label dialog
+              final textController = TextEditingController(text: node.text);
+              final newText = await showDialog<String>(
                 context: context,
-                vm: vm,
-                node: node,
-                isConnectingFrom: isConnectingFrom,
-                elevation: elevation,
-                toneColor: toneColor,
-                borderRadius: borderRadius,
-                showBorder: showBorder,
-                glowShadow: glowShadow,
-                themeValues: themeValues,
+                builder:
+                    (dialogContext) => AlertDialog(
+                      title: const Text('Edit node text'),
+                      content: TextField(
+                        controller: textController,
+                        autofocus: true,
+                        minLines: 1,
+                        maxLines: 4,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed:
+                              () => Navigator.of(
+                                dialogContext,
+                              ).pop(textController.text),
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    ),
+              );
+              if (newText != null && newText.trim().isNotEmpty) {
+                vm.updateNodeText(node.id, newText.trim());
+              }
+            },
+            onTap: () {
+              if (vm.connectingFromNodeId != null) {
+                // If we're in connection mode, finish the connection
+                vm.finishConnecting(node.id);
+              } else {
+                // Otherwise, just select the node
+                vm.selectNode(node.id);
+              }
+            },
+            onLongPressStart: (details) {
+              // Start connection on long press
+              vm.startConnectingFrom(node.id);
+            },
+            onPanStart: (_) {
+              // Only start dragging if not in connection mode
+              if (vm.connectingFromNodeId == null) {
+                vm.startDraggingNode(node.id);
+              }
+            },
+            onPanUpdate: (details) {
+              // If in connection mode, update pointer position
+              if (vm.connectingFromNodeId != null) {
+                // Convert the local position to canvas coordinates
+                final box = context.findRenderObject() as RenderBox;
+                final localPosition = box.globalToLocal(details.globalPosition);
+                vm.updatePointerFromVisual(localPosition);
+              } else if (vm.draggingNodeId == node.id) {
+                // Handle node dragging with proper coordinate transformation
+                vm.dragNodeByGlobal(node.id, details.globalPosition);
+              }
+            },
+
+            onPanEnd: (_) {
+              if (vm.connectingFromNodeId == node.id) {
+                // If we were connecting and didn't connect to another node, cancel
+                vm.cancelConnecting();
+              } else if (vm.draggingNodeId == node.id) {
+                vm.stopDraggingNode();
+              }
+            },
+            child: _buildShapedNode(
+              context: context,
+              vm: vm,
+              node: node,
+              nodeContent: nodeContent,
+              isConnectingFrom: isConnectingFrom,
+              elevation: elevation,
+              toneColor: toneColor,
+              borderRadius: borderRadius,
+              showBorder: showBorder,
+              glowShadow: glowShadow,
+              themeValues: themeValues,
+            ),
+          ),
+
+          // Attachment icon removed - now in preview panel
+          if (isConnectingFrom)
+            Positioned(
+              left: 0,
+              right: 0,
+              top: node.height + 4, // Position below the node
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Text(
+                    'Connecting...',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ),
 
-            // Attachment icon removed - now in preview panel
-            if (isConnectingFrom)
-              Positioned(
-                left: 0,
-                right: 0,
-                top: node.height + 4, // Position below the node
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent.withValues(alpha: 0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Text(
-                      'Connecting...',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
+          if (isAttaching)
+            Positioned(
+              left: 0,
+              right: 0,
+              top: node.height + 26, // Slightly below the 'Connecting...' pill
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Text(
+                    'Attaching...',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
+            ),
 
-            if (isAttaching)
-              Positioned(
-                left: 0,
-                right: 0,
-                top:
-                    node.height + 26, // Slightly below the 'Connecting...' pill
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Text(
-                      'Attaching...',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-            // Action buttons moved to preview panel for cleaner node UI
-          ],
-        ),
+          // Action buttons moved to preview panel for cleaner node UI
+        ],
       ),
     );
   }
@@ -214,6 +215,7 @@ class MindMapNodeWidget extends StatelessWidget {
     required BuildContext context,
     required BoardMindMapVm vm,
     required MindMapNode node,
+    required Content? nodeContent,
     required bool isConnectingFrom,
     required double elevation,
     required Color toneColor,
@@ -222,10 +224,6 @@ class MindMapNodeWidget extends StatelessWidget {
     required List<BoxShadow>? glowShadow,
     required dynamic themeValues,
   }) {
-    // Get the content associated with this node
-    final nodeContent =
-        node.contentID != null ? vm.getContentById(node.contentID!) : null;
-
     Widget content;
 
     if (nodeContent != null && nodeContent.type != AppContentType.mindmapNode) {
@@ -233,7 +231,7 @@ class MindMapNodeWidget extends StatelessWidget {
       content = ContentPreviewWidget(
         content: nodeContent,
         isCompact: true,
-        width: node.width - 16, // Account for padding
+        width: node.width, // Account for padding
       );
     } else {
       // Show traditional text for mindMapNode type or nodes without content
@@ -262,7 +260,10 @@ class MindMapNodeWidget extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.zero,
           width: node.width,
-          height: node.height,
+          height:
+              nodeContent?.type == AppContentType.note
+                  ? double.infinity
+                  : node.height,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: toneColor,
