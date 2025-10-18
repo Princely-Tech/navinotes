@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:navinotes/models/content.dart';
 import 'package:navinotes/models/note_page.dart';
 import 'package:navinotes/screens/main/note_template/read/vm.dart';
@@ -74,43 +73,29 @@ class ContentCompactPreviewWidget extends StatelessWidget {
         // Get the actual page dimensions to calculate the proper scale
         final pageDimensions = page.format.actualDimensions;
 
-        // Calculate scale to fill the available space while maintaining aspect ratio
+        // Calculate scale to fit the width, let height be auto
         final availableWidth = constraints.maxWidth;
-        final availableHeight = constraints.maxHeight;
 
-        final scaleX = availableWidth / pageDimensions.width;
-        final scaleY = availableHeight / pageDimensions.height;
+        // Scale based on width only to fit the width
+        final scale = availableWidth / pageDimensions.width;
 
-        // Use the larger scale to ensure the page covers/fills the entire space
-        final scale = math.max(scaleX, scaleY);
+        // Calculate the scaled height for proper container sizing
+        final scaledHeight = pageDimensions.height * scale;
 
         return ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: SizedBox(
             width: availableWidth,
-            height: availableHeight,
-            child: OverflowBox(
-              alignment: Alignment.center,
-              child: Container(
-                color: Colors.red,
-                child: Transform.scale(
-                  scale: scale,
-                  child: Container(
-                    width: pageDimensions.width,
-                    height: pageDimensions.height,
-                    child: IgnorePointer(
-                      child: NotePageContent(
-                        key: ValueKey('thumbnail_${page.id}'),
-                        page: page,
-                        vm: vm,
-                        backgroundColor: Colors.white,
-                        inputWidth: pageDimensions.width,
-                        inputHeight: pageDimensions.height,
-                        isThumbnail: true,
-                      ),
-                    ),
-                  ),
-                ),
+            height: scaledHeight,
+            child: IgnorePointer(
+              child: NotePageContent(
+                key: ValueKey('thumbnail_${page.id}'),
+                page: page,
+                vm: vm,
+                backgroundColor: Colors.white,
+                inputWidth: availableWidth, // Use available width directly
+                inputHeight: scaledHeight, // Use scaled height directly
+                isThumbnail: true,
               ),
             ),
           ),
