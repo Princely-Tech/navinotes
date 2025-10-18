@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import 'package:navinotes/models/content.dart';
-import 'package:navinotes/screens/main/note_template/read/index.dart';
+import 'package:navinotes/models/note_page.dart';
+import 'package:navinotes/screens/main/note_template/read/vm.dart';
+import 'package:navinotes/screens/main/note_template/read/widget/note_page_content.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/settings/packages.dart';
 
@@ -62,7 +65,129 @@ class ContentCompactPreviewWidget extends StatelessWidget {
   }
 
   Widget _buildNotePreview() {
-    return Text(content.title);
+    // Try to parse the first page from content metadata
+    NotePage? firstPage = _getFirstPage();
+    
+    if (firstPage == null) {
+      // Fallback to title if no pages found
+      return Container(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.note, size: 24, color: Colors.blue.shade600),
+            const SizedBox(height: 4),
+            Text(
+              content.title.isNotEmpty ? content.title : 'Note',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Create thumbnail of the first page that fills the entire space
+    return _buildPageThumbnail(firstPage);
+  }
+
+  NotePage? _getFirstPage() {
+    try {
+      // Try to get pages from content metadata
+      if (content.metaData.containsKey('pages')) {
+        final pagesData = content.metaData['pages'];
+        if (pagesData is List && pagesData.isNotEmpty) {
+          final firstPageData = pagesData[0];
+          if (firstPageData is Map<String, dynamic>) {
+            return NotePage.fromMap(firstPageData);
+          }
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Widget _buildPageThumbnail(NotePage page) {
+    // Get the actual page dimensions to calculate the proper scale
+    final pageDimensions = page.format.actualDimensions;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Create VM with proper context
+        final vm = _createDummyVm(context);
+        if (vm == null) {
+          // Fallback to simple page representation
+          return Container(
+            color: Colors.white,
+            child: Center(
+              child: Text(
+                'Page ${page.id}',
+                style: TextStyle(fontSize: 10, color: Colors.grey),
+              ),
+            ),
+          );
+        }
+
+        // Calculate scale to fill the available space while maintaining aspect ratio
+        final availableWidth = constraints.maxWidth;
+        final availableHeight = constraints.maxHeight;
+
+        final scaleX = availableWidth / pageDimensions.width;
+        final scaleY = availableHeight / pageDimensions.height;
+
+        // Use the larger scale to ensure the page covers/fills the entire space (like page navigator)
+        final scale = math.max(scaleX, scaleY);
+
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: SizedBox(
+            width: availableWidth,
+            height: availableHeight,
+            child: OverflowBox(
+              alignment: Alignment.center,
+              child: Transform.scale(
+                scale: scale,
+                child: Container(
+                  width: pageDimensions.width,
+                  height: pageDimensions.height,
+                  child: IgnorePointer(
+                    child: NotePageContent(
+                      key: ValueKey('compact_thumbnail_${page.id}'),
+                      page: page,
+                      vm: vm,
+                      backgroundColor: Colors.white,
+                      inputWidth: pageDimensions.width,
+                      inputHeight: pageDimensions.height,
+                      isThumbnail: true,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Create a minimal NoteReadVm for the thumbnail
+  NoteReadVm? _createDummyVm(BuildContext context) {
+    try {
+      return NoteReadVm(
+        content: content,
+        context: context,
+      );
+    } catch (e) {
+      return null;
+    }
   }
 
   Widget _buildFilePreview() {
