@@ -231,13 +231,21 @@ class BoardMindMapScreen extends StatelessWidget {
       children: [
         // Add Node button
         ElevatedButton.icon(
-          onPressed: () {
+          onPressed: () async {
             // Add node at center of currently visible viewport
             final centerPosition = boardVm.getCurrentViewportCenter();
-            boardVm.addNodeAt(
-              text: 'New node',
-              logicalPosition: centerPosition,
-            );
+            debugPrint('BoardMindMapScreen: Adding new node at position $centerPosition');
+            debugPrint('BoardMindMapScreen: Current mind map has ${boardVm.mindMap.nodes.length} nodes');
+            
+            try {
+              await boardVm.addNodeAt(
+                text: 'New node',
+                logicalPosition: centerPosition,
+              );
+              debugPrint('BoardMindMapScreen: Successfully added new node');
+            } catch (e) {
+              debugPrint('BoardMindMapScreen: Error adding node: $e');
+            }
           },
           icon: const Icon(Icons.add, size: 16),
           label: const Text('Add node'),

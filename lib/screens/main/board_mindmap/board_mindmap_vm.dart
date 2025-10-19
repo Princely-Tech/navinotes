@@ -301,12 +301,54 @@ class BoardMindMapVm extends ChangeNotifier {
       // Add to local content list
       _contents.add(newContent);
       contentId = newContent.id;
+
+      debugPrint('BoardMindMapVm: Created new content with ID: $contentId');
+      debugPrint(
+        'BoardMindMapVm: _contents list now has ${_contents.length} items',
+      );
     }
 
-    // Create node from content
-    final content = _contents.firstWhere((c) => c.id == contentId);
+    // Create node from content - use the newly created content directly if available
+    Content? content;
+    try {
+      content = _contents.firstWhere((c) => c.id == contentId);
+    } catch (e) {
+      debugPrint(
+        'BoardMindMapVm: Could not find content with ID $contentId in local list',
+      );
+      debugPrint(
+        'BoardMindMapVm: Available content IDs: ${_contents.map((c) => c.id).toList()}',
+      );
+
+      // Try to load from database as fallback
+      final allContents = await DatabaseHelper.instance.getAllContents(
+        board.id,
+      );
+      _contents = allContents;
+      try {
+        content = _contents.firstWhere((c) => c.id == contentId);
+      } catch (e2) {
+        throw Exception(
+          'Failed to find content with ID $contentId even after reloading from database: $e2',
+        );
+      }
+    }
+
     final node = _createNodeFromContent(content);
+
+    // Check if this is the first node being added to an empty mind map
+    final wasEmpty = _mindMap.nodes.isEmpty;
+
     _mindMap.nodes.add(node);
+
+    // If this was the first node, trigger initial centering
+    if (wasEmpty) {
+      debugPrint(
+        'BoardMindMapVm: Added first node to empty mind map, triggering centering',
+      );
+      _needsInitialCentering = true;
+      _centerViewOnNodes();
+    }
 
     notifyListeners();
     return node;
@@ -798,10 +840,10 @@ class BoardMindMapVm extends ChangeNotifier {
   ) {
     // Prevent concurrent viewport updates
     if (_isUpdatingViewport) return;
-    
+
     final sizeChanged = _viewportSize != viewportSize;
     final controllerChanged = _transformationController != controller;
-    
+
     _viewportSize = viewportSize;
     _transformationController = controller;
 
@@ -814,7 +856,8 @@ class BoardMindMapVm extends ChangeNotifier {
         );
         if (_needsInitialCentering) {
           _centerViewOnNodes();
-          _needsInitialCentering = false; // Clear the flag to prevent continuous centering
+          _needsInitialCentering =
+              false; // Clear the flag to prevent continuous centering
         }
         _isUpdatingViewport = false; // Reset the flag
       });
@@ -999,28 +1042,30 @@ class BoardMindMapVm extends ChangeNotifier {
 
       // Current scale
       final currentScale = _transformationController!.value.getMaxScaleOnAxis();
-      
+
       // Calculate appropriate scale for initial centering if needed
       double targetScale = currentScale;
-      
+
       // Only adjust scale during initial centering (when first loading)
       if (_needsInitialCentering) {
-        debugPrint('BoardMindMapVm: Initial centering - checking if zoom adjustment is needed');
+        debugPrint(
+          'BoardMindMapVm: Initial centering - checking if zoom adjustment is needed',
+        );
         // Calculate content dimensions
         final contentWidth = maxX - minX;
         final contentHeight = maxY - minY;
-        
+
         // Add some padding (10% of viewport size)
         final paddingX = _viewportSize!.width * 0.1;
         final paddingY = _viewportSize!.height * 0.1;
         final availableWidth = _viewportSize!.width - (paddingX * 2);
         final availableHeight = _viewportSize!.height - (paddingY * 2);
-        
+
         // Calculate scales needed to fit content
         final scaleX = availableWidth / contentWidth;
         final scaleY = availableHeight / contentHeight;
         final autoFitScale = math.min(scaleX, scaleY);
-        
+
         // Use the smaller of current scale or auto-fit scale
         // This means we only zoom out if needed, never zoom in beyond current level
         if (autoFitScale < currentScale) {
@@ -1040,8 +1085,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
       // Calculate translation to center the nodes
       final translation =
-          viewportCenter -
-          Offset(centerX * targetScale, centerY * targetScale);
+          viewportCenter - Offset(centerX * targetScale, centerY * targetScale);
 
       // Create new transformation matrix with appropriate scale
       final newMatrix =
@@ -1050,7 +1094,9 @@ class BoardMindMapVm extends ChangeNotifier {
             ..scale(targetScale);
 
       _transformationController!.value = newMatrix;
-      debugPrint('BoardMindMapVm: Applied centering transformation with scale $targetScale');
+      debugPrint(
+        'BoardMindMapVm: Applied centering transformation with scale $targetScale',
+      );
     } else {
       debugPrint(
         'BoardMindMapVm: Transformation controller or viewport size not available, storing target center',
@@ -1080,7 +1126,23 @@ class BoardMindMapVm extends ChangeNotifier {
   void resetCentering() {
     _needsInitialCentering = false;
     _isUpdatingViewport = false;
-    debugPrint('BoardMindMapVm: Centering flags reset - panning should work normally');
+    debugPrint(
+      'BoardMindMapVm: Centering flags reset - panning should work normally',
+    );
+  }
+
+  /// Debug method to check content state
+  void debugContentState() {
+    debugPrint('BoardMindMapVm: Content state check:');
+    debugPrint('  - Board ID: ${board.id}');
+    debugPrint('  - Contents count: ${_contents.length}');
+    debugPrint('  - Mind map nodes: ${_mindMap.nodes.length}');
+    for (int i = 0; i < _contents.length; i++) {
+      final content = _contents[i];
+      debugPrint(
+        '  - Content $i: ${content.id} (${content.title}) - Type: ${content.type}',
+      );
+    }
   }
 
   // ========== Dragging Methods ==========
