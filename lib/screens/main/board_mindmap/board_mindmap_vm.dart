@@ -27,6 +27,7 @@ class BoardMindMapVm extends ChangeNotifier {
   bool _isDocumentPanelVisible = true;
   bool _isStylingPanelVisible = false; // Only show when design icon is clicked
   bool _needsInitialCentering = false;
+  bool _isUpdatingViewport = false;
 
   // Mind Map State
   MindMap _mindMap;
@@ -790,40 +791,34 @@ class BoardMindMapVm extends ChangeNotifier {
   }
 
   /// Update viewport info (called by canvas)
-  // void updateViewportInfo(
-  //   Size viewportSize,
-  //   TransformationController controller,
-  // ) {
-  //   _viewportSize = viewportSize;
-  //   _transformationController = controller;
-  //   debugPrint(
-  //     'BoardMindMapVm: Viewport info updated - size: $viewportSize, controller set',
-  //   );
-
-  //   // If we need initial centering or have a target view center waiting, apply it now
-  //   if (_needsInitialCentering || _targetViewCenter != null) {
-  //     debugPrint(
-  //       'BoardMindMapVm: Applying centering now that controller is available (needsInitial: $_needsInitialCentering, hasTarget: ${_targetViewCenter != null})',
-  //     );
-  //     _centerViewOnNodes();
-  //     _needsInitialCentering = false; // Clear the flag
-  //   }
-  // }
 
   void updateViewportInfo(
     Size viewportSize,
     TransformationController controller,
   ) {
+    // Prevent concurrent viewport updates
+    if (_isUpdatingViewport) return;
+    
+    final sizeChanged = _viewportSize != viewportSize;
+    final controllerChanged = _transformationController != controller;
+    
     _viewportSize = viewportSize;
     _transformationController = controller;
 
-    // Use post-frame callback for any notifications
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint(
-        'BoardMindMapVm: Viewport info updated - size: $viewportSize, controller set',
-      );
-      _centerViewOnNodes(); // This will now be called after build completes
-    });
+    // Only center if this is the first time we're getting viewport info or size changed significantly
+    if (controllerChanged || (sizeChanged && _needsInitialCentering)) {
+      _isUpdatingViewport = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        debugPrint(
+          'BoardMindMapVm: Viewport info updated - size: $viewportSize, controller set',
+        );
+        if (_needsInitialCentering) {
+          _centerViewOnNodes();
+          _needsInitialCentering = false; // Clear the flag to prevent continuous centering
+        }
+        _isUpdatingViewport = false; // Reset the flag
+      });
+    }
   }
 
   /// Check if initial centering is needed (for canvas to handle)
@@ -1024,7 +1019,8 @@ class BoardMindMapVm extends ChangeNotifier {
       );
     }
 
-    notifyListeners();
+    // DON'T call notifyListeners() here to prevent rebuild loops
+    // The transformation controller change will handle any necessary updates
   }
 
   Offset? _targetViewCenter;
@@ -1037,7 +1033,15 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Public method to center view on content (for manual triggering)
   void centerViewOnContent() {
+    _needsInitialCentering = true; // Set flag to trigger centering
     _centerViewOnNodes();
+  }
+
+  /// Reset any centering flags and allow normal panning
+  void resetCentering() {
+    _needsInitialCentering = false;
+    _isUpdatingViewport = false;
+    debugPrint('BoardMindMapVm: Centering flags reset - panning should work normally');
   }
 
   // ========== Dragging Methods ==========

@@ -31,25 +31,21 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
       builder: (_, vm, __) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            // Update VM with current viewport info
-            vm.updateViewportInfo(
-              constraints.biggest,
-              _transformationController,
-            );
+            // Only update VM viewport info when constraints actually change
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              vm.updateViewportInfo(
+                constraints.biggest,
+                _transformationController,
+              );
+            });
 
             // Check if we need to center the view on nodes
             final targetCenter = vm.targetViewCenter;
-            final needsInitialCentering = vm.needsInitialCentering;
 
-            if (targetCenter != null || needsInitialCentering) {
+            if (targetCenter != null) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (targetCenter != null) {
-                  _centerViewOnPosition(targetCenter, constraints.biggest);
-                  vm.clearTargetViewCenter();
-                } else if (needsInitialCentering) {
-                  // Force centering by calling the VM method
-                  vm.centerViewOnContent();
-                }
+                _centerViewOnPosition(targetCenter, constraints.biggest);
+                vm.clearTargetViewCenter();
               });
             }
 
