@@ -999,20 +999,58 @@ class BoardMindMapVm extends ChangeNotifier {
 
       // Current scale
       final currentScale = _transformationController!.value.getMaxScaleOnAxis();
+      
+      // Calculate appropriate scale for initial centering if needed
+      double targetScale = currentScale;
+      
+      // Only adjust scale during initial centering (when first loading)
+      if (_needsInitialCentering) {
+        debugPrint('BoardMindMapVm: Initial centering - checking if zoom adjustment is needed');
+        // Calculate content dimensions
+        final contentWidth = maxX - minX;
+        final contentHeight = maxY - minY;
+        
+        // Add some padding (10% of viewport size)
+        final paddingX = _viewportSize!.width * 0.1;
+        final paddingY = _viewportSize!.height * 0.1;
+        final availableWidth = _viewportSize!.width - (paddingX * 2);
+        final availableHeight = _viewportSize!.height - (paddingY * 2);
+        
+        // Calculate scales needed to fit content
+        final scaleX = availableWidth / contentWidth;
+        final scaleY = availableHeight / contentHeight;
+        final autoFitScale = math.min(scaleX, scaleY);
+        
+        // Use the smaller of current scale or auto-fit scale
+        // This means we only zoom out if needed, never zoom in beyond current level
+        if (autoFitScale < currentScale) {
+          targetScale = math.max(autoFitScale, 0.1); // Don't go below 0.1x zoom
+          debugPrint(
+            'BoardMindMapVm: Content too large for current scale ($currentScale), adjusting to $targetScale to fit all nodes',
+          );
+          debugPrint(
+            'BoardMindMapVm: Content size: ${contentWidth}x$contentHeight, Available: ${availableWidth}x$availableHeight',
+          );
+        } else {
+          debugPrint(
+            'BoardMindMapVm: All nodes fit at current scale ($currentScale), keeping default zoom level',
+          );
+        }
+      }
 
       // Calculate translation to center the nodes
       final translation =
           viewportCenter -
-          Offset(centerX * currentScale, centerY * currentScale);
+          Offset(centerX * targetScale, centerY * targetScale);
 
-      // Create new transformation matrix
+      // Create new transformation matrix with appropriate scale
       final newMatrix =
           Matrix4.identity()
             ..translate(translation.dx, translation.dy)
-            ..scale(currentScale);
+            ..scale(targetScale);
 
       _transformationController!.value = newMatrix;
-      debugPrint('BoardMindMapVm: Applied centering transformation');
+      debugPrint('BoardMindMapVm: Applied centering transformation with scale $targetScale');
     } else {
       debugPrint(
         'BoardMindMapVm: Transformation controller or viewport size not available, storing target center',
@@ -1033,7 +1071,8 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Public method to center view on content (for manual triggering)
   void centerViewOnContent() {
-    _needsInitialCentering = true; // Set flag to trigger centering
+    // DON'T set _needsInitialCentering = true here
+    // Manual centering should preserve current zoom level
     _centerViewOnNodes();
   }
 
