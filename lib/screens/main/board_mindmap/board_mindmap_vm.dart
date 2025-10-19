@@ -980,23 +980,49 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Generate a position for a new node
   Offset _generateNodePosition(int nodeIndex) {
-    // Arrange nodes in a spiral pattern
+    // Arrange nodes in a very compact spiral pattern near center
     const double centerX = 10000; // Center of canvas
     const double centerY = 7500;
-    const double radius = 300;
-    const double angleStep = 2.4; // Radians between nodes
+    const double baseRadius = 80; // Very small initial radius
+    const double angleStep = 1.5; // Tighter angle steps
+    const double radiusGrowth = 15; // Very small growth per node
+    const double maxRadius = 400; // Much smaller maximum distance from center
 
     if (nodeIndex == 0) {
       return Offset(centerX, centerY);
     }
 
     final angle = nodeIndex * angleStep;
-    final spiralRadius = radius + (nodeIndex * 50); // Expanding spiral
-
-    return Offset(
-      centerX + spiralRadius * math.cos(angle),
-      centerY + spiralRadius * math.sin(angle),
+    // Use smaller growth rate and cap the maximum radius
+    final spiralRadius = math.min(
+      baseRadius + (nodeIndex * radiusGrowth), 
+      maxRadius,
     );
+
+    // If we've reached max radius, arrange in concentric circles instead
+    double finalRadius = spiralRadius;
+    double finalAngle = angle;
+    
+    if (spiralRadius >= maxRadius) {
+      // Calculate which "ring" we're in beyond the spiral
+      final excessNodes = nodeIndex - (maxRadius / radiusGrowth).floor();
+      final ring = (excessNodes / 8).floor(); // 8 nodes per ring
+      final positionInRing = excessNodes % 8;
+      
+      finalRadius = maxRadius + (ring * 100); // Rings 100px apart
+      finalAngle = (positionInRing * 2 * math.pi) / 8; // Evenly spaced in ring
+    }
+
+    final position = Offset(
+      centerX + finalRadius * math.cos(finalAngle),
+      centerY + finalRadius * math.sin(finalAngle),
+    );
+
+    debugPrint(
+      'BoardMindMapVm: Generated position for node $nodeIndex: $position (radius: ${finalRadius.toInt()}px from center)',
+    );
+
+    return position;
   }
 
   /// Center the view on existing nodes
