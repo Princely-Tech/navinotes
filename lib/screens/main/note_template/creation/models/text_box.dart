@@ -48,11 +48,13 @@ class TextBox {
       position: position,
       size: size ?? const Size(120, 40),
       text: text,
-      textStyle: textStyle ?? const TextStyle(
-        fontSize: 16,
-        color: Colors.black,
-        fontWeight: FontWeight.normal,
-      ),
+      textStyle:
+          textStyle ??
+          const TextStyle(
+            fontSize: 16,
+            color: Colors.black,
+            fontWeight: FontWeight.normal,
+          ),
       createdAt: now,
       updatedAt: now,
     );
@@ -94,12 +96,8 @@ class TextBox {
   }
 
   /// Get the bounds rectangle of the text box
-  Rect get bounds => Rect.fromLTWH(
-    position.dx,
-    position.dy,
-    size.width,
-    size.height,
-  );
+  Rect get bounds =>
+      Rect.fromLTWH(position.dx, position.dy, size.width, size.height);
 
   /// Check if a point is inside the text box
   bool containsPoint(Offset point) {
@@ -110,14 +108,8 @@ class TextBox {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'position': {
-        'dx': position.dx,
-        'dy': position.dy,
-      },
-      'size': {
-        'width': size.width,
-        'height': size.height,
-      },
+      'position': {'dx': position.dx, 'dy': position.dy},
+      'size': {'width': size.width, 'height': size.height},
       'text': text,
       'textStyle': {
         'fontSize': textStyle.fontSize,
@@ -164,34 +156,48 @@ class TextBox {
       text: json['text'] ?? 'Text',
       textStyle: TextStyle(
         fontSize: (json['textStyle']?['fontSize'] ?? 16.0).toDouble(),
-        color: json['textStyle']?['color'] != null 
-          ? Color(json['textStyle']['color']) 
-          : Colors.black,
-        fontWeight: json['textStyle']?['fontWeight'] != null
-          ? FontWeight.values[json['textStyle']['fontWeight']]
-          : FontWeight.normal,
-        fontStyle: json['textStyle']?['fontStyle'] != null
-          ? FontStyle.values[json['textStyle']['fontStyle']]
-          : FontStyle.normal,
+        color:
+            json['textStyle']?['color'] != null
+                ? Color(json['textStyle']['color'])
+                : Colors.black,
+        fontWeight:
+            json['textStyle']?['fontWeight'] != null
+                ? FontWeight.values[json['textStyle']['fontWeight']]
+                : FontWeight.normal,
+        fontStyle:
+            json['textStyle']?['fontStyle'] != null
+                ? FontStyle.values[json['textStyle']['fontStyle']]
+                : FontStyle.normal,
         fontFamily: json['textStyle']?['fontFamily'],
       ),
-      backgroundColor: json['backgroundColor'] != null 
-        ? Color(json['backgroundColor']) 
-        : Colors.transparent,
+      backgroundColor:
+          json['backgroundColor'] != null
+              ? Color(json['backgroundColor'])
+              : Colors.transparent,
       hasBorder: json['hasBorder'] ?? false,
-      borderColor: json['borderColor'] != null 
-        ? Color(json['borderColor']) 
-        : Colors.black,
+      borderColor:
+          json['borderColor'] != null
+              ? Color(json['borderColor'])
+              : Colors.black,
       borderWidth: (json['borderWidth'] ?? 1.0).toDouble(),
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular((json['borderRadius']?['topLeft'] ?? 0.0).toDouble()),
-        topRight: Radius.circular((json['borderRadius']?['topRight'] ?? 0.0).toDouble()),
-        bottomLeft: Radius.circular((json['borderRadius']?['bottomLeft'] ?? 0.0).toDouble()),
-        bottomRight: Radius.circular((json['borderRadius']?['bottomRight'] ?? 0.0).toDouble()),
+        topLeft: Radius.circular(
+          (json['borderRadius']?['topLeft'] ?? 0.0).toDouble(),
+        ),
+        topRight: Radius.circular(
+          (json['borderRadius']?['topRight'] ?? 0.0).toDouble(),
+        ),
+        bottomLeft: Radius.circular(
+          (json['borderRadius']?['bottomLeft'] ?? 0.0).toDouble(),
+        ),
+        bottomRight: Radius.circular(
+          (json['borderRadius']?['bottomRight'] ?? 0.0).toDouble(),
+        ),
       ),
-      textAlign: json['textAlign'] != null 
-        ? TextAlign.values[json['textAlign']] 
-        : TextAlign.left,
+      textAlign:
+          json['textAlign'] != null
+              ? TextAlign.values[json['textAlign']]
+              : TextAlign.left,
       padding: EdgeInsets.only(
         left: (json['padding']?['left'] ?? 8.0).toDouble(),
         top: (json['padding']?['top'] ?? 8.0).toDouble(),

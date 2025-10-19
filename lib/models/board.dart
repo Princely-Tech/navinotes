@@ -292,7 +292,7 @@ class Board {
   /// Update board timestamp (mind map data stored in content)
   Board updateMindMapTimestamp() {
     return copyWith(
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: generateUnixTimestamp(),
     );
   }
 

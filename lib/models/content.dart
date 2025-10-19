@@ -388,7 +388,7 @@ class Content {
     return getUpdatedContent(
       mindMapX: position.dx,
       mindMapY: position.dy,
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: generateUnixTimestamp(),
     );
   }
 
@@ -396,7 +396,7 @@ class Content {
   Content updateConnectedContentIds(List<String> contentIds) {
     return getUpdatedContent(
       connectedContentIds: jsonEncode(contentIds),
-      updatedAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: generateUnixTimestamp(),
     );
   }
 

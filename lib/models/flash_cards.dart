@@ -93,6 +93,7 @@ class FlashCard {
         back: back,
         deckId: deckId,
         difficulty: difficulty,
+        updatedAt: generateUnixTimestamp(), // Update timestamp when card is modified
       );
       return DatabaseHelper.instance.updateFlashCard(updated);
     } catch (err) {

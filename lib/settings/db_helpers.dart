@@ -169,21 +169,25 @@ class DatabaseHelper {
      ALTER TABLE boards ADD COLUMN mind_map_data TEXT;
       ''');
     }
-    
+
     if (oldVersion < 3) {
       // Add mind map node fields to contents table
       await db.execute('ALTER TABLE contents ADD COLUMN mind_map_x REAL;');
       await db.execute('ALTER TABLE contents ADD COLUMN mind_map_y REAL;');
-      await db.execute('ALTER TABLE contents ADD COLUMN connected_content_ids TEXT;');
+      await db.execute(
+        'ALTER TABLE contents ADD COLUMN connected_content_ids TEXT;',
+      );
       await db.execute('ALTER TABLE contents ADD COLUMN node_color TEXT;');
       await db.execute('ALTER TABLE contents ADD COLUMN node_shape TEXT;');
       await db.execute('ALTER TABLE contents ADD COLUMN node_width REAL;');
       await db.execute('ALTER TABLE contents ADD COLUMN node_height REAL;');
     }
-    
+
     if (oldVersion < 4) {
       // Add sort_order field to flashcards table
-      await db.execute('ALTER TABLE flashcards ADD COLUMN sort_order INTEGER DEFAULT 0;');
+      await db.execute(
+        'ALTER TABLE flashcards ADD COLUMN sort_order INTEGER DEFAULT 0;',
+      );
     }
   }
 
@@ -340,7 +344,14 @@ class DatabaseHelper {
   Future<bool> insertFlashCard(FlashCard flashcard) async {
     final db = await instance.database;
     final id = await db.insert('flashcards', flashcard.toMap());
-    return 0 != id;
+    final success = 0 != id;
+
+    // Update parent deck's timestamp when flashcard is created
+    if (success) {
+      await _updateDeckTimestamp(flashcard.deckId);
+    }
+
+    return success;
   }
 
   // Get all flashcards for a deck
@@ -351,7 +362,8 @@ class DatabaseHelper {
       'flashcards',
       where: 'deck_id = ?',
       whereArgs: [deckId],
-      orderBy: 'sort_order ASC, created_at ASC', // Order by sort_order first, then creation time
+      orderBy:
+          'sort_order ASC, created_at ASC', // Order by sort_order first, then creation time
     );
 
     return List.generate(maps.length, (i) => FlashCard.fromMap(maps[i]));
@@ -371,19 +383,48 @@ class DatabaseHelper {
   // Update a flashcard
   Future<bool> updateFlashCard(FlashCard flashcard) async {
     final db = await instance.database;
-    return 0 !=
+    final success =
+        0 !=
         await db.update(
           'flashcards',
           flashcard.toMap(),
           where: 'id = ?',
           whereArgs: [flashcard.id],
         );
+
+    // Update parent deck's timestamp when flashcard is updated
+    if (success) {
+      await _updateDeckTimestamp(flashcard.deckId);
+    }
+
+    return success;
   }
 
   // Delete a flashcard
   Future<bool> deleteFlashCard(String id) async {
     final db = await instance.database;
-    return 0 != await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
+
+    // First get the flashcard to find its deckId
+    final result = await db.query(
+      'flashcards',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (result.isNotEmpty) {
+      final deckId = result.first['deck_id'] as String;
+      final success =
+          0 != await db.delete('flashcards', where: 'id = ?', whereArgs: [id]);
+
+      // Update parent deck's timestamp when flashcard is deleted
+      if (success) {
+        await _updateDeckTimestamp(deckId);
+      }
+
+      return success;
+    }
+
+    return false;
   }
 
   Future<List<Content>> getBoardDecks(String boardId) async {
@@ -469,10 +510,10 @@ class DatabaseHelper {
   // Update card sort orders for reordering
   Future<void> updateCardSortOrders(List<FlashCard> cards) async {
     final db = await instance.database;
-    
+
     // Use batch operation for better performance
     final batch = db.batch();
-    
+
     for (int i = 0; i < cards.length; i++) {
       batch.update(
         'flashcards',
@@ -481,22 +522,85 @@ class DatabaseHelper {
         whereArgs: [cards[i].id],
       );
     }
-    
+
     await batch.commit();
   }
 
   // Get the next sort order for new cards (to add at bottom)
   Future<int> getNextSortOrder(String deckId) async {
     final db = await instance.database;
-    
+
     final result = await db.query(
       'flashcards',
       columns: ['MAX(sort_order) as max_order'],
       where: 'deck_id = ?',
       whereArgs: [deckId],
     );
-    
+
     final maxOrder = result.first['max_order'] as int?;
     return (maxOrder ?? -1) + 1;
+  }
+
+  // Helper method to update deck's timestamp when flashcards are modified
+  Future<void> _updateDeckTimestamp(String deckId) async {
+    try {
+      // Get the deck (Content)
+      final deck = await getContentById(deckId);
+      if (deck != null) {
+        // Update deck's timestamp
+        final updatedDeck = deck.getUpdatedContent(
+          updatedAt: generateUnixTimestamp(),
+        );
+        await updateContent(updatedDeck);
+        debugPrint('Updated deck timestamp for deck: $deckId');
+      }
+    } catch (e) {
+      debugPrint('Error updating deck timestamp: $e');
+    }
+  }
+
+  // Fix invalid timestamps for existing decks
+  Future<void> fixInvalidDeckTimestamps() async {
+    try {
+      final db = await instance.database;
+
+      // Get all flashcard decks
+      final result = await db.query(
+        'contents',
+        where: 'type = ?',
+        whereArgs: [AppContentType.flashcardDeck.toString()],
+      );
+
+      int fixedCount = 0;
+      for (final deckMap in result) {
+        final updatedAt = deckMap['updated_at'] as int;
+
+        // Check if timestamp is invalid (too large - likely in milliseconds instead of seconds)
+        // Valid Unix timestamp in seconds should be around 1700000000 (year 2023)
+        // If it's > 2000000000000 (around year 2033 in milliseconds), it's likely wrong
+        if (updatedAt > 2000000000000) {
+          // Convert from milliseconds to seconds
+          final correctedTimestamp = updatedAt ~/ 1000;
+
+          await db.update(
+            'contents',
+            {'updated_at': correctedTimestamp},
+            where: 'id = ?',
+            whereArgs: [deckMap['id']],
+          );
+
+          fixedCount++;
+          debugPrint(
+            'Fixed invalid timestamp for deck ${deckMap['id']}: $updatedAt -> $correctedTimestamp',
+          );
+        }
+      }
+
+      if (fixedCount > 0) {
+        debugPrint('Fixed $fixedCount deck timestamps');
+      }
+    } catch (e) {
+      debugPrint('Error fixing deck timestamps: $e');
+    }
   }
 }

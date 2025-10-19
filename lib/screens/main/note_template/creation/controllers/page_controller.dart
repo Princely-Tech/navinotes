@@ -5,6 +5,7 @@ import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import '../../../../../models/note_page.dart';
+import '../../../../../settings/time_helpers.dart';
 import '../managers/text_box_manager.dart';
 import '../models/stylus_settings.dart';
 import 'pressure_drawing_controller.dart';
@@ -188,7 +189,7 @@ class PageController extends ChangeNotifier {
         textContent: textContentJson,
         drawingData: drawingContent,
         textBoxData: textBoxContent,
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        updatedAt: generateUnixTimestamp(),
       );
 
       // Notify parent about the update

@@ -847,10 +847,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                 ],
               ),
               // Show the board's mind map preview
-              MindMapPreview(
-                board: vm.board,
-                height: 140,
-              ),
+              MindMapPreview(board: vm.board, height: 140),
             ],
           ),
         );
@@ -1050,7 +1047,6 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _flashCardDeckItem(Content deck) {
     return InkWell(

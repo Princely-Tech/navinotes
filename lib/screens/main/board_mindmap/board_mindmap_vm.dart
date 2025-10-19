@@ -182,7 +182,7 @@ class BoardMindMapVm extends ChangeNotifier {
             nodeWidth: 200.0,
             nodeHeight: 100.0,
             connectedContentIds: '[]',
-            updatedAt: DateTime.now().millisecondsSinceEpoch,
+            updatedAt: generateUnixTimestamp(),
           );
 
           // Save updated content to database
@@ -283,8 +283,8 @@ class BoardMindMapVm extends ChangeNotifier {
         title: text.isEmpty ? 'New Node' : text,
         type: AppContentType.mindmapNode,
         boardId: board.id,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        createdAt: generateUnixTimestamp(),
+        updatedAt: generateUnixTimestamp(),
         metaData: {},
         mindMapX: _constrainPosition(position).dx,
         mindMapY: _constrainPosition(position).dy,
@@ -432,7 +432,7 @@ class BoardMindMapVm extends ChangeNotifier {
       if (content != null) {
         final updatedContent = content.getUpdatedContent(
           title: newText,
-          updatedAt: DateTime.now().millisecondsSinceEpoch,
+          updatedAt: generateUnixTimestamp(),
         );
 
         await DatabaseHelper.instance.updateContent(updatedContent);
@@ -515,8 +515,8 @@ class BoardMindMapVm extends ChangeNotifier {
               title: '',
               boardId: board.id,
               type: AppContentType.note,
-              createdAt: DateTime.now().millisecondsSinceEpoch,
-              updatedAt: DateTime.now().millisecondsSinceEpoch,
+              createdAt: generateUnixTimestamp(),
+              updatedAt: generateUnixTimestamp(),
               metaData: {},
             ),
       );
@@ -900,7 +900,7 @@ class BoardMindMapVm extends ChangeNotifier {
         nodeHeight: node.height,
         nodeShape: node.shape.toString(),
         metaData: updatedMetaData,
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
+        updatedAt: generateUnixTimestamp(),
       );
 
       // Save to database
