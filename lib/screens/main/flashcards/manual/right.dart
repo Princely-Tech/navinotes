@@ -18,55 +18,51 @@ class FlashCardsManualCreationRight extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 15),
             child: Column(
               children: [
-                Flexible(
-                  child: SingleChildScrollView(
+                // Header section (fixed)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                  child: Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Cards in Deck',
+                          style: TextStyle(
+                            color: const Color(0xFF374151),
+                            fontSize: 16.0,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${flashcards.length} cards',
+                        style: TextStyle(
+                          color: const Color(0xFF6B7280),
+                          fontSize: 12.0,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Reorderable list (scrollable)
+                Expanded(
+                  child: ReorderableListView.builder(
                     padding: const EdgeInsets.all(15),
-                    child: Column(
-                      spacing: 15,
-                      children: [
-                        Row(
-                          spacing: 10,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Cards in Deck',
-                                style: TextStyle(
-                                  color: const Color(0xFF374151),
-                                  fontSize: 16.0,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w600,
-                                  height: 1,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              '${flashcards.length} cards',
-                              style: TextStyle(
-                                color: const Color(0xFF6B7280),
-                                fontSize: 12.0,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Reorderable list for drag and drop
-                        ReorderableListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: flashcards.length,
-                          onReorder: (oldIndex, newIndex) {
-                            vm.reorderCards(oldIndex, newIndex);
-                          },
-                          itemBuilder: (context, index) {
-                            return _cardItem(
-                              index,
-                              key: ValueKey(flashcards[index].id),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                    itemCount: flashcards.length,
+                    onReorder: (oldIndex, newIndex) {
+                      vm.reorderCards(oldIndex, newIndex);
+                    },
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        key: ValueKey(flashcards[index].id),
+                        padding: const EdgeInsets.only(bottom: 15),
+                        child: _cardItem(index),
+                      );
+                    },
                   ),
                 ),
               ],
@@ -77,9 +73,8 @@ class FlashCardsManualCreationRight extends StatelessWidget {
     );
   }
 
-  Widget _cardItem(int index, {Key? key}) {
+  Widget _cardItem(int index) {
     return Consumer<FlashCardCreationVm>(
-      key: key,
       builder: (_, vm, _) {
         final flashcards = vm.userFlashCards;
         final card = flashcards[index];
