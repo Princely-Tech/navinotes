@@ -55,7 +55,33 @@ class FlashCardStudyVm extends ChangeNotifier {
     if (flashCards.isEmpty) return 0;
     currentCardIndex = (currentCardIndex + 1) % flashCards.length;
     FlashCard current = flashCards[currentCardIndex];
+    
+    // Reset card to front side when moving to next card
+    _resetCardToFront();
+    
     selectFlashCard(current);
+  }
+
+  previousCardIndex() {
+    if (flashCards.isEmpty) return 0;
+    currentCardIndex = (currentCardIndex - 1 + flashCards.length) % flashCards.length;
+    FlashCard current = flashCards[currentCardIndex];
+    
+    // Reset card to front side when moving to previous card
+    _resetCardToFront();
+    
+    selectFlashCard(current);
+  }
+
+  // Helper method to ensure card shows front side
+  void _resetCardToFront() {
+    // Use a small delay to ensure the flip card state is properly initialized
+    Future.delayed(const Duration(milliseconds: 100), () {
+      // Check if the card is currently showing the back side and flip it to front
+      if (flipCardController.state?.isFront == false) {
+        flipCardController.flipcard();
+      }
+    });
   }
 
   bool loading = true;
@@ -82,6 +108,9 @@ class FlashCardStudyVm extends ChangeNotifier {
       );
       updateReviewedCard(card);
       resetCardResponseTimer();
+      
+      // Ensure card starts with front side when selecting a new card
+      _resetCardToFront();
     } catch (err) {
       debugPrint('Error loading flashcard: $err');
       if (context.mounted) {

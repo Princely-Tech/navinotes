@@ -141,14 +141,14 @@ class FlashCardCreationVm extends ChangeNotifier {
       if (newIndex > oldIndex) {
         newIndex -= 1;
       }
-      
+
       // Reorder the list
       final card = userFlashCards.removeAt(oldIndex);
       userFlashCards.insert(newIndex, card);
-      
+
       // Update sort orders in database
       await DatabaseHelper.instance.updateCardSortOrders(userFlashCards);
-      
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error reordering cards: $e');
@@ -191,8 +191,10 @@ class FlashCardCreationVm extends ChangeNotifier {
       List<Map<String, dynamic>> defaultContent = [];
       if (isNotNull(currentUser)) {
         // Get next sort order to add card at bottom
-        final nextOrder = await DatabaseHelper.instance.getNextSortOrder(deck.id);
-        
+        final nextOrder = await DatabaseHelper.instance.getNextSortOrder(
+          deck.id,
+        );
+
         final currentTimestamp = generateUnixTimestamp();
         FlashCard card = FlashCard(
           deckId: deck.id,
@@ -205,7 +207,7 @@ class FlashCardCreationVm extends ChangeNotifier {
         );
         // Save to database
         await DatabaseHelper.instance.insertFlashCard(card);
-       
+
         selectFlashCard(card, 1);
         loadDeckFlashCards();
       }
@@ -446,7 +448,6 @@ class FlashCardCreationVm extends ChangeNotifier {
     bool replace = false,
   }) async {
     try {
-
       var endPoint = ApiEndpoints.flashcardAiContent;
       final body = initializeBodyValues();
       Map<String, File> files = {};
@@ -482,17 +483,17 @@ class FlashCardCreationVm extends ChangeNotifier {
           break;
 
         case AIContentSource.upload:
-        endPoint = ApiEndpoints.flashcardAiFile;
-         
-         if (contentFile == null) {
-        MessageDisplayService.showErrorMessage(
-          context,
-          'Upload a file to generate flash cards',
-        );
-        return;
-        }
+          endPoint = ApiEndpoints.flashcardAiFile;
 
-        files = {'file': File(contentFile!.path!)};
+          if (contentFile == null) {
+            MessageDisplayService.showErrorMessage(
+              context,
+              'Upload a file to generate flash cards',
+            );
+            return;
+          }
+
+          files = {'file': File(contentFile!.path!)};
           isValidContent = true;
           break;
       }
@@ -507,7 +508,7 @@ class FlashCardCreationVm extends ChangeNotifier {
       updateLoading(true);
 
       final requestBody = FormDataRequest.post(
-       endPoint,
+        endPoint,
         body: body,
         files: files,
       );
