@@ -912,21 +912,23 @@ class NoteCreationVm extends ChangeNotifier {
     if (pageController != null) {
       debugPrint('=== Simplified Drawing Controller Debug ===');
       debugPrint('Current page: ${currentPage?.id}');
-      debugPrint('Pressure sensitivity enabled: ${_stylusSettings.pressureSensitivityEnabled}');
-      
+      debugPrint(
+        'Pressure sensitivity enabled: ${_stylusSettings.pressureSensitivityEnabled}',
+      );
+
       // Only one controller system now - the pressure controller
       final pressureController = pageController.pressureController;
       final drawingController = pressureController.drawingController;
       final items = drawingController.getJsonList();
-      
+
       debugPrint('Pressure controller: ${pressureController.hashCode}');
       debugPrint('Wrapped drawing controller: ${drawingController.hashCode}');
       debugPrint('Drawing items: ${items.length}');
-      
+
       if (items.isNotEmpty) {
         debugPrint('First item type: ${items.first['type']}');
       }
-      
+
       debugPrint('=========================================');
     } else {
       debugPrint('No page controller found');

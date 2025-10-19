@@ -134,7 +134,7 @@ class NoteReadVm extends ChangeNotifier {
   }
 
   void initialize() {
-    richEditorController.readOnly = false;
+    richEditorController.readOnly = true;
 
     // Add listener to main text controller for auto-save
     richEditorController.document.changes.listen((event) {

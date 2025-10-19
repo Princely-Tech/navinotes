@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/content.dart';
-import 'package:navinotes/screens/main/note_template/read/index.dart';
-import 'package:navinotes/settings/enums.dart';
-import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/widgets/content_compact_preview_widget.dart';
 import 'package:navinotes/widgets/content_full_preview_widget.dart';
 

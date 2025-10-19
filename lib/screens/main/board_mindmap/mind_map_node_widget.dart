@@ -228,10 +228,12 @@ class MindMapNodeWidget extends StatelessWidget {
 
     if (nodeContent != null && nodeContent.type != AppContentType.mindmapNode) {
       // Show content preview for non-mindMapNode types
-      content = ContentPreviewWidget(
-        content: nodeContent,
-        isCompact: true,
-        width: node.width, // Account for padding
+      content = IgnorePointer(
+        child: ContentPreviewWidget(
+          content: nodeContent,
+          isCompact: true,
+          width: node.width, // Account for padding
+        ),
       );
     } else {
       // Show traditional text for mindMapNode type or nodes without content

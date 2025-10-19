@@ -239,7 +239,6 @@ class _NotePageContentState extends State<NotePageContent> {
 
         return [
           _buildStaticTextContent(),
-          _buildStaticDrawingContent(),
           // Text box overlay (read-only in read mode)
           Positioned.fill(
             child: _buildTextBoxOverlay(
@@ -249,6 +248,7 @@ class _NotePageContentState extends State<NotePageContent> {
               readOnly: true,
             ),
           ),
+          _buildStaticDrawingContent(),
         ];
       case NoteMode.voice:
         // Voice mode is now handled independently in MultiPageViewer
