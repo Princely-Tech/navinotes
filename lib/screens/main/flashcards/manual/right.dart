@@ -57,10 +57,19 @@ class FlashCardsManualCreationRight extends StatelessWidget {
                       vm.reorderCards(oldIndex, newIndex);
                     },
                     itemBuilder: (context, index) {
+                      final card = flashcards[index];
+                      final isActive = card.id == vm.currentFlashCard?.id;
                       return Padding(
-                        key: ValueKey(flashcards[index].id),
+                        key: ValueKey(card.id),
                         padding: const EdgeInsets.only(bottom: 15),
-                        child: _cardItem(index),
+                        child: _cardItem(
+                          index: index,
+                          card: card,
+                          isActive: isActive,
+                          onTap: () => vm.selectFlashCard(card, index + 1),
+                          onDelete: () => vm.handleDeleteFlashCard(card),
+                          isDeleting: vm.deletingCardId == card.id,
+                        ),
                       );
                     },
                   ),
@@ -73,127 +82,132 @@ class FlashCardsManualCreationRight extends StatelessWidget {
     );
   }
 
-  Widget _cardItem(int index) {
-    return Consumer<FlashCardCreationVm>(
-      builder: (_, vm, _) {
-        final flashcards = vm.userFlashCards;
-        final card = flashcards[index];
-        final isActive = card.id == vm.currentFlashCard?.id;
+  Widget _cardItem({
+    required int index,
+    required FlashCard card,
+    required bool isActive,
+    required VoidCallback onTap,
+    required VoidCallback onDelete,
+    required bool isDeleting,
+  }) {
+    final frontText = plainTextFromQuillJson(card.front);
+    final backText = plainTextFromQuillJson(card.back);
 
-        // QuillController backController = QuillController(
-        //   document: safeDocFromJson(card.back),
-        //   selection: const TextSelection.collapsed(offset: 0),
-        // );
-        // final frontText = frontController.document.toPlainText().trim();
-        final frontText = plainTextFromQuillJson(card.front);
-        final backText = plainTextFromQuillJson(card.back);
-        return GestureDetector(
-          onTap: () => vm.selectFlashCard(card, index + 1),
-          child: CustomCard(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: isActive ? AppTheme.iceBlue : AppTheme.transparent,
-              border: Border.all(
-                color: isActive ? AppTheme.softSkyBlue : AppTheme.lightGray,
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: onTap,
+      child: CustomCard(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isActive ? AppTheme.iceBlue : AppTheme.transparent,
+          border: Border.all(
+            color: isActive ? AppTheme.softSkyBlue : AppTheme.lightGray,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 10,
+          children: [
+            Row(
               spacing: 10,
               children: [
+                Expanded(
+                  child: Text(
+                    'Card ${index + 1} ${isActive ? '(Current)' : ''}',
+                    style: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      color: isActive ? AppTheme.vividRose : AppTheme.steelMist,
+                      fontSize: 12.0,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w500,
+                      height: 1,
+                    ),
+                  ),
+                ),
                 Row(
-                  spacing: 10,
+                  spacing: 5,
                   children: [
-                    Expanded(
-                      child: Text(
-                        'Card ${flashcards.indexOf(card) + 1} ${isActive ? '(Current)' : ''}',
-                        style: TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                          color:
-                              isActive
-                                  ? AppTheme.vividRose
-                                  : AppTheme.steelMist,
-                          fontSize: 12.0,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
-                          height: 1,
+                    // Drag handle with larger touch area
+                    ReorderableDragStartListener(
+                      index: index,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.drag_handle,
+                          color: AppTheme.blueGray,
+                          size: 22,
                         ),
                       ),
                     ),
-                    Row(
-                      spacing: 5,
-                      children: [
-                        // Drag handle
-                        Icon(
-                          Icons.drag_handle,
+                    LoadingIndicator(
+                      loading: isDeleting,
+                      child: InkWell(
+                        onTap: onDelete,
+                        child: SVGImagePlaceHolder(
+                          imagePath: Images.trash2,
                           color: AppTheme.blueGray,
-                          size: 16,
+                          size: 12,
                         ),
-                        LoadingIndicator(
-                          loading: vm.deletingCardId == card.id,
-                          child: InkWell(
-                            onTap: () => vm.handleDeleteFlashCard(card),
-                            child: SVGImagePlaceHolder(
-                              imagePath: Images.trash2,
-                              color: AppTheme.blueGray,
-                              size: 12,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
-                // ValueListenableBuilder<FlashCard?>(
-                //   valueListenable: vm.currentFlashCardNotifier,
-                //   builder: (context, value, child) {
-                //     return Transform.scale(
-                //       scale: 0.5, // 60% of original size
-                //       alignment: Alignment.topLeft,
-                //       child: QuillEditor.basic(
-                //         controller: frontController,
-                //         config: QuillEditorConfig(
-                //           embedBuilders:
-                //               FlutterQuillEmbeds.defaultEditorBuilders(),
-                //           padding: EdgeInsets.all(10),
-                //           minHeight: 100,
-                //           maxHeight: 100,
-                //         ),
-                //       ),
-                //     );
-                //   },
-                // ),
-                if (frontText.isNotEmpty)
-                  Text(
-                    frontText,
-                    // jsonToPlainText(card.front),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    style: TextStyle(
-                      color: const Color(0xFF1F2937),
-                      fontSize: 14.0,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                if (backText.isNotEmpty)
-                  Text(
-                    backText,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12.0,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
               ],
             ),
-          ),
-        );
-      },
+            // ValueListenableBuilder<FlashCard?>(
+            //   valueListenable: vm.currentFlashCardNotifier,
+            //   builder: (context, value, child) {
+            //     return Transform.scale(
+            //       scale: 0.5, // 60% of original size
+            //       alignment: Alignment.topLeft,
+            //       child: QuillEditor.basic(
+            //         controller: frontController,
+            //         config: QuillEditorConfig(
+            //           embedBuilders:
+            //               FlutterQuillEmbeds.defaultEditorBuilders(),
+            //           padding: EdgeInsets.all(10),
+            //           minHeight: 100,
+            //           maxHeight: 100,
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // ),
+            if (frontText.isNotEmpty)
+              Text(
+                frontText,
+                // jsonToPlainText(card.front),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: TextStyle(
+                  color: const Color(0xFF1F2937),
+                  fontSize: 14.0,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            if (backText.isNotEmpty)
+              Text(
+                backText,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12.0,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
