@@ -142,12 +142,16 @@ Future<FlashCard> createFlashcard({
   final currentUser = getCurrentUserFromSession(context);
 
   if (isNotNull(currentUser)) {
+    // Get next sort order to add card at bottom
+    final nextOrder = await DatabaseHelper.instance.getNextSortOrder(deckId);
+    
     final currentTimestamp = generateUnixTimestamp();
     FlashCard card = FlashCard(
       deckId: deckId,
       front: front,
       back: back,
       difficulty: difficulty,
+      sortOrder: nextOrder,
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
     );

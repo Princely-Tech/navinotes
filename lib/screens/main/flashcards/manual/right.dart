@@ -50,8 +50,21 @@ class FlashCardsManualCreationRight extends StatelessWidget {
                             ),
                           ],
                         ),
-                        for (int i = 0; i < flashcards.length; i++)
-                          _cardItem(i),
+                        // Reorderable list for drag and drop
+                        ReorderableListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: flashcards.length,
+                          onReorder: (oldIndex, newIndex) {
+                            vm.reorderCards(oldIndex, newIndex);
+                          },
+                          itemBuilder: (context, index) {
+                            return _cardItem(
+                              index,
+                              key: ValueKey(flashcards[index].id),
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -64,8 +77,9 @@ class FlashCardsManualCreationRight extends StatelessWidget {
     );
   }
 
-  Widget _cardItem(int index) {
+  Widget _cardItem(int index, {Key? key}) {
     return Consumer<FlashCardCreationVm>(
+      key: key,
       builder: (_, vm, _) {
         final flashcards = vm.userFlashCards;
         final card = flashcards[index];
@@ -115,6 +129,12 @@ class FlashCardsManualCreationRight extends StatelessWidget {
                     Row(
                       spacing: 5,
                       children: [
+                        // Drag handle
+                        Icon(
+                          Icons.drag_handle,
+                          color: AppTheme.blueGray,
+                          size: 16,
+                        ),
                         LoadingIndicator(
                           loading: vm.deletingCardId == card.id,
                           child: InkWell(

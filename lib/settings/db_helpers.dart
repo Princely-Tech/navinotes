@@ -8,7 +8,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 3; // Increment this number
+  static const int _databaseVersion = 4; // Increment this number
 
   DatabaseHelper._init();
 
@@ -76,6 +76,7 @@ class DatabaseHelper {
   front TEXT,
   back TEXT,
   tags TEXT,            -- optional
+  sort_order INTEGER DEFAULT 0, -- for card ordering
   created_at INTEGER,
   updated_at INTEGER
     )
@@ -179,6 +180,11 @@ class DatabaseHelper {
       await db.execute('ALTER TABLE contents ADD COLUMN node_shape TEXT;');
       await db.execute('ALTER TABLE contents ADD COLUMN node_width REAL;');
       await db.execute('ALTER TABLE contents ADD COLUMN node_height REAL;');
+    }
+    
+    if (oldVersion < 4) {
+      // Add sort_order field to flashcards table
+      await db.execute('ALTER TABLE flashcards ADD COLUMN sort_order INTEGER DEFAULT 0;');
     }
   }
 
@@ -346,7 +352,7 @@ class DatabaseHelper {
       'flashcards',
       where: 'deck_id = ?',
       whereArgs: [deckId],
-      orderBy: 'updated_at DESC, created_at DESC',
+      orderBy: 'sort_order ASC, created_at ASC', // Order by sort_order first, then creation time
     );
 
     return List.generate(maps.length, (i) => FlashCard.fromMap(maps[i]));
@@ -500,5 +506,39 @@ class DatabaseHelper {
     } catch (e) {
       debugPrint('Error removing content node from board mind map: $e');
     }
+  }
+
+  // Update card sort orders for reordering
+  Future<void> updateCardSortOrders(List<FlashCard> cards) async {
+    final db = await instance.database;
+    
+    // Use batch operation for better performance
+    final batch = db.batch();
+    
+    for (int i = 0; i < cards.length; i++) {
+      batch.update(
+        'flashcards',
+        {'sort_order': i},
+        where: 'id = ?',
+        whereArgs: [cards[i].id],
+      );
+    }
+    
+    await batch.commit();
+  }
+
+  // Get the next sort order for new cards (to add at bottom)
+  Future<int> getNextSortOrder(String deckId) async {
+    final db = await instance.database;
+    
+    final result = await db.query(
+      'flashcards',
+      columns: ['MAX(sort_order) as max_order'],
+      where: 'deck_id = ?',
+      whereArgs: [deckId],
+    );
+    
+    final maxOrder = result.first['max_order'] as int?;
+    return (maxOrder ?? -1) + 1;
   }
 }

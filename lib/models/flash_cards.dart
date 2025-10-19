@@ -7,6 +7,7 @@ class FlashCard {
   List<Map<String, dynamic>> back;
   String? tags;
   FlashcardDifficulty difficulty;
+  int sortOrder;
   int createdAt;
   int updatedAt;
 
@@ -17,6 +18,7 @@ class FlashCard {
     required this.back,
     required this.difficulty,
     this.tags,
+    this.sortOrder = 0,
     required this.createdAt,
     required this.updatedAt,
   }) : id = id ?? const Uuid().v4();
@@ -28,6 +30,7 @@ class FlashCard {
     'back': jsonEncode(back),
     'tags': tags,
     'difficulty': difficulty.toString(),
+    'sort_order': sortOrder,
     'created_at': createdAt,
     'updated_at': updatedAt,
   };
@@ -49,6 +52,7 @@ class FlashCard {
       front: front,
       back: back,
       tags: map['tags'],
+      sortOrder: map['sort_order'] ?? 0,
       createdAt: map['created_at'] ?? 0,
       updatedAt: map['updated_at'] ?? 0,
     );
@@ -60,6 +64,7 @@ class FlashCard {
     List<Map<String, dynamic>>? front,
     List<Map<String, dynamic>>? back,
     String? tags,
+    int? sortOrder,
     int? updatedAt,
     FlashcardDifficulty? difficulty,
   }) {
@@ -70,6 +75,7 @@ class FlashCard {
       front: front ?? this.front,
       back: back ?? this.back,
       tags: tags ?? this.tags,
+      sortOrder: sortOrder ?? this.sortOrder,
       createdAt: this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -100,6 +106,7 @@ class FlashCard {
     required List<Map<String, dynamic>> front,
     required List<Map<String, dynamic>> back,
     String? tags,
+    int? sortOrder,
   }) {
     return FlashCard(
       id: generateGUID(),
@@ -108,6 +115,7 @@ class FlashCard {
       front: front,
       back: back,
       tags: tags,
+      sortOrder: sortOrder ?? 0,
       createdAt: generateUnixTimestamp(),
       updatedAt: generateUnixTimestamp(),
     );

@@ -134,6 +134,29 @@ class FlashCardCreationVm extends ChangeNotifier {
     updateLoading(false);
   }
 
+  // Reorder flashcards via drag and drop
+  Future<void> reorderCards(int oldIndex, int newIndex) async {
+    try {
+      // Adjust newIndex if moving down
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      
+      // Reorder the list
+      final card = userFlashCards.removeAt(oldIndex);
+      userFlashCards.insert(newIndex, card);
+      
+      // Update sort orders in database
+      await DatabaseHelper.instance.updateCardSortOrders(userFlashCards);
+      
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error reordering cards: $e');
+      // Reload cards if reordering fails
+      await loadDeckFlashCards();
+    }
+  }
+
   void selectFlashCard(FlashCard card, int? index) {
     try {
       frontController = QuillController(
@@ -167,12 +190,16 @@ class FlashCardCreationVm extends ChangeNotifier {
       final currentUser = getCurrentUserFromSession(context);
       List<Map<String, dynamic>> defaultContent = [];
       if (isNotNull(currentUser)) {
+        // Get next sort order to add card at bottom
+        final nextOrder = await DatabaseHelper.instance.getNextSortOrder(deck.id);
+        
         final currentTimestamp = generateUnixTimestamp();
         FlashCard card = FlashCard(
-          deckId: deck.id!,
+          deckId: deck.id,
           front: defaultContent,
           back: defaultContent,
           difficulty: FlashcardDifficulty.easy,
+          sortOrder: nextOrder,
           createdAt: currentTimestamp,
           updatedAt: currentTimestamp,
         );
@@ -492,7 +519,7 @@ class FlashCardCreationVm extends ChangeNotifier {
         final flashCards = await parseResponseFlashCards(
           response: response['response'],
           context: context,
-          deckId: deck.id!,
+          deckId: deck.id,
         );
 
         updateGeneratedFlashCards(flashCards, replace: replace);
