@@ -253,31 +253,6 @@ class BoardMindMapVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Handle adding new content
-  Future<void> handleAddContent(String contentType) async {
-    try {
-      switch (contentType) {
-        case 'note':
-          await NavigationHelper.gotToNewNoteTemplate(board);
-          break;
-        case 'file':
-          await NavigationHelper.push(Routes.uploadPdf, arguments: board);
-          break;
-        case 'flashcard':
-          await NavigationHelper.createAndNavigateToNewFlashCard(board);
-          break;
-        case 'notebook':
-          await NavigationHelper.createAndNavigateToNewNotebook(board);
-          break;
-      }
-
-      // Refresh content after navigation returns
-      await _refreshContent();
-    } catch (e) {
-      debugPrint('Error handling add content: $e');
-    }
-  }
-
   /// Refresh content and regenerate mind map (Content-Only Architecture)
   Future<void> _refreshContent() async {
     try {
@@ -546,7 +521,7 @@ class BoardMindMapVm extends ChangeNotifier {
       );
 
       if (content.id.isNotEmpty) {
-        await NavigationHelper.navigateToContent(content);
+        await NavigationHelper.navigateToContent(content, replace: true);
       }
     }
   }

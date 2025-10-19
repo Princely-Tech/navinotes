@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/content.dart';
 import 'package:navinotes/screens/main/note_template/read/index.dart';
+import 'package:navinotes/screens/main/flashcards/study/vm.dart';
+import 'package:navinotes/widgets/flashcard_study_widget.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/settings/packages.dart';
+import 'package:provider/provider.dart';
 
 /// Reusable widget for previewing different content types
 /// Used in mind map nodes and right panel previews
@@ -41,12 +44,12 @@ class ContentFullPreviewWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.grey.shade300),
         boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -84,7 +87,7 @@ class ContentFullPreviewWidget extends StatelessWidget {
           // File icon based on extension
           Icon(
             _getFileIcon(fileExtension),
-            size:  48,
+            size: 48,
             color: _getFileColor(fileExtension),
           ),
           const SizedBox(height: 8),
@@ -92,7 +95,7 @@ class ContentFullPreviewWidget extends StatelessWidget {
           Text(
             fileName,
             style: TextStyle(
-              fontSize:  14,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
@@ -100,57 +103,41 @@ class ContentFullPreviewWidget extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
           ),
-          
-            const SizedBox(height: 4),
-            Text(
-              fileExtension.toUpperCase(),
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade600,
-                fontWeight: FontWeight.w500,
-              ),
+
+          const SizedBox(height: 4),
+          Text(
+            fileExtension.toUpperCase(),
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
             ),
-          
+          ),
         ],
       ),
     );
   }
 
   Widget _buildFlashcardPreview() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        children: [
-          // Flashcard icon
-          Icon(
-            Icons.quiz,
-            size:32,
-            color: Colors.orange.shade600,
-          ),
-          const SizedBox(height: 8),
-          // Title
-          Text(
-            content.title.isNotEmpty ? content.title : 'Flashcard Deck',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-            maxLines:3,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          ),
-          const Spacer(),
-          // Card count (if available in metadata)
-          if (content.metaData.containsKey('cardCount'))
-            Text(
-              '${content.metaData['cardCount']} cards',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade600,
-              ),
-            ),
-        ],
+    return ChangeNotifierProvider(
+      create: (context) {
+        final vm = FlashCardStudyVm(
+          scaffoldKey: GlobalKey<ScaffoldState>(),
+          context: context,
+          deck: content,
+        );
+        vm.initialize();
+        return vm;
+      },
+      child: Consumer<FlashCardStudyVm>(
+        builder: (context, vm, child) {
+          return FlashcardStudyWidget(
+            vm: vm,
+            showProgressIndicator: true, // Hide progress in preview
+            showActions: true, // Hide actions in preview
+            maxWidth: width,
+          );
+        },
       ),
     );
   }
@@ -168,20 +155,16 @@ class ContentFullPreviewWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.account_tree,
-            size:28,
-            color: Colors.indigo.shade700,
-          ),
+          Icon(Icons.account_tree, size: 28, color: Colors.indigo.shade700),
           const SizedBox(height: 8),
           Text(
             content.title.isNotEmpty ? content.title : 'Mind Map Node',
             style: TextStyle(
-              fontSize:16,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.indigo.shade800,
             ),
-            maxLines:3,
+            maxLines: 3,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
           ),
