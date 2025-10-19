@@ -91,14 +91,16 @@ class ContentCompactPreviewWidget extends StatelessWidget {
             height: scaledHeight,
             child: Transform.scale(
               scale: 1,
-              child: NotePageContent(
-                key: ValueKey('thumbnail_${page.id}'),
-                page: page,
-                vm: vm,
-                backgroundColor: Colors.white,
-                inputWidth: availableWidth, // Use available width directly
-                inputHeight: scaledHeight, // Use scaled height directly
-                isThumbnail: true,
+              child: AbsorbPointer(
+                child: NotePageContent(
+                  key: ValueKey('thumbnail_${page.id}'),
+                  page: page,
+                  vm: vm,
+                  backgroundColor: Colors.white,
+                  inputWidth: availableWidth, // Use available width directly
+                  inputHeight: scaledHeight, // Use scaled height directly
+                  isThumbnail: true,
+                ),
               ),
             ),
           ),

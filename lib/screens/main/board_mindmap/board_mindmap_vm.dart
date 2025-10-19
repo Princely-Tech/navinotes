@@ -563,7 +563,10 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Select a node
   void selectNode(String? nodeId) {
+    debugPrint("Selected node: $nodeId");
+
     _selectedNodeId = nodeId;
+    debugPrint("Selected node: $nodeId");
     if (nodeId != null) {
       _selectedEdgeId = null; // deselect edges when node is selected
     } else {

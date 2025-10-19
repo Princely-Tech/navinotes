@@ -103,6 +103,7 @@ class MindMapContentPanel extends StatelessWidget {
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: ContentPreviewWidget(
+                  key: ValueKey('preview_${content.id}'),
                   content: content,
                   isCompact: false,
                   width: double.infinity,
