@@ -1,6 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/models/notebook_page.dart';
-import 'package:navinotes/models/paper_template.dart';
 import 'package:path/path.dart' as path;
 import 'dart:math';
 

@@ -1,4 +1,3 @@
-import 'package:navinotes/models/notebook_page.dart';
 import 'package:navinotes/models/tag.dart';
 import 'package:navinotes/packages.dart';
 import 'package:path/path.dart';
@@ -414,47 +413,6 @@ class DatabaseHelper {
       return Content.fromMap(maps.first);
     }
     return null;
-  }
-
-  // NotebookPage CRUD Operations
-  Future<bool> insertNotebookPage(NotebookPage page) async {
-    final db = await instance.database;
-    return 0 != await db.insert('notebook_pages', page.toMap());
-  }
-
-  Future<NotebookPage?> getNotebookPage(String pageId) async {
-    final db = await instance.database;
-    final result = await db.query(
-      'notebook_pages',
-      where: 'id = ?',
-      whereArgs: [pageId],
-    );
-    if (result.isNotEmpty) {
-      return NotebookPage.fromMap(result.first);
-    }
-    return null;
-  }
-
-  Future<List<NotebookPage>> getPagesForNotebook(String notebookId) async {
-    final db = await instance.database;
-    final result = await db.query(
-      'notebook_pages',
-      where: 'notebook_id = ?',
-      whereArgs: [notebookId],
-      orderBy: 'page_number ASC',
-    );
-    return result.map((json) => NotebookPage.fromMap(json)).toList();
-  }
-
-  Future<bool> updateNotebookPage(NotebookPage page) async {
-    final db = await instance.database;
-    return 0 !=
-        await db.update(
-          'notebook_pages',
-          page.toMap(),
-          where: 'id = ?',
-          whereArgs: [page.id],
-        );
   }
 
   Future<bool> deleteNotebookPage(String pageId) async {

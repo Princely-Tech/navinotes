@@ -61,8 +61,7 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   }
 
   Widget _uploadSection() {
-                                                return ContentFileUpload();
-
+    return ContentFileUpload();
   }
 
   Widget _textInputSection(FlashCardCreationVm vm) {
@@ -93,38 +92,16 @@ class FlashCardAiCreationLeft extends StatelessWidget {
   Widget _notesSection() {
     return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {
-        if (vm.gettingAllBoards) {
+        if (vm.gettingCurrentBoardNotes) {
           return const Center(child: CircularProgressIndicator());
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _sectionTitle('SELECT NOTES'),
+
             _smallVGap(),
-            // _buildNotebookSelector(),
-            SearchDropdownField<Board>(
-              controller: TextEditingController(text: vm.selectedBoard?.name),
-              suggestionsCallback: (search) {
-                return vm.allBoards
-                    .where((item) => checkStringMatch(item.name, search))
-                    .toList();
-              },
-              itemBuilder: (_, item) {
-                return CustomListTile(
-                  onTap: () {
-                    vm.updateNoteBookControllerText(item);
-                  },
-                  title: item.name,
-                  color: AppTheme.steelMist,
-                  activeColor: AppTheme.strongBlue,
-                );
-              },
-              input: CustomInputField(
-                suffixIcon: Icon(Icons.keyboard_arrow_down),
-                label: 'Notebook',
-              ),
-            ),
-            if (vm.selectedBoard != null) _buildNoteList(),
+            _buildNoteList(),
           ],
         );
       },
@@ -260,11 +237,8 @@ class FlashCardAiCreationLeft extends StatelessWidget {
                   ),
                 ],
               ),
-            ] else if (vm.selectedBoard != null)
-              AppButton(
-                onTap: vm.goToCreateNote,
-                text: 'Create ${vm.selectedBoard?.name} Note',
-              ),
+            ] else
+              AppButton(onTap: vm.goToCreateNote, text: 'Create Note'),
           ],
         );
       },

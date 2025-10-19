@@ -335,6 +335,7 @@ class FlashCardCreationVm extends ChangeNotifier {
   List<Content> allContent = [];
   List<Content> selectedContent = [];
   bool gettingAllBoards = false;
+  bool gettingCurrentBoardNotes = false;
   int numberOfCards = 12;
 
   void updateNumberOfCards(int value) {
@@ -397,6 +398,11 @@ class FlashCardCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateGettingCurrentBoardNotes(bool value) {
+    gettingCurrentBoardNotes = value;
+    notifyListeners();
+  }
+
   //For development purposes, will be removed in production
   void initialize() async {
     for (var field in tagFields) {
@@ -412,7 +418,7 @@ class FlashCardCreationVm extends ChangeNotifier {
         deck.updateTitle(newTitle: deckNameController.text);
       }
     });
-    getBoards();
+    getBoardContents();
     loadDeckFlashCards();
   }
 
@@ -558,13 +564,21 @@ class FlashCardCreationVm extends ChangeNotifier {
 
   void getBoardContents() async {
     try {
-      if (selectedBoard != null) {
-        allContent = await DatabaseHelper.instance.getAllContents(
-          selectedBoard!.id!,
-        );
-        notifyListeners();
-      }
+      updateGettingCurrentBoardNotes(true);
+      final allBoardContent = await DatabaseHelper.instance.getAllContents(
+        deck.boardId,
+      );
+
+      // Filter to only show notes (AppContentType.note)
+      allContent =
+          allBoardContent
+              .where((content) => content.type == AppContentType.note)
+              .toList();
+
+      updateGettingCurrentBoardNotes(false);
+      notifyListeners();
     } catch (err) {
+      updateGettingCurrentBoardNotes(false);
       if (context.mounted) {
         MessageDisplayService.showErrorMessage(
           context,
@@ -637,15 +651,19 @@ class FlashCardCreationVm extends ChangeNotifier {
   }
 
   void goToCreateNote() async {
-    await NavigationHelper.gotToNewNoteTemplate(selectedBoard!);
-    getBoardContents();
-  }
-
-  void updateNoteBookControllerText(Board board) {
-    selectedContent = [];
-    selectedBoard = board;
-    getBoardContents();
-    notifyListeners();
+    try {
+      // Get the current board from the deck's boardId
+      final currentBoard = await DatabaseHelper.instance.getBoard(deck.boardId);
+      await NavigationHelper.gotToNewNoteTemplate(currentBoard);
+      getBoardContents();
+    } catch (err) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Could not create note',
+        );
+      }
+    }
   }
 
   String getContentFromNotes() {
@@ -660,13 +678,37 @@ class FlashCardCreationVm extends ChangeNotifier {
     final texts = <String>[];
 
     for (var item in selectedContent) {
-      if (item.content != null && item.content!.isNotEmpty) {
-        final plainText = getPlainTextFromDelta(item.content!);
-        if (plainText.isNotEmpty) {
-          texts.add(plainText);
+      try {
+        // Check if this note has the new multi-page structure
+        if (item.metaData.containsKey('pages')) {
+          final pagesData = item.metaData['pages'] as List<dynamic>;
+
+          for (var pageData in pagesData) {
+            final pageMap = Map<String, dynamic>.from(pageData);
+            final textContent = pageMap['text_content'] as String?;
+
+            if (textContent != null && textContent.isNotEmpty) {
+              final plainText = getPlainTextFromDelta(textContent);
+              if (plainText.isNotEmpty) {
+                texts.add(plainText);
+              }
+            }
+          }
         }
+        // Fallback to legacy single-content format
+        else if (item.content != null && item.content!.isNotEmpty) {
+          final plainText = getPlainTextFromDelta(item.content!);
+          if (plainText.isNotEmpty) {
+            debugPrint('Adding plain text: $plainText');
+            texts.add(plainText);
+          }
+        }
+      } catch (e) {
+        debugPrint('Error extracting text from note ${item.title}: $e');
+        // Continue with next item if this one fails
       }
     }
+
     return texts.join('. ') + (texts.isNotEmpty ? '.' : '');
   }
 }
