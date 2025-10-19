@@ -322,6 +322,72 @@ class DatabaseHelper {
         );
   }
 
+  /// Check for contents with invalid types (types not in AppContentType enum)
+  Future<List<Map<String, dynamic>>> getContentsWithInvalidTypes({String? boardId}) async {
+    final db = await instance.database;
+    
+    // Get all valid AppContentType values as strings
+    final validTypes = AppContentType.values.map((e) => e.toString()).toList();
+    
+    String whereClause = 'type NOT IN (${validTypes.map((_) => '?').join(', ')})';
+    List<dynamic> whereArgs = validTypes;
+    
+    // Optionally filter by board
+    if (boardId != null) {
+      whereClause += ' AND board_id = ?';
+      whereArgs.add(boardId);
+    }
+    
+    final invalidContents = await db.query(
+      'contents',
+      where: whereClause,
+      whereArgs: whereArgs,
+    );
+    
+    debugPrint('Found ${invalidContents.length} contents with invalid types${boardId != null ? ' in board $boardId' : ''}:');
+    for (final content in invalidContents) {
+      debugPrint('  - ID: ${content['id']}, Type: ${content['type']}, Title: ${content['title']}, Board: ${content['board_id']}');
+    }
+    
+    return invalidContents;
+  }
+
+  /// Delete all contents with invalid types (types not in AppContentType enum)
+  Future<int> deleteContentsWithInvalidTypes({String? boardId}) async {
+    final db = await instance.database;
+    
+    // Get all valid AppContentType values as strings
+    final validTypes = AppContentType.values.map((e) => e.toString()).toList();
+    debugPrint('Valid content types: $validTypes');
+    
+    // First check what we're about to delete
+    final invalidContents = await getContentsWithInvalidTypes(boardId: boardId);
+    
+    if (invalidContents.isEmpty) {
+      debugPrint('No contents with invalid types found');
+      return 0;
+    }
+    
+    String whereClause = 'type NOT IN (${validTypes.map((_) => '?').join(', ')})';
+    List<dynamic> whereArgs = validTypes;
+    
+    // Optionally filter by board
+    if (boardId != null) {
+      whereClause += ' AND board_id = ?';
+      whereArgs.add(boardId);
+    }
+    
+    // Delete contents with invalid types
+    final deletedCount = await db.delete(
+      'contents',
+      where: whereClause,
+      whereArgs: whereArgs,
+    );
+    
+    debugPrint('Deleted $deletedCount contents with invalid types${boardId != null ? ' from board $boardId' : ''}');
+    return deletedCount;
+  }
+
   Future<bool> updateBoard(Board board) async {
     final db = await instance.database;
     debugPrint('Updating board ${board.id}');

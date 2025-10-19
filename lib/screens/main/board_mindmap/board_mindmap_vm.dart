@@ -160,6 +160,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
       // Convert ALL content to mind map nodes (no standalone nodes)
       for (final content in _contents) {
+
         // Check if content already has mind map position
         Offset position;
         if (content.mindMapPosition != null) {
