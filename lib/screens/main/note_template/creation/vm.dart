@@ -1128,6 +1128,7 @@ class NoteCreationVm extends ChangeNotifier {
       context: context,
       boardId: content!.boardId,
       setLoading: _setCreateNoteLoading,
+      connectedContentId: content!.id,
     );
     getContent();
   }

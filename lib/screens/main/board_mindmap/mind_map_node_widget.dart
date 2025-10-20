@@ -150,6 +150,23 @@ class MindMapNodeWidget extends StatelessWidget {
             ),
           ),
 
+          if (nodeContent?.type != AppContentType.mindmapNode)
+            Positioned(
+              left: 0,
+              right: 0,
+              top: node.height + 2, // Position below the node
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+
+                  child: Text(node.text, style: AppTheme.text),
+                ),
+              ),
+            ),
+
           // Attachment icon removed - now in preview panel
           if (isConnectingFrom)
             Positioned(

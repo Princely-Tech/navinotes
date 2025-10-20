@@ -25,20 +25,17 @@ class ContentCompactPreviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final containerWidth = width ?? 180.0;
-    final containerHeight = height ?? double.infinity;
+    final containerHeight = double.infinity;
 
     return Container(
       width: containerWidth == double.infinity ? null : containerWidth,
-      height: containerHeight == double.infinity ? null : containerHeight,
+      height: containerHeight,
       constraints: BoxConstraints(
         maxWidth:
             containerWidth == double.infinity
                 ? double.infinity
                 : containerWidth,
-        maxHeight:
-            containerHeight == double.infinity
-                ? double.infinity
-                : containerHeight,
+        maxHeight: containerHeight,
       ),
       decoration: BoxDecoration(
         color: Colors.white,

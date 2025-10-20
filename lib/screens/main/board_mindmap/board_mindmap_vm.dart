@@ -186,7 +186,6 @@ class BoardMindMapVm extends ChangeNotifier {
             nodeColor: '#${color.value.toRadixString(16).padLeft(8, '0')}',
             nodeWidth: 200.0,
             nodeHeight: 100.0,
-            connectedContentIds: '[]',
             updatedAt: generateUnixTimestamp(),
           );
 

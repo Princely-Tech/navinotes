@@ -112,6 +112,7 @@ class BoardNoteAppBar extends StatelessWidget {
 
   Widget _leading() {
     BordThemeValues params = theme.values;
+
     Color appNameColor = params.color1;
     Color subjectNameColor = params.color1;
     Color backButtonColor = params.color1;
