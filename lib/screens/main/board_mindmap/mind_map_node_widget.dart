@@ -104,10 +104,8 @@ class MindMapNodeWidget extends StatelessWidget {
                 vm.selectNode(node.id);
               }
             },
-            onLongPressStart: (details) {
-              // Start connection on long press
-              vm.startConnectingFrom(node.id);
-            },
+            // Removed long press to avoid conflicts with the connection icon
+            // Connection now initiated via the plus icon when node is selected
             onPanStart: (_) {
               // Only start dragging if not in connection mode
               if (vm.connectingFromNodeId == null) {
@@ -150,6 +148,47 @@ class MindMapNodeWidget extends StatelessWidget {
             ),
           ),
 
+          // Connection icon - shows when node is selected and not in connecting mode
+          if (isSelected && !isConnectingFrom && vm.connectingFromNodeId == null)
+            Positioned(
+              right: -12,
+              top: -12,
+              child: GestureDetector(
+                onTap: () {
+                  // Add haptic feedback for better mobile experience
+                  HapticFeedback.lightImpact();
+                  // Start connection mode from this node
+                  vm.startConnectingFrom(node.id);
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: themeValues.connectionColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.25),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                      BoxShadow(
+                        color: themeValues.connectionColor.withOpacity(0.3),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.add_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ),
+
           if (nodeContent?.type != AppContentType.mindmapNode)
             Positioned(
               left: 0,
@@ -167,29 +206,48 @@ class MindMapNodeWidget extends StatelessWidget {
               ),
             ),
 
-          // Attachment icon removed - now in preview panel
+          // Enhanced connecting state indicator
           if (isConnectingFrom)
             Positioned(
               left: 0,
               right: 0,
               top: node.height + 4, // Position below the node
               child: Center(
-                child: Container(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
+                    horizontal: 12,
+                    vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.blueAccent.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.blue.withOpacity(0.4),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
-                  child: const Text(
-                    'Connecting...',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.link,
+                        color: Colors.white,
+                        size: 14,
+                      ),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Connecting...',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

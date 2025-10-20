@@ -4,6 +4,13 @@ import 'package:navinotes/models/mind_map_node.dart';
 import 'package:navinotes/models/mind_map_edge.dart';
 import 'board_mindmap_vm.dart';
 
+extension OffsetExtensions on Offset {
+  Offset normalized() {
+    final d = distance;
+    return d == 0 ? Offset.zero : this / d;
+  }
+}
+
 class EdgePainter extends CustomPainter {
   final BoardMindMapVm vm;
   EdgePainter(this.vm) : super(repaint: vm);
@@ -95,19 +102,42 @@ class EdgePainter extends CustomPainter {
       }
     }
 
-    // Draw temporary connecting line if in connect mode
+    // Draw temporary connecting line if in connect mode (Heptabase-style)
     if (vm.connectingFromNodeId != null) {
       final fromNode = vm.mindMap.findNode(vm.connectingFromNodeId!);
       if (fromNode != null && vm.pointerLogical != null) {
         final to = vm.pointerLogical!;
         final from = _edgePoint(fromNode, to);
-        final tempPaint =
-            Paint()
-              ..color = Colors.blueAccent.withOpacity(0.9)
-              ..strokeWidth = 2.0
-              ..style = PaintingStyle.stroke
-              ..strokeCap = StrokeCap.round;
-        _drawDashed(canvas, tempPaint, from, to, dash: 6, gap: 6);
+        
+        // Draw a more prominent connection line like Heptabase
+        final tempPaint = Paint()
+          ..color = Colors.blue.withOpacity(0.8)
+          ..strokeWidth = 3.0
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
+        
+        // Draw background glow for better visibility
+        final glowPaint = Paint()
+          ..color = Colors.blue.withOpacity(0.3)
+          ..strokeWidth = 6.0
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
+        
+        // Draw smooth curved line instead of dashed
+        _drawSmoothConnectionLine(canvas, glowPaint, from, to);
+        _drawSmoothConnectionLine(canvas, tempPaint, from, to);
+        
+        // Draw connection point indicator at mouse/touch position
+        final pointPaint = Paint()
+          ..color = Colors.blue
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(to, 8.0, pointPaint);
+        
+        // Draw inner white circle for better visibility
+        final innerPaint = Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(to, 4.0, innerPaint);
       }
     }
   }
@@ -209,6 +239,32 @@ class EdgePainter extends CustomPainter {
     final mid = Offset(a.dx, b.dy);
     canvas.drawLine(a, mid, paint);
     canvas.drawLine(mid, b, paint);
+  }
+  
+  void _drawSmoothConnectionLine(Canvas canvas, Paint paint, Offset a, Offset b) {
+    // Calculate control points for a smooth S-curve like Heptabase
+    final distance = (b - a).distance;
+    final midPoint = (a + b) / 2;
+    
+    // Create control points based on the direction and distance
+    final direction = (b - a);
+    final perpendicular = Offset(-direction.dy, direction.dx).normalized();
+    
+    // Adjust curve intensity based on distance
+    final curveIntensity = (distance * 0.3).clamp(30.0, 100.0);
+    
+    final controlPoint1 = a + direction * 0.3 + perpendicular * curveIntensity * 0.1;
+    final controlPoint2 = b - direction * 0.3 - perpendicular * curveIntensity * 0.1;
+    
+    final path = Path()
+      ..moveTo(a.dx, a.dy)
+      ..cubicTo(
+        controlPoint1.dx, controlPoint1.dy,
+        controlPoint2.dx, controlPoint2.dy,
+        b.dx, b.dy,
+      );
+    
+    canvas.drawPath(path, paint);
   }
 
   @override

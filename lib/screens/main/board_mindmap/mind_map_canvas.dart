@@ -72,19 +72,24 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                               color: AppTheme.cerulean.withValues(alpha: 0.1),
                             )
                             : null,
-                    child: InteractiveViewer(
-                      transformationController: _transformationController,
-                      boundaryMargin: EdgeInsets.all(50),
-                      minScale: 0.1,
-                      maxScale: 4.0,
-                      constrained: false,
-                      scaleEnabled: true,
-                      panEnabled: true,
-                      clipBehavior: Clip.none,
-                      onInteractionUpdate: (details) {
-                        // Update VM scale when user zooms
-                        vm.setScale(details.scale);
-                      },
+                    child: Listener(
+                      // Use Listener for connection mode pointer tracking without interfering with InteractiveViewer
+                      onPointerMove: vm.connectingFromNodeId != null ? (event) {
+                        vm.updatePointerFromVisual(event.localPosition);
+                      } : null,
+                      child: InteractiveViewer(
+                        transformationController: _transformationController,
+                        boundaryMargin: EdgeInsets.all(50),
+                        minScale: 0.1,
+                        maxScale: 4.0,
+                        constrained: false,
+                        scaleEnabled: true,
+                        panEnabled: true,
+                        clipBehavior: Clip.none,
+                        onInteractionUpdate: (details) {
+                          // Update VM scale when user zooms
+                          vm.setScale(details.scale);
+                        },
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTapDown: (details) {
@@ -101,6 +106,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                             }
                           }
                         },
+                        // Pan gestures now handled by Listener widget above to avoid InteractiveViewer conflicts
                         child: Container(
                           width: BoardMindMapVm.canvasWidth,
                           height: BoardMindMapVm.canvasHeight,
@@ -124,6 +130,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                             ],
                           ),
                         ),
+                      ),
                       ),
                     ),
                   ),
