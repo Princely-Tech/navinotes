@@ -134,6 +134,11 @@ class BoardMindMapVm extends ChangeNotifier {
         debugPrint('BoardMindMapVm: No content found, mind map will be empty');
       }
 
+      // Set flag to indicate we need initial centering
+      _needsInitialCentering = true;
+      // Try immediate centering
+      _centerViewOnNodes();
+
       debugPrint('BoardMindMapVm: Initialization completed successfully');
       _isLoading = false;
       notifyListeners();
@@ -218,12 +223,6 @@ class BoardMindMapVm extends ChangeNotifier {
       debugPrint(
         'BoardMindMapVm: (${nodesWithPositions} had positions, ${nodesNeedingPositions} needed new positions)',
       );
-
-      // Set flag to indicate we need initial centering
-      _needsInitialCentering = true;
-
-      // Try immediate centering
-      _centerViewOnNodes();
     } catch (e) {
       debugPrint('Error initializing content-based mind map: $e');
       debugPrint('Stack trace: ${StackTrace.current}');
@@ -1011,8 +1010,53 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Center the view on existing nodes
   void _centerViewOnNodes() {
+    debugPrint(
+      'BoardMindMapVm: Centering view on nodes count: ${_mindMap.nodes.length}',
+    );
+
     if (_mindMap.nodes.isEmpty) {
       debugPrint('BoardMindMapVm: No nodes to center on');
+
+      // If this is initial loading (not manual centering), center on canvas center
+      if (_needsInitialCentering &&
+          _transformationController != null &&
+          _viewportSize != null) {
+        debugPrint(
+          'BoardMindMapVm: Centering empty canvas on default position',
+        );
+
+        // Center on the default canvas center (where new nodes appear)
+        const defaultCenterX = 10000.0; // canvasWidth / 2
+        const defaultCenterY = 7500.0; // canvasHeight / 2
+
+        final viewportCenter = Offset(
+          _viewportSize!.width / 2,
+          _viewportSize!.height / 2,
+        );
+
+        // Use default scale (1.0) for empty canvas
+        const defaultScale = 1.0;
+
+        // Calculate translation to center the canvas
+        final translation =
+            viewportCenter -
+            const Offset(
+              defaultCenterX * defaultScale,
+              defaultCenterY * defaultScale,
+            );
+
+        // Create transformation matrix
+        final newMatrix =
+            Matrix4.identity()
+              ..translate(translation.dx, translation.dy)
+              ..scale(defaultScale);
+
+        _transformationController!.value = newMatrix;
+        debugPrint(
+          'BoardMindMapVm: Centered empty canvas at ($defaultCenterX, $defaultCenterY)',
+        );
+      }
+
       return;
     }
 

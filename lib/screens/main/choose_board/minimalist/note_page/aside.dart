@@ -85,7 +85,7 @@ class MinimalistNotePageAside extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              'Create Mind Map',
+                                              'View Mind Map',
                                               textAlign: TextAlign.center,
                                               style: AppTheme.text.copyWith(
                                                 color: AppTheme.steelBlue,

@@ -78,7 +78,7 @@ class NatureNotePageAside extends StatelessWidget {
                                       spacing: 5,
                                       children: [
                                         Text(
-                                          'Create Mind Map',
+                                          'View Mind Map',
                                           textAlign: TextAlign.center,
                                           style: AppTheme.text.copyWith(
                                             color: AppTheme.linen,

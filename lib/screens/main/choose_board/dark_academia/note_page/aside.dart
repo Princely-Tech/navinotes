@@ -81,7 +81,7 @@ class DarkAcademiaCreateNoteAside extends StatelessWidget {
                                         NavigationHelper.createAndNavigateToNewMindMap(
                                           vm.board,
                                         ),
-                                text: 'Create Mind Map',
+                                text: 'View Mind Map',
                                 color: AppTheme.fadedEmber.withAlpha(0xFF),
                                 borderColor: AppTheme.royalGold.withAlpha(0x7F),
                                 prefix: Padding(

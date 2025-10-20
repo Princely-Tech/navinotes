@@ -78,7 +78,7 @@ class BoardPlainNotePageAside extends StatelessWidget {
               onTap:
                   () =>
                       NavigationHelper.createAndNavigateToNewMindMap(vm.board),
-              text: 'Create Mind Map',
+              text: 'View Mind Map',
               minHeight: 40,
               prefix: SVGImagePlaceHolder(
                 imagePath: Images.logo,
