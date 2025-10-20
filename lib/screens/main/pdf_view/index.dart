@@ -7,7 +7,8 @@ class PdfViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get contentId from route arguments
-    final String contentId = ModalRoute.of(context)?.settings.arguments as String;
+    final String contentId =
+        ModalRoute.of(context)?.settings.arguments as String;
 
     return ChangeNotifierProvider(
       create: (_) => ComPdfVm(),
@@ -30,11 +31,7 @@ class PdfViewScreen extends StatelessWidget {
                 children: [
                   ResponsiveSection(
                     mobile: PdfViewMain(),
-                    desktop: Row(
-                      children: [
-                        Expanded(child: PdfViewMain()),
-                      ],
-                    ),
+                    desktop: Row(children: [Expanded(child: PdfViewMain())]),
                   ),
                 ],
               ),

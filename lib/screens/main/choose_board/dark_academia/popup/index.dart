@@ -1506,7 +1506,8 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                         ),
                       ),
                       AppButton.text(
-                        onTap: () => NavigationHelper.navigateToMindmap(vm.board),
+                        onTap:
+                            () => NavigationHelper.navigateToMindmap(vm.board),
                         text: 'Open Mind Map',
                         style: TextStyle(
                           color: AppTheme.goldenSaffron,
@@ -1530,10 +1531,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 40),
                   // Show the board's mind map preview
-                  MindMapPreview(
-                    board: vm.board,
-                    height: 160,
-                  ),
+                  MindMapPreview(board: vm.board, height: 160),
                 ],
               ),
             ),

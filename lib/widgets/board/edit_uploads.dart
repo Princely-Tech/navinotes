@@ -31,93 +31,98 @@ class BoardEditUploads extends StatelessWidget {
             return CustomCard(
               addBorder: true,
               addCardShadow: true,
-              child: Row(
-                children: [
-                  // Image preview or icon
-                  _buildFilePreview(file),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0,
+              child: InkWell(
+                onTap: () {
+                  NavigationHelper.navigateToContent(file);
+                },
+                child: Row(
+                  children: [
+                    // Image preview or icon
+                    _buildFilePreview(file),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16.0,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          size,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 14.0,
+                          const SizedBox(height: 4),
+                          Text(
+                            size,
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14.0,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Builder(
-                    builder: (context) {
-                      return IconButton(
-                        icon: const Icon(Icons.more_vert),
-                        onPressed: () {
-                          showPopover(
-                            context: context,
-                            bodyBuilder:
-                                (context) => ListView(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
+                    Builder(
+                      builder: (context) {
+                        return IconButton(
+                          icon: const Icon(Icons.more_vert),
+                          onPressed: () {
+                            showPopover(
+                              context: context,
+                              bodyBuilder:
+                                  (context) => ListView(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    children: [
+                                      _buildMenuItem(
+                                        icon: Icons.open_in_new,
+                                        label: 'Open',
+                                        onTap: () {
+                                          NavigationHelper.navigateToContent(
+                                            file,
+                                          );
+                                        },
+                                      ),
+                                      const Divider(height: 1, thickness: 1),
+                                      _buildMenuItem(
+                                        icon: Icons.download,
+                                        label: 'Download',
+                                        onTap: () {
+                                          handleFileDownload(file, context);
+                                        },
+                                      ),
+                                      const Divider(height: 1, thickness: 1),
+                                      _buildMenuItem(
+                                        icon: Icons.delete_outline,
+                                        label: 'Delete',
+                                        textColor: AppTheme.coralRed,
+                                        onTap: () {
+                                          handleContentDelete(
+                                            file: file,
+                                            context: context,
+                                            onSuccess:
+                                                () => vm.loadFiles(vm.board.id),
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
-                                  children: [
-                                    _buildMenuItem(
-                                      icon: Icons.open_in_new,
-                                      label: 'Open',
-                                      onTap: () {
-                                        NavigationHelper.navigateToContent(
-                                          file,
-                                        );
-                                      },
-                                    ),
-                                    const Divider(height: 1, thickness: 1),
-                                    _buildMenuItem(
-                                      icon: Icons.download,
-                                      label: 'Download',
-                                      onTap: () {
-                                        handleFileDownload(file, context);
-                                      },
-                                    ),
-                                    const Divider(height: 1, thickness: 1),
-                                    _buildMenuItem(
-                                      icon: Icons.delete_outline,
-                                      label: 'Delete',
-                                      textColor: AppTheme.coralRed,
-                                      onTap: () {
-                                        handleContentDelete(
-                                          file: file,
-                                          context: context,
-                                          onSuccess:
-                                              () => vm.loadFiles(vm.board.id),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                            direction: PopoverDirection.bottom,
-                            width: 160,
-                            height: 140,
-                            arrowHeight: 10,
-                            arrowWidth: 20,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
+                              direction: PopoverDirection.bottom,
+                              width: 160,
+                              height: 140,
+                              arrowHeight: 10,
+                              arrowWidth: 20,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           }).toList(),
