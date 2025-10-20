@@ -52,7 +52,10 @@ class MindMapNodeWidget extends StatelessWidget {
 
     // Expand hit-test area to include space for connection icon and toolbar
     return SizedBox(
-      width: math.max(node.width + 32, 270), // Extra width for connection icon
+      width: math.max(
+        node.width + 40,
+        270,
+      ), // Extra width for connection icon (44px - 4px overlap)
       height:
           nodeContent?.type == AppContentType.note
               ? double.infinity
@@ -149,15 +152,20 @@ class MindMapNodeWidget extends StatelessWidget {
           ),
 
           // Connection icon - shows when node is selected and not in connecting mode
-          if (isSelected && !isConnectingFrom && vm.connectingFromNodeId == null)
+          if (isSelected &&
+              !isConnectingFrom &&
+              vm.connectingFromNodeId == null)
             Positioned(
-              right: 0, // Position within the expanded hit-test area
+              right:
+                  -4, // Position slightly overlapping for better visual alignment
               top: -16,
               child: Container(
                 width: 44, // Ensure full width for hit-testing
                 height: 44,
                 child: GestureDetector(
-                  behavior: HitTestBehavior.opaque, // Capture all touches within bounds
+                  behavior:
+                      HitTestBehavior
+                          .opaque, // Capture all touches within bounds
                   onTap: () {
                     // Add haptic feedback for better mobile experience
                     HapticFeedback.lightImpact();
@@ -238,11 +246,7 @@ class MindMapNodeWidget extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.link,
-                        color: Colors.white,
-                        size: 14,
-                      ),
+                      const Icon(Icons.link, color: Colors.white, size: 14),
                       const SizedBox(width: 4),
                       const Text(
                         'Connecting...',
