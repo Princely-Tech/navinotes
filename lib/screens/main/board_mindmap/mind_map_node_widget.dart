@@ -69,67 +69,41 @@ class MindMapNodeWidget extends StatelessWidget {
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onDoubleTap: () async {
-              // // edit label dialog
-              // final textController = TextEditingController(text: node.text);
-              // final newText = await showDialog<String>(
-              //   context: context,
-              //   builder:
-              //       (dialogContext) => AlertDialog(
-              //         title: const Text('Edit node text'),
-              //         content: TextField(
-              //           controller: textController,
-              //           autofocus: true,
-              //           minLines: 1,
-              //           maxLines: 4,
-              //         ),
-              //         actions: [
-              //           TextButton(
-              //             onPressed: () => Navigator.of(dialogContext).pop(),
-              //             child: const Text('Cancel'),
-              //           ),
-              //           ElevatedButton(
-              //             onPressed:
-              //                 () => Navigator.of(
-              //                   dialogContext,
-              //                 ).pop(textController.text),
-              //             child: const Text('Save'),
-              //           ),
-              //         ],
-              //       ),
-              // );
-              // if (newText != null && newText.trim().isNotEmpty) {
-              //   vm.updateNodeText(node.id, newText.trim());
-              // }
-              //   context: context,
-              //   builder:
-              //       (dialogContext) => AlertDialog(
-              //         title: const Text('Edit node text'),
-              //         content: TextField(
-              //           controller: textController,
-              //           autofocus: true,
-              //           minLines: 1,
-              //           maxLines: 4,
-              //         ),
-              //         actions: [
-              //           TextButton(
-              //             onPressed: () => Navigator.of(dialogContext).pop(),
-              //             child: const Text('Cancel'),
-              //           ),
-              //           ElevatedButton(
-              //             onPressed:
-              //                 () => Navigator.of(
-              //                   dialogContext,
-              //                 ).pop(textController.text),
-              //             child: const Text('Save'),
-              //           ),
-              //         ],
-              //       ),
-              // );
-              // if (newText != null && newText.trim().isNotEmpty) {
-              //   vm.updateNodeText(node.id, newText.trim());
-              // }
-
               vm.selectNode(node.id);
+            },
+
+            onLongPress: () async {
+              // // edit label dialog
+              final textController = TextEditingController(text: node.text);
+              final newText = await showDialog<String>(
+                context: context,
+                builder:
+                    (dialogContext) => AlertDialog(
+                      title: const Text('Edit node text'),
+                      content: TextField(
+                        controller: textController,
+                        autofocus: true,
+                        minLines: 1,
+                        maxLines: 4,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          child: const Text('Cancel'),
+                        ),
+                        ElevatedButton(
+                          onPressed:
+                              () => Navigator.of(
+                                dialogContext,
+                              ).pop(textController.text),
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    ),
+              );
+              if (newText != null && newText.trim().isNotEmpty) {
+                vm.updateNodeText(node.id, newText.trim());
+              }
             },
             onTap: () {
               if (vm.connectingFromNodeId != null) {
