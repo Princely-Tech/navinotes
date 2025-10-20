@@ -980,7 +980,7 @@ class BoardMindMapVm extends ChangeNotifier {
       case AppContentType.flashcardDeck:
         return Colors.purple;
       case AppContentType.mindmapNode:
-        return Colors.indigo;
+        return AppTheme.lightGray;
     }
   }
 
@@ -1331,7 +1331,7 @@ class BoardMindMapVm extends ChangeNotifier {
     int fontWeight = 500;
     double opacity = 1.0;
     double colorTone = 0.0;
-    MindMapBorderStyle borderStyle = MindMapBorderStyle.none;
+    MindMapBorderStyle borderStyle = MindMapBorderStyle.shadow;
     double borderRadius = 8.0;
 
     if (nodeStyleData != null) {
@@ -1357,7 +1357,7 @@ class BoardMindMapVm extends ChangeNotifier {
         if (nodeStyleData['borderStyle'] != null) {
           borderStyle = MindMapBorderStyle.values.firstWhere(
             (e) => e.toString() == nodeStyleData['borderStyle'],
-            orElse: () => MindMapBorderStyle.none,
+            orElse: () => MindMapBorderStyle.shadow,
           );
         }
       } catch (e) {
