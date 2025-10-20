@@ -185,7 +185,7 @@ class BoardMindMapVm extends ChangeNotifier {
             mindMapY: position.dy,
             nodeColor: '#${color.value.toRadixString(16).padLeft(8, '0')}',
             nodeWidth: 200.0,
-            nodeHeight: 100.0,
+            nodeHeight: 200.0,
             updatedAt: generateUnixTimestamp(),
           );
 
@@ -289,7 +289,7 @@ class BoardMindMapVm extends ChangeNotifier {
         nodeColor:
             '#${(color ?? _getNodeColorForContentType(AppContentType.mindmapNode)).value.toRadixString(16).padLeft(8, '0')}',
         nodeWidth: 200.0,
-        nodeHeight: 100.0,
+        nodeHeight: 200.0,
         connectedContentIds: '[]',
       );
 
@@ -1378,7 +1378,7 @@ class BoardMindMapVm extends ChangeNotifier {
       color: color,
       textColor: textColor,
       width: content.nodeWidth ?? 200.0,
-      height: content.nodeHeight ?? 100.0,
+      height: content.nodeHeight ?? 200.0,
       fontSize: fontSize,
       fontWeight: fontWeight,
       opacity: opacity,
