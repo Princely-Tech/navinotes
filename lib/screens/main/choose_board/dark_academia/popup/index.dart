@@ -593,7 +593,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                               'Document your insights and research findings',
                           actionText: 'New Note',
                           imageUrl: Images.boardDarkAcadCreateNote,
-                          onTap: vm.goToBoardNotes,
+                          onTap: vm.createNoteHandler,
                         ),
                         _buildActionCard(
                           title: 'Import PDF',
@@ -1449,7 +1449,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                       builder: (context, vm, _) {
                         return AppButton(
                           mainAxisSize: MainAxisSize.min,
-                          onTap: vm.goToBoardNotes,
+                          onTap: vm.createNoteHandler,
                           color: const Color(0xFFC19B47),
                           text: 'Create Note',
                           minHeight: 40,

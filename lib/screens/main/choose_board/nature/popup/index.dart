@@ -591,7 +591,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
                     buttonText: 'New Note',
                     color: const Color(0xFF2D5016),
                     imageUrl: Images.boardNatureCreateNote,
-                    onTap: vm.goToBoardNotes,
+                    onTap: vm.createNoteHandler,
                   ),
                   _sectionCard(
                     title: 'Import PDF',

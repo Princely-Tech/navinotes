@@ -265,7 +265,7 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                 title: 'Create Note',
                 description: 'Document your insights and research findings',
                 actionText: 'New Note →',
-                onTap: vm.goToBoardNotes,
+                onTap: vm.createNoteHandler,
               ),
               _buildActionCard(
                 icon: Images.pdf,

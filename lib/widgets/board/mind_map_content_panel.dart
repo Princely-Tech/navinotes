@@ -142,15 +142,11 @@ class MindMapContentPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _infoCard([
-            _infoRow('Type', 'MIND MAP NODE'),
             _infoRow(
               'Text',
               selectedNode.text.isNotEmpty ? selectedNode.text : 'No text',
             ),
-            _infoRow(
-              'Position',
-              '${selectedNode.position.dx.toInt()}, ${selectedNode.position.dy.toInt()}',
-            ),
+            // _infoRow('Type', 'MIND MAP NODE'),
           ]),
         ],
       ),

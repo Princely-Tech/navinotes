@@ -910,7 +910,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 description: 'Document your insights and research findings',
                 buttonText: 'New Note',
                 imagePath: Images.boardPlainCreateNote,
-                onTap: vm.goToBoardNotes,
+                onTap: vm.createNoteHandler,
               ),
 
               buildActionCard(

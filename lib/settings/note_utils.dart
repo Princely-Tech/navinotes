@@ -1,4 +1,7 @@
+import 'package:navinotes/models/note_page.dart';
+import 'package:navinotes/models/page_format.dart';
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/packages.dart' as quill;
 
 Future<void> goToNotePageWithContent({
   required Content content,
@@ -22,6 +25,36 @@ Future<void> goToNotePageWithContent({
   // );
 }
 
+// create node in mindmap
+Future<void> createNodeInMindMap({
+  required String boardId,
+  required String text,
+  String? connectedContentId,
+}) async {
+  // Create new mind map content
+  final content = Content(
+    title: text.isEmpty ? 'New Node' : text,
+    type: AppContentType.mindmapNode,
+    boardId: boardId,
+    createdAt: generateUnixTimestamp(),
+    updatedAt: generateUnixTimestamp(),
+    metaData: {},
+    connectedContentIds:
+        connectedContentId != null ? jsonEncode([connectedContentId]) : null,
+    nodeWidth: 200.0,
+    nodeHeight: 100.0,
+  );
+
+  // Save to database
+  await DatabaseHelper.instance.insertContent(content);
+
+  final newContent = await DatabaseHelper.instance.getContentById(content.id);
+
+  if (newContent != null) {
+    return NavigationHelper.navigateToContent(newContent, replace: true);
+  }
+}
+
 Future<void> createContentInDb({
   required BoardNoteTemplate template,
   required BuildContext context,
@@ -37,6 +70,32 @@ Future<void> createContentInDb({
   debugPrint('Title: $title');
   debugPrint('Content Body: $contentBody');
   setLoading(true);
+
+  List<NotePage> _notePages = [];
+
+  if (contentBody != null && contentBody.isNotEmpty) {
+    // Convert plain text directly to Quill Delta JSON
+    final textContentJson = jsonEncode([
+      {"insert": "$contentBody\n"},
+    ]);
+
+    final newPage = NotePage(
+      noteId: generateGUID(),
+      pageNumber: _notePages.length + 1,
+      format: PageFormat.defaultFormat,
+      template: template,
+      createdAt: generateUnixTimestamp(),
+      updatedAt: generateUnixTimestamp(),
+      textContent: textContentJson,
+    );
+
+    _notePages.add(newPage);
+  }
+
+  final pagesData = _notePages.map((page) => page.toMap()).toList();
+
+  debugPrint('Pages Data: $pagesData');
+
   try {
     final currentUser = getCurrentUserFromSession(context);
     if (isNotNull(currentUser)) {
@@ -44,7 +103,10 @@ Future<void> createContentInDb({
       // Create a new Content object with default values
       final content = Content(
         type: AppContentType.note,
-        metaData: {ContentMetadataKey.template: template.type.toString()},
+        metaData: {
+          ContentMetadataKey.template: template.type.toString(),
+          'pages': pagesData,
+        },
         boardId: boardId,
         content: contentBody ?? '', // Empty by default
         createdAt: currentTimestamp,
@@ -73,6 +135,7 @@ Future<void> createContentInDb({
         final newContent = await DatabaseHelper.instance.getContentById(
           content.id,
         );
+
         if (newContent != null) {
           return NavigationHelper.navigateToContent(newContent, replace: true);
         }

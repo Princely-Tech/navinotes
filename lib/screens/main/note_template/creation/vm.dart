@@ -974,12 +974,14 @@ class NoteCreationVm extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<Content?> fetchContent(contentID) async {
+    return dbHelper.getContentById(contentID);
+  }
+
   Future<void> getContent() async {
     try {
       updateFetchingContent(true);
-      Content? response = await dbHelper.getContentById(
-        creationProp!.contentId,
-      );
+      Content? response = await fetchContent(creationProp!.contentId);
 
       if (response != null) {
         content = response;
@@ -1221,8 +1223,59 @@ class NoteCreationVm extends ChangeNotifier {
   }
 
   Future<void> summarizeNote(BuildContext context) async {
-    String plainText = richEditorController.document.toPlainText().trim();
-    _processSummary(context, plainText);
+    // reload content
+    Content? content = await fetchContent(creationProp!.contentId);
+
+    final texts = <String>[];
+
+    if (content == null) {
+      MessageDisplayService.showErrorMessage(
+        context,
+        'There is no content to summarize',
+      );
+      return;
+    }
+    var item = content;
+    try {
+      // Check if this note has the new multi-page structure
+      if (item.metaData.containsKey('pages')) {
+        final pagesData = item.metaData['pages'] as List<dynamic>;
+
+        for (var pageData in pagesData) {
+          final pageMap = Map<String, dynamic>.from(pageData);
+          final textContent = pageMap['text_content'] as String?;
+
+          if (textContent != null && textContent.isNotEmpty) {
+            final plainText = getPlainTextFromDelta(textContent);
+            if (plainText.isNotEmpty) {
+              texts.add(plainText);
+            }
+          }
+        }
+      }
+      // Fallback to legacy single-content format
+      else if (item.content != null && item.content!.isNotEmpty) {
+        final plainText = getPlainTextFromDelta(item.content!);
+        if (plainText.isNotEmpty) {
+          debugPrint('Adding plain text: $plainText');
+          texts.add(plainText);
+        }
+      }
+    } catch (e) {
+      debugPrint('Error extracting text from note ${item.title}: $e');
+      // Continue with next item if this one fails
+    }
+
+    if (texts.isEmpty) {
+      MessageDisplayService.showErrorMessage(
+        context,
+        'There is no content to summarize.',
+      );
+      return;
+    }
+    var joinedText = texts.join('. ') + (texts.isNotEmpty ? '.' : '');
+
+    _processSummary(context, joinedText);
   }
 
   Future<void> _processSummary(BuildContext context, String textInput) async {

@@ -208,6 +208,7 @@ class NoteAiSection extends StatelessWidget {
                     setLoading: vm.setCreatingContent,
                     title: 'Ai - ${vm.content!.title}',
                     contentBody: vm.summary,
+                    connectedContentId: vm.content!.id,
                   );
                 } catch (err) {
                   if (context.mounted) {
@@ -230,22 +231,29 @@ class NoteAiSection extends StatelessWidget {
               padding: padding,
               mainAxisSize: MainAxisSize.min,
             ),
+            // AppButton(
+            //   onTap: () {},
+            //   text: 'Create FlashCards',
+            //   color: AppTheme.lightAsh,
+            //   prefix: SVGImagePlaceHolder(
+            //     imagePath: Images.stack,
+            //     color: AppTheme.darkSlateGray,
+            //     size: 16,
+            //   ),
+            //   minHeight: 40,
+            //   style: style,
+            //   padding: padding,
+            //   mainAxisSize: MainAxisSize.min,
+            // ),
             AppButton(
-              onTap: () {},
-              text: 'Create FlashCards',
-              color: AppTheme.lightAsh,
-              prefix: SVGImagePlaceHolder(
-                imagePath: Images.stack,
-                color: AppTheme.darkSlateGray,
-                size: 16,
-              ),
-              minHeight: 40,
-              style: style,
-              padding: padding,
-              mainAxisSize: MainAxisSize.min,
-            ),
-            AppButton(
-              onTap: () {},
+              onTap: () {
+                // create a mindmap node with the value of the text
+                createNodeInMindMap(
+                  boardId: vm.content!.boardId,
+                  text: vm.summary!,
+                  connectedContentId: vm.content!.id,
+                );
+              },
               text: 'Insert to Mind Map',
               color: AppTheme.lightAsh,
               prefix: Icon(Icons.add, color: AppTheme.darkSlateGray),
