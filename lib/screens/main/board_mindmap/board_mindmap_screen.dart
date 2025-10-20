@@ -248,7 +248,7 @@ class BoardMindMapScreen extends StatelessWidget {
             }
           },
           icon: const Icon(Icons.add, size: 16),
-          label: const Text('Add node'),
+          label: const Text('Add Text'),
           style: ElevatedButton.styleFrom(
             minimumSize: Size(0, 32),
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),

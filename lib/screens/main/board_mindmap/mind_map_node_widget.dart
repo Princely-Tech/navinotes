@@ -50,7 +50,7 @@ class MindMapNodeWidget extends StatelessWidget {
     final nodeContent =
         node.contentID != null ? vm.getContentById(node.contentID!) : null;
 
-    // Expand hit-test area to include space for connection icon and toolbar
+    // Expand hit-test area to include space for floating icons and toolbar
     return SizedBox(
       width: math.max(
         node.width + 40,
@@ -59,52 +59,55 @@ class MindMapNodeWidget extends StatelessWidget {
       height:
           nodeContent?.type == AppContentType.note
               ? double.infinity
-              : node.height + 56, // extra space for toolbar + margin
+              : node.height +
+                  72, // extra space for icons below + toolbar + margin (16 + 56)
       child: Stack(
         clipBehavior: Clip.none, // Allow children to overflow
         children: [
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onDoubleTap: () async {
-              // edit label dialog
-              final textController = TextEditingController(text: node.text);
-              final newText = await showDialog<String>(
-                context: context,
-                builder:
-                    (dialogContext) => AlertDialog(
-                      title: const Text('Edit node text'),
-                      content: TextField(
-                        controller: textController,
-                        autofocus: true,
-                        minLines: 1,
-                        maxLines: 4,
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(dialogContext).pop(),
-                          child: const Text('Cancel'),
-                        ),
-                        ElevatedButton(
-                          onPressed:
-                              () => Navigator.of(
-                                dialogContext,
-                              ).pop(textController.text),
-                          child: const Text('Save'),
-                        ),
-                      ],
-                    ),
-              );
-              if (newText != null && newText.trim().isNotEmpty) {
-                vm.updateNodeText(node.id, newText.trim());
-              }
+              // // edit label dialog
+              // final textController = TextEditingController(text: node.text);
+              // final newText = await showDialog<String>(
+              //   context: context,
+              //   builder:
+              //       (dialogContext) => AlertDialog(
+              //         title: const Text('Edit node text'),
+              //         content: TextField(
+              //           controller: textController,
+              //           autofocus: true,
+              //           minLines: 1,
+              //           maxLines: 4,
+              //         ),
+              //         actions: [
+              //           TextButton(
+              //             onPressed: () => Navigator.of(dialogContext).pop(),
+              //             child: const Text('Cancel'),
+              //           ),
+              //           ElevatedButton(
+              //             onPressed:
+              //                 () => Navigator.of(
+              //                   dialogContext,
+              //                 ).pop(textController.text),
+              //             child: const Text('Save'),
+              //           ),
+              //         ],
+              //       ),
+              // );
+              // if (newText != null && newText.trim().isNotEmpty) {
+              //   vm.updateNodeText(node.id, newText.trim());
+              // }
+
+              vm.selectNode(node.id);
             },
             onTap: () {
               if (vm.connectingFromNodeId != null) {
                 // If we're in connection mode, finish the connection
                 vm.finishConnecting(node.id);
               } else {
-                // Otherwise, just select the node
-                vm.selectNode(node.id);
+                // Show connection options without full selection (no right panel)
+                vm.showConnectionOptions(node.id);
               }
             },
             // Removed long press to avoid conflicts with the connection icon
@@ -151,8 +154,8 @@ class MindMapNodeWidget extends StatelessWidget {
             ),
           ),
 
-          // Connection icon - shows when node is selected and not in connecting mode
-          if (isSelected &&
+          // Connection icon - shows when node has connection options visible
+          if (vm.connectionOptionsNodeId == node.id &&
               !isConnectingFrom &&
               vm.connectingFromNodeId == null)
             Positioned(
@@ -194,6 +197,100 @@ class MindMapNodeWidget extends StatelessWidget {
                     ),
                     child: const Icon(
                       Icons.add_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          // Select/Info icon - shows when connection options are visible (bottom right)
+          if (vm.connectionOptionsNodeId == node.id &&
+              !isConnectingFrom &&
+              vm.connectingFromNodeId == null)
+            Positioned(
+              right: -4, // Position at bottom right
+              bottom: -16, // Below the node
+              child: Container(
+                width: 44,
+                height: 44,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    // Full selection (shows right panel)
+                    HapticFeedback.lightImpact();
+                    vm.selectNode(node.id);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: themeValues.color1,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                        BoxShadow(
+                          color: themeValues.color1.withOpacity(0.4),
+                          blurRadius: 16,
+                          spreadRadius: 3,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.info_outline,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          // Design/Styling icon - shows when connection options are visible (bottom left)
+          if (vm.connectionOptionsNodeId == node.id &&
+              !isConnectingFrom &&
+              vm.connectingFromNodeId == null)
+            Positioned(
+              left: -4, // Position at bottom left
+              bottom: -16, // Below the node
+              child: Container(
+                width: 44,
+                height: 44,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    // Toggle styling panel
+                    HapticFeedback.lightImpact();
+                    vm.toggleStylingPanel();
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: themeValues.borderColor,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                        BoxShadow(
+                          color: themeValues.borderColor.withOpacity(0.4),
+                          blurRadius: 16,
+                          spreadRadius: 3,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.palette_outlined,
                       color: Colors.white,
                       size: 24,
                     ),

@@ -37,6 +37,8 @@ class BoardMindMapVm extends ChangeNotifier {
   String? _draggingNodeId;
   String?
   _attachingNodeId; // When not null, the next document/deck tapped will attach to this node
+  String?
+  _connectionOptionsNodeId; // Node showing connection options (without full selection)
 
   // Canvas transform state
   double scale = 1.0;
@@ -71,6 +73,7 @@ class BoardMindMapVm extends ChangeNotifier {
   String? get connectingFromNodeId => _connectingFromNodeId;
   String? get draggingNodeId => _draggingNodeId;
   String? get attachingNodeId => _attachingNodeId;
+  String? get connectionOptionsNodeId => _connectionOptionsNodeId;
 
   BoardTheme get boardTheme {
     final boardType = board.boardType ?? BoardTypeCodes.plain;
@@ -236,6 +239,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Toggle styling panel visibility
   void toggleStylingPanel() {
+    debugPrint('BoardMindMapVm: Toggling styling panel visibility');
     _isStylingPanelVisible = !_isStylingPanelVisible;
     notifyListeners();
   }
@@ -585,14 +589,36 @@ class BoardMindMapVm extends ChangeNotifier {
     }
   }
 
-  /// Select a node
+  /// Show connection options for a node (without full selection)
+  void showConnectionOptions(String nodeId) {
+    _connectionOptionsNodeId = nodeId;
+    // Clear full selection when showing just connection options
+    _selectedNodeId = null;
+    _selectedEdgeId = null;
+    _isStylingPanelVisible = false;
+    notifyListeners();
+  }
+
+  /// Clear connection options
+  void clearConnectionOptions() {
+    _connectionOptionsNodeId = null;
+    notifyListeners();
+  }
+
+  /// Select a node (full selection with right panel)
   void selectNode(String? nodeId) {
     debugPrint("Selected node: $nodeId");
 
     _selectedNodeId = nodeId;
+    // Clear connection options when fully selecting
+    _connectionOptionsNodeId = null;
+
     debugPrint("Selected node: $nodeId");
     if (nodeId != null) {
       _selectedEdgeId = null; // deselect edges when node is selected
+
+      // Auto-pan to ensure selected node is not covered by right panel
+      _panToShowSelectedNode(nodeId);
     } else {
       // Hide styling panel when no node is selected
       _isStylingPanelVisible = false;
@@ -602,6 +628,107 @@ class BoardMindMapVm extends ChangeNotifier {
       _attachingNodeId = null;
     }
     notifyListeners();
+  }
+
+  /// Auto-pan canvas to show selected node without being covered by panels
+  void _panToShowSelectedNode(String nodeId) {
+    if (_transformationController == null || _viewportSize == null) return;
+
+    final node = _mindMap.findNode(nodeId);
+    if (node == null) return;
+
+    const double rightPanelWidth =
+        320; // Approximate width of right preview panel
+    const double leftSpacing = 100; // Extra space for left-side content
+    const double topBottomSpacing = 80; // Extra space top and bottom
+    const double panBuffer = 50; // Buffer zone to avoid unnecessary panning
+
+    final viewportWidth = _viewportSize!.width;
+    final viewportHeight = _viewportSize!.height;
+
+    // Calculate current node position in visual coordinates
+    final currentMatrix = _transformationController!.value;
+    final currentScale = currentMatrix.getMaxScaleOnAxis();
+    final currentTranslation = currentMatrix.getTranslation();
+
+    // Node bounds in visual coordinates
+    final nodeVisualLeft =
+        (node.position.dx * currentScale) + currentTranslation.x;
+    final nodeVisualRight =
+        ((node.position.dx + node.width) * currentScale) + currentTranslation.x;
+    final nodeVisualTop =
+        (node.position.dy * currentScale) + currentTranslation.y;
+    final nodeVisualBottom =
+        ((node.position.dy + node.height) * currentScale) +
+        currentTranslation.y;
+    final nodeCenterX =
+        nodeVisualLeft + ((nodeVisualRight - nodeVisualLeft) / 2);
+    final nodeCenterY =
+        nodeVisualTop + ((nodeVisualBottom - nodeVisualTop) / 2);
+
+    // Check if node is already in a good position
+    final rightPanelStart = viewportWidth - rightPanelWidth;
+    final safeZoneLeft = leftSpacing;
+    final safeZoneRight = rightPanelStart - panBuffer;
+    final safeZoneTop = topBottomSpacing;
+    final safeZoneBottom = viewportHeight - topBottomSpacing;
+
+    // Check if node is already visible and not covered
+    final isNodeVisible =
+        nodeVisualRight > safeZoneLeft &&
+        nodeVisualLeft < safeZoneRight &&
+        nodeVisualBottom > safeZoneTop &&
+        nodeVisualTop < safeZoneBottom;
+
+    final isNodeNotCovered =
+        nodeVisualRight <= safeZoneRight; // Not overlapping right panel
+
+    final isNodeInGoodPosition = isNodeVisible && isNodeNotCovered;
+
+    if (isNodeInGoodPosition) {
+      debugPrint(
+        "Node $nodeId is already in good position - no panning needed",
+      );
+      return;
+    }
+
+    debugPrint(
+      "Node $nodeId needs panning - visible: $isNodeVisible, not covered: $isNodeNotCovered",
+    );
+
+    // Calculate available viewport space (excluding panels)
+    final availableWidth = viewportWidth - rightPanelWidth - leftSpacing;
+
+    // Calculate ideal position for node (left-center of available space)
+    final targetNodeCenterX =
+        leftSpacing + (availableWidth * 0.3); // 30% from left edge
+    final targetNodeCenterY = viewportHeight * 0.5; // Vertically centered
+
+    // Node center in logical coordinates
+    final nodeLogicalCenterX = node.position.dx + (node.width / 2);
+    final nodeLogicalCenterY = node.position.dy + (node.height / 2);
+
+    // Calculate new translation needed to position node at target
+    final newTranslationX =
+        targetNodeCenterX - (nodeLogicalCenterX * currentScale);
+    final newTranslationY =
+        targetNodeCenterY - (nodeLogicalCenterY * currentScale);
+
+    // Create new transformation matrix
+    final newMatrix =
+        Matrix4.identity()
+          ..scale(currentScale)
+          ..translate(
+            newTranslationX / currentScale,
+            newTranslationY / currentScale,
+          );
+
+    // Animate to new position
+    _transformationController!.value = newMatrix;
+
+    debugPrint(
+      "Auto-panned to show selected node: $nodeId at ($targetNodeCenterX, $targetNodeCenterY)",
+    );
   }
 
   /// Select an edge

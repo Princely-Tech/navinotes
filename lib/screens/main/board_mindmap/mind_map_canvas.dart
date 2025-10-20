@@ -103,6 +103,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                             if (!hit) {
                               vm.selectEdge(null);
                               vm.selectNode(null);
+                              vm.clearConnectionOptions(); // Clear connection options when clicking empty space
                             }
                           }
                         },
