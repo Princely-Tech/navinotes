@@ -50,26 +50,56 @@ class MindMapNodeWidget extends StatelessWidget {
     final nodeContent =
         node.contentID != null ? vm.getContentById(node.contentID!) : null;
 
-    // Expand hit-test area to include space for floating icons and toolbar
+    // Expand hit-test area to include space for ALL floating icons and toolbar
     return SizedBox(
       width: math.max(
-        node.width + 40,
+        node.width +
+            96, // Extra width for icons on both sides (48px left + 48px right)
         270,
-      ), // Extra width for connection icon (44px - 4px overlap)
+      ),
       height:
           nodeContent?.type == AppContentType.note
               ? double.infinity
               : node.height +
-                  72, // extra space for icons below + toolbar + margin (16 + 56)
+                  132, // Extra space: top icon (60px) + bottom icons (60px) + toolbar (12px)
       child: Stack(
         clipBehavior: Clip.none, // Allow children to overflow
         children: [
+          // Main node content at natural position (don't position it!)
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onDoubleTap: () async {
               // // edit label dialog
               // final textController = TextEditingController(text: node.text);
               // final newText = await showDialog<String>(
+              //   context: context,
+              //   builder:
+              //       (dialogContext) => AlertDialog(
+              //         title: const Text('Edit node text'),
+              //         content: TextField(
+              //           controller: textController,
+              //           autofocus: true,
+              //           minLines: 1,
+              //           maxLines: 4,
+              //         ),
+              //         actions: [
+              //           TextButton(
+              //             onPressed: () => Navigator.of(dialogContext).pop(),
+              //             child: const Text('Cancel'),
+              //           ),
+              //           ElevatedButton(
+              //             onPressed:
+              //                 () => Navigator.of(
+              //                   dialogContext,
+              //                 ).pop(textController.text),
+              //             child: const Text('Save'),
+              //           ),
+              //         ],
+              //       ),
+              // );
+              // if (newText != null && newText.trim().isNotEmpty) {
+              //   vm.updateNodeText(node.id, newText.trim());
+              // }
               //   context: context,
               //   builder:
               //       (dialogContext) => AlertDialog(
@@ -161,14 +191,13 @@ class MindMapNodeWidget extends StatelessWidget {
             Positioned(
               right:
                   -4, // Position slightly overlapping for better visual alignment
-              top: -16,
+              top: -16, // Above the node
               child: Container(
                 width: 44, // Ensure full width for hit-testing
                 height: 44,
                 child: GestureDetector(
                   behavior:
-                      HitTestBehavior
-                          .opaque, // Capture all touches within bounds
+                      HitTestBehavior.opaque, // Aggressively capture touches
                   onTap: () {
                     // Add haptic feedback for better mobile experience
                     HapticFeedback.lightImpact();
