@@ -151,8 +151,8 @@ class MindMapNodeWidget extends StatelessWidget {
           // Connection icon - shows when node is selected and not in connecting mode
           if (isSelected && !isConnectingFrom && vm.connectingFromNodeId == null)
             Positioned(
-              right: -12,
-              top: -12,
+              right: -16,
+              top: -16,
               child: GestureDetector(
                 onTap: () {
                   // Add haptic feedback for better mobile experience
@@ -162,28 +162,28 @@ class MindMapNodeWidget extends StatelessWidget {
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  width: 36,
-                  height: 36,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     color: themeValues.connectionColor,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.25),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
                       ),
                       BoxShadow(
-                        color: themeValues.connectionColor.withOpacity(0.3),
-                        blurRadius: 12,
-                        spreadRadius: 2,
+                        color: themeValues.connectionColor.withOpacity(0.4),
+                        blurRadius: 16,
+                        spreadRadius: 3,
                       ),
                     ],
                   ),
                   child: const Icon(
                     Icons.add_rounded,
                     color: Colors.white,
-                    size: 20,
+                    size: 24,
                   ),
                 ),
               ),
