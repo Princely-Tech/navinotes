@@ -50,9 +50,9 @@ class MindMapNodeWidget extends StatelessWidget {
     final nodeContent =
         node.contentID != null ? vm.getContentById(node.contentID!) : null;
 
-    // Expand hit-test area to include space below the node for the toolbar
+    // Expand hit-test area to include space for connection icon and toolbar
     return SizedBox(
-      width: math.max(node.width, 270),
+      width: math.max(node.width + 32, 270), // Extra width for connection icon
       height:
           nodeContent?.type == AppContentType.note
               ? double.infinity
@@ -151,39 +151,44 @@ class MindMapNodeWidget extends StatelessWidget {
           // Connection icon - shows when node is selected and not in connecting mode
           if (isSelected && !isConnectingFrom && vm.connectingFromNodeId == null)
             Positioned(
-              right: -16,
+              right: 0, // Position within the expanded hit-test area
               top: -16,
-              child: GestureDetector(
-                onTap: () {
-                  // Add haptic feedback for better mobile experience
-                  HapticFeedback.lightImpact();
-                  // Start connection mode from this node
-                  vm.startConnectingFrom(node.id);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: themeValues.connectionColor,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.25),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                      BoxShadow(
-                        color: themeValues.connectionColor.withOpacity(0.4),
-                        blurRadius: 16,
-                        spreadRadius: 3,
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.add_rounded,
-                    color: Colors.white,
-                    size: 24,
+              child: Container(
+                width: 44, // Ensure full width for hit-testing
+                height: 44,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque, // Capture all touches within bounds
+                  onTap: () {
+                    // Add haptic feedback for better mobile experience
+                    HapticFeedback.lightImpact();
+                    // Start connection mode from this node
+                    vm.startConnectingFrom(node.id);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: themeValues.connectionColor,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                        BoxShadow(
+                          color: themeValues.connectionColor.withOpacity(0.4),
+                          blurRadius: 16,
+                          spreadRadius: 3,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.add_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                   ),
                 ),
               ),
