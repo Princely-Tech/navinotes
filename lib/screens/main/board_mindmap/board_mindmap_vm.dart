@@ -160,7 +160,6 @@ class BoardMindMapVm extends ChangeNotifier {
 
       // Convert ALL content to mind map nodes (no standalone nodes)
       for (final content in _contents) {
-
         // Check if content already has mind map position
         Offset position;
         if (content.mindMapPosition != null) {
@@ -429,20 +428,49 @@ class BoardMindMapVm extends ChangeNotifier {
 
   /// Remove a content node and its connections (Content-Based Architecture)
   Future<void> removeNode(String nodeId) async {
-    // Find the content
-    final content = _contents.where((c) => c.id == nodeId).firstOrNull;
-    if (content != null) {
-      // Remove from database
-      await DatabaseHelper.instance.deleteContent(nodeId);
-
-      // Remove from local list
-      _contents.removeWhere((c) => c.id == nodeId);
-
-      // Remove connections from other content
-      await _removeAllConnectionsToContent(nodeId);
+    debugPrint('BoardMindMapVm: Removing node $nodeId');
+    // First, get the node from the mind map
+    final node = _mindMap.findNode(nodeId);
+    if (node == null) {
+      debugPrint('BoardMindMapVm: Node $nodeId not found in mind map');
+      return;
     }
 
-    // Remove from mind map
+    // In content-based architecture, node.id should be the same as content.id
+    // But let's be explicit about getting the content using the node's ID
+
+    Content? content;
+
+    final contentId = node.contentID;
+
+    if (contentId != null) {
+      content = _contents.where((c) => c.id == contentId).firstOrNull;
+    }
+
+    if (content != null) {
+      // Only delete content from database if it's a pure mind map node
+      // Other content types (notes, files, flashcards) should be preserved
+      if (content.type == AppContentType.mindmapNode) {
+        debugPrint(
+          'BoardMindMapVm: Deleting mindmapNode content from database: ${content.id}',
+        );
+        await DatabaseHelper.instance.deleteContent(content.id);
+
+        // Remove from local list only for mindmapNode types
+        _contents.removeWhere((c) => c.id == contentId);
+      } else {
+        debugPrint(
+          'BoardMindMapVm: Preserving ${content.type} content, only removing from mind map view: ${content.id}',
+        );
+      }
+
+      // Remove connections from other content using the content ID
+      await _removeAllConnectionsToContent(contentId!);
+    } else {
+      debugPrint('BoardMindMapVm: Content not found for node $nodeId');
+    }
+
+    // Remove from mind map using the original node ID
     _mindMap.removeNode(nodeId);
     if (_selectedNodeId == nodeId) _selectedNodeId = null;
 
@@ -502,7 +530,7 @@ class BoardMindMapVm extends ChangeNotifier {
           (context) => AlertDialog(
             title: const Text('Delete Node'),
             content: const Text(
-              'Are you sure you want to delete this node? This action cannot be undone.',
+              'Are you sure you want to delete this mind map node? This action cannot be undone.',
             ),
             actions: [
               TextButton(
@@ -520,28 +548,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
     if (confirmed == true) {
       // Remove all edges connected to this node
-      final edgesToRemove =
-          _mindMap.edges
-              .where(
-                (edge) => edge.sourceId == nodeId || edge.targetId == nodeId,
-              )
-              .toList();
-
-      for (final edge in edgesToRemove) {
-        _mindMap.removeEdge(edge.id);
-      }
-
-      // Remove the node
-      _mindMap.removeNode(nodeId);
-
-      // Clear selection if this node was selected
-      if (_selectedNodeId == nodeId) {
-        _selectedNodeId = null;
-        _isStylingPanelVisible =
-            false; // hide styling panel when selected node is deleted
-      }
-
-      _saveMindMapChanges();
+      await removeNode(nodeId);
       notifyListeners();
     }
   }
@@ -995,20 +1002,20 @@ class BoardMindMapVm extends ChangeNotifier {
     final angle = nodeIndex * angleStep;
     // Use smaller growth rate and cap the maximum radius
     final spiralRadius = math.min(
-      baseRadius + (nodeIndex * radiusGrowth), 
+      baseRadius + (nodeIndex * radiusGrowth),
       maxRadius,
     );
 
     // If we've reached max radius, arrange in concentric circles instead
     double finalRadius = spiralRadius;
     double finalAngle = angle;
-    
+
     if (spiralRadius >= maxRadius) {
       // Calculate which "ring" we're in beyond the spiral
       final excessNodes = nodeIndex - (maxRadius / radiusGrowth).floor();
       final ring = (excessNodes / 8).floor(); // 8 nodes per ring
       final positionInRing = excessNodes % 8;
-      
+
       finalRadius = maxRadius + (ring * 100); // Rings 100px apart
       finalAngle = (positionInRing * 2 * math.pi) / 8; // Evenly spaced in ring
     }
