@@ -74,6 +74,9 @@ class BoardMindMapVm extends ChangeNotifier {
   String? get draggingNodeId => _draggingNodeId;
   String? get attachingNodeId => _attachingNodeId;
   String? get connectionOptionsNodeId => _connectionOptionsNodeId;
+  
+  /// Get the currently active node ID for styling (either selected or showing connection options)
+  String? get activeNodeId => _selectedNodeId ?? _connectionOptionsNodeId;
 
   BoardTheme get boardTheme {
     final boardType = board.boardType ?? BoardTypeCodes.plain;
@@ -241,6 +244,13 @@ class BoardMindMapVm extends ChangeNotifier {
   void toggleStylingPanel() {
     debugPrint('BoardMindMapVm: Toggling styling panel visibility');
     _isStylingPanelVisible = !_isStylingPanelVisible;
+    
+    // If opening styling panel and there's a connection-options node but no selected node,
+    // we can keep the connection options active for styling purposes
+    if (_isStylingPanelVisible && _selectedNodeId == null && _connectionOptionsNodeId != null) {
+      debugPrint('Styling panel opened with connection-options node: $_connectionOptionsNodeId');
+    }
+    
     notifyListeners();
   }
 
@@ -1774,7 +1784,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeBackgroundColor(Color color) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.color = color;
       _saveNodeStylingToContent(node.id);
@@ -1784,7 +1794,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeTextColor(Color color) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.textColor = color;
       _saveNodeStylingToContent(node.id);
@@ -1804,7 +1814,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeFontSize(double fontSize) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.fontSize = fontSize;
       _saveNodeStylingToContent(node.id);
@@ -1814,7 +1824,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeOpacity(double opacity) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.opacity = opacity;
       _saveNodeStylingToContent(node.id);
@@ -1824,7 +1834,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeColorTone(double tone) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.colorTone = tone;
       _saveNodeStylingToContent(node.id);
@@ -1834,7 +1844,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeFontWeight(int weight) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.fontWeight = weight;
       _saveNodeStylingToContent(node.id);
@@ -1844,7 +1854,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeBorderStyle(MindMapBorderStyle style) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.borderStyle = style;
       _saveNodeStylingToContent(node.id);
@@ -1854,7 +1864,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeShape(MindMapShape shape) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.shape = shape;
       _saveNodeStylingToContent(node.id);
@@ -1864,7 +1874,7 @@ class BoardMindMapVm extends ChangeNotifier {
 
   void updateSelectedNodeBorderRadius(double radius) {
     final node =
-        _selectedNodeId != null ? _mindMap.findNode(_selectedNodeId!) : null;
+        activeNodeId != null ? _mindMap.findNode(activeNodeId!) : null;
     if (node != null) {
       node.borderRadius = radius;
       _saveNodeStylingToContent(node.id);

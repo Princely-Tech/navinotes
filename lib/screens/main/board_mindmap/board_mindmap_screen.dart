@@ -68,13 +68,14 @@ class BoardMindMapScreen extends StatelessWidget {
                         // Left panel - Node styling (only show when design icon is clicked AND node is selected)
                         Consumer<BoardMindMapVm>(
                           builder: (context, mindMapVm, child) {
-                            // Check if there's a selected node
-                            final hasSelectedNode =
-                                mindMapVm.selectedNodeId != null;
+                            // Check if there's an active node (either selected or showing connection options)
+                            final hasActiveNode =
+                                mindMapVm.selectedNodeId != null ||
+                                mindMapVm.connectionOptionsNodeId != null;
 
-                            // Show styling panel only when node is selected AND design icon was clicked
+                            // Show styling panel when design icon was clicked AND there's an active node
                             if (!mindMapVm.isStylingPanelVisible ||
-                                !hasSelectedNode) {
+                                !hasActiveNode) {
                               return const SizedBox.shrink();
                             }
 
@@ -234,9 +235,13 @@ class BoardMindMapScreen extends StatelessWidget {
           onPressed: () async {
             // Add node at center of currently visible viewport
             final centerPosition = boardVm.getCurrentViewportCenter();
-            debugPrint('BoardMindMapScreen: Adding new node at position $centerPosition');
-            debugPrint('BoardMindMapScreen: Current mind map has ${boardVm.mindMap.nodes.length} nodes');
-            
+            debugPrint(
+              'BoardMindMapScreen: Adding new node at position $centerPosition',
+            );
+            debugPrint(
+              'BoardMindMapScreen: Current mind map has ${boardVm.mindMap.nodes.length} nodes',
+            );
+
             try {
               await boardVm.addNodeAt(
                 text: 'New node',
