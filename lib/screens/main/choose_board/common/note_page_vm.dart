@@ -37,6 +37,10 @@ class BoardNotePageVm extends ChangeNotifier {
     sortByController.addListener(_onSortByChanged);
   }
 
+  void reload() {
+    getContents();
+  }
+
   PageDisplayFormat pageDisplayFormat = PageDisplayFormat.list;
 
   void updatePageDisplayFormat(PageDisplayFormat format) {

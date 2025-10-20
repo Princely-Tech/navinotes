@@ -592,11 +592,9 @@ class NoteCreationVm extends ChangeNotifier {
         notifyListeners();
 
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Title updated successfully!'),
-              duration: Duration(seconds: 2),
-            ),
+          MessageDisplayService.showMessage(
+            context,
+            'Title updated successfully!',
           );
         }
       } catch (err) {

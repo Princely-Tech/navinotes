@@ -69,11 +69,6 @@ class NoteCreationLeft extends StatelessWidget {
           title: 'FlashCards',
           route: Routes.flashCards,
         ),
-        //TODO ask about this
-        // _listTile(
-        //   icon: _tileIcon(icon: Images.chart3, color: Color(0xFF2D3748)),
-        //   title: 'Study Analytics',
-        // ),
       ],
     );
   }
@@ -101,7 +96,10 @@ class NoteCreationLeft extends StatelessWidget {
         }
 
         return FutureBuilder<List<Content>>(
-          future: DatabaseHelper.instance.getAllContents(vm.content!.boardId),
+          future: DatabaseHelper.instance.getAllContentsByType(
+            vm.content!.boardId,
+            AppContentType.note,
+          ),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return _section(
@@ -146,7 +144,11 @@ class NoteCreationLeft extends StatelessWidget {
                       ),
                       title: content.title,
                       isActive: vm.content?.id == content.id,
-                      onTap: () => NavigationHelper.navigateToContent(content),
+                      onTap:
+                          () => NavigationHelper.navigateToContent(
+                            content,
+                            replace: true,
+                          ),
                     );
                   }).toList(),
             );

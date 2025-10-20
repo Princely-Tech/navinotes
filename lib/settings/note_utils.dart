@@ -29,6 +29,7 @@ Future<void> createContentInDb({
   required Function(bool) setLoading,
   String? title,
   String? contentBody,
+  String? connectedContentId,
 }) async {
   debugPrint('Creating content in DB');
   debugPrint('Template: ${template.type.toString()}');
@@ -50,7 +51,12 @@ Future<void> createContentInDb({
         updatedAt: currentTimestamp,
         title: title ?? 'New Note - ${template.type.toString()}',
         coverImage: null,
+        connectedContentIds:
+            connectedContentId != null
+                ? jsonEncode([connectedContentId])
+                : null,
       );
+
       // Insert into database
       final status = await DatabaseHelper.instance.insertContent(content);
 
@@ -70,12 +76,6 @@ Future<void> createContentInDb({
         if (newContent != null) {
           return NavigationHelper.navigateToContent(newContent, replace: true);
         }
-
-        // Navigate based on the template
-        //   return NavigationHelper.navigateToNoteWithTemplate(
-        //     template: template,
-        //     contentId: contentId,
-        //   );
       }
     }
   } catch (e) {
