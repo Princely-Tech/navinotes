@@ -1445,7 +1445,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 ],
               ),
               // Show the board's mind map preview
-              MindMapPreview(board: vm.board, height: 140),
+              MindMapPreview(board: vm.board, height: 140.0),
             ],
           ),
         );

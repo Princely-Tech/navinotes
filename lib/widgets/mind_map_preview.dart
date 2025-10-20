@@ -1,16 +1,21 @@
+import 'dart:convert';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:navinotes/models/board.dart';
 import 'package:navinotes/models/mind_map_node.dart';
+import 'package:navinotes/models/mind_map.dart';
+import 'package:navinotes/models/mind_map_edge.dart';
+import 'package:navinotes/models/content.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:navinotes/settings/navigation_helper.dart';
 
-/// Reusable widget for displaying a mind map preview
+/// Reusable widget for displaying a live mind map preview
 ///
-/// Shows a visual preview of a board's mind map with:
-/// - Simplified node visualization using CustomPainter
-/// - Statistics overlay showing node and connection counts
+/// Shows the actual mind map canvas content in a clipped, read-only format:
+/// - Real mind map nodes and connections
+/// - Scaled to fit within preview bounds
 /// - Click-to-navigate functionality to open the full mind map
-/// - Professional card design with gradient overlay
+/// - Uses actual content from the database
 ///
 /// Usage:
 /// ```dart
@@ -20,7 +25,7 @@ import 'package:navinotes/settings/navigation_helper.dart';
 ///   onTap: () => NavigationHelper.navigateToMindmap(myBoard),
 /// )
 /// ```
-class MindMapPreview extends StatelessWidget {
+class MindMapPreview extends StatefulWidget {
   final Board board;
   final double? width;
   final double? height;
@@ -35,16 +40,139 @@ class MindMapPreview extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final mindMap = board.getOrCreateMindMap();
-    final nodeCount = mindMap.nodes.length;
-    final edgeCount = mindMap.edges.length;
+  State<MindMapPreview> createState() => _MindMapPreviewState();
+}
 
+class _MindMapPreviewState extends State<MindMapPreview> {
+  MindMap? _mindMap;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMindMap();
+  }
+
+  Future<void> _loadMindMap() async {
+    try {
+      // Load board contents
+      final contents = await DatabaseHelper.instance.getAllContents(
+        widget.board.id,
+      );
+
+      // Create mind map from content (similar to BoardMindMapVm logic)
+      final mindMap = MindMap(name: '${widget.board.name} Mind Map');
+
+      for (final content in contents) {
+        // Create mind map node from content
+        final node = _createNodeFromContent(content);
+        mindMap.nodes.add(node);
+      }
+
+      // Load connections (simplified - can be enhanced later)
+      await _loadContentConnections(mindMap, contents);
+
+      if (mounted) {
+        setState(() {
+          _mindMap = mindMap;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading mind map for preview: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  MindMapNode _createNodeFromContent(Content content) {
+    // Default position if not set
+    Offset position = content.mindMapPosition ?? const Offset(10000, 7500);
+
+    return MindMapNode(
+      id: content.id,
+      text: content.title.isNotEmpty ? content.title : 'Untitled',
+      position: position,
+      color:
+          _parseColor(content.nodeColor) ??
+          _getNodeColorForContentType(content.type),
+      width: content.nodeWidth ?? 200.0,
+      height: content.nodeHeight ?? 100.0,
+    );
+  }
+
+  Future<void> _loadContentConnections(
+    MindMap mindMap,
+    List<Content> contents,
+  ) async {
+    for (final content in contents) {
+      if (content.connectedContentIds != null &&
+          content.connectedContentIds!.isNotEmpty) {
+        try {
+          final connectionIds = List<String>.from(
+            jsonDecode(content.connectedContentIds!),
+          );
+
+          for (final targetId in connectionIds) {
+            // Check if target node exists in mind map
+            final targetExists = mindMap.nodes.any((n) => n.id == targetId);
+
+            if (targetExists) {
+              // Check if edge already exists (to avoid duplicates)
+              final edgeExists = mindMap.edges.any(
+                (e) =>
+                    (e.sourceId == content.id && e.targetId == targetId) ||
+                    (e.sourceId == targetId && e.targetId == content.id),
+              );
+
+              if (!edgeExists) {
+                mindMap.edges.add(
+                  MindMapEdge(sourceId: content.id, targetId: targetId),
+                );
+              }
+            }
+          }
+        } catch (e) {
+          debugPrint('Error parsing connections for ${content.id}: $e');
+        }
+      }
+    }
+  }
+
+  Color? _parseColor(String? colorStr) {
+    if (colorStr == null || colorStr.isEmpty) return null;
+    try {
+      return Color(int.parse(colorStr.replaceFirst('#', '0x')));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Color _getNodeColorForContentType(AppContentType type) {
+    switch (type) {
+      case AppContentType.note:
+        return Colors.blue;
+      case AppContentType.file:
+        return Colors.green;
+      case AppContentType.flashcardDeck:
+        return Colors.purple;
+      case AppContentType.mindmapNode:
+        return Colors.indigo;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap ?? () => NavigationHelper.navigateToMindmap(board),
+      onTap:
+          widget.onTap ??
+          () => NavigationHelper.navigateToMindmap(widget.board),
       child: Container(
-        width: width ?? double.infinity,
-        height: height ?? 120,
+        width: widget.width ?? double.infinity,
+        height: widget.height ?? 200,
         decoration: BoxDecoration(
           color: AppTheme.white,
           borderRadius: BorderRadius.circular(8),
@@ -57,124 +185,198 @@ class MindMapPreview extends StatelessWidget {
             ),
           ],
         ),
-        child: Stack(
-          children: [
-            // Background pattern
-            _buildBackgroundPattern(),
-
-            // Mind map visualization
-            if (nodeCount > 0) _buildMindMapVisualization(mindMap.nodes),
-
-            // Overlay with stats and title
-            _buildOverlay(nodeCount, edgeCount),
-          ],
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child:
+              _isLoading
+                  ? const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                  : _buildMindMapCanvas(),
         ),
       ),
     );
   }
 
-  Widget _buildBackgroundPattern() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppTheme.ghostWhite, AppTheme.white],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMindMapVisualization(List<MindMapNode> nodes) {
-    return CustomPaint(
-      size: Size.infinite,
-      painter: MindMapPreviewPainter(nodes),
-    );
-  }
-
-  Widget _buildOverlay(int nodeCount, int edgeCount) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
-          stops: const [0.5, 1.0],
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Top section with icon
-            Row(
-              children: [
-                Icon(
-                  Icons.account_tree,
-                  color: AppTheme.darkMossGreen,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Mind Map',
-                  style: AppTheme.text.copyWith(
-                    fontSize: 14.0,
-                    fontWeight: getFontWeight(600),
-                    color: AppTheme.black,
-                  ),
-                ),
-                const Spacer(),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16.0,
-                  color: AppTheme.lightGray,
-                ),
-              ],
-            ),
-
-            const Spacer(),
-
-            // Bottom section with stats
-            Row(
-              children: [
-                _buildStat(nodeCount, 'Nodes', Icons.circle),
-                const SizedBox(width: 16),
-                _buildStat(edgeCount, 'Connections', Icons.linear_scale),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStat(int count, String label, IconData icon) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14, color: AppTheme.white),
-        const SizedBox(width: 4),
-        Text(
-          '$count $label',
+  Widget _buildMindMapCanvas() {
+    if (_mindMap == null || _mindMap!.nodes.isEmpty) {
+      return Center(
+        child: Text(
+          'No mind map content',
           style: AppTheme.text.copyWith(
-            fontSize: 12.0,
-            color: AppTheme.white,
-            fontWeight: getFontWeight(500),
+            color: AppTheme.blueGray,
+            fontSize: 14.0,
           ),
         ),
-      ],
-    );
+      );
+    }
+
+    return _MindMapPreviewCanvas(mindMap: _mindMap!);
   }
 }
 
-/// Custom painter for drawing a simplified mind map preview
-class MindMapPreviewPainter extends CustomPainter {
-  final List<MindMapNode> nodes;
+/// Read-only canvas widget for mind map preview
+class _MindMapPreviewCanvas extends StatelessWidget {
+  final MindMap mindMap;
 
-  MindMapPreviewPainter(this.nodes);
+  const _MindMapPreviewCanvas({required this.mindMap});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate the scale to fit all nodes in the preview
+        final scale = _calculateOptimalScale(constraints.biggest);
+
+        return Container(
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+          color: AppTheme.ghostWhite,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Draw edges first (below nodes)
+              if (mindMap.edges.isNotEmpty)
+                CustomPaint(
+                  size: constraints.biggest,
+                  painter: _PreviewEdgePainter(
+                    mindMap.edges,
+                    mindMap.nodes,
+                    scale,
+                    constraints.biggest,
+                  ),
+                ),
+
+              // Draw nodes
+              for (final node in mindMap.nodes)
+                _buildScaledNode(node, scale, constraints.biggest),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  double _calculateOptimalScale(Size previewSize) {
+    if (mindMap.nodes.isEmpty) return 1.0;
+
+    // Find bounding box of all nodes
+    double minX = double.infinity;
+    double minY = double.infinity;
+    double maxX = double.negativeInfinity;
+    double maxY = double.negativeInfinity;
+
+    for (final node in mindMap.nodes) {
+      minX = math.min(minX, node.position.dx);
+      minY = math.min(minY, node.position.dy);
+      maxX = math.max(maxX, node.position.dx + node.width);
+      maxY = math.max(maxY, node.position.dy + node.height);
+    }
+
+    final contentWidth = maxX - minX;
+    final contentHeight = maxY - minY;
+
+    // Add padding (10% of preview size)
+    final paddingX = previewSize.width * 0.1;
+    final paddingY = previewSize.height * 0.1;
+    final availableWidth = previewSize.width - (paddingX * 2);
+    final availableHeight = previewSize.height - (paddingY * 2);
+
+    // Calculate scale to fit all content
+    final scaleX = availableWidth / contentWidth;
+    final scaleY = availableHeight / contentHeight;
+
+    return math
+        .min(scaleX, scaleY)
+        .clamp(0.005, 1.0); // Allow much smaller scale for zoom out
+  }
+
+  Rect _getContentBounds() {
+    if (mindMap.nodes.isEmpty) return const Rect.fromLTWH(0, 0, 1, 1);
+
+    double minX = double.infinity;
+    double minY = double.infinity;
+    double maxX = double.negativeInfinity;
+    double maxY = double.negativeInfinity;
+
+    for (final node in mindMap.nodes) {
+      minX = math.min(minX, node.position.dx);
+      minY = math.min(minY, node.position.dy);
+      maxX = math.max(maxX, node.position.dx + node.width);
+      maxY = math.max(maxY, node.position.dy + node.height);
+    }
+
+    return Rect.fromLTRB(minX, minY, maxX, maxY);
+  }
+
+  Widget _buildScaledNode(MindMapNode node, double scale, Size previewSize) {
+    // Calculate content bounds for centering
+    final contentBounds = _getContentBounds();
+    final contentCenter = Offset(
+      (contentBounds.left + contentBounds.right) / 2,
+      (contentBounds.top + contentBounds.bottom) / 2,
+    );
+    final previewCenter = Offset(previewSize.width / 2, previewSize.height / 2);
+
+    // Calculate offset to center content in preview
+    final centerOffset =
+        previewCenter -
+        Offset(contentCenter.dx * scale, contentCenter.dy * scale);
+
+    final scaledWidth = node.width * scale;
+    final scaledHeight = node.height * scale;
+    final scaledPosition = Offset(
+      (node.position.dx * scale) + centerOffset.dx,
+      (node.position.dy * scale) + centerOffset.dy,
+    );
+
+    // Only show nodes that are visible in preview
+    if (scaledPosition.dx + scaledWidth >= 0 &&
+        scaledPosition.dy + scaledHeight >= 0 &&
+        scaledPosition.dx < previewSize.width &&
+        scaledPosition.dy < previewSize.height) {
+      return Positioned(
+        left: scaledPosition.dx,
+        top: scaledPosition.dy,
+        width: scaledWidth,
+        height: scaledHeight,
+        child: Container(
+          decoration: BoxDecoration(
+            color: node.color.withOpacity(0.9),
+            borderRadius: BorderRadius.circular(4 * scale),
+            border: Border.all(
+              color: node.color.withOpacity(1.0),
+              width: 1 * scale,
+            ),
+          ),
+          child: Center(
+            child: Text(
+              node.text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: (12.0 * scale).clamp(6, 16),
+                fontWeight: FontWeight.w600,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+}
+
+/// Custom painter for drawing edges in the preview
+class _PreviewEdgePainter extends CustomPainter {
+  final List<MindMapEdge> edges;
+  final List<MindMapNode> nodes;
+  final double scale;
+  final Size previewSize;
+
+  _PreviewEdgePainter(this.edges, this.nodes, this.scale, this.previewSize);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -182,53 +384,66 @@ class MindMapPreviewPainter extends CustomPainter {
 
     final paint =
         Paint()
-          ..style = PaintingStyle.fill
-          ..strokeWidth = 1.5;
-
-    final linePaint =
-        Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1
-          ..color = AppTheme.lightGray;
+          ..strokeWidth = math.max(1.0, 2 * scale)
+          ..color = AppTheme.blueGray.withOpacity(0.6);
 
-    // Scale factor to fit nodes in preview
-    final scaleX = size.width / 20000; // Assuming canvas is 20000 wide
-    final scaleY = size.height / 15000; // Assuming canvas is 15000 tall
-    final scale = (scaleX + scaleY) / 2;
+    // Calculate content bounds and center offset (same logic as nodes)
+    final contentBounds = _getContentBounds();
+    final contentCenter = Offset(
+      (contentBounds.left + contentBounds.right) / 2,
+      (contentBounds.top + contentBounds.bottom) / 2,
+    );
+    final previewCenter = Offset(previewSize.width / 2, previewSize.height / 2);
+    final centerOffset =
+        previewCenter -
+        Offset(contentCenter.dx * scale, contentCenter.dy * scale);
 
-    // Draw connections (simplified)
-    for (int i = 0; i < nodes.length - 1; i++) {
-      final node1 = nodes[i];
-      final node2 = nodes[i + 1];
-
-      final pos1 = Offset(node1.position.dx * scale, node1.position.dy * scale);
-      final pos2 = Offset(node2.position.dx * scale, node2.position.dy * scale);
-
-      canvas.drawLine(pos1, pos2, linePaint);
-    }
-
-    // Draw nodes
-    for (final node in nodes) {
-      final position = Offset(
-        node.position.dx * scale,
-        node.position.dy * scale,
+    for (final edge in edges) {
+      final sourceNode = nodes.cast<MindMapNode?>().firstWhere(
+        (n) => n?.id == edge.sourceId,
+        orElse: () => null,
+      );
+      final targetNode = nodes.cast<MindMapNode?>().firstWhere(
+        (n) => n?.id == edge.targetId,
+        orElse: () => null,
       );
 
-      // Ensure position is within bounds
-      if (position.dx >= 0 &&
-          position.dx <= size.width &&
-          position.dy >= 0 &&
-          position.dy <= size.height) {
-        paint.color = node.color.withOpacity(0.8);
-        canvas.drawCircle(position, 4, paint);
+      if (sourceNode != null && targetNode != null) {
+        final sourceCenter = Offset(
+          ((sourceNode.position.dx + sourceNode.width / 2) * scale) +
+              centerOffset.dx,
+          ((sourceNode.position.dy + sourceNode.height / 2) * scale) +
+              centerOffset.dy,
+        );
+        final targetCenter = Offset(
+          ((targetNode.position.dx + targetNode.width / 2) * scale) +
+              centerOffset.dx,
+          ((targetNode.position.dy + targetNode.height / 2) * scale) +
+              centerOffset.dy,
+        );
 
-        // Draw border
-        paint.color = node.color;
-        paint.style = PaintingStyle.stroke;
-        canvas.drawCircle(position, 4, paint);
-        paint.style = PaintingStyle.fill;
+        canvas.drawLine(sourceCenter, targetCenter, paint);
       }
     }
+  }
+
+  Rect _getContentBounds() {
+    if (nodes.isEmpty) return const Rect.fromLTWH(0, 0, 1, 1);
+
+    double minX = double.infinity;
+    double minY = double.infinity;
+    double maxX = double.negativeInfinity;
+    double maxY = double.negativeInfinity;
+
+    for (final node in nodes) {
+      minX = math.min(minX, node.position.dx);
+      minY = math.min(minY, node.position.dy);
+      maxX = math.max(maxX, node.position.dx + node.width);
+      maxY = math.max(maxY, node.position.dy + node.height);
+    }
+
+    return Rect.fromLTRB(minX, minY, maxX, maxY);
   }
 
   @override
