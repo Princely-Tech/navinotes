@@ -7,6 +7,8 @@ import 'package:navinotes/screens/main/note_template/read/vm.dart';
 import 'package:navinotes/screens/main/note_template/read/widget/note_page_content.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/settings/packages.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'dart:io';
 
 /// Reusable widget for previewing different content types
 /// Used in mind map nodes and right panel previews
@@ -110,6 +112,12 @@ class ContentCompactPreviewWidget extends StatelessWidget {
     final fileName = content.file ?? content.title;
     final fileExtension = fileName.split('.').last.toLowerCase();
 
+    // Show compact PDF viewer for PDF files
+    if (fileExtension == 'pdf' && content.file != null) {
+      return _buildCompactPdfPreview();
+    }
+
+    // Show file icon for other file types
     return Container(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -200,6 +208,75 @@ class ContentCompactPreviewWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildCompactPdfPreview() {
+    try {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Stack(
+          children: [
+            // PDF Viewer - showing first page only, very compact
+            SfPdfViewer.file(
+              File(content.file!),
+              enableTextSelection: false, // No text selection
+              canShowScrollHead: false, // No scroll indicators
+              canShowScrollStatus: false, // No status bars  
+              canShowPaginationDialog: false, // No pagination
+              initialZoomLevel: 0.5, // Zoomed out to fit in small space
+              pageLayoutMode: PdfPageLayoutMode.single, // Single page mode
+              onDocumentLoadFailed: (details) {
+                debugPrint('Compact PDF preview load failed: ${details.error}');
+              },
+            ),
+            
+            // Small overlay with PDF indicator
+            Positioned(
+              top: 4,
+              right: 4,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade600.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'PDF',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      // Fallback to PDF icon if preview can't be loaded
+      debugPrint('Error loading compact PDF preview: $e');
+      return Container(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.picture_as_pdf, size: 32, color: Colors.red.shade600),
+            const SizedBox(height: 8),
+            Text(
+              content.title,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   IconData _getFileIcon(String extension) {
