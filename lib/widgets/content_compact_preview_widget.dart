@@ -214,7 +214,7 @@ class ContentCompactPreviewWidget extends StatelessWidget {
     try {
       return Container(
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(4),
         ),
         child: Stack(
@@ -224,7 +224,7 @@ class ContentCompactPreviewWidget extends StatelessWidget {
               File(content.file!),
               enableTextSelection: false, // No text selection
               canShowScrollHead: false, // No scroll indicators
-              canShowScrollStatus: false, // No status bars  
+              canShowScrollStatus: false, // No status bars
               canShowPaginationDialog: false, // No pagination
               initialZoomLevel: 0.5, // Zoomed out to fit in small space
               pageLayoutMode: PdfPageLayoutMode.single, // Single page mode
@@ -232,7 +232,7 @@ class ContentCompactPreviewWidget extends StatelessWidget {
                 debugPrint('Compact PDF preview load failed: ${details.error}');
               },
             ),
-            
+
             // Small overlay with PDF indicator
             Positioned(
               top: 4,
