@@ -31,6 +31,8 @@ class _PluginEnhancedPdfView extends StatefulWidget {
 }
 
 class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
+  PdfTextSelectionChangedDetails? _selectedTextDetails;
+
   @override
   void initState() {
     super.initState();
@@ -70,7 +72,7 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
               return _buildErrorView(vm);
             }
 
-            return _buildPdfReaderView(vm);
+            return _buildPdfReaderWithPanel(vm);
           },
         ),
       ),
@@ -150,7 +152,7 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
     );
   }
 
-  Widget _buildPdfReaderView(SimpleStudentPdfVm vm) {
+  Widget _buildPdfReaderWithPanel(SimpleStudentPdfVm vm) {
     if (vm.documentPath == null) {
       return const Center(child: Text('No document path available'));
     }
@@ -160,27 +162,49 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
         // Header with Annotate button
         _buildHeader(context, vm),
 
-        // PDF Viewer with text selection and native highlighting
+        // Main content area with PDF viewer and right panel
         Expanded(
-          child: SfPdfViewer.file(
-            File(vm.documentPath!),
-            controller: vm.pdfController,
-            canShowScrollHead: true,
-            canShowScrollStatus: true,
-            canShowPaginationDialog: true,
-            enableTextSelection: true,
-            onDocumentLoaded: (details) {
-              debugPrint('PDF loaded: ${details.document.pages.count} pages');
-            },
-            onDocumentLoadFailed: (details) {
-              debugPrint('PDF load failed: ${details.error}');
-            },
-            onTextSelectionChanged: (PdfTextSelectionChangedDetails details) {
-              if (details.selectedText != null &&
-                  details.selectedText!.isNotEmpty) {
-                _showTextSelectionActions(vm, details);
-              }
-            },
+          child: Row(
+            children: [
+              // PDF Viewer (left side)
+              Expanded(
+                flex: _selectedTextDetails != null ? 3 : 1,
+                child: SfPdfViewer.file(
+                  File(vm.documentPath!),
+                  controller: vm.pdfController,
+                  canShowScrollHead: true,
+                  canShowScrollStatus: true,
+                  canShowPaginationDialog: true,
+                  enableTextSelection: true,
+                  onDocumentLoaded: (details) {
+                    debugPrint(
+                      'PDF loaded: ${details.document.pages.count} pages',
+                    );
+                  },
+                  onDocumentLoadFailed: (details) {
+                    debugPrint('PDF load failed: ${details.error}');
+                  },
+                  onTextSelectionChanged: (
+                    PdfTextSelectionChangedDetails details,
+                  ) {
+                    setState(() {
+                      if (details.selectedText != null &&
+                          details.selectedText!.isNotEmpty) {
+                        _selectedTextDetails = details;
+                      } else {
+                        _selectedTextDetails = null;
+                      }
+                    });
+                  },
+                ),
+              ),
+
+              // Right panel (shows when text is selected)
+              if (_selectedTextDetails != null) ...[
+                Container(width: 1, color: Colors.grey[300]),
+                _buildRightPanel(vm),
+              ],
+            ],
           ),
         ),
       ],
@@ -267,86 +291,126 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
     );
   }
 
-  void _showTextSelectionActions(
-    SimpleStudentPdfVm vm,
-    PdfTextSelectionChangedDetails details,
-  ) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Selected Text Actions'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Selected: "${details.selectedText}"',
-                  style: const TextStyle(fontStyle: FontStyle.italic),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+  Widget _buildRightPanel(SimpleStudentPdfVm vm) {
+    return Container(
+      width: 320,
+      color: Colors.grey[50],
+      child: Column(
+        children: [
+          // Panel header
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
                 ),
-                const SizedBox(height: 16),
-                const Text('Choose an action:'),
               ],
             ),
-            actions: [
-              TextButton.icon(
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  await _addHighlightAndSave(vm);
-                },
-                icon: const Icon(Icons.highlight),
-                label: const Text('Highlight & Save'),
-              ),
-              TextButton.icon(
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  await _addToMindMap(vm, details);
-                },
-                icon: const Icon(Icons.hub),
-                label: const Text('Add to Mind Map'),
-              ),
-              TextButton.icon(
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  await _createNote(vm, details);
-                },
-                icon: const Icon(Icons.note_add),
-                label: const Text('Create Note'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-              ),
-            ],
+            child: Row(
+              children: [
+                Icon(Icons.text_fields, color: Colors.blue[600], size: 20),
+                const SizedBox(width: 8),
+                const Text(
+                  'Selected Text',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _selectedTextDetails = null;
+                    });
+                  },
+                  icon: const Icon(Icons.close, size: 20),
+                  tooltip: 'Close panel',
+                ),
+              ],
+            ),
           ),
+
+          // Selected text display
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Selected text content
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.yellow[50],
+                      border: Border.all(color: Colors.yellow[200]!),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      _selectedTextDetails?.selectedText ?? '',
+                      style: const TextStyle(fontSize: 14, height: 1.4),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Action buttons
+                  const Text(
+                    'Actions',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Add to Mind Map button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _addToMindMap(vm, _selectedTextDetails!),
+                      icon: const Icon(Icons.hub, size: 18),
+                      label: const Text('Add to Mind Map'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[600],
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Create Note button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _createNote(vm, _selectedTextDetails!),
+                      icon: const Icon(Icons.note_add, size: 18),
+                      label: const Text('Create Note'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple[600],
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
-  }
-
-  Future<void> _addHighlightAndSave(SimpleStudentPdfVm vm) async {
-    try {
-      // Add highlight annotation (this is handled by the PDF viewer automatically when text is selected)
-      // The highlight is already applied by Syncfusion when user selects text
-
-      // Save the document with annotations
-      await _savePdfWithAnnotations(vm);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Highlight saved successfully!'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error saving highlight: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
   }
 
   Future<void> _savePdfWithAnnotations(SimpleStudentPdfVm vm) async {
@@ -370,7 +434,15 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
     PdfTextSelectionChangedDetails details,
   ) async {
     try {
-      // For now, just show a placeholder - you can implement based on your data models
+      // TODO: Implement based on your Content model
+      // final content = Content(...);
+      // await DatabaseHelper.instance.insertContent(content);
+
+      // Close the panel
+      setState(() {
+        _selectedTextDetails = null;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Add to Mind Map - implement with your data models'),
@@ -378,10 +450,6 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
           duration: Duration(seconds: 2),
         ),
       );
-
-      // TODO: Implement based on your Content model
-      // final content = Content(...);
-      // await DatabaseHelper.instance.insertContent(content);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -397,7 +465,15 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
     PdfTextSelectionChangedDetails details,
   ) async {
     try {
-      // For now, just show a placeholder - you can implement based on your data models
+      // TODO: Implement based on your Content model
+      // final content = Content(...);
+      // await DatabaseHelper.instance.insertContent(content);
+
+      // Close the panel
+      setState(() {
+        _selectedTextDetails = null;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Create Note - implement with your data models'),
@@ -405,10 +481,6 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
           duration: Duration(seconds: 2),
         ),
       );
-
-      // TODO: Implement based on your Content model
-      // final content = Content(...);
-      // await DatabaseHelper.instance.insertContent(content);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
