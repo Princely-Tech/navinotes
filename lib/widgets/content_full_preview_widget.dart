@@ -86,6 +86,11 @@ class ContentFullPreviewWidget extends StatelessWidget {
       return _buildPdfPreview();
     }
 
+    // Show actual image viewer for image files
+    if (_isImageFile(fileExtension) && content.file != null) {
+      return _buildImagePreview();
+    }
+
     // Show file icon for other file types
     return Container(
       padding: const EdgeInsets.all(8),
@@ -225,6 +230,62 @@ class ContentFullPreviewWidget extends StatelessWidget {
         ),
       );
     }
+  }
+
+  Widget _buildImagePreview() {
+    try {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.file(
+            File(content.file!),
+            fit: BoxFit.contain, // Maintain aspect ratio while fitting in container
+            width: double.infinity,
+            height: double.infinity,
+            errorBuilder: (context, error, stackTrace) {
+              debugPrint('Error loading image preview: $error');
+              return _buildImageErrorFallback();
+            },
+          ),
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error building image preview: $e');
+      return _buildImageErrorFallback();
+    }
+  }
+
+  Widget _buildImageErrorFallback() {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.broken_image, size: 48, color: Colors.grey.shade600),
+          const SizedBox(height: 8),
+          Text(
+            content.title,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Image Preview Unavailable',
+            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isImageFile(String extension) {
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].contains(extension);
   }
 
   IconData _getFileIcon(String extension) {

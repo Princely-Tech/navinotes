@@ -384,11 +384,7 @@ class NoteAiSection extends StatelessWidget {
   }
 
   Widget _selectRow() {
-    List<String> selectItems = [
-      '📝 Summarize',
-      '🗃️ Generate FlashCards',
-      '🔍 Extract Key Concepts',
-    ];
+    List<String> selectItems = ['📝 Summarize'];
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: AppTheme.lightGray)),

@@ -117,6 +117,11 @@ class ContentCompactPreviewWidget extends StatelessWidget {
       return _buildCompactPdfPreview();
     }
 
+    // Show compact image viewer for image files
+    if (_isImageFile(fileExtension) && content.file != null) {
+      return _buildCompactImagePreview();
+    }
+
     // Show file icon for other file types
     return Container(
       padding: const EdgeInsets.all(8),
@@ -302,6 +307,83 @@ class ContentCompactPreviewWidget extends StatelessWidget {
       default:
         return Icons.insert_drive_file;
     }
+  }
+
+  Widget _buildCompactImagePreview() {
+    try {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Stack(
+          children: [
+            // Image viewer - compact and cropped to fit
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.file(
+                File(content.file!),
+                fit: BoxFit.cover, // Cover the entire area for compact view
+                width: double.infinity,
+                height: double.infinity,
+                errorBuilder: (context, error, stackTrace) {
+                  debugPrint('Error loading compact image preview: $error');
+                  return _buildCompactImageErrorFallback();
+                },
+              ),
+            ),
+
+            // Small overlay with image type indicator
+            Positioned(
+              top: 4,
+              right: 4,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.purple.shade600.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'IMG',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error building compact image preview: $e');
+      return _buildCompactImageErrorFallback();
+    }
+  }
+
+  Widget _buildCompactImageErrorFallback() {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.broken_image, size: 32, color: Colors.grey.shade600),
+          const SizedBox(height: 8),
+          Text(
+            content.title,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _isImageFile(String extension) {
+    return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].contains(extension);
   }
 
   Color _getFileColor(String extension) {
