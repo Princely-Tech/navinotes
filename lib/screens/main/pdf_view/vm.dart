@@ -11,8 +11,6 @@ class PdfViewVm extends ChangeNotifier {
   String? errorMessage;
   // Temporary flag to force loading a sample PDF from assets for testing
   bool useSampleAssetPdf = false;
-  // Temporary flag to render with Syncfusion viewer instead of ComPDFKit for diagnostics
-  bool useSyncfusionFallback = true;
 
   PdfViewVm({
     required this.scaffoldKey,
@@ -22,8 +20,8 @@ class PdfViewVm extends ChangeNotifier {
 
   String currentPdfPath = '';
 
-  // Syncfusion viewer controller and state
-  final PdfViewerController sfController = PdfViewerController();
+  // ComPDF controller and state
+  dynamic comPdfController;
   int currentPageNumber = 1;
   int viewerReloadTick = 0;
 
@@ -420,19 +418,11 @@ class PdfViewVm extends ChangeNotifier {
   Offset _screenToPdfCoordinates(Offset screenPoint, Size viewerSize) {
     if (viewerSize.width == 0 || viewerSize.height == 0) return Offset.zero;
 
-    // Get current scroll offset and zoom from Syncfusion controller
-    final scrollOffset = sfController.scrollOffset;
-    final zoomLevel = sfController.zoomLevel;
-
-    // Transform screen point to PDF document coordinates
-    // Account for scroll offset and zoom level
-    final adjustedX = (screenPoint.dx + scrollOffset.dx) / zoomLevel;
-    final adjustedY = (screenPoint.dy + scrollOffset.dy) / zoomLevel;
-
-    // Normalize to 0-1 range based on the actual PDF page size
-    // Note: This assumes the PDF viewer fills the available space
-    final normalizedX = adjustedX / viewerSize.width;
-    final normalizedY = adjustedY / viewerSize.height;
+    // For ComPDF, we'll use a simpler coordinate transformation
+    // TODO: Implement proper coordinate transformation with ComPDF controller
+    // For now, normalize directly to 0-1 range
+    final normalizedX = screenPoint.dx / viewerSize.width;
+    final normalizedY = screenPoint.dy / viewerSize.height;
 
     return Offset(normalizedX, normalizedY);
   }
@@ -441,16 +431,11 @@ class PdfViewVm extends ChangeNotifier {
   Offset pdfToScreenCoordinates(Offset pdfPoint, Size viewerSize) {
     if (viewerSize.width == 0 || viewerSize.height == 0) return Offset.zero;
 
-    final scrollOffset = sfController.scrollOffset;
-    final zoomLevel = sfController.zoomLevel;
-
-    // Denormalize from 0-1 range to actual pixel coordinates
-    final pixelX = pdfPoint.dx * viewerSize.width;
-    final pixelY = pdfPoint.dy * viewerSize.height;
-
-    // Apply zoom and subtract scroll offset to get screen coordinates
-    final screenX = (pixelX * zoomLevel) - scrollOffset.dx;
-    final screenY = (pixelY * zoomLevel) - scrollOffset.dy;
+    // For ComPDF, we'll use a simpler coordinate transformation
+    // TODO: Implement proper coordinate transformation with ComPDF controller
+    // For now, denormalize directly from 0-1 range
+    final screenX = pdfPoint.dx * viewerSize.width;
+    final screenY = pdfPoint.dy * viewerSize.height;
 
     return Offset(screenX, screenY);
   }
@@ -525,8 +510,9 @@ class PdfViewVm extends ChangeNotifier {
     }
   }
 
-  void toggleViewer() {
-    useSyncfusionFallback = !useSyncfusionFallback;
+  void setComPdfController(dynamic controller) {
+    comPdfController = controller;
+    debugPrint('ComPDF controller set: $controller');
     notifyListeners();
   }
 
@@ -587,7 +573,8 @@ class PdfViewVm extends ChangeNotifier {
       // Restore page position after reload
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (currentPage > 1) {
-          sfController.jumpToPage(currentPage);
+          // TODO: Implement page jump with ComPDF controller
+          debugPrint('ComPDF: Should jump to page $currentPage');
         }
       });
 

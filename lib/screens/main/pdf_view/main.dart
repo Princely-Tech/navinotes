@@ -336,141 +336,95 @@ Widget _buildContent(PdfViewVm vm) {
   }
 
   // Show PDF viewer if document is loaded
+  debugPrint('PdfViewMain: Checking document state...');
+  debugPrint('PdfViewMain: vm.comPdfVm.document = ${vm.comPdfVm.document}');
+  debugPrint(
+    'PdfViewMain: document isEmpty = ${(vm.comPdfVm.document ?? '').isEmpty}',
+  );
+
   if ((vm.comPdfVm.document ?? '').isNotEmpty) {
-    debugPrint('Rendering PDF viewer with document: ${vm.comPdfVm.document}');
+    debugPrint(
+      'Rendering ComPDF viewer with document: ${vm.comPdfVm.document}',
+    );
 
-    // Diagnostic fallback: use Syncfusion to confirm rendering surface and file validity
-    if (vm.useSyncfusionFallback) {
-      return Container(
-        color: Colors.white,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            debugPrint(
-              'Syncfusion layout size: ${constraints.maxWidth}x${constraints.maxHeight}',
-            );
-            return Stack(
-              children: [
-                // PDF Viewer - always receives scroll/pan gestures
-                SfPdfViewer.file(
-                  key: ValueKey(
-                    '${vm.comPdfVm.document}-${vm.viewerReloadTick}',
-                  ),
-                  File(vm.comPdfVm.document!),
-                  controller: vm.sfController,
-                  canShowScrollHead: true,
-                  canShowScrollStatus: true,
-                  enableDoubleTapZooming: true,
-                  canShowPaginationDialog: true,
-                  scrollDirection: PdfScrollDirection.vertical,
-                  pageLayoutMode: PdfPageLayoutMode.continuous,
-                  onDocumentLoaded:
-                      (details) => debugPrint('Syncfusion: Document loaded'),
-                  onDocumentLoadFailed:
-                      (details) => debugPrint(
-                        'Syncfusion: Load failed ${details.error} ${details.description}',
-                      ),
-                  onPageChanged: (details) {
-                    vm.setCurrentPage(details.newPageNumber);
-                  },
-                  onTextSelectionChanged: (details) {
-                    // TODO: capture selection rects for highlight mode
-                  },
-                ),
-
-                // Annotation display overlay - shows existing annotations, doesn't block gestures
-                IgnorePointer(
-                  child: CustomPaint(
-                    painter: _AnnotationOverlayPainter(vm),
-                    size: Size.infinite,
-                  ),
-                ),
-
-                // Annotation input overlay - only active when in annotation mode
-                if (vm.currentMode == PdfAnnotMode.drawing)
-                  Positioned.fill(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTapDown: (details) {
-                        vm.selectAnnotationAt(
-                          details.localPosition,
-                          Size(constraints.maxWidth, constraints.maxHeight),
-                        );
-                      },
-                      onPanStart: (_) => vm.startStroke(),
-                      onPanUpdate:
-                          (details) => vm.addPointWithSize(
-                            details.localPosition,
-                            Size(constraints.maxWidth, constraints.maxHeight),
-                          ),
-                      onPanEnd: (_) => vm.endStroke(),
-                      child: Container(color: Colors.transparent),
-                    ),
-                  ),
-
-                // Highlight overlay
-                if (vm.currentMode == PdfAnnotMode.highlight)
-                  Positioned.fill(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onPanStart:
-                          (details) => vm.startHighlight(
-                            details.localPosition,
-                            Size(constraints.maxWidth, constraints.maxHeight),
-                          ),
-                      onPanUpdate:
-                          (details) => vm.updateHighlight(
-                            details.localPosition,
-                            Size(constraints.maxWidth, constraints.maxHeight),
-                          ),
-                      onPanEnd:
-                          (details) => vm.endHighlight(
-                            details.localPosition,
-                            Size(constraints.maxWidth, constraints.maxHeight),
-                          ),
-                      child: Container(color: Colors.transparent),
-                    ),
-                  ),
-
-                // Toolbar
-                Positioned(
-                  left: 12,
-                  right: 12,
-                  bottom: 16,
-                  child: _AnnotationToolbar(vm: vm),
-                ),
-              ],
-            );
-          },
-        ),
-      );
-    }
-
-    // Ensure proper constraints and avoid nested Scaffolds which can cause blank rendering
-    return Container(
-      color: Colors.white,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
+    // Use ComPDF viewer with annotation overlay
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        debugPrint(
+          'ComPDF layout size: ${constraints.maxWidth}x${constraints.maxHeight}',
+        );
+        // Simplified: Direct CPDFReaderWidget without Stack for testing
+        try {
+          debugPrint('ComPDF: Attempting to create CPDFReaderWidget');
+          debugPrint('ComPDF: Document path: ${vm.comPdfVm.document}');
           debugPrint(
-            'CPDF layout size: ${constraints.maxWidth}x${constraints.maxHeight}',
+            'ComPDF: File exists: ${File(vm.comPdfVm.document!).existsSync()}',
           );
+
           return CPDFReaderWidget(
-            key: ValueKey(vm.comPdfVm.document),
+            key: ValueKey('${vm.comPdfVm.document}-${vm.viewerReloadTick}'),
             document: vm.comPdfVm.document!,
             configuration: CPDFConfiguration(
-              toolbarConfig: CPDFToolbarConfig(mainToolbarVisible: true),
+              toolbarConfig: CPDFToolbarConfig(
+                mainToolbarVisible: true, // Enable toolbar temporarily to test
+              ),
+              readerViewConfig: CPDFReaderViewConfig(formFieldHighlight: false),
             ),
             onSaveCallback: () {
-              debugPrint('PDF Saved');
+              debugPrint('ComPDF: Document saved');
             },
             onCreated: (controller) {
-              debugPrint('PDF Reader Created with controller: $controller');
+              debugPrint('ComPDF: Reader created with controller: $controller');
+              vm.setComPdfController(controller);
             },
           );
-        },
-      ),
+        } catch (e, stackTrace) {
+          debugPrint('ComPDF: Error creating CPDFReaderWidget: $e');
+          debugPrint('ComPDF: Stack trace: $stackTrace');
+          return Container(
+            color: Colors.red.withOpacity(0.1),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error, color: Colors.red, size: 64),
+                  SizedBox(height: 16),
+                  Text('ComPDF Error: $e'),
+                ],
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 
   // Fallback loading state
-  return const Center(child: CircularProgressIndicator());
+  debugPrint(
+    'PdfViewMain: Falling back to loading state - document not loaded yet',
+  );
+  debugPrint('PdfViewMain: VM loading state: ${vm.isLoading}');
+  debugPrint('PdfViewMain: VM error message: ${vm.errorMessage}');
+
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const CircularProgressIndicator(),
+        const SizedBox(height: 16),
+        Text(
+          vm.isLoading ? 'Loading PDF...' : 'Waiting for document...',
+          style: const TextStyle(fontSize: 16),
+        ),
+        if (vm.errorMessage != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            'Error: ${vm.errorMessage}',
+            style: const TextStyle(color: Colors.red, fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ],
+    ),
+  );
 }
