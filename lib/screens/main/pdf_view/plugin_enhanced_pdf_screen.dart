@@ -260,7 +260,7 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
                       Icon(Icons.school, size: 16, color: Colors.green[600]),
                       const SizedBox(width: 4),
                       Text(
-                        'Student PDF Reader',
+                        'PDF Reader',
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],
@@ -583,8 +583,10 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
         },
       );
 
-      // Reload the PDF viewer to show updated annotations
-      await _reloadPdfViewer(vm);
+      // Add delay to ensure PDF file is fully written to disk
+      await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {});
+      debugPrint("Reloading");
     } catch (e) {
       debugPrint('Error opening PDF with annotations: $e');
       if (mounted) {
@@ -602,14 +604,16 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
     try {
       // Force refresh by creating a new controller and triggering a rebuild
       await vm.createNewPdfController();
-      
+
       // Trigger a rebuild to show the updated PDF with new annotations
-      if (mounted) {
+      try {
         setState(() {
           // This will force the SfPdfViewer to rebuild with the new controller
         });
+      } catch (e) {
+        debugPrint("err $e");
       }
-      
+
       debugPrint('PDF viewer reloaded to show updated annotations');
     } catch (e) {
       debugPrint('Error reloading PDF viewer: $e');
