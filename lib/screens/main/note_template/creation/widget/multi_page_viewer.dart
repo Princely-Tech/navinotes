@@ -35,7 +35,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
   final Map<String, TransformationController> _transformationControllers = {};
   final Map<String, bool> _zoomStates = {};
 
-  bool _showAddPageIndicator = false;
+  bool _showAddPageIndicator = true;
   String _addPageDirection = '';
 
   @override
@@ -114,19 +114,19 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                 },
               ),
 
-              // Add page indicators
-              if (_showAddPageIndicator) _buildAddPageIndicator(),
+            // Add page indicators
+            if (_showAddPageIndicator) _buildAddPageIndicator(),
 
-              // Page navigation controls
-              _buildPageControls(vm),
+            // Page navigation controls
+            if (vm.currentMode != NoteMode.voice) _buildPageControls(vm),
 
-              // Page indicator dots
-              if (vm.currentMode != NoteMode.voice) _buildPageIndicator(vm),
+            // Page indicator dots
+            if (vm.currentMode != NoteMode.voice) _buildPageIndicator(vm),
 
             // Recording indicator - shows on all modes when recording (only if not in voice mode)
             if (vm.currentMode != NoteMode.voice)
               RecordingIndicator(vm: vm, showInHeader: true, isCompact: true),
-            ],
+          ],
         );
       },
     );
