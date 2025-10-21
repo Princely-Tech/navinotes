@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_pdf_annotations/flutter_pdf_annotations.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -368,6 +369,26 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
                   ),
                   const SizedBox(height: 12),
 
+                  // Copy Text button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => _copySelectedText(),
+                      icon: const Icon(Icons.copy, size: 18),
+                      label: const Text('Copy Text'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green[600],
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
                   // Add to Mind Map button
                   SizedBox(
                     width: double.infinity,
@@ -412,6 +433,28 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
         ],
       ),
     );
+  }
+
+  void _copySelectedText() {
+    if (_selectedTextDetails?.selectedText != null) {
+      Clipboard.setData(
+        ClipboardData(text: _selectedTextDetails!.selectedText!),
+      );
+
+      // Show success feedback
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Text copied to clipboard!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Optionally close the panel after copying
+      setState(() {
+        _selectedTextDetails = null;
+      });
+    }
   }
 
   Future<void> _savePdfWithAnnotations(SimpleStudentPdfVm vm) async {
@@ -469,7 +512,7 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
     PdfTextSelectionChangedDetails details,
   ) async {
     bool isLoading = false;
-    
+
     void setLoading(bool loading) {
       setState(() {
         isLoading = loading;
