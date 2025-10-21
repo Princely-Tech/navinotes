@@ -223,7 +223,7 @@ class EmptyDashboardMain extends StatelessWidget {
       spacing: 15,
       children: [
         Text(
-          'Quick Actions',
+          'Quick Action',
           style: AppTheme.text.copyWith(
             color: AppTheme.graphite,
             fontSize: 18.58,
@@ -234,7 +234,8 @@ class EmptyDashboardMain extends StatelessWidget {
         ScrollableController(
           desktop: false,
           scrollDirection: Axis.horizontal,
-          child: Row(spacing: 10, children: [takeTour, connectCalender]),
+          child: Row(spacing: 10, children: [takeTour]),
+          // child: Row(spacing: 10, children: [takeTour, connectCalender]),
         ),
       ],
     );
