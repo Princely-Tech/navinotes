@@ -440,6 +440,31 @@ class SimpleStudentPdfVm extends ChangeNotifier {
     }
   }
 
+  /// Create new PDF controller to force refresh
+  Future<void> createNewPdfController() async {
+    try {
+      // Save current state
+      final currentPage = _pdfController.pageNumber;
+      final currentZoom = _pdfController.zoomLevel;
+      
+      // Create new controller
+      _pdfController = PdfViewerController();
+      
+      // Wait for next frame to ensure new controller is ready
+      await Future.delayed(const Duration(milliseconds: 100));
+      
+      // Restore state on new controller
+      _pdfController.jumpToPage(currentPage);
+      _pdfController.zoomLevel = currentZoom;
+      
+      notifyListeners();
+      
+      debugPrint('PDF controller refreshed - Page: $currentPage, Zoom: $currentZoom');
+    } catch (e) {
+      debugPrint('Error creating new PDF controller: $e');
+    }
+  }
+
   /// Navigation methods
   void goToPage(int page) => _pdfController.jumpToPage(page);
   void nextPage() => _pdfController.nextPage();
