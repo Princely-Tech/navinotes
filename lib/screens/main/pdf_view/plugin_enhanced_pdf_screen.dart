@@ -586,6 +586,7 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
       // Add delay to ensure PDF file is fully written to disk
       await Future.delayed(const Duration(milliseconds: 500));
       setState(() {});
+
       debugPrint("Reloading");
     } catch (e) {
       debugPrint('Error opening PDF with annotations: $e');
