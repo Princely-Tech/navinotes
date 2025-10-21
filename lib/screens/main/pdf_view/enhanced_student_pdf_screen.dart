@@ -7,13 +7,13 @@ import 'dart:io';
 /// Enhanced student PDF viewer with rich annotation capabilities
 class EnhancedStudentPdfScreen extends StatelessWidget {
   const EnhancedStudentPdfScreen({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     // Get contentId from route arguments
     final String contentId =
         ModalRoute.of(context)?.settings.arguments as String;
-    
+
     return ChangeNotifierProvider(
       create: (_) => SimpleStudentPdfVm(contentId: contentId),
       child: const _EnhancedStudentPdfView(),
@@ -23,9 +23,10 @@ class EnhancedStudentPdfScreen extends StatelessWidget {
 
 class _EnhancedStudentPdfView extends StatefulWidget {
   const _EnhancedStudentPdfView();
-  
+
   @override
-  State<_EnhancedStudentPdfView> createState() => _EnhancedStudentPdfViewState();
+  State<_EnhancedStudentPdfView> createState() =>
+      _EnhancedStudentPdfViewState();
 }
 
 class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
@@ -37,7 +38,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
       context.read<SimpleStudentPdfVm>().initialize(context);
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,11 +48,11 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
           if (vm.isLoading) {
             return _buildLoadingView(vm);
           }
-          
+
           if (vm.errorMessage != null) {
             return _buildErrorView(vm);
           }
-          
+
           return Stack(
             children: [
               Column(
@@ -60,30 +61,25 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
                   Expanded(child: _buildPdfViewer(vm)),
                 ],
               ),
-              
+
               // Floating annotation toolbar
-              if (vm.isAnnotationMode) 
-                _buildAnnotationToolbar(vm),
-              
+              if (vm.isAnnotationMode) _buildAnnotationToolbar(vm),
+
               // Text note dialog
-              if (vm.pendingTextNote != null)
-                _buildTextNoteDialog(vm),
+              if (vm.pendingTextNote != null) _buildTextNoteDialog(vm),
             ],
           );
         },
       ),
     );
   }
-  
+
   Widget _buildLoadingView(SimpleStudentPdfVm vm) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(
-            color: Colors.blue,
-            strokeWidth: 3,
-          ),
+          const CircularProgressIndicator(color: Colors.blue, strokeWidth: 3),
           const SizedBox(height: 24),
           Text(
             '📚 Loading your study material...',
@@ -96,17 +92,14 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
           const SizedBox(height: 12),
           Text(
             vm.content?.title ?? 'PDF Document',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             textAlign: TextAlign.center,
           ),
         ],
       ),
     );
   }
-  
+
   Widget _buildErrorView(SimpleStudentPdfVm vm) {
     return Center(
       child: Padding(
@@ -114,11 +107,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red[400],
-            ),
+            Icon(Icons.error_outline, size: 64, color: Colors.red[400]),
             const SizedBox(height: 24),
             Text(
               'Oops! Something went wrong',
@@ -133,10 +122,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
             Text(
               vm.errorMessage!,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
             const SizedBox(height: 32),
             Row(
@@ -160,7 +146,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
       ),
     );
   }
-  
+
   Widget _buildHeader(BuildContext context, SimpleStudentPdfVm vm) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -183,9 +169,9 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
               icon: const Icon(Icons.arrow_back),
               tooltip: 'Back',
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // Document info
             Expanded(
               child: Column(
@@ -203,11 +189,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(
-                        Icons.school,
-                        size: 16,
-                        color: Colors.green[600],
-                      ),
+                      Icon(Icons.school, size: 16, color: Colors.green[600]),
                       const SizedBox(width: 4),
                       Text(
                         'Student PDF Viewer',
@@ -220,7 +202,10 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
                       if (vm.isAnnotationMode) ...[
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.blue.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(4),
@@ -240,7 +225,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
                 ],
               ),
             ),
-            
+
             // Action buttons
             Row(
               children: [
@@ -251,16 +236,19 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
                     vm.isAnnotationMode ? Icons.edit_off : Icons.edit,
                     color: vm.isAnnotationMode ? Colors.blue : Colors.grey[600],
                   ),
-                  tooltip: vm.isAnnotationMode ? 'Exit Annotation Mode' : 'Enter Annotation Mode',
+                  tooltip:
+                      vm.isAnnotationMode
+                          ? 'Exit Annotation Mode'
+                          : 'Enter Annotation Mode',
                 ),
-                
+
                 // Zoom out
                 IconButton(
                   onPressed: () => vm.zoomOut(),
                   icon: const Icon(Icons.zoom_out),
                   tooltip: 'Zoom Out',
                 ),
-                
+
                 // Zoom in
                 IconButton(
                   onPressed: () => vm.zoomIn(),
@@ -274,14 +262,12 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
       ),
     );
   }
-  
+
   Widget _buildPdfViewer(SimpleStudentPdfVm vm) {
     if (vm.documentPath == null) {
-      return const Center(
-        child: Text('No document path available'),
-      );
+      return const Center(child: Text('No document path available'));
     }
-    
+
     return Stack(
       children: [
         // PDF Viewer
@@ -302,40 +288,120 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
             borderRadius: BorderRadius.circular(12),
             child: Stack(
               children: [
-                SfPdfViewer.file(
-                  File(vm.documentPath!),
-                  controller: vm.pdfController,
-                  enableDoubleTapZooming: true,
-                  enableTextSelection: !vm.isAnnotationMode,
-                  canShowScrollHead: true,
-                  canShowScrollStatus: true,
-                  canShowPaginationDialog: true,
-                  onDocumentLoaded: (PdfDocumentLoadedDetails details) {
-                    debugPrint('PDF loaded successfully: ${details.document.pages.count} pages');
-                  },
-                  onDocumentLoadFailed: (PdfDocumentLoadFailedDetails details) {
-                    debugPrint('PDF load failed: ${details.error}');
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Update viewer size for coordinate transformation
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      vm.updateViewerState(
+                        viewerSize: Size(
+                          constraints.maxWidth,
+                          constraints.maxHeight,
+                        ),
+                        zoomLevel: vm.pdfController.zoomLevel,
+                        scrollOffset: Offset(
+                          vm.pdfController.scrollOffset.dx,
+                          vm.pdfController.scrollOffset.dy,
+                        ),
+                      );
+                    });
+
+                    return SfPdfViewer.file(
+                      File(vm.documentPath!),
+                      controller: vm.pdfController,
+                      enableDoubleTapZooming: true,
+                      enableTextSelection: !vm.isAnnotationMode,
+                      canShowScrollHead: true,
+                      canShowScrollStatus: true,
+                      canShowPaginationDialog: true,
+                      onDocumentLoaded: (PdfDocumentLoadedDetails details) {
+                        debugPrint(
+                          'PDF loaded successfully: ${details.document.pages.count} pages',
+                        );
+                        // Update page size for coordinate transformation
+                        if (details.document.pages.count > 0) {
+                          final firstPage = details.document.pages[0];
+                          vm.updatePageSize(
+                            Size(firstPage.size.width, firstPage.size.height),
+                          );
+                        }
+                      },
+                      onDocumentLoadFailed: (
+                        PdfDocumentLoadFailedDetails details,
+                      ) {
+                        debugPrint('PDF load failed: ${details.error}');
+                      },
+                      onZoomLevelChanged: (PdfZoomDetails details) {
+                        // Update coordinate transformation when zoom changes
+                        vm.updateViewerState(
+                          viewerSize: Size(
+                            constraints.maxWidth,
+                            constraints.maxHeight,
+                          ),
+                          zoomLevel: details.newZoomLevel,
+                          scrollOffset: Offset(
+                            vm.pdfController.scrollOffset.dx,
+                            vm.pdfController.scrollOffset.dy,
+                          ),
+                        );
+                      },
+                      onPageChanged: (PdfPageChangedDetails details) {
+                        // Update coordinate transformation when page changes
+                        vm.updateViewerState(
+                          viewerSize: Size(
+                            constraints.maxWidth,
+                            constraints.maxHeight,
+                          ),
+                          zoomLevel: vm.pdfController.zoomLevel,
+                          scrollOffset: Offset(
+                            vm.pdfController.scrollOffset.dx,
+                            vm.pdfController.scrollOffset.dy,
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
-                
-                // Annotation overlay
+
+                // Annotation overlay with coordinate transformation
                 if (vm.isAnnotationMode)
                   Positioned.fill(
-                    child: GestureDetector(
-                      onTapDown: (details) => _handleTap(details.localPosition, vm),
-                      onPanStart: (details) => _handlePanStart(details.localPosition, vm),
-                      onPanUpdate: (details) => _handlePanUpdate(details.localPosition, vm),
-                      onPanEnd: (details) => _handlePanEnd(vm),
-                      child: CustomPaint(
-                        painter: AnnotationPainter(
-                          strokes: vm.currentPageStrokes,
-                          textNotes: vm.currentPageTextNotes,
-                          currentStroke: vm.currentStroke,
-                          currentColor: vm.currentColor,
-                          currentWidth: vm.strokeWidth,
-                        ),
-                        size: Size.infinite,
-                      ),
+                    child: LayoutBuilder(
+                      builder: (context, overlayConstraints) {
+                        return GestureDetector(
+                          onTapDown:
+                              (details) => _handleTap(
+                                details.localPosition,
+                                vm,
+                                overlayConstraints,
+                              ),
+                          onPanStart:
+                              (details) => _handlePanStart(
+                                details.localPosition,
+                                vm,
+                                overlayConstraints,
+                              ),
+                          onPanUpdate:
+                              (details) => _handlePanUpdate(
+                                details.localPosition,
+                                vm,
+                                overlayConstraints,
+                              ),
+                          onPanEnd: (details) => _handlePanEnd(vm),
+                          child: CustomPaint(
+                            painter: AnnotationPainter(
+                              strokes:
+                                  vm.currentPageStrokes, // Already transformed to view coordinates
+                              textNotes:
+                                  vm.currentPageTextNotes, // Already transformed to view coordinates
+                              currentStroke:
+                                  vm.currentStroke, // Already transformed to view coordinates
+                              currentColor: vm.currentColor,
+                              currentWidth: vm.strokeWidth,
+                            ),
+                            size: Size.infinite,
+                          ),
+                        );
+                      },
                     ),
                   ),
               ],
@@ -345,7 +411,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
       ],
     );
   }
-  
+
   Widget _buildAnnotationToolbar(SimpleStudentPdfVm vm) {
     return Positioned(
       left: 20,
@@ -406,19 +472,14 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
                 ),
               ),
             ),
-            
+
             const SizedBox(width: 16),
-            
+
             // Color picker
-            Container(
-              height: 40,
-              child: Row(
-                children: _buildColorPalette(vm),
-              ),
-            ),
-            
+            Container(height: 40, child: Row(children: _buildColorPalette(vm))),
+
             const SizedBox(width: 16),
-            
+
             // Action buttons
             Row(
               children: [
@@ -439,7 +500,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
       ),
     );
   }
-  
+
   Widget _buildToolButton({
     required IconData icon,
     required String label,
@@ -447,7 +508,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
     required SimpleStudentPdfVm vm,
   }) {
     final isSelected = vm.currentTool == tool;
-    
+
     return Padding(
       padding: const EdgeInsets.only(right: 12),
       child: InkWell(
@@ -456,9 +517,11 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+            color:
+                isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            border: isSelected ? Border.all(color: Colors.blue, width: 2) : null,
+            border:
+                isSelected ? Border.all(color: Colors.blue, width: 2) : null,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -483,15 +546,16 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
       ),
     );
   }
-  
+
   List<Widget> _buildColorPalette(SimpleStudentPdfVm vm) {
-    final colors = vm.currentTool == StudentAnnotationType.highlight 
-        ? vm.highlightColors 
-        : vm.drawingColors;
-    
+    final colors =
+        vm.currentTool == StudentAnnotationType.highlight
+            ? vm.highlightColors
+            : vm.drawingColors;
+
     return colors.map((color) {
       final isSelected = vm.currentColor == color;
-      
+
       return Padding(
         padding: const EdgeInsets.only(right: 6),
         child: InkWell(
@@ -503,26 +567,24 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
-              border: isSelected 
-                  ? Border.all(color: Colors.black, width: 2)
-                  : Border.all(color: Colors.grey[300]!, width: 1),
+              border:
+                  isSelected
+                      ? Border.all(color: Colors.black, width: 2)
+                      : Border.all(color: Colors.grey[300]!, width: 1),
             ),
-            child: isSelected
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 16,
-                  )
-                : null,
+            child:
+                isSelected
+                    ? const Icon(Icons.check, color: Colors.white, size: 16)
+                    : null,
           ),
         ),
       );
     }).toList();
   }
-  
+
   Widget _buildTextNoteDialog(SimpleStudentPdfVm vm) {
     final controller = TextEditingController();
-    
+
     return Positioned.fill(
       child: Container(
         color: Colors.black26,
@@ -552,7 +614,7 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                
+
                 TextField(
                   controller: controller,
                   maxLines: 4,
@@ -565,9 +627,9 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
                   ),
                   style: const TextStyle(fontSize: 14),
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -598,29 +660,71 @@ class _EnhancedStudentPdfViewState extends State<_EnhancedStudentPdfView> {
       ),
     );
   }
-  
-  // Gesture handlers
-  void _handleTap(Offset position, SimpleStudentPdfVm vm) {
+
+  // Gesture handlers with coordinate transformation support
+  void _handleTap(
+    Offset position,
+    SimpleStudentPdfVm vm,
+    BoxConstraints constraints,
+  ) {
+    // Update viewer state before handling gesture
+    vm.updateViewerState(
+      viewerSize: Size(constraints.maxWidth, constraints.maxHeight),
+      zoomLevel: vm.pdfController.zoomLevel,
+      scrollOffset: Offset(
+        vm.pdfController.scrollOffset.dx,
+        vm.pdfController.scrollOffset.dy,
+      ),
+    );
+
     if (vm.currentTool == StudentAnnotationType.textNote) {
-      vm.startTextNote(position);
+      vm.startTextNote(position); // VM will transform to PDF coordinates
     }
   }
-  
-  void _handlePanStart(Offset position, SimpleStudentPdfVm vm) {
+
+  void _handlePanStart(
+    Offset position,
+    SimpleStudentPdfVm vm,
+    BoxConstraints constraints,
+  ) {
+    // Update viewer state before handling gesture
+    vm.updateViewerState(
+      viewerSize: Size(constraints.maxWidth, constraints.maxHeight),
+      zoomLevel: vm.pdfController.zoomLevel,
+      scrollOffset: Offset(
+        vm.pdfController.scrollOffset.dx,
+        vm.pdfController.scrollOffset.dy,
+      ),
+    );
+
     if (vm.currentTool != StudentAnnotationType.textNote) {
-      vm.startStroke(position);
+      vm.startStroke(position); // VM will transform to PDF coordinates
     }
   }
-  
-  void _handlePanUpdate(Offset position, SimpleStudentPdfVm vm) {
+
+  void _handlePanUpdate(
+    Offset position,
+    SimpleStudentPdfVm vm,
+    BoxConstraints constraints,
+  ) {
+    // Update viewer state before handling gesture
+    vm.updateViewerState(
+      viewerSize: Size(constraints.maxWidth, constraints.maxHeight),
+      zoomLevel: vm.pdfController.zoomLevel,
+      scrollOffset: Offset(
+        vm.pdfController.scrollOffset.dx,
+        vm.pdfController.scrollOffset.dy,
+      ),
+    );
+
     if (vm.currentTool != StudentAnnotationType.textNote) {
-      vm.addStrokePoint(position);
+      vm.addStrokePoint(position); // VM will transform to PDF coordinates
     }
   }
-  
+
   void _handlePanEnd(SimpleStudentPdfVm vm) {
     if (vm.currentTool != StudentAnnotationType.textNote) {
-      vm.finishStroke();
+      vm.finishStroke(); // Finalize stroke in PDF coordinates
     }
   }
 }
@@ -632,7 +736,7 @@ class AnnotationPainter extends CustomPainter {
   final List<Offset> currentStroke;
   final Color currentColor;
   final double currentWidth;
-  
+
   AnnotationPainter({
     required this.strokes,
     required this.textNotes,
@@ -640,14 +744,14 @@ class AnnotationPainter extends CustomPainter {
     required this.currentColor,
     required this.currentWidth,
   });
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     // Draw saved strokes
     for (final stroke in strokes) {
       _drawStroke(canvas, stroke);
     }
-    
+
     // Draw current stroke
     if (currentStroke.length > 1) {
       final stroke = StudentStroke(
@@ -658,41 +762,43 @@ class AnnotationPainter extends CustomPainter {
       );
       _drawStroke(canvas, stroke);
     }
-    
+
     // Draw text notes
     for (final note in textNotes) {
       _drawTextNote(canvas, note);
     }
   }
-  
+
   void _drawStroke(Canvas canvas, StudentStroke stroke) {
     if (stroke.points.length < 2) return;
-    
-    final paint = Paint()
-      ..color = stroke.color
-      ..strokeWidth = stroke.width
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-    
+
+    final paint =
+        Paint()
+          ..color = stroke.color
+          ..strokeWidth = stroke.width
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
+
     final path = Path();
     path.moveTo(stroke.points.first.dx, stroke.points.first.dy);
-    
+
     for (int i = 1; i < stroke.points.length; i++) {
       path.lineTo(stroke.points[i].dx, stroke.points[i].dy);
     }
-    
+
     canvas.drawPath(path, paint);
   }
-  
+
   void _drawTextNote(Canvas canvas, StudentTextNote note) {
     // Draw note indicator
-    final paint = Paint()
-      ..color = note.color
-      ..style = PaintingStyle.fill;
-    
+    final paint =
+        Paint()
+          ..color = note.color
+          ..style = PaintingStyle.fill;
+
     canvas.drawCircle(note.position, 12, paint);
-    
+
     // Draw "N" for Note
     final textPainter = TextPainter(
       text: const TextSpan(
@@ -705,14 +811,14 @@ class AnnotationPainter extends CustomPainter {
       ),
       textDirection: TextDirection.ltr,
     );
-    
+
     textPainter.layout();
     textPainter.paint(
       canvas,
       note.position - Offset(textPainter.width / 2, textPainter.height / 2),
     );
   }
-  
+
   @override
   bool shouldRepaint(AnnotationPainter oldDelegate) {
     return oldDelegate.strokes != strokes ||

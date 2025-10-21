@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector4, Matrix4;
 import 'dart:io';
 
 /// Student annotation types
@@ -92,11 +93,22 @@ class SimpleStudentPdfVm extends ChangeNotifier {
   double _strokeWidth = 3.0;
   bool _isAnnotationMode = false;
   
-  // Annotations storage
+  // Annotations storage (stored in PDF document coordinates)
   final Map<int, List<StudentStroke>> _strokes = {};
   final Map<int, List<StudentTextNote>> _textNotes = {};
   List<Offset> _currentStroke = [];
   StudentTextNote? _pendingTextNote;
+  
+  // Coordinate transformation state
+  Size _pdfViewerSize = Size.zero;
+  double _zoomLevel = 1.0;
+  Offset _scrollOffset = Offset.zero;
+  Size _pageSize = Size.zero; // PDF page dimensions
+  
+  // Transformation matrix for coordinate conversion
+  Matrix4 _viewToPdfMatrix = Matrix4.identity();
+  Matrix4 _pdfToViewMatrix = Matrix4.identity();
+  bool _matrixNeedsUpdate = true;
   
   SimpleStudentPdfVm({
     required this.contentId,
@@ -116,13 +128,23 @@ class SimpleStudentPdfVm extends ChangeNotifier {
   Color get currentColor => _currentColor;
   double get strokeWidth => _strokeWidth;
   bool get isAnnotationMode => _isAnnotationMode;
-  List<Offset> get currentStroke => _currentStroke;
+  // Transform current stroke from PDF coordinates to view coordinates for display
+  List<Offset> get currentStroke => _currentStroke.map((pdfPoint) => _transformPdfToView(pdfPoint)).toList();
   StudentTextNote? get pendingTextNote => _pendingTextNote;
   
   // Get annotations for current page
   int get currentPage => _pdfController.pageNumber;
-  List<StudentStroke> get currentPageStrokes => _strokes[currentPage] ?? [];
-  List<StudentTextNote> get currentPageTextNotes => _textNotes[currentPage] ?? [];
+  
+  // Get annotations transformed to current view coordinates
+  List<StudentStroke> get currentPageStrokes {
+    final pdfStrokes = _strokes[currentPage] ?? [];
+    return pdfStrokes.map((stroke) => _transformStrokeToView(stroke)).toList();
+  }
+  
+  List<StudentTextNote> get currentPageTextNotes {
+    final pdfNotes = _textNotes[currentPage] ?? [];
+    return pdfNotes.map((note) => _transformTextNoteToView(note)).toList();
+  }
   
   // Student color palettes
   List<Color> get highlightColors => [
@@ -218,31 +240,36 @@ class SimpleStudentPdfVm extends ChangeNotifier {
     notifyListeners();
   }
   
-  /// Start drawing/annotation
-  void startStroke(Offset position) {
+  /// Start drawing/annotation (transforms view coordinates to PDF coordinates)
+  void startStroke(Offset viewPosition) {
     if (!_isAnnotationMode) return;
     
-    _currentStroke = [position];
+    // Transform view coordinates to PDF coordinates for storage
+    final pdfPosition = _transformViewToPdf(viewPosition);
+    _currentStroke = [pdfPosition];
     notifyListeners();
   }
   
-  /// Add point to current stroke
-  void addStrokePoint(Offset position) {
+  /// Add point to current stroke (transforms view coordinates to PDF coordinates)
+  void addStrokePoint(Offset viewPosition) {
     if (!_isAnnotationMode || _currentStroke.isEmpty) return;
     
-    _currentStroke.add(position);
+    // Transform view coordinates to PDF coordinates for storage
+    final pdfPosition = _transformViewToPdf(viewPosition);
+    _currentStroke.add(pdfPosition);
     notifyListeners();
   }
   
-  /// Finish current stroke
+  /// Finish current stroke (stored in PDF coordinates)
   void finishStroke() {
     if (!_isAnnotationMode || _currentStroke.length < 2) {
       _currentStroke.clear();
       return;
     }
     
+    // Store stroke in PDF coordinates
     final stroke = StudentStroke(
-      points: List.from(_currentStroke),
+      points: List.from(_currentStroke), // Already in PDF coordinates
       color: _currentColor,
       width: _strokeWidth,
       type: _currentTool,
@@ -256,12 +283,14 @@ class SimpleStudentPdfVm extends ChangeNotifier {
     notifyListeners();
   }
   
-  /// Start text note creation
-  void startTextNote(Offset position) {
-    if (!_isAnnotationMode || _currentTool != StudentAnnotationType.textNote) return;
+  /// Start creating a text note (transforms view coordinates to PDF coordinates)
+  void startTextNote(Offset viewPosition) {
+    if (!_isAnnotationMode) return;
     
+    // Transform view coordinates to PDF coordinates for storage
+    final pdfPosition = _transformViewToPdf(viewPosition);
     _pendingTextNote = StudentTextNote(
-      position: position,
+      position: pdfPosition, // Store in PDF coordinates
       text: '',
       color: _currentColor,
       createdAt: DateTime.now(),
@@ -269,19 +298,16 @@ class SimpleStudentPdfVm extends ChangeNotifier {
     notifyListeners();
   }
   
-  /// Create text note
+  /// Create text note with content (already in PDF coordinates)
   void createTextNote(String text) {
-    if (_pendingTextNote == null || text.trim().isEmpty) {
-      _pendingTextNote = null;
-      notifyListeners();
-      return;
-    }
+    if (_pendingTextNote == null) return;
     
+    // Create note with position already in PDF coordinates
     final note = StudentTextNote(
-      position: _pendingTextNote!.position,
-      text: text.trim(),
+      position: _pendingTextNote!.position, // Already in PDF coordinates
+      text: text,
       color: _pendingTextNote!.color,
-      createdAt: DateTime.now(),
+      createdAt: _pendingTextNote!.createdAt,
     );
     
     final page = currentPage;
@@ -396,6 +422,104 @@ class SimpleStudentPdfVm extends ChangeNotifier {
   void previousPage() => _pdfController.previousPage();
   void zoomIn() => _pdfController.zoomLevel = _pdfController.zoomLevel * 1.25;
   void zoomOut() => _pdfController.zoomLevel = _pdfController.zoomLevel * 0.8;
+  
+  // ================================
+  // COORDINATE TRANSFORMATION SYSTEM
+  // Based on flutter_pdf_annotations approach
+  // ================================
+  
+  /// Update viewer state for coordinate transformation
+  void updateViewerState({
+    required Size viewerSize,
+    required double zoomLevel,
+    required Offset scrollOffset,
+  }) {
+    _pdfViewerSize = viewerSize;
+    _zoomLevel = zoomLevel;
+    _scrollOffset = scrollOffset;
+    _matrixNeedsUpdate = true;
+    _updateTransformationMatrix();
+  }
+  
+  /// Update PDF page size (called when page loads)
+  void updatePageSize(Size pageSize) {
+    _pageSize = pageSize;
+    _matrixNeedsUpdate = true;
+    _updateTransformationMatrix();
+  }
+  
+  /// Update transformation matrices (similar to flutter_pdf_annotations DrawingView)
+  void _updateTransformationMatrix() {
+    if (_pageSize.width <= 0 || 
+        _pageSize.height <= 0 || 
+        _pdfViewerSize.width <= 0 || 
+        _pdfViewerSize.height <= 0) {
+      return;
+    }
+    
+    // Calculate scale factor (similar to DrawingView.getScaleFactor())
+    final scaleX = _pdfViewerSize.width / _pageSize.width;
+    final scaleY = _pdfViewerSize.height / _pageSize.height;
+    final scale = scaleX < scaleY ? scaleX : scaleY; // Use minimum scale to fit
+    
+    // Calculate centering offsets
+    final scaledPageWidth = _pageSize.width * scale * _zoomLevel;
+    final scaledPageHeight = _pageSize.height * scale * _zoomLevel;
+    final centerX = (_pdfViewerSize.width - scaledPageWidth) / 2;
+    final centerY = (_pdfViewerSize.height - scaledPageHeight) / 2;
+    
+    // Create view-to-PDF transformation matrix
+    _viewToPdfMatrix = Matrix4.identity()
+      ..translate(-centerX, -centerY) // Remove centering offset
+      ..translate(-_scrollOffset.dx, -_scrollOffset.dy) // Remove scroll offset
+      ..scale(1.0 / (_zoomLevel * scale), 1.0 / (_zoomLevel * scale)); // Scale to PDF coordinates
+    
+    // Create PDF-to-view transformation matrix (inverse)
+    _pdfToViewMatrix = Matrix4.identity()
+      ..scale(_zoomLevel * scale, _zoomLevel * scale) // Scale from PDF to view
+      ..translate(_scrollOffset.dx, _scrollOffset.dy) // Add scroll offset
+      ..translate(centerX, centerY); // Add centering offset
+    
+    _matrixNeedsUpdate = false;
+  }
+  
+  /// Transform screen coordinates to PDF coordinates (for storage)
+  Offset _transformViewToPdf(Offset viewPosition) {
+    if (_matrixNeedsUpdate) _updateTransformationMatrix();
+    
+    final vector = Vector4(viewPosition.dx, viewPosition.dy, 0, 1);
+    final transformed = _viewToPdfMatrix * vector;
+    return Offset(transformed.x, transformed.y);
+  }
+  
+  /// Transform PDF coordinates to screen coordinates (for display)
+  Offset _transformPdfToView(Offset pdfPosition) {
+    if (_matrixNeedsUpdate) _updateTransformationMatrix();
+    
+    final vector = Vector4(pdfPosition.dx, pdfPosition.dy, 0, 1);
+    final transformed = _pdfToViewMatrix * vector;
+    return Offset(transformed.x, transformed.y);
+  }
+  
+  /// Transform stroke from PDF coordinates to view coordinates
+  StudentStroke _transformStrokeToView(StudentStroke pdfStroke) {
+    return StudentStroke(
+      points: pdfStroke.points.map((point) => _transformPdfToView(point)).toList(),
+      color: pdfStroke.color,
+      width: pdfStroke.width * _zoomLevel, // Scale stroke width with zoom
+      type: pdfStroke.type,
+    );
+  }
+  
+  /// Transform text note from PDF coordinates to view coordinates
+  StudentTextNote _transformTextNoteToView(StudentTextNote pdfNote) {
+    return StudentTextNote(
+      position: _transformPdfToView(pdfNote.position),
+      text: pdfNote.text,
+      color: pdfNote.color,
+      createdAt: pdfNote.createdAt,
+    );
+  }
   
   @override
   void dispose() {
