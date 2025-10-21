@@ -30,13 +30,8 @@ class MultiPageViewer extends StatefulWidget {
 class _MultiPageViewerState extends State<MultiPageViewer>
     with TickerProviderStateMixin {
   late PageController _pageController;
-  late AnimationController _addPageAnimationController;
-  late Animation<double> _addPageAnimation;
   final Map<String, TransformationController> _transformationControllers = {};
   final Map<String, bool> _zoomStates = {};
-
-  bool _showAddPageIndicator = true;
-  String _addPageDirection = '';
 
   @override
   void initState() {
@@ -47,24 +42,11 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     );
 
     // Transformation controllers will be created per page as needed
-
-    _addPageAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-
-    _addPageAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _addPageAnimationController,
-        curve: Curves.elasticOut,
-      ),
-    );
   }
 
   @override
   void dispose() {
     _pageController.dispose();
-    _addPageAnimationController.dispose();
     // Dispose all transformation controllers
     for (final controller in _transformationControllers.values) {
       controller.dispose();
@@ -103,10 +85,23 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                         ? const NeverScrollableScrollPhysics()
                         : const PageScrollPhysics(),
                 onPageChanged: (index) {
-                  vm.setCurrentPageIndex(index);
+                  // Don't change page index if we're on the add page indicator
+                  if (index < vm.notePages.length) {
+                    vm.setCurrentPageIndex(index);
+                  }
                 },
-                itemCount: vm.notePages.length,
+                itemCount:
+                    vm.notePages.length + 1, // Add 1 for the add page indicator
                 itemBuilder: (context, index) {
+                  // Show add page indicator at the end
+                  if (index == vm.notePages.length) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      child: _buildAddPageCard(vm),
+                    );
+                  }
+
+                  // Show regular page
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8),
                     child: _buildPageWithZoomAndPan(vm.notePages[index], vm),
@@ -114,8 +109,7 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                 },
               ),
 
-            // Add page indicators
-            if (_showAddPageIndicator) _buildAddPageIndicator(),
+            // Old add page indicator removed - now using add page card in PageView
 
             // Page navigation controls
             if (vm.currentMode != NoteMode.voice) _buildPageControls(vm),
@@ -391,43 +385,87 @@ class _MultiPageViewerState extends State<MultiPageViewer>
     );
   }
 
-  Widget _buildAddPageIndicator() {
-    return AnimatedBuilder(
-      animation: _addPageAnimation,
-      builder: (context, child) {
-        return Positioned(
-          top: 0,
-          bottom: 0,
-          left: _addPageDirection == 'left' ? 0 : null,
-          right: _addPageDirection == 'right' ? 0 : null,
-          child: Transform.scale(
-            scale: _addPageAnimation.value,
-            child: Container(
-              width: 80,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(12),
+  Widget _buildAddPageCard(NoteCreationVm vm) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 60, vertical: 12),
+      width: screenWidth * 0.95,
+      height: screenHeight * 0.8,
+      decoration: BoxDecoration(
+        color: AppTheme.lightAsh,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            vm.addNewPage();
+            // Navigate to the new page after adding it
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (_pageController.hasClients) {
+                _pageController.animateToPage(
+                  vm.notePages.length - 1, // Go to the newly added page
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              }
+            });
+          },
+          child: Container(
+            width: 300,
+            height: 400,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Theme.of(context).primaryColor.withOpacity(0.3),
+                width: 2,
+                style: BorderStyle.solid,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.add, color: Colors.white, size: 32),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Release to\nadd page',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    shape: BoxShape.circle,
                   ),
-                ],
-              ),
+                  child: Icon(
+                    Icons.add,
+                    size: 40,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Add New Page',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Tap to create a new page',
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                ),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -563,6 +601,53 @@ class _MultiPageViewerState extends State<MultiPageViewer>
                     ),
                   ),
                 ],
+
+                // Add new page button
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () {
+                    vm.addNewPage();
+                    // Navigate to the new page after adding it
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (_pageController.hasClients) {
+                        _pageController.animateToPage(
+                          vm.notePages.length - 1, // Go to the newly added page
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.add, color: Colors.white, size: 16),
+                        const SizedBox(width: 4),
+                        const Text(
+                          'Add',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
