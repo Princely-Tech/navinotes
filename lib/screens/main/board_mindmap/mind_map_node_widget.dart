@@ -349,10 +349,10 @@ class MindMapNodeWidget extends StatelessWidget {
                       const Icon(Icons.link, color: Colors.white, size: 14),
                       const SizedBox(width: 4),
                       const Text(
-                        'Connecting...',
+                        'Connecting... Click on an item to connect',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 8,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
