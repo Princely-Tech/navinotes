@@ -6,6 +6,8 @@ import 'package:navinotes/widgets/flashcard_study_widget.dart';
 import 'package:navinotes/settings/enums.dart';
 import 'package:navinotes/settings/packages.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'dart:io';
 
 /// Reusable widget for previewing different content types
 /// Used in mind map nodes and right panel previews
@@ -79,6 +81,12 @@ class ContentFullPreviewWidget extends StatelessWidget {
     final fileName = content.file ?? content.title;
     final fileExtension = fileName.split('.').last.toLowerCase();
 
+    // Show actual PDF viewer for PDF files
+    if (fileExtension == 'pdf' && content.file != null) {
+      return _buildPdfPreview();
+    }
+
+    // Show file icon for other file types
     return Container(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -171,6 +179,52 @@ class ContentFullPreviewWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildPdfPreview() {
+    try {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: SfPdfViewer.file(
+          File(content.file!),
+          enableTextSelection: false, // Disable text selection in preview
+          canShowScrollHead: false, // Hide scroll head in preview
+          canShowScrollStatus: false, // Hide scroll status in preview
+          canShowPaginationDialog: false, // Hide pagination dialog
+          onDocumentLoadFailed: (details) {
+            debugPrint('PDF preview load failed: ${details.error}');
+          },
+        ),
+      );
+    } catch (e) {
+      // Fallback to file icon if PDF can't be loaded
+      debugPrint('Error loading PDF preview: $e');
+      return Container(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.picture_as_pdf, size: 48, color: Colors.red.shade600),
+            const SizedBox(height: 8),
+            Text(
+              content.title,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'PDF Preview Unavailable',
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   IconData _getFileIcon(String extension) {
