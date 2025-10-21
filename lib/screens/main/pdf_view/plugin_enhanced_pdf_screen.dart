@@ -4,6 +4,7 @@ import 'package:flutter_pdf_annotations/flutter_pdf_annotations.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'dart:io';
 import 'simple_student_pdf_vm.dart';
+import 'package:navinotes/packages.dart';
 
 /// Enhanced Plugin-based PDF viewer for NaviNotes
 /// Uses modified flutter_pdf_annotations plugin with silent saving
@@ -434,9 +435,12 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
     PdfTextSelectionChangedDetails details,
   ) async {
     try {
-      // TODO: Implement based on your Content model
-      // final content = Content(...);
-      // await DatabaseHelper.instance.insertContent(content);
+      // Create mind map node using the selected text
+      await createNodeInMindMap(
+        boardId: vm.content!.boardId,
+        text: details.selectedText ?? 'Selected Text',
+        connectedContentId: vm.content!.id,
+      );
 
       // Close the panel
       setState(() {
@@ -445,7 +449,7 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Add to Mind Map - implement with your data models'),
+          content: Text('Added to Mind Map successfully!'),
           backgroundColor: Colors.blue,
           duration: Duration(seconds: 2),
         ),
@@ -464,10 +468,25 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
     SimpleStudentPdfVm vm,
     PdfTextSelectionChangedDetails details,
   ) async {
+    bool isLoading = false;
+    
+    void setLoading(bool loading) {
+      setState(() {
+        isLoading = loading;
+      });
+    }
+
     try {
-      // TODO: Implement based on your Content model
-      // final content = Content(...);
-      // await DatabaseHelper.instance.insertContent(content);
+      // Create note using the selected text
+      await createContentInDb(
+        template: noteTemplateBlank,
+        context: context,
+        boardId: vm.content!.boardId,
+        setLoading: setLoading,
+        title: 'Note from PDF - ${vm.content?.title ?? "Document"}',
+        contentBody: details.selectedText ?? '',
+        connectedContentId: vm.content!.id,
+      );
 
       // Close the panel
       setState(() {
@@ -476,7 +495,7 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Create Note - implement with your data models'),
+          content: Text('Note created successfully!'),
           backgroundColor: Colors.purple,
           duration: Duration(seconds: 2),
         ),
