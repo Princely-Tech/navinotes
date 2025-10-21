@@ -5,7 +5,7 @@ import 'package:navinotes/screens/main/note_template/creation/vm.dart';
 import 'professional_drawing_toolbar.dart';
 import 'pressure_drawing_widget.dart';
 import 'stylus_settings_dialog.dart';
-import '../models/stylus_settings.dart';
+import '../models/drawing_tools.dart';
 
 Widget buildDrawingBoard(
   NoteCreationVm vm,
@@ -166,6 +166,9 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
               ValueListenableBuilder<DrawConfig>(
                 valueListenable: widget.controller.drawConfig,
                 builder: (_, drawConfig, __) {
+                  // Check if eraser tool is selected
+                  final isEraserSelected = widget.vm.selectedDrawingTool == DrawingToolType.eraser;
+                  
                   return Positioned(
                     left: _cursorPos!.dx - drawConfig.strokeWidth / 2,
                     top: _cursorPos!.dy - drawConfig.strokeWidth / 2,
@@ -175,8 +178,19 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
                         height: drawConfig.strokeWidth,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.black26, width: 1),
+                          border: Border.all(
+                            color: isEraserSelected ? Colors.red.withOpacity(0.6) : Colors.black26,
+                            width: isEraserSelected ? 2 : 1,
+                          ),
+                          color: isEraserSelected ? Colors.red.withOpacity(0.1) : null,
                         ),
+                        child: isEraserSelected ? Center(
+                          child: Icon(
+                            Icons.cleaning_services,
+                            size: (drawConfig.strokeWidth * 0.4).clamp(8.0, 16.0),
+                            color: Colors.red.withOpacity(0.8),
+                          ),
+                        ) : null,
                       ),
                     ),
                   );

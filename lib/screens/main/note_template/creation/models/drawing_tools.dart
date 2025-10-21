@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Drawing tool categories for organizing tools
-enum DrawingToolCategory {
-  pen,
-  shapes,
-  arrows,
-  text,
-  utilities,
-}
+enum DrawingToolCategory { pen, shapes, arrows, text, utilities }
 
 /// Drawing tool types with expanded shape support
 enum DrawingToolType {
@@ -16,7 +10,7 @@ enum DrawingToolType {
   smoothLine,
   straightLine,
   eraser,
-  
+
   // Basic shapes
   rectangle,
   circle,
@@ -26,44 +20,35 @@ enum DrawingToolType {
   hexagon,
   star,
   heart,
-  
+
   // Arrows
   arrowStraight,
   arrowCurved,
   arrowDouble,
   arrowBent,
-  
+
   // Lines and connectors
   dottedLine,
   dashedLine,
   zigzagLine,
-  
+
   // Text
   textBox,
   textCallout,
   textBold,
   textItalic,
   textUnderline,
-  
+
   // Utilities
   highlighter,
   marker,
 }
 
 /// Stroke styles for drawing tools
-enum StrokeStyle {
-  solid,
-  dashed,
-  dotted,
-  dashedDot,
-}
+enum StrokeStyle { solid, dashed, dotted, dashedDot }
 
 /// Line cap styles
-enum LineCapStyle {
-  round,
-  square,
-  butt,
-}
+enum LineCapStyle { round, square, butt }
 
 /// Drawing tool configuration
 class DrawingToolConfig {
@@ -116,32 +101,32 @@ class DrawingColorPalette {
     Color(0xFF999999), // Light grey
     Color(0xFFCCCCCC), // Very light grey
     Color(0xFFFFFFFF), // White
-    
+
     Color(0xFFFF0000), // Red
     Color(0xFFFF6666), // Light red
     Color(0xFF990000), // Dark red
     Color(0xFFFFCCCC), // Very light red
-    
+
     Color(0xFF00FF00), // Green
     Color(0xFF66FF66), // Light green
     Color(0xFF009900), // Dark green
     Color(0xFFCCFFCC), // Very light green
-    
+
     Color(0xFF0000FF), // Blue
     Color(0xFF6666FF), // Light blue
     Color(0xFF000099), // Dark blue
     Color(0xFFCCCCFF), // Very light blue
-    
+
     Color(0xFFFFFF00), // Yellow
     Color(0xFFFFFF99), // Light yellow
     Color(0xFF999900), // Dark yellow
     Color(0xFFFFFFCC), // Very light yellow
-    
+
     Color(0xFFFF8000), // Orange
     Color(0xFFFFB366), // Light orange
     Color(0xFF994D00), // Dark orange
     Color(0xFFFFE6CC), // Very light orange
-    
+
     Color(0xFF8000FF), // Purple
     Color(0xFFB366FF), // Light purple
     Color(0xFF4D0099), // Dark purple
@@ -191,7 +176,7 @@ class DrawingTools {
       category: DrawingToolCategory.pen,
       defaultStrokeWidth: 6.0,
     ),
-    
+
     // Basic shapes
     DrawingToolType.rectangle: DrawingToolConfig(
       type: DrawingToolType.rectangle,
@@ -257,7 +242,7 @@ class DrawingTools {
       category: DrawingToolCategory.shapes,
       fillEnabled: true,
     ),
-    
+
     // Arrows
     DrawingToolType.arrowStraight: DrawingToolConfig(
       type: DrawingToolType.arrowStraight,
@@ -287,25 +272,7 @@ class DrawingTools {
       icon: Icons.call_made,
       category: DrawingToolCategory.arrows,
     ),
-    
-    // Lines
-    DrawingToolType.dottedLine: DrawingToolConfig(
-      type: DrawingToolType.dottedLine,
-      name: 'Dotted Line',
-      description: 'Dotted line',
-      icon: Icons.more_horiz,
-      category: DrawingToolCategory.pen,
-      defaultStrokeStyle: StrokeStyle.dotted,
-    ),
-    DrawingToolType.dashedLine: DrawingToolConfig(
-      type: DrawingToolType.dashedLine,
-      name: 'Dashed Line',
-      description: 'Dashed line',
-      icon: Icons.horizontal_rule,
-      category: DrawingToolCategory.pen,
-      defaultStrokeStyle: StrokeStyle.dashed,
-    ),
-    
+
     // Text
     DrawingToolType.textBox: DrawingToolConfig(
       type: DrawingToolType.textBox,
@@ -342,7 +309,7 @@ class DrawingTools {
       icon: Icons.format_underlined,
       category: DrawingToolCategory.text,
     ),
-    
+
     // Utilities
     DrawingToolType.eraser: DrawingToolConfig(
       type: DrawingToolType.eraser,
@@ -354,7 +321,9 @@ class DrawingTools {
   };
 
   /// Get tools by category
-  static List<DrawingToolConfig> getToolsByCategory(DrawingToolCategory category) {
+  static List<DrawingToolConfig> getToolsByCategory(
+    DrawingToolCategory category,
+  ) {
     return tools.values.where((tool) => tool.category == category).toList();
   }
 

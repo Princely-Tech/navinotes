@@ -162,6 +162,9 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     final hoverInfo = widget.controller.getHoverInfo();
     if (hoverInfo == null || !hoverInfo.visible) return const SizedBox.shrink();
 
+    // Check if eraser tool is selected
+    final isEraserSelected = widget.vm.selectedDrawingTool == DrawingToolType.eraser;
+    
     return AnimatedBuilder(
       animation: _cursorAnimation,
       builder: (context, child) {
@@ -175,23 +178,34 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.black26.withOpacity(
-                    hoverInfo.opacity * _cursorAnimation.value,
-                  ),
-                  width: 2,
+                  color: isEraserSelected 
+                      ? Colors.red.withOpacity(hoverInfo.opacity * _cursorAnimation.value * 0.8)
+                      : Colors.black26.withOpacity(hoverInfo.opacity * _cursorAnimation.value),
+                  width: isEraserSelected ? 3 : 2,
                 ),
+                color: isEraserSelected 
+                    ? Colors.red.withOpacity(hoverInfo.opacity * _cursorAnimation.value * 0.1)
+                    : null,
               ),
               child: Center(
-                child: Container(
-                  width: hoverInfo.size * 0.3,
-                  height: hoverInfo.size * 0.3,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).primaryColor.withOpacity(
-                      hoverInfo.opacity * _cursorAnimation.value * 0.5,
-                    ),
-                  ),
-                ),
+                child: isEraserSelected 
+                    ? Icon(
+                        Icons.cleaning_services,
+                        size: (hoverInfo.size * 0.4).clamp(12.0, 24.0),
+                        color: Colors.red.withOpacity(
+                          hoverInfo.opacity * _cursorAnimation.value * 0.9,
+                        ),
+                      )
+                    : Container(
+                        width: hoverInfo.size * 0.3,
+                        height: hoverInfo.size * 0.3,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).primaryColor.withOpacity(
+                            hoverInfo.opacity * _cursorAnimation.value * 0.5,
+                          ),
+                        ),
+                      ),
               ),
             ),
           ),
