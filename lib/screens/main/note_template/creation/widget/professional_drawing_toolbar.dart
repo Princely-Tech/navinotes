@@ -77,7 +77,7 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
   void _setPaintContent(DrawingToolType toolType) {
     final pageController = widget.vm.getCurrentPageController();
     if (pageController == null) return;
-    
+
     final controller = pageController.activeDrawingController;
 
     switch (toolType) {
@@ -89,6 +89,10 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
         break;
       case DrawingToolType.straightLine:
         controller.setPaintContent(StraightLine());
+        break;
+      case DrawingToolType.eraser:
+        // Use SimpleLine with special eraser properties
+        controller.setPaintContent(SimpleLine());
         break;
       case DrawingToolType.rectangle:
         controller.setPaintContent(Rectangle());
@@ -144,10 +148,18 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
     widget.vm.exitTextBoxMode();
 
     // Update stroke properties
-    controller.setStyle(
-      strokeWidth: widget.vm.strokeWidth,
-      color: widget.vm.selectedColor,
-    );
+    if (toolType == DrawingToolType.eraser) {
+      // For eraser, use background color (white) with larger stroke
+      controller.setStyle(
+        strokeWidth: widget.vm.strokeWidth * 1.5, // Make eraser wider
+        color: Colors.white, // Erase by painting with background color
+      );
+    } else {
+      controller.setStyle(
+        strokeWidth: widget.vm.strokeWidth,
+        color: widget.vm.selectedColor,
+      );
+    }
   }
 
   @override
