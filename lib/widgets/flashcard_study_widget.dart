@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/flashcards/study/vm.dart';
+import 'package:navinotes/widgets/spaced_repetition_info.dart';
 
 /// Reusable flashcard study widget that can be used in different contexts
 /// Takes a FlashCardStudyVm as parameter for flexibility
@@ -36,12 +37,14 @@ class FlashcardStudyWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (showProgressIndicator) _progressIndicator(),
+                  // Add spaced repetition info
+                  SpacedRepetitionInfo(vm: vm),
                   Flexible(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       spacing: 48,
                       children: [
-                        Flexible(
+                        if (vm.hasCardsToStudy) Flexible(
                           child: FlipCard(
                             controller: vm.flipCardController,
                             rotateSide: RotateSide.right,
@@ -51,7 +54,8 @@ class FlashcardStudyWidget extends StatelessWidget {
                             backWidget: _inputCard(isFront: false),
                           ),
                         ),
-                        if (showActions) _actions(),
+                        if (showActions && vm.hasCardsToStudy) _actions(),
+                        if (!vm.hasCardsToStudy) _noCardsMessage(),
                       ],
                     ),
                   ),
@@ -145,7 +149,7 @@ class FlashcardStudyWidget extends StatelessWidget {
       builder: (_, constraints) {
         double width = constraints.maxWidth;
         int reviewedCount = vm.reviewedCards.length;
-        int cardCount = vm.flashCards.length;
+        int cardCount = vm.studyQueue.isNotEmpty ? vm.studyQueue.length : vm.flashCards.length;
         double value = cardCount > 0 ? reviewedCount / cardCount : 0.0;
 
         return Align(
@@ -263,6 +267,40 @@ class FlashcardStudyWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _noCardsMessage() {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.check_circle,
+            color: Color(0xFF10B981),
+            size: 64,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Great job!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF0F172A),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'You\'ve completed your study session for now. Come back later for more cards!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: const Color(0xFF64748B),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

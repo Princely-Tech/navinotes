@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/spaced_repetition.dart';
 
 class FlashCardStudyVm extends ChangeNotifier {
   GlobalKey<ScaffoldState> scaffoldKey;
@@ -49,12 +50,18 @@ class FlashCardStudyVm extends ChangeNotifier {
   int currentCardIndex = 0;
   List<FlashCard> reviewedCards = [];
   List<FlashCard> flashCards = [];
+  List<FlashCard> studyQueue = []; // Cards selected for this study session
   FlashCard? currentCard;
+  
+  // Spaced Repetition Statistics
+  Map<String, dynamic> deckStats = {};
+  int newCardsStudied = 0;
+  int reviewCardsStudied = 0;
 
   nextCardIndex() {
-    if (flashCards.isEmpty) return 0;
-    currentCardIndex = (currentCardIndex + 1) % flashCards.length;
-    FlashCard current = flashCards[currentCardIndex];
+    if (studyQueue.isEmpty) return;
+    currentCardIndex = (currentCardIndex + 1) % studyQueue.length;
+    FlashCard current = studyQueue[currentCardIndex];
     
     // Reset card to front side when moving to next card
     _resetCardToFront();
@@ -63,9 +70,9 @@ class FlashCardStudyVm extends ChangeNotifier {
   }
 
   previousCardIndex() {
-    if (flashCards.isEmpty) return 0;
-    currentCardIndex = (currentCardIndex - 1 + flashCards.length) % flashCards.length;
-    FlashCard current = flashCards[currentCardIndex];
+    if (studyQueue.isEmpty) return;
+    currentCardIndex = (currentCardIndex - 1 + studyQueue.length) % studyQueue.length;
+    FlashCard current = studyQueue[currentCardIndex];
     
     // Reset card to front side when moving to previous card
     _resetCardToFront();
@@ -88,8 +95,26 @@ class FlashCardStudyVm extends ChangeNotifier {
 
   void updateCurrentCardDifficulty(FlashcardDifficulty difficulty) async {
     if (currentCard != null) {
-      currentCard!.update(difficulty: difficulty);
-      loadDeckFlashCards();
+      // Calculate next review using spaced repetition
+      final updatedCard = SpacedRepetitionSystem.calculateNextReview(
+        currentCard!, 
+        difficulty,
+      );
+      
+      // Update card in database
+      await DatabaseHelper.instance.updateFlashCard(updatedCard);
+      
+      // Update statistics
+      if (currentCard!.reviewCount == 0) {
+        newCardsStudied++;
+      } else {
+        reviewCardsStudied++;
+      }
+      
+      // Refresh the deck data
+      await loadDeckFlashCards();
+      
+      // Move to next card
       nextCardIndex();
     }
   }
@@ -149,11 +174,30 @@ class FlashCardStudyVm extends ChangeNotifier {
   void updateDeckLastStudied() {}
 
   Future<void> loadDeckFlashCards({bool initialize = false}) async {
+    // Load all flashcards from database
     flashCards = await fetchDeckFlashCards(context: context, deck: deck);
+    
     if (initialize) {
-      if (flashCards.isNotEmpty) {
-        selectFlashCard(flashCards[0]);
+      // Generate study queue using spaced repetition
+      studyQueue = SpacedRepetitionSystem.getStudySessionCards(
+        flashCards,
+        maxNewCards: 10,
+        maxLearningCards: 20,
+        maxReviewCards: 50,
+      );
+      
+      // Calculate deck statistics
+      deckStats = SpacedRepetitionSystem.getDeckStats(flashCards);
+      
+      // Start with first card if available
+      if (studyQueue.isNotEmpty) {
+        currentCardIndex = 0;
+        selectFlashCard(studyQueue[0]);
+      } else {
+        // No cards due for review
+        debugPrint('No cards due for review in this deck');
       }
+      
       startSessionTimer();
     }
     notifyListeners();
@@ -162,6 +206,29 @@ class FlashCardStudyVm extends ChangeNotifier {
 
   void openEndDrawer() {
     scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  // Spaced Repetition Getters
+  int get totalCardsInDeck => flashCards.length;
+  int get cardsInStudySession => studyQueue.length;
+  int get newCardsCount => deckStats['newCards'] ?? 0;
+  int get learningCardsCount => deckStats['learningCards'] ?? 0;
+  int get reviewCardsCount => deckStats['reviewCards'] ?? 0;
+  int get dueCardsCount => deckStats['dueCards'] ?? 0;
+  
+  bool get hasCardsToStudy => studyQueue.isNotEmpty;
+  
+  String get sessionSummary {
+    if (studyQueue.isEmpty) {
+      return 'No cards due for review. Great job staying on top of your studies!';
+    }
+    
+    final parts = <String>[];
+    if (newCardsCount > 0) parts.add('$newCardsCount new');
+    if (learningCardsCount > 0) parts.add('$learningCardsCount learning');
+    if (reviewCardsCount > 0) parts.add('$reviewCardsCount review');
+    
+    return 'Study session: ${parts.join(', ')} cards';
   }
 
   @override

@@ -9,7 +9,7 @@ class FlashCardStudyAside extends StatelessWidget {
     return Consumer<FlashCardStudyVm>(
       builder: (_, vm, _) {
         int reviewedCount = vm.reviewedCards.length;
-        int cardCount = vm.flashCards.length;
+        int cardCount = vm.studyQueue.isNotEmpty ? vm.studyQueue.length : vm.flashCards.length;
         return Container(
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -141,6 +141,54 @@ class FlashCardStudyAside extends StatelessWidget {
                                 }).toList(),
                           ),
                         ),
+                        
+                        // Spaced Repetition Statistics
+                        if (vm.deckStats.isNotEmpty) ...[
+                          Divider(color: AppTheme.lightGray),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 8,
+                            children: [
+                              const Text(
+                                'Spaced Repetition Stats',
+                                style: TextStyle(
+                                  color: Color(0xFF374151),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              _progressItem(
+                                title: 'Total Cards:',
+                                value: '${vm.totalCardsInDeck}',
+                              ),
+                              _progressItem(
+                                title: 'New Cards:',
+                                value: '${vm.newCardsCount}',
+                              ),
+                              _progressItem(
+                                title: 'Learning:',
+                                value: '${vm.learningCardsCount}',
+                              ),
+                              _progressItem(
+                                title: 'Due for Review:',
+                                value: '${vm.dueCardsCount}',
+                              ),
+                              _progressItem(
+                                title: 'Session Cards:',
+                                value: '${vm.cardsInStudySession}',
+                              ),
+                              _progressItem(
+                                title: 'New Studied:',
+                                value: '${vm.newCardsStudied}',
+                              ),
+                              _progressItem(
+                                title: 'Reviews Studied:',
+                                value: '${vm.reviewCardsStudied}',
+                              ),
+                            ],
+                          ),
+                        ],
+                        
                         Divider(color: AppTheme.lightGray),
                         // Deck information
                         Column(

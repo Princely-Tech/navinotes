@@ -7,7 +7,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 4; // Increment this number
+  static const int _databaseVersion = 5; // Increment this number
 
   DatabaseHelper._init();
 
@@ -187,6 +187,36 @@ class DatabaseHelper {
       // Add sort_order field to flashcards table
       await db.execute(
         'ALTER TABLE flashcards ADD COLUMN sort_order INTEGER DEFAULT 0;',
+      );
+    }
+
+    if (oldVersion < 5) {
+      // Add spaced repetition fields to flashcards table
+      await db.execute(
+        'ALTER TABLE flashcards ADD COLUMN last_reviewed INTEGER DEFAULT 0;',
+      );
+      await db.execute(
+        'ALTER TABLE flashcards ADD COLUMN next_review INTEGER DEFAULT 0;',
+      );
+      await db.execute(
+        'ALTER TABLE flashcards ADD COLUMN interval_days INTEGER DEFAULT 1;',
+      );
+      await db.execute(
+        'ALTER TABLE flashcards ADD COLUMN ease_factor REAL DEFAULT 2.5;',
+      );
+      await db.execute(
+        'ALTER TABLE flashcards ADD COLUMN review_count INTEGER DEFAULT 0;',
+      );
+      await db.execute(
+        'ALTER TABLE flashcards ADD COLUMN streak INTEGER DEFAULT 0;',
+      );
+      
+      // Initialize next_review for existing cards (set to current time + 1 day)
+      final currentTime = (DateTime.now().millisecondsSinceEpoch / 1000).round();
+      final nextReviewDefault = currentTime + (24 * 60 * 60);
+      await db.execute(
+        'UPDATE flashcards SET next_review = ? WHERE next_review = 0;',
+        [nextReviewDefault],
       );
     }
   }
