@@ -39,6 +39,8 @@ class BoardMindMapVm extends ChangeNotifier {
   _attachingNodeId; // When not null, the next document/deck tapped will attach to this node
   String?
   _connectionOptionsNodeId; // Node showing connection options (without full selection)
+  String?
+  _hoveringOverNodeId; // Node being hovered over during connection mode (for drop-to-connect)
 
   // Canvas transform state
   double scale = 1.0;
@@ -74,6 +76,7 @@ class BoardMindMapVm extends ChangeNotifier {
   String? get draggingNodeId => _draggingNodeId;
   String? get attachingNodeId => _attachingNodeId;
   String? get connectionOptionsNodeId => _connectionOptionsNodeId;
+  String? get hoveringOverNodeId => _hoveringOverNodeId;
   
   /// Get the currently active node ID for styling (either selected or showing connection options)
   String? get activeNodeId => _selectedNodeId ?? _connectionOptionsNodeId;
@@ -768,6 +771,7 @@ class BoardMindMapVm extends ChangeNotifier {
   /// Cancel connecting
   void cancelConnecting() {
     _connectingFromNodeId = null;
+    _hoveringOverNodeId = null;
     notifyListeners();
   }
 
@@ -779,7 +783,16 @@ class BoardMindMapVm extends ChangeNotifier {
       connectNodes(sourceId: _connectingFromNodeId!, targetId: targetNodeId);
     }
     _connectingFromNodeId = null;
+    _hoveringOverNodeId = null;
     notifyListeners();
+  }
+
+  /// Set the node being hovered over during connection mode
+  void setHoveringOverNode(String? nodeId) {
+    if (_hoveringOverNodeId != nodeId) {
+      _hoveringOverNodeId = nodeId;
+      notifyListeners();
+    }
   }
 
   /// Update canvas scale

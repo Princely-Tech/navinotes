@@ -20,6 +20,10 @@ class MindMapNodeWidget extends StatelessWidget {
     final isSelected = vm.selectedNodeId == node.id;
     final isConnectingFrom = vm.connectingFromNodeId == node.id;
     final isAttaching = vm.attachingNodeId == node.id;
+    final isHoveringOver = vm.hoveringOverNodeId == node.id;
+    final isValidDropTarget = vm.connectingFromNodeId != null && 
+                              !isConnectingFrom && 
+                              isHoveringOver;
     // Attachment info moved to preview panel
     final themeValues = vm.boardTheme.values;
 
@@ -123,12 +127,27 @@ class MindMapNodeWidget extends StatelessWidget {
               }
             },
             onPanUpdate: (details) {
-              // If in connection mode, update pointer position
+              // If in connection mode, update pointer position and check if hovering over this node
               if (vm.connectingFromNodeId != null) {
                 // Convert the local position to canvas coordinates
                 final box = context.findRenderObject() as RenderBox;
                 final localPosition = box.globalToLocal(details.globalPosition);
                 vm.updatePointerFromVisual(localPosition);
+                
+                // Check if pointer is over this node (not the connecting source)
+                if (!isConnectingFrom) {
+                  // Check if the local position is within the node bounds
+                  final isInBounds = localPosition.dx >= 0 &&
+                      localPosition.dx <= node.width &&
+                      localPosition.dy >= 0 &&
+                      localPosition.dy <= node.height;
+                  
+                  if (isInBounds) {
+                    vm.setHoveringOverNode(node.id);
+                  } else if (vm.hoveringOverNodeId == node.id) {
+                    vm.setHoveringOverNode(null);
+                  }
+                }
               } else if (vm.draggingNodeId == node.id) {
                 // Handle node dragging with proper coordinate transformation
                 vm.dragNodeByGlobal(node.id, details.globalPosition);
@@ -136,9 +155,14 @@ class MindMapNodeWidget extends StatelessWidget {
             },
 
             onPanEnd: (_) {
-              if (vm.connectingFromNodeId == node.id) {
-                // If we were connecting and didn't connect to another node, cancel
-                vm.cancelConnecting();
+              if (vm.connectingFromNodeId != null) {
+                // If in connection mode and hovering over this node, complete the connection
+                if (!isConnectingFrom && vm.hoveringOverNodeId == node.id) {
+                  vm.finishConnecting(node.id);
+                } else if (isConnectingFrom) {
+                  // If dragging from this node and didn't connect, cancel
+                  vm.cancelConnecting();
+                }
               } else if (vm.draggingNodeId == node.id) {
                 vm.stopDraggingNode();
               }
@@ -149,6 +173,7 @@ class MindMapNodeWidget extends StatelessWidget {
               node: node,
               nodeContent: nodeContent,
               isConnectingFrom: isConnectingFrom,
+              isValidDropTarget: isValidDropTarget,
               elevation: elevation,
               toneColor: toneColor,
               borderRadius: borderRadius,
@@ -389,6 +414,49 @@ class MindMapNodeWidget extends StatelessWidget {
               ),
             ),
 
+          // Drop target indicator
+          if (isValidDropTarget)
+            Positioned(
+              left: 0,
+              right: 0,
+              top: node.height + 4, // Position below the node
+              child: Center(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.green.withOpacity(0.6),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.check_circle, color: Colors.white, size: 16),
+                      const SizedBox(width: 6),
+                      const Text(
+                        'Release to connect',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
           // Action buttons moved to preview panel for cleaner node UI
         ],
       ),
@@ -401,6 +469,7 @@ class MindMapNodeWidget extends StatelessWidget {
     required MindMapNode node,
     required Content? nodeContent,
     required bool isConnectingFrom,
+    required bool isValidDropTarget,
     required double elevation,
     required Color toneColor,
     required BorderRadius borderRadius,
@@ -443,7 +512,8 @@ class MindMapNodeWidget extends StatelessWidget {
         elevation: elevation,
         color: Colors.transparent,
         borderRadius: borderRadius,
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
           padding: EdgeInsets.zero,
           width: node.width,
           height:
@@ -452,13 +522,25 @@ class MindMapNodeWidget extends StatelessWidget {
                   : node.height,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: toneColor,
+            color: isValidDropTarget 
+                ? toneColor.withOpacity(0.9) 
+                : toneColor,
             borderRadius: borderRadius,
             border:
                 isConnectingFrom || showBorder
                     ? Border.all(color: themeValues.connectionColor, width: 2.0)
-                    : null,
-            boxShadow: glowShadow,
+                    : isValidDropTarget
+                        ? Border.all(color: Colors.green, width: 3.0)
+                        : null,
+            boxShadow: isValidDropTarget
+                ? [
+                    BoxShadow(
+                      color: Colors.green.withOpacity(0.6),
+                      blurRadius: 20,
+                      spreadRadius: 4,
+                    ),
+                  ]
+                : glowShadow,
           ),
           child: content,
         ),
@@ -468,11 +550,13 @@ class MindMapNodeWidget extends StatelessWidget {
     // Non-rect shapes: use PhysicalShape to support elevation and colored shadow
     final clipper = _shapeClipper(node.shape);
     final borderPainter =
-        showBorder || isConnectingFrom
+        showBorder || isConnectingFrom || isValidDropTarget
             ? _ShapeBorderPainter(
               clipper: clipper,
-              borderColor: themeValues.connectionColor,
-              strokeWidth: 2,
+              borderColor: isValidDropTarget 
+                  ? Colors.green 
+                  : themeValues.connectionColor,
+              strokeWidth: isValidDropTarget ? 3 : 2,
             )
             : null;
 
@@ -480,11 +564,15 @@ class MindMapNodeWidget extends StatelessWidget {
       children: [
         PhysicalShape(
           elevation: elevation,
-          color: toneColor,
+          color: isValidDropTarget 
+              ? toneColor.withOpacity(0.9) 
+              : toneColor,
           shadowColor:
-              node.borderStyle == MindMapBorderStyle.glow
-                  ? toneColor.withOpacity(0.8)
-                  : Colors.black,
+              isValidDropTarget
+                  ? Colors.green.withOpacity(0.8)
+                  : node.borderStyle == MindMapBorderStyle.glow
+                      ? toneColor.withOpacity(0.8)
+                      : Colors.black,
           clipper: clipper,
           clipBehavior: Clip.antiAlias,
           child: SizedBox(
