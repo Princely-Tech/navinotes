@@ -160,25 +160,6 @@ class FlashCardAiCreationLeft extends StatelessWidget {
     );
   }
 
-  /* ──────────  SELECT NOTES  ────────── */
-  Widget _buildNotebookSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Notebook',
-          style: TextStyle(
-            color: Color(0xFF4B5563),
-            fontSize: 14,
-            fontFamily: 'Inter',
-          ),
-        ),
-        const SizedBox(height: 4),
-        _dropdownField('Neuroscience Basics'),
-      ],
-    );
-  }
-
   Widget _buildNoteList() {
     return Consumer<FlashCardCreationVm>(
       builder: (_, vm, _) {

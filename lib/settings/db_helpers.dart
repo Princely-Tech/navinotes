@@ -125,24 +125,6 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
-    CREATE TABLE notebook_pages (
-      id TEXT PRIMARY KEY,
-      notebook_id TEXT,
-      page_number INTEGER,
-      template_data TEXT,
-      handwriting_data TEXT,
-      text_content TEXT,
-      drawing_data TEXT,
-      text_boxes TEXT,
-      voice_notes TEXT,
-      annotations TEXT,
-      has_content INTEGER DEFAULT 0,
-      created_at INTEGER,
-      updated_at INTEGER,
-    )
-    ''');
-
-    await db.execute('''
     CREATE TABLE paper_templates (
       id TEXT PRIMARY KEY,
       name TEXT,
@@ -575,12 +557,6 @@ class DatabaseHelper {
       return Content.fromMap(maps.first);
     }
     return null;
-  }
-
-  Future<bool> deleteNotebookPage(String pageId) async {
-    final db = await instance.database;
-    return 0 !=
-        await db.delete('notebook_pages', where: 'id = ?', whereArgs: [pageId]);
   }
 
   Future close() async {
