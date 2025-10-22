@@ -14,12 +14,14 @@ class LinedPaperPainter extends CustomPainter {
   final Paint linePaint =
       Paint()
         ..color = AppTheme.lightGray
-        ..strokeWidth = 1;
+        ..strokeWidth = 0.5;
 
   @override
   void paint(Canvas canvas, Size size) {
-    const double lineSpacing = 40; // Adjust line spacing to your font size
-    for (double y = lineSpacing; y < size.height; y += lineSpacing) {
+    const double lineSpacing = 16; // Adjust line spacing to your font size
+    const double topPadding =
+        28; // Padding before first line to align with text baseline
+    for (double y = topPadding; y < size.height; y += lineSpacing) {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), linePaint);
     }
   }

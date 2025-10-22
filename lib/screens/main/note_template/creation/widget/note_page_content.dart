@@ -124,7 +124,7 @@ class _NotePageContentState extends State<NotePageContent> {
       return [
         _buildStaticTextContent(),
         _buildStaticDrawingContent(),
-        _buildStaticTextBoxContent(validWidth, validHeight)
+        _buildStaticTextBoxContent(validWidth, validHeight),
       ];
     }
 
@@ -144,7 +144,7 @@ class _NotePageContentState extends State<NotePageContent> {
       return [
         _buildStaticTextContent(),
         _buildStaticDrawingContent(),
-        _buildStaticTextBoxContent(validWidth, validHeight)
+        _buildStaticTextBoxContent(validWidth, validHeight),
       ];
     }
 
@@ -173,7 +173,12 @@ class _NotePageContentState extends State<NotePageContent> {
           ),
           // Text box overlay (read-only in text mode) - middle layer
           Positioned.fill(
-            child: _buildTextBoxOverlay(vm, validWidth, validHeight, readOnly: true),
+            child: _buildTextBoxOverlay(
+              vm,
+              validWidth,
+              validHeight,
+              readOnly: true,
+            ),
           ),
           // Text editor (interactive) - TOP layer for easy tapping
           Positioned.fill(
@@ -217,7 +222,12 @@ class _NotePageContentState extends State<NotePageContent> {
           ),
           // Text box overlay (interactive)
           Positioned.fill(
-            child: _buildTextBoxOverlay(vm, validWidth, validHeight, readOnly: false),
+            child: _buildTextBoxOverlay(
+              vm,
+              validWidth,
+              validHeight,
+              readOnly: false,
+            ),
           ),
         ];
       case NoteMode.read:
@@ -230,13 +240,18 @@ class _NotePageContentState extends State<NotePageContent> {
             widget.inputHeight.isFinite && widget.inputHeight > 10
                 ? widget.inputHeight
                 : 842.0;
-        
+
         return [
-          _buildStaticTextContent(), 
+          _buildStaticTextContent(),
           _buildStaticDrawingContent(),
           // Text box overlay (read-only in read mode)
           Positioned.fill(
-            child: _buildTextBoxOverlay(vm, validWidth, validHeight, readOnly: true),
+            child: _buildTextBoxOverlay(
+              vm,
+              validWidth,
+              validHeight,
+              readOnly: true,
+            ),
           ),
         ];
       case NoteMode.voice:
@@ -387,7 +402,6 @@ class _NotePageContentState extends State<NotePageContent> {
     }
   }
 
-
   Widget _buildTemplateBackground() {
     // Use the current page from ViewModel to get the latest template
     // Since we already have vm passed as parameter, use it directly
@@ -440,7 +454,12 @@ class _NotePageContentState extends State<NotePageContent> {
     }
   }
 
-  Widget _buildTextBoxOverlay(NoteCreationVm vm, double width, double height, {bool readOnly = false}) {
+  Widget _buildTextBoxOverlay(
+    NoteCreationVm vm,
+    double width,
+    double height, {
+    bool readOnly = false,
+  }) {
     // For non-current pages or thumbnails, show static text boxes
     if (!_isCurrentPage(vm) || widget.isThumbnail) {
       return _buildStaticTextBoxContent(width, height);
@@ -451,60 +470,89 @@ class _NotePageContentState extends State<NotePageContent> {
         final textBoxManager = vm.textBoxManager;
 
         return GestureDetector(
-          onTapDown: readOnly ? null : (details) {
-            // Handle tap to add text box or clear selection (only in interactive mode)
-            final position = details.localPosition;
-            final tappedTextBox = textBoxManager.getTextBoxAtPosition(position);
-            
-            debugPrint('TextBoxOverlay: Tap detected at $position');
-            debugPrint('TextBoxOverlay: Tapped text box: ${tappedTextBox?.id}');
-            debugPrint('TextBoxOverlay: Current text boxes count: ${textBoxManager.textBoxes.length}');
+          onTapDown:
+              readOnly
+                  ? null
+                  : (details) {
+                    // Handle tap to add text box or clear selection (only in interactive mode)
+                    final position = details.localPosition;
+                    final tappedTextBox = textBoxManager.getTextBoxAtPosition(
+                      position,
+                    );
 
-            if (tappedTextBox == null) {
-              // Check if we're in text box mode
-              final selectedTool =
-                  vm.currentMode == NoteMode.drawing
-                      ? _getSelectedTextTool(vm)
-                      : null;
-              debugPrint(
-                'Tap detected at $position, textBoxMode: ${vm.isTextBoxMode}, selectedTool: $selectedTool',
-              );
-              if (selectedTool != null) {
-                // Add new text box
-                debugPrint('Adding text box at $position');
-                vm.addTextBox(position);
-              } else {
-                // Clear selection
-                debugPrint('Clearing text box selection');
-                vm.clearTextBoxSelection();
-              }
-            } else {
-              debugPrint('Tapped on existing text box: ${tappedTextBox.id}');
-            }
-          },
+                    debugPrint('TextBoxOverlay: Tap detected at $position');
+                    debugPrint(
+                      'TextBoxOverlay: Tapped text box: ${tappedTextBox?.id}',
+                    );
+                    debugPrint(
+                      'TextBoxOverlay: Current text boxes count: ${textBoxManager.textBoxes.length}',
+                    );
+
+                    if (tappedTextBox == null) {
+                      // Check if we're in text box mode
+                      final selectedTool =
+                          vm.currentMode == NoteMode.drawing
+                              ? _getSelectedTextTool(vm)
+                              : null;
+                      debugPrint(
+                        'Tap detected at $position, textBoxMode: ${vm.isTextBoxMode}, selectedTool: $selectedTool',
+                      );
+                      if (selectedTool != null) {
+                        // Add new text box
+                        debugPrint('Adding text box at $position');
+                        vm.addTextBox(position);
+                      } else {
+                        // Clear selection
+                        debugPrint('Clearing text box selection');
+                        vm.clearTextBoxSelection();
+                      }
+                    } else {
+                      debugPrint(
+                        'Tapped on existing text box: ${tappedTextBox.id}',
+                      );
+                    }
+                  },
           child: TextBoxOverlay(
             textBoxes: textBoxManager.textBoxes,
-            selectedTextBoxId: readOnly ? null : textBoxManager.selectedTextBoxId,
+            selectedTextBoxId:
+                readOnly ? null : textBoxManager.selectedTextBoxId,
             editingTextBoxId: readOnly ? null : textBoxManager.editingTextBoxId,
             canvasSize: Size(width, height),
-            onTextBoxUpdate: readOnly ? (_) {} : (textBox) {
-              textBoxManager.updateTextBox(textBox);
-            },
-            onTextBoxDelete: readOnly ? (_) {} : (textBoxId) {
-              vm.deleteTextBox(textBoxId);
-            },
-            onTextBoxSelect: readOnly ? (_) {} : (textBoxId) {
-              vm.selectTextBox(textBoxId);
-            },
-            onStartEdit: readOnly ? null : () {
-              // Start editing the selected text box
-              if (textBoxManager.selectedTextBoxId != null) {
-                vm.startEditingTextBox(textBoxManager.selectedTextBoxId!);
-              }
-            },
-            onEndEdit: readOnly ? null : () {
-              vm.stopEditingTextBox();
-            },
+            onTextBoxUpdate:
+                readOnly
+                    ? (_) {}
+                    : (textBox) {
+                      textBoxManager.updateTextBox(textBox);
+                    },
+            onTextBoxDelete:
+                readOnly
+                    ? (_) {}
+                    : (textBoxId) {
+                      vm.deleteTextBox(textBoxId);
+                    },
+            onTextBoxSelect:
+                readOnly
+                    ? (_) {}
+                    : (textBoxId) {
+                      vm.selectTextBox(textBoxId);
+                    },
+            onStartEdit:
+                readOnly
+                    ? null
+                    : () {
+                      // Start editing the selected text box
+                      if (textBoxManager.selectedTextBoxId != null) {
+                        vm.startEditingTextBox(
+                          textBoxManager.selectedTextBoxId!,
+                        );
+                      }
+                    },
+            onEndEdit:
+                readOnly
+                    ? null
+                    : () {
+                      vm.stopEditingTextBox();
+                    },
           ),
         );
       },
@@ -525,55 +573,59 @@ class _NotePageContentState extends State<NotePageContent> {
       final List<dynamic> textBoxList = jsonDecode(widget.page.textBoxData!);
 
       return Stack(
-        children: textBoxList.map<Widget>((json) {
-          try {
-            final textBox = TextBox.fromJson(json as Map<String, dynamic>);
+        children:
+            textBoxList.map<Widget>((json) {
+              try {
+                final textBox = TextBox.fromJson(json as Map<String, dynamic>);
 
-            return Positioned(
-              left: textBox.position.dx,
-              top: textBox.position.dy,
-              child: Container(
-                width: textBox.size.width,
-                height: textBox.size.height,
-                padding: textBox.padding,
-                decoration: BoxDecoration(
-                  color: textBox.backgroundColor.opacity > 0
-                      ? textBox.backgroundColor
-                      : Colors.white.withOpacity(0.9),
-                  border: textBox.hasBorder
-                      ? Border.all(
-                          color: textBox.borderColor,
-                          width: textBox.borderWidth,
-                        )
-                      : Border.all(
-                          color: Colors.grey.withOpacity(0.3),
-                          width: 1.0,
+                return Positioned(
+                  left: textBox.position.dx,
+                  top: textBox.position.dy,
+                  child: Container(
+                    width: textBox.size.width,
+                    height: textBox.size.height,
+                    padding: textBox.padding,
+                    decoration: BoxDecoration(
+                      color:
+                          textBox.backgroundColor.opacity > 0
+                              ? textBox.backgroundColor
+                              : Colors.white.withOpacity(0.9),
+                      border:
+                          textBox.hasBorder
+                              ? Border.all(
+                                color: textBox.borderColor,
+                                width: textBox.borderWidth,
+                              )
+                              : Border.all(
+                                color: Colors.grey.withOpacity(0.3),
+                                width: 1.0,
+                              ),
+                      borderRadius: textBox.borderRadius,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
                         ),
-                  borderRadius: textBox.borderRadius,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+                      ],
                     ),
-                  ],
-                ),
-                child: Text(
-                  textBox.text.isEmpty ? 'Text' : textBox.text,
-                  style: textBox.text.isEmpty
-                      ? textBox.textStyle.copyWith(color: Colors.grey)
-                      : textBox.textStyle,
-                  textAlign: textBox.textAlign,
-                  maxLines: null,
-                  overflow: TextOverflow.visible,
-                ),
-              ),
-            );
-          } catch (e) {
-            debugPrint('Error rendering static text box: $e');
-            return const SizedBox.shrink();
-          }
-        }).toList(),
+                    child: Text(
+                      textBox.text.isEmpty ? 'Text' : textBox.text,
+                      style:
+                          textBox.text.isEmpty
+                              ? textBox.textStyle.copyWith(color: Colors.grey)
+                              : textBox.textStyle,
+                      textAlign: textBox.textAlign,
+                      maxLines: null,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
+                );
+              } catch (e) {
+                debugPrint('Error rendering static text box: $e');
+                return const SizedBox.shrink();
+              }
+            }).toList(),
       );
     } catch (e) {
       debugPrint('Error loading static text box content: $e');
