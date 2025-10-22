@@ -71,7 +71,13 @@ class NoteDrawingWrapperState extends State<NoteDrawingWrapper> {
 
             // Toolbar
             if (vm.currentMode == NoteMode.text) buildEditorToolBar(vm),
-            if (vm.currentMode == NoteMode.drawing) buildDrawingToolbar(vm: vm),
+            if (vm.currentMode == NoteMode.drawing)
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: buildDrawingToolbar(vm: vm),
+              ),
           ],
         ),
       ),

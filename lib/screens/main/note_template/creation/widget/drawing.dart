@@ -52,12 +52,7 @@ Widget buildDrawingBoard(
 }
 
 Widget buildDrawingToolbar({required NoteCreationVm vm}) {
-  return Positioned(
-    top: 0,
-    left: 0,
-    right: 0,
-    child: ProfessionalDrawingToolbar(vm: vm),
-  );
+  return ProfessionalDrawingToolbar(vm: vm);
 }
 
 class DrawingBoardWithCursor extends StatefulWidget {
@@ -172,8 +167,9 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
                 valueListenable: widget.controller.drawConfig,
                 builder: (_, drawConfig, __) {
                   // Check if eraser tool is selected
-                  final isEraserSelected = widget.vm.selectedDrawingTool == DrawingToolType.eraser;
-                  
+                  final isEraserSelected =
+                      widget.vm.selectedDrawingTool == DrawingToolType.eraser;
+
                   return Positioned(
                     left: _cursorPos!.dx - drawConfig.strokeWidth / 2,
                     top: _cursorPos!.dy - drawConfig.strokeWidth / 2,
@@ -184,18 +180,30 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: isEraserSelected ? Colors.red.withOpacity(0.6) : Colors.black26,
+                            color:
+                                isEraserSelected
+                                    ? Colors.red.withOpacity(0.6)
+                                    : Colors.black26,
                             width: isEraserSelected ? 2 : 1,
                           ),
-                          color: isEraserSelected ? Colors.red.withOpacity(0.1) : null,
+                          color:
+                              isEraserSelected
+                                  ? Colors.red.withOpacity(0.1)
+                                  : null,
                         ),
-                        child: isEraserSelected ? Center(
-                          child: Icon(
-                            Icons.cleaning_services,
-                            size: (drawConfig.strokeWidth * 0.4).clamp(8.0, 16.0),
-                            color: Colors.red.withOpacity(0.8),
-                          ),
-                        ) : null,
+                        child:
+                            isEraserSelected
+                                ? Center(
+                                  child: Icon(
+                                    Icons.cleaning_services,
+                                    size: (drawConfig.strokeWidth * 0.4).clamp(
+                                      8.0,
+                                      16.0,
+                                    ),
+                                    color: Colors.red.withOpacity(0.8),
+                                  ),
+                                )
+                                : null,
                       ),
                     ),
                   );

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/models/note_page.dart';
@@ -1027,7 +1028,9 @@ class NoteCreationVm extends ChangeNotifier {
             }
           }
         } catch (err) {
-          debugPrint('Error loading drawing: $err');
+          if (kDebugMode) {
+            debugPrint('Error loading drawing: ${err.toString()}');
+          }
         }
 
         // Load pages data from metadata
@@ -1050,7 +1053,9 @@ class NoteCreationVm extends ChangeNotifier {
               );
             }
           } catch (e) {
-            debugPrint('Error loading pages data: $e');
+            if (kDebugMode) {
+              debugPrint('Error loading pages data: ${e.toString()}');
+            }
             // Fallback to creating pages from legacy content
             _createPagesFromLegacyContent();
           }
@@ -1070,7 +1075,9 @@ class NoteCreationVm extends ChangeNotifier {
               String txt = content!.content!;
               richEditorController.document = Document()..insert(0, txt);
             } catch (e2) {
-              debugPrint('Error loading content: $e2');
+              if (kDebugMode) {
+                debugPrint('Error loading content: ${e2.toString()}');
+              }
               if (context.mounted) {
                 MessageDisplayService.showErrorMessage(
                   context,
@@ -1079,14 +1086,18 @@ class NoteCreationVm extends ChangeNotifier {
               }
             }
 
-            debugPrint('Error loading content: $e1');
+            if (kDebugMode) {
+              debugPrint('Error loading content: ${e1.toString()}');
+            }
           }
         }
 
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('Error fetching content: $e');
+      if (kDebugMode) {
+        debugPrint('Error fetching content: ${e.toString()}');
+      }
       if (context.mounted) {
         MessageDisplayService.showErrorMessage(
           context,

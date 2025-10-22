@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -77,7 +78,9 @@ class PageController extends ChangeNotifier {
           // Move cursor to end of existing text
           _moveCursorToEnd();
         } catch (e) {
-          debugPrint('Error loading page text content: $e');
+          if (kDebugMode) {
+            debugPrint('Error loading page text content: ${e.toString()}');
+          }
         }
       } else {
         // For empty pages, position cursor at the beginning (ready for typing)
@@ -99,11 +102,15 @@ class PageController extends ChangeNotifier {
           final List<dynamic> textBoxData = jsonDecode(_page.textBoxData!);
           _textBoxManager.loadFromJson(textBoxData);
         } catch (e) {
-          debugPrint('Error loading text box content: $e');
+          if (kDebugMode) {
+            debugPrint('Error loading text box content: ${e.toString()}');
+          }
         }
       }
     } catch (e) {
-      debugPrint('Error loading page content: $e');
+      if (kDebugMode) {
+        debugPrint('Error loading page content: ${e.toString()}');
+      }
     }
   }
 
@@ -126,7 +133,9 @@ class PageController extends ChangeNotifier {
 
       debugPrint('Loaded ${data.length} drawing items for page ${_page.id}');
     } catch (e) {
-      debugPrint('Error loading drawing content: $e');
+      if (kDebugMode) {
+        debugPrint('Error loading drawing content: ${e.toString()}');
+      }
     }
   }
 
@@ -151,7 +160,9 @@ class PageController extends ChangeNotifier {
           return null;
       }
     } catch (e) {
-      debugPrint('Error creating paint content from JSON: $e');
+      if (kDebugMode) {
+        debugPrint('Error creating paint content from JSON: ${e.toString()}');
+      }
       return null;
     }
   }
@@ -199,7 +210,9 @@ class PageController extends ChangeNotifier {
         'Auto-saved page ${_page.id}: text: ${textContentJson}, drawing: ${jsonList.length} items, text boxes: ${textBoxList.length}',
       );
     } catch (e) {
-      debugPrint('Error auto-saving page content: $e');
+      if (kDebugMode) {
+        debugPrint('Error auto-saving page content: ${e.toString()}');
+      }
     }
   }
 
@@ -292,7 +305,9 @@ class PageController extends ChangeNotifier {
         debugPrint('Moved cursor to end of text (position: ${length - 1})');
       }
     } catch (e) {
-      debugPrint('Error moving cursor to end: $e');
+      if (kDebugMode) {
+        debugPrint('Error moving cursor to end: ${e.toString()}');
+      }
     }
   }
 

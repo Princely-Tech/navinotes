@@ -62,7 +62,9 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
       _cursorAnimationController.reset();
       _cursorAnimationController.dispose();
     } catch (e) {
-      debugPrint('Error disposing cursor animation controller: $e');
+      if (kDebugMode) {
+        debugPrint('Error disposing cursor animation controller: ${e.toString()}');
+      }
     }
     super.dispose();
   }
@@ -119,12 +121,6 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
               Builder(
                 builder: (context) {
                   try {
-                    return Container(
-                      width: width,
-                      height: height,
-                      color: Colors.grey.withOpacity(0.06),
-                      child: const Center(child: Text('Drawing unavailable')),
-                    );
                     return DrawingBoard(
                       controller: widget.controller.drawingController,
                       background: Container(
