@@ -9,6 +9,7 @@ import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:navinotes/screens/main/note_template/read/widget/lined_rule.dart';
 import 'package:navinotes/screens/main/note_template/read/widget/squared_rule.dart';
 import 'package:navinotes/screens/main/note_template/read/widget/dotted.dart';
+import 'package:navinotes/screens/main/note_template/read/widget/cornell_rule.dart';
 import '../../creation/models/text_box.dart';
 
 class NotePageContent extends StatefulWidget {
@@ -433,14 +434,12 @@ class _NotePageContentState extends State<NotePageContent> {
           ),
         );
       case NoteTemplateType.cornell:
-        // Cornell template would need a special background
+        // Cornell note-taking format with cue column, notes area, and summary section
         return ClipRect(
           child: SizedBox(
             width: widget.inputWidth,
             height: widget.inputHeight,
-            child: Container(
-              color: const Color(0xFFD1CDC4), // Cornell background color
-            ),
+            child: const CornellNoteBackground(),
           ),
         );
       case NoteTemplateType.blank:
