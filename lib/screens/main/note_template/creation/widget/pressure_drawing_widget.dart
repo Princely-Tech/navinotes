@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import '../controllers/pressure_drawing_controller.dart';
 import '../models/stylus_settings.dart';
@@ -118,6 +119,12 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
               Builder(
                 builder: (context) {
                   try {
+                    return Container(
+                      width: width,
+                      height: height,
+                      color: Colors.grey.withOpacity(0.06),
+                      child: const Center(child: Text('Drawing unavailable')),
+                    );
                     return DrawingBoard(
                       controller: widget.controller.drawingController,
                       background: Container(
@@ -129,8 +136,13 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
                       showDefaultTools: false,
                     );
                   } catch (e, st) {
-                    debugPrint('Error creating DrawingBoard: $e');
-                    debugPrint(st.toString());
+                    // Use e.toString() explicitly for release mode compatibility
+                    if (kDebugMode) {
+                      debugPrint(
+                        'Error creating DrawingBoard: ${e.toString()}',
+                      );
+                      debugPrint('Stack trace: ${st.toString()}');
+                    }
                     return Container(
                       width: width,
                       height: height,
@@ -370,7 +382,11 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
       }
     } catch (e) {
       // Animation controller was disposed, ignore the error
-      debugPrint('Animation controller disposed during cursor update: $e');
+      if (kDebugMode) {
+        debugPrint(
+          'Animation controller disposed during cursor update: ${e.toString()}',
+        );
+      }
     }
   }
 

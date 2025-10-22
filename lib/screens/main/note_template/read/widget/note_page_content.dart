@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:navinotes/models/note_page.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/main/note_template/read/vm.dart';
@@ -279,7 +280,9 @@ class _NotePageContentState extends State<NotePageContent> {
         ),
       );
     } catch (e) {
-      debugPrint('Error loading page text content: $e');
+      if (kDebugMode) {
+        debugPrint('Error loading page text content: ${e.toString()}');
+      }
       return const SizedBox.shrink();
     }
   }
@@ -377,7 +380,9 @@ class _NotePageContentState extends State<NotePageContent> {
                       showDefaultTools: false,
                     );
                   } catch (e) {
-                    debugPrint('Error creating static DrawingBoard: $e');
+                    if (kDebugMode) {
+                      debugPrint('Error creating static DrawingBoard: ${e.toString()}');
+                    }
                     return Container(
                       width: validWidth,
                       height: validHeight,
@@ -394,7 +399,9 @@ class _NotePageContentState extends State<NotePageContent> {
         ),
       );
     } catch (e) {
-      debugPrint('Error loading page drawing content: $e');
+      if (kDebugMode) {
+        debugPrint('Error loading page drawing content: ${e.toString()}');
+      }
       return const SizedBox.shrink();
     }
   }
@@ -516,13 +523,17 @@ class _NotePageContentState extends State<NotePageContent> {
                   ),
                 );
               } catch (e) {
-                debugPrint('Error rendering static text box: $e');
+                if (kDebugMode) {
+                  debugPrint('Error rendering static text box: ${e.toString()}');
+                }
                 return const SizedBox.shrink();
               }
             }).toList(),
       );
     } catch (e) {
-      debugPrint('Error loading static text box content: $e');
+      if (kDebugMode) {
+        debugPrint('Error loading static text box content: ${e.toString()}');
+      }
       return const SizedBox.shrink();
     }
   }

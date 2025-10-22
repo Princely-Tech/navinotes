@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:navinotes/screens/main/note_template/creation/vm.dart';
 import 'professional_drawing_toolbar.dart';
@@ -151,8 +152,12 @@ class _DrawingBoardWithCursorState extends State<DrawingBoardWithCursor> {
                     showDefaultActions: false,
                     showDefaultTools: false,
                   );
-                } catch (e) {
-                  debugPrint('Error creating DrawingBoard: $e');
+                } catch (e, stackTrace) {
+                  // Use e.toString() explicitly for release mode compatibility
+                  if (kDebugMode) {
+                    debugPrint('Error creating DrawingBoard: ${e.toString()}');
+                    debugPrint('Stack trace: ${stackTrace.toString()}');
+                  }
                   return Container(
                     width: validWidth,
                     height: validHeight,
