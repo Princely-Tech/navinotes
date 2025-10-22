@@ -68,7 +68,7 @@ Widget title() {
               mobile: true,
               largeDesktop: false,
               child: Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: const EdgeInsets.only(right: 4),
                 child: MenuButton(onPressed: vm.openDrawer),
               ),
             ),
@@ -112,7 +112,7 @@ Widget title() {
                                 onTap: () => _showTitleEditDialog(vm),
                                 child: Icon(
                                   Icons.edit,
-                                  size: 16,
+                                  size: 14,
                                   color: const Color(0xFF6B7280),
                                 ),
                               ),

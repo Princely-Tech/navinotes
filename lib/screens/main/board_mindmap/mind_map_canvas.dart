@@ -74,9 +74,12 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                             : null,
                     child: Listener(
                       // Use Listener for connection mode pointer tracking without interfering with InteractiveViewer
-                      onPointerMove: vm.connectingFromNodeId != null ? (event) {
-                        vm.updatePointerFromVisual(event.localPosition);
-                      } : null,
+                      onPointerMove:
+                          vm.connectingFromNodeId != null
+                              ? (event) {
+                                vm.updatePointerFromVisual(event.localPosition);
+                              }
+                              : null,
                       child: InteractiveViewer(
                         transformationController: _transformationController,
                         boundaryMargin: EdgeInsets.all(50),
@@ -90,48 +93,48 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                           // Update VM scale when user zooms
                           vm.setScale(details.scale);
                         },
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTapDown: (details) {
-                          if (vm.connectingFromNodeId != null) {
-                            vm.cancelConnecting();
-                            vm.updatePointerFromVisual(details.localPosition);
-                          } else {
-                            final hit = vm.trySelectEdgeAtVisual(
-                              details.localPosition,
-                            );
-                            if (!hit) {
-                              vm.selectEdge(null);
-                              vm.selectNode(null);
-                              vm.clearConnectionOptions(); // Clear connection options when clicking empty space
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTapUp: (details) {
+                            if (vm.connectingFromNodeId != null) {
+                              vm.cancelConnecting();
+                              vm.updatePointerFromVisual(details.localPosition);
+                            } else {
+                              final hit = vm.trySelectEdgeAtVisual(
+                                details.localPosition,
+                              );
+                              if (!hit) {
+                                vm.selectEdge(null);
+                                vm.selectNode(null);
+                                vm.clearConnectionOptions(); // Clear connection options when clicking empty space
+                              }
                             }
-                          }
-                        },
-                        // Pan gestures now handled by Listener widget above to avoid InteractiveViewer conflicts
-                        child: Container(
-                          width: BoardMindMapVm.canvasWidth,
-                          height: BoardMindMapVm.canvasHeight,
-                          color: AppTheme.transparent,
-                          child: Stack(
-                            children: [
-                              // edges painter (below nodes)
-                              Positioned.fill(
-                                child: CustomPaint(painter: EdgePainter(vm)),
-                              ),
-
-                              // nodes
-                              for (final node in vm.mindMap.nodes)
-                                Positioned(
-                                  left: node.position.dx,
-                                  top: node.position.dy,
-                                  width: node.width,
-                                  height: node.height,
-                                  child: MindMapNodeWidget(node: node),
+                          },
+                          // Pan gestures now handled by Listener widget above to avoid InteractiveViewer conflicts
+                          child: Container(
+                            width: BoardMindMapVm.canvasWidth,
+                            height: BoardMindMapVm.canvasHeight,
+                            color: AppTheme.transparent,
+                            child: Stack(
+                              children: [
+                                // edges painter (below nodes)
+                                Positioned.fill(
+                                  child: CustomPaint(painter: EdgePainter(vm)),
                                 ),
-                            ],
+
+                                // nodes
+                                for (final node in vm.mindMap.nodes)
+                                  Positioned(
+                                    left: node.position.dx,
+                                    top: node.position.dy,
+                                    width: node.width,
+                                    height: node.height,
+                                    child: MindMapNodeWidget(node: node),
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                       ),
                     ),
                   ),

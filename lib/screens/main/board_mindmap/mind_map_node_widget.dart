@@ -176,7 +176,7 @@ class MindMapNodeWidget extends StatelessWidget {
                     // Add haptic feedback for better mobile experience
                     HapticFeedback.lightImpact();
                     // Start connection mode from this node
-                    vm.startConnectingFrom(node.id);
+                    vm.startConnecting(node.id);
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),

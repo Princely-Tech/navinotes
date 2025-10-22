@@ -151,18 +151,19 @@ class NoteCreationMain extends StatelessWidget {
               _buildModeButton(
                 context,
                 icon: Icons.settings,
+
                 label: 'Settings',
                 isActive: false,
                 onTap: () => _showPageSettings(context, vm),
               ),
-              // Add Page Button
-              _buildModeButton(
-                context,
-                icon: Icons.add,
-                label: 'Add Page',
-                isActive: false,
-                onTap: () => vm.addNewPage(),
-              ),
+              // // Add Page Button
+              // _buildModeButton(
+              //   context,
+              //   icon: Icons.add,
+              //   label: 'Add Page',
+              //   isActive: false,
+              //   onTap: () => vm.addNewPage(),
+              // ),
             ],
           ),
         );
@@ -183,26 +184,29 @@ class NoteCreationMain extends StatelessWidget {
         return InkWell(
           onTap: onTap,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color:
                   isActive
                       ? Theme.of(context).primaryColor.withOpacity(0.1)
                       : null,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               spacing: 4,
               children: [
                 Icon(
                   icon,
+                  size: 20,
                   color:
                       isActive ? Theme.of(context).primaryColor : Colors.grey,
                 ),
                 if (isActive || isMobile)
                   Text(
                     label,
+
                     style: TextStyle(
+                      fontSize: 12.0,
                       color:
                           isActive
                               ? Theme.of(context).primaryColor
@@ -224,7 +228,7 @@ class NoteCreationMain extends StatelessWidget {
       builder: (_, layoutVm, _) {
         bool isMobile = layoutVm.deviceType == DeviceType.mobile;
         bool isActive = vm.currentMode == NoteMode.voice;
-        
+
         return InkWell(
           onTap: () => vm.setMode(NoteMode.voice),
           child: Container(
@@ -280,17 +284,23 @@ class NoteCreationMain extends StatelessWidget {
           onTap: vm.openAiSection,
           child: SVGImagePlaceHolder(
             imagePath: Images.aiIcon,
-            size: 35,
+            size: 25,
             color: AppTheme.stormGray,
           ),
         ),
-        AppButton(
-          onTap: () {
-            vm.save();
-          },
-          text: 'Save',
-          mainAxisSize: MainAxisSize.min,
+
+        AppButton.text(
+          onTap: vm.save,
+          child: Icon(Icons.save, size: 25, color: AppTheme.stormGray),
         ),
+
+        // AppButton(
+        //   onTap: () {
+        //     vm.save();
+        //   },
+        //   text: 'Save',
+        //   mainAxisSize: MainAxisSize.min,
+        // ),
       ],
     );
   }
