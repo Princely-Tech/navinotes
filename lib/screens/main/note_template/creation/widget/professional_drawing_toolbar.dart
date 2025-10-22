@@ -413,7 +413,6 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
             color: controller.canUndo() ? Colors.grey[700] : Colors.grey[400],
           ),
           onPressed: controller.canUndo() ? () => controller.undo() : null,
-          tooltip: 'Undo',
         ),
         IconButton(
           icon: Icon(
@@ -421,7 +420,6 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
             color: controller.canRedo() ? Colors.grey[700] : Colors.grey[400],
           ),
           onPressed: controller.canRedo() ? () => controller.redo() : null,
-          tooltip: 'Redo',
         ),
       ],
     );

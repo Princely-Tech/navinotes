@@ -117,16 +117,33 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
           height: height,
           child: Stack(
             children: [
-              // Main drawing board - receives all drawing events
-              DrawingBoard(
-                controller: widget.controller.drawingController,
-                background: Container(
-                  width: width,
-                  height: height,
-                  color: Colors.transparent,
-                ),
-                showDefaultActions: false,
-                showDefaultTools: false,
+              // Main drawing board
+              Builder(
+                builder: (context) {
+                  try {
+                    return DrawingBoard(
+                      controller: widget.controller.drawingController,
+                      background: Container(
+                        width: width,
+                        height: height,
+                        color: Colors.transparent,
+                      ),
+                      showDefaultActions: false,
+                      showDefaultTools: false,
+                    );
+                  } catch (e, st) {
+                    debugPrint('Error creating DrawingBoard: $e');
+                    debugPrint(st.toString());
+                    return Container(
+                      width: width,
+                      height: height,
+                      color: Colors.grey.withOpacity(0.06),
+                      child: const Center(
+                        child: Text('Drawing unavailable'),
+                      ),
+                    );
+                  }
+                },
               ),
               // Transparent overlay for pressure/stylus processing
               Positioned.fill(
