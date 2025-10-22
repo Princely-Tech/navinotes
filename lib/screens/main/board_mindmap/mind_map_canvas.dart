@@ -87,7 +87,7 @@ class _MindMapCanvasState extends State<MindMapCanvas> {
                         maxScale: 4.0,
                         constrained: false,
                         scaleEnabled: true,
-                        panEnabled: true,
+                        panEnabled: vm.connectingFromNodeId == null, // Disable panning during connection mode
                         clipBehavior: Clip.none,
                         onInteractionUpdate: (details) {
                           // Update VM scale when user zooms

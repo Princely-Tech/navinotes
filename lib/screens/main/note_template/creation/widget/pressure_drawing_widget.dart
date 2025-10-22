@@ -30,11 +30,11 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     with TickerProviderStateMixin {
   late AnimationController _cursorAnimationController;
   late Animation<double> _cursorAnimation;
-  
+
   // Gesture tracking
   final Map<int, Offset> _activePointers = <int, Offset>{};
   bool _isDrawing = false;
-  
+
   // Hover state
   bool _isHovering = false;
 
@@ -45,13 +45,12 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _cursorAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _cursorAnimationController,
-      curve: Curves.easeInOut,
-    ));
+    _cursorAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _cursorAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
   @override
@@ -70,19 +69,17 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
   @override
   Widget build(BuildContext context) {
     // Validate dimensions
-    final validWidth = widget.width.isFinite && widget.width > 10 
-        ? widget.width : 595.0;
-    final validHeight = widget.height.isFinite && widget.height > 10 
-        ? widget.height : 842.0;
+    final validWidth =
+        widget.width.isFinite && widget.width > 10 ? widget.width : 595.0;
+    final validHeight =
+        widget.height.isFinite && widget.height > 10 ? widget.height : 842.0;
 
     if (validWidth < 10 || validHeight < 10) {
       return Container(
         width: 100,
         height: 100,
         color: Colors.transparent,
-        child: const Center(
-          child: Text('Drawing unavailable'),
-        ),
+        child: const Center(child: Text('Drawing unavailable')),
       );
     }
 
@@ -95,10 +92,10 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
           children: [
             // Main drawing board
             _buildDrawingBoard(validWidth, validHeight),
-            
+
             // Pressure-sensitive cursor overlay
             if (_shouldShowCursor()) _buildCursor(),
-            
+
             // Palm rejection visual feedback (debug mode)
             if (_isDebugMode()) _buildPalmRejectionOverlay(),
           ],
@@ -138,9 +135,7 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
                       width: width,
                       height: height,
                       color: Colors.grey.withOpacity(0.06),
-                      child: const Center(
-                        child: Text('Drawing unavailable'),
-                      ),
+                      child: const Center(child: Text('Drawing unavailable')),
                     );
                   }
                 },
@@ -180,8 +175,9 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     if (hoverInfo == null || !hoverInfo.visible) return const SizedBox.shrink();
 
     // Check if eraser tool is selected
-    final isEraserSelected = widget.vm.selectedDrawingTool == DrawingToolType.eraser;
-    
+    final isEraserSelected =
+        widget.vm.selectedDrawingTool == DrawingToolType.eraser;
+
     return AnimatedBuilder(
       animation: _cursorAnimation,
       builder: (context, child) {
@@ -195,34 +191,43 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isEraserSelected 
-                      ? Colors.red.withOpacity(hoverInfo.opacity * _cursorAnimation.value * 0.8)
-                      : Colors.black26.withOpacity(hoverInfo.opacity * _cursorAnimation.value),
+                  color:
+                      isEraserSelected
+                          ? Colors.red.withOpacity(
+                            hoverInfo.opacity * _cursorAnimation.value * 0.8,
+                          )
+                          : Colors.black26.withOpacity(
+                            hoverInfo.opacity * _cursorAnimation.value,
+                          ),
                   width: isEraserSelected ? 3 : 2,
                 ),
-                color: isEraserSelected 
-                    ? Colors.red.withOpacity(hoverInfo.opacity * _cursorAnimation.value * 0.1)
-                    : null,
+                color:
+                    isEraserSelected
+                        ? Colors.red.withOpacity(
+                          hoverInfo.opacity * _cursorAnimation.value * 0.1,
+                        )
+                        : null,
               ),
               child: Center(
-                child: isEraserSelected 
-                    ? Icon(
-                        Icons.cleaning_services,
-                        size: (hoverInfo.size * 0.4).clamp(12.0, 24.0),
-                        color: Colors.red.withOpacity(
-                          hoverInfo.opacity * _cursorAnimation.value * 0.9,
-                        ),
-                      )
-                    : Container(
-                        width: hoverInfo.size * 0.3,
-                        height: hoverInfo.size * 0.3,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).primaryColor.withOpacity(
-                            hoverInfo.opacity * _cursorAnimation.value * 0.5,
+                child:
+                    isEraserSelected
+                        ? Icon(
+                          Icons.cleaning_services,
+                          size: (hoverInfo.size * 0.4).clamp(12.0, 24.0),
+                          color: Colors.red.withOpacity(
+                            hoverInfo.opacity * _cursorAnimation.value * 0.9,
+                          ),
+                        )
+                        : Container(
+                          width: hoverInfo.size * 0.3,
+                          height: hoverInfo.size * 0.3,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).primaryColor.withOpacity(
+                              hoverInfo.opacity * _cursorAnimation.value * 0.5,
+                            ),
                           ),
                         ),
-                      ),
               ),
             ),
           ),
@@ -237,7 +242,8 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
         child: CustomPaint(
           painter: PalmRejectionDebugPainter(
             activePointers: _activePointers,
-            rejectionRadius: widget.controller.stylusSettings.palmRejectionRadius,
+            rejectionRadius:
+                widget.controller.stylusSettings.palmRejectionRadius,
           ),
         ),
       ),
@@ -246,43 +252,43 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
 
   void _handlePointerDown(PointerDownEvent event) {
     _activePointers[event.pointer] = event.localPosition;
-    
+
     // Process pressure data and styling (but don't consume the event)
     final shouldProcess = widget.controller.handlePointerDown(event);
-    
+
     if (shouldProcess) {
       _isDrawing = true;
       widget.vm.setDrawingState(true);
-      
+
       // Apply pressure-sensitive styling in real-time
       _updateDrawingStyle(event);
-      
+
       // Provide haptic feedback for stylus
       if (widget.controller.stylusSettings.hapticFeedbackEnabled &&
           event.kind == PointerDeviceKind.stylus) {
         HapticFeedback.lightImpact();
       }
-      
+
       // Handle double tap actions
       if (widget.controller.shouldExecuteDoubleTapAction) {
         _executeDoubleTapAction(widget.controller.doubleTapAction);
       }
     }
-    
+
     _updateCursorVisibility();
     // Note: Don't consume the event - let it pass through to DrawingBoard
   }
 
   void _handlePointerMove(PointerMoveEvent event) {
     _activePointers[event.pointer] = event.localPosition;
-    
+
     // Process pressure data (but don't consume the event)
     final shouldProcess = widget.controller.handlePointerMove(event);
-    
+
     if (shouldProcess && _isDrawing) {
       // Apply pressure-sensitive styling in real-time
       _updateDrawingStyle(event);
-      
+
       // Continue drawing stroke
       widget.vm.setDrawingState(true);
     }
@@ -291,32 +297,32 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
 
   void _handlePointerUp(PointerUpEvent event) {
     _activePointers.remove(event.pointer);
-    
+
     // Process pressure data (but don't consume the event)
     widget.controller.handlePointerUp(event);
-    
+
     if (_isDrawing) {
       _isDrawing = false;
       widget.vm.setDrawingState(false);
-      
+
       // Provide completion haptic feedback
       if (widget.controller.stylusSettings.hapticFeedbackEnabled) {
         HapticFeedback.selectionClick();
       }
     }
-    
+
     _updateCursorVisibility();
     // Note: Don't consume the event - let it pass through to DrawingBoard
   }
 
   void _handlePointerCancel(PointerCancelEvent event) {
     _activePointers.remove(event.pointer);
-    
+
     if (_isDrawing) {
       _isDrawing = false;
       widget.vm.setDrawingState(false);
     }
-    
+
     _updateCursorVisibility();
     // Note: Don't consume the event - let it pass through to DrawingBoard
   }
@@ -324,7 +330,7 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
   void _handlePointerHover(PointerHoverEvent event) {
     // Create a compatible event for the controller
     widget.controller.handlePointerHover(event);
-    
+
     if (!_isHovering) {
       _isHovering = true;
       _updateCursorVisibility();
@@ -334,7 +340,7 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
   void _handlePointerExit(PointerExitEvent event) {
     // Create a compatible event for the controller
     widget.controller.handlePointerExit(event);
-    
+
     _isHovering = false;
     _updateCursorVisibility();
   }
@@ -350,14 +356,16 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
   void _updateCursorVisibility() {
     // Check if widget is still mounted and controller is not disposed
     if (!mounted) return;
-    
+
     final shouldShow = _shouldShowCursor();
-    
+
     // Only animate if controller is not disposed
     try {
-      if (shouldShow && _cursorAnimationController.status != AnimationStatus.forward) {
+      if (shouldShow &&
+          _cursorAnimationController.status != AnimationStatus.forward) {
         _cursorAnimationController.forward();
-      } else if (!shouldShow && _cursorAnimationController.status != AnimationStatus.reverse) {
+      } else if (!shouldShow &&
+          _cursorAnimationController.status != AnimationStatus.reverse) {
         _cursorAnimationController.reverse();
       }
     } catch (e) {
@@ -368,9 +376,9 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
 
   bool _shouldShowCursor() {
     final settings = widget.controller.stylusSettings;
-    return settings.showCursor && 
-           (_isHovering || _isDrawing) && 
-           widget.vm.currentMode == NoteMode.drawing;
+    return settings.showCursor &&
+        (_isHovering || _isDrawing) &&
+        widget.vm.currentMode == NoteMode.drawing;
   }
 
   bool _isDebugMode() {
@@ -407,23 +415,24 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: 200,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
+      builder:
+          (context) => Container(
+            height: 200,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: const Center(
+              child: Text(
+                'Color Picker\n(Implementation pending)',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
           ),
-        ),
-        child: const Center(
-          child: Text(
-            'Color Picker\n(Implementation pending)',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      ),
     );
   }
 
@@ -445,22 +454,27 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     }
 
     // Apply pressure curve from settings
-    final adjustedPressure = widget.controller.stylusSettings.getPressureValue(pressure);
-    
+    final adjustedPressure = widget.controller.stylusSettings.getPressureValue(
+      pressure,
+    );
+
     // Calculate pressure-adjusted stroke width
     final pressureStrokeWidth = baseStrokeWidth * adjustedPressure;
-    
+
     // Apply tilt adjustments if supported
     double tiltAdjustedWidth = pressureStrokeWidth;
     double tiltAdjustedOpacity = 1.0;
-    
+
     if (widget.controller.stylusSettings.tiltSensitivityEnabled) {
       // Note: Tilt values would need platform-specific implementation
       // For now, we'll use default values
       tiltAdjustedWidth = widget.controller.stylusSettings.getTiltAdjustedWidth(
-        pressureStrokeWidth, 0.0, 0.0);
-      tiltAdjustedOpacity = widget.controller.stylusSettings.getTiltAdjustedOpacity(
-        1.0, 0.0, 0.0);
+        pressureStrokeWidth,
+        0.0,
+        0.0,
+      );
+      tiltAdjustedOpacity = widget.controller.stylusSettings
+          .getTiltAdjustedOpacity(1.0, 0.0, 0.0);
     }
 
     // Update the drawing controller with pressure-adjusted style
@@ -483,14 +497,16 @@ class PalmRejectionDebugPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.red.withOpacity(0.2)
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..color = Colors.red.withOpacity(0.2)
+          ..style = PaintingStyle.fill;
 
-    final borderPaint = Paint()
-      ..color = Colors.red.withOpacity(0.5)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+    final borderPaint =
+        Paint()
+          ..color = Colors.red.withOpacity(0.5)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2;
 
     // Draw palm rejection zones around active pointers
     for (final position in activePointers.values) {
@@ -502,7 +518,6 @@ class PalmRejectionDebugPainter extends CustomPainter {
   @override
   bool shouldRepaint(PalmRejectionDebugPainter oldDelegate) {
     return oldDelegate.activePointers != activePointers ||
-           oldDelegate.rejectionRadius != rejectionRadius;
+        oldDelegate.rejectionRadius != rejectionRadius;
   }
 }
-
