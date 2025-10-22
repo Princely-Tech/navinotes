@@ -171,6 +171,8 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
                   child: const SizedBox.expand(),
                 ),
               ),
+              // Cursor overlay showing drawing/eraser size
+              _buildCursor(),
             ],
           ),
         ),
@@ -185,17 +187,20 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
     // Check if eraser tool is selected
     final isEraserSelected =
         widget.vm.selectedDrawingTool == DrawingToolType.eraser;
+    
+    // Use VM stroke width for accurate cursor size
+    final cursorSize = widget.vm.strokeWidth.clamp(10.0, 100.0);
 
     return AnimatedBuilder(
       animation: _cursorAnimation,
       builder: (context, child) {
         return Positioned(
-          left: hoverInfo.position.dx - hoverInfo.size / 2,
-          top: hoverInfo.position.dy - hoverInfo.size / 2,
+          left: hoverInfo.position.dx - cursorSize / 2,
+          top: hoverInfo.position.dy - cursorSize / 2,
           child: IgnorePointer(
             child: Container(
-              width: hoverInfo.size,
-              height: hoverInfo.size,
+              width: cursorSize,
+              height: cursorSize,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -221,14 +226,14 @@ class _PressureDrawingWidgetState extends State<PressureDrawingWidget>
                     isEraserSelected
                         ? Icon(
                           Icons.cleaning_services,
-                          size: (hoverInfo.size * 0.4).clamp(12.0, 24.0),
+                          size: (cursorSize * 0.4).clamp(12.0, 24.0),
                           color: Colors.red.withOpacity(
                             hoverInfo.opacity * _cursorAnimation.value * 0.9,
                           ),
                         )
                         : Container(
-                          width: hoverInfo.size * 0.3,
-                          height: hoverInfo.size * 0.3,
+                          width: cursorSize * 0.3,
+                          height: cursorSize * 0.3,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Theme.of(context).primaryColor.withOpacity(

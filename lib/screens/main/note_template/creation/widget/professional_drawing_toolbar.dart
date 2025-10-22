@@ -91,8 +91,8 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
         controller.setPaintContent(StraightLine());
         break;
       case DrawingToolType.eraser:
-        // Use SimpleLine with special eraser properties
-        controller.setPaintContent(SimpleLine());
+        // Use Eraser to actually erase content
+        controller.setPaintContent(Eraser());
         break;
       case DrawingToolType.rectangle:
         controller.setPaintContent(Rectangle());
@@ -382,8 +382,8 @@ class _ProfessionalDrawingToolbarState extends State<ProfessionalDrawingToolbar>
             child: Slider(
               value: widget.vm.strokeWidth,
               min: 1,
-              max: 20,
-              divisions: 19,
+              max: 50,
+              divisions: 49,
               onChanged: (value) {
                 widget.vm.setStrokeWidth(value);
                 final pageController = widget.vm.getCurrentPageController();

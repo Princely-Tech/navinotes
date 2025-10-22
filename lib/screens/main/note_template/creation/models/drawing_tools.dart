@@ -317,6 +317,7 @@ class DrawingTools {
       description: 'Erase drawing',
       icon: Icons.cleaning_services,
       category: DrawingToolCategory.utilities,
+      defaultStrokeWidth: 30.0,
     ),
   };
 
