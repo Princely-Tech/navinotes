@@ -584,6 +584,10 @@ class _PluginEnhancedPdfViewState extends State<_PluginEnhancedPdfView> {
       );
 
       // Add delay to ensure PDF file is fully written to disk
+      await Future.delayed(const Duration(milliseconds: 1000));
+      setState(() {});
+
+      // Add delay to ensure PDF file is fully written to disk
       await Future.delayed(const Duration(milliseconds: 500));
       setState(() {});
 
