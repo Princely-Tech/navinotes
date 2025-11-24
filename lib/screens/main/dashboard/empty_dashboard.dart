@@ -208,6 +208,7 @@ class EmptyDashboardMain extends StatelessWidget {
       },
     );
     Widget connectCalender = _actionItem(
+      onTap: () {},
       icon: OutlinedChild(
         decoration: BoxDecoration(
           color: AppTheme.mintWhisper,
@@ -234,8 +235,7 @@ class EmptyDashboardMain extends StatelessWidget {
         ScrollableController(
           desktop: false,
           scrollDirection: Axis.horizontal,
-          child: Row(spacing: 10, children: [takeTour]),
-          // child: Row(spacing: 10, children: [takeTour, connectCalender]),
+          child: Row(spacing: 10, children: [takeTour, connectCalender]),
         ),
       ],
     );
