@@ -19,6 +19,27 @@ class User {
   String? schoolField;
   String? schoolLevel;
   String? otp;
+  String? profilePicture;
+
+  // Email Preferences
+  bool emailMarketing;
+  bool emailProductUpdates;
+  bool emailMarketplaceNotifications;
+
+  // Push Notification Preferences
+  bool pushPomodoroAlerts;
+  bool pushFlashcardReminders;
+  bool pushMarketplacePurchaseConfirmations;
+  bool pushMarketplaceSaleNotifications;
+  bool pushFeatureAnnouncements;
+
+  // Usage Purpose
+  bool forExam;
+  bool forProject;
+  bool forResearch;
+  bool forBrainstorming;
+  bool forCourseNote;
+  String? forOther;
 
   User({
     required this.name,
@@ -41,6 +62,21 @@ class User {
     required this.updatedAt,
     required this.createdAt,
     required this.id,
+    this.profilePicture,
+    this.emailMarketing = true,
+    this.emailProductUpdates = true,
+    this.emailMarketplaceNotifications = true,
+    this.pushPomodoroAlerts = true,
+    this.pushFlashcardReminders = true,
+    this.pushMarketplacePurchaseConfirmations = true,
+    this.pushMarketplaceSaleNotifications = true,
+    this.pushFeatureAnnouncements = true,
+    this.forExam = false,
+    this.forProject = false,
+    this.forResearch = false,
+    this.forBrainstorming = false,
+    this.forCourseNote = false,
+    this.forOther,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -66,6 +102,24 @@ class User {
       updatedAt: json['updated_at'],
       createdAt: json['created_at'],
       id: json['id'],
+      profilePicture: json['profile_picture'],
+      emailMarketing: json['email_marketing'] ?? true,
+      emailProductUpdates: json['email_product_updates'] ?? true,
+      emailMarketplaceNotifications:
+          json['email_marketplace_notifications'] ?? true,
+      pushPomodoroAlerts: json['push_pomodoro_alerts'] ?? true,
+      pushFlashcardReminders: json['push_flashcard_reminders'] ?? true,
+      pushMarketplacePurchaseConfirmations:
+          json['push_marketplace_purchase_confirmations'] ?? true,
+      pushMarketplaceSaleNotifications:
+          json['push_marketplace_sale_notifications'] ?? true,
+      pushFeatureAnnouncements: json['push_feature_announcements'] ?? true,
+      forExam: json['for_exam'] ?? false,
+      forProject: json['for_project'] ?? false,
+      forResearch: json['for_research'] ?? false,
+      forBrainstorming: json['for_brainstorming'] ?? false,
+      forCourseNote: json['for_course_note'] ?? false,
+      forOther: json['for_other'],
     );
   }
 
@@ -99,6 +153,22 @@ class User {
       'school_field': schoolField,
       'school_level': schoolLevel,
       'otp': otp,
+      'profile_picture': profilePicture,
+      'email_marketing': emailMarketing,
+      'email_product_updates': emailProductUpdates,
+      'email_marketplace_notifications': emailMarketplaceNotifications,
+      'push_pomodoro_alerts': pushPomodoroAlerts,
+      'push_flashcard_reminders': pushFlashcardReminders,
+      'push_marketplace_purchase_confirmations':
+          pushMarketplacePurchaseConfirmations,
+      'push_marketplace_sale_notifications': pushMarketplaceSaleNotifications,
+      'push_feature_announcements': pushFeatureAnnouncements,
+      'for_exam': forExam,
+      'for_project': forProject,
+      'for_research': forResearch,
+      'for_brainstorming': forBrainstorming,
+      'for_course_note': forCourseNote,
+      'for_other': forOther,
     };
   }
 }

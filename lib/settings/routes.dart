@@ -3,6 +3,7 @@ import 'package:navinotes/screens/main/board_mindmap/board_mindmap_screen.dart';
 import 'package:navinotes/screens/main/flashcards/ai/index.dart';
 import 'package:navinotes/screens/main/flashcards/index.dart';
 import 'package:navinotes/screens/notifications/index.dart';
+import 'package:navinotes/screens/onboarding/index.dart';
 import 'package:navinotes/screens/pomodora/index.dart';
 import 'package:navinotes/screens/profile/index.dart';
 import 'package:navinotes/screens/splash/splash_screen.dart'; //TODO
@@ -66,10 +67,12 @@ Map<String, WidgetBuilder> routes = {
   Routes.profile: (context) => ProfileScreen(),
   Routes.notifications: (context) => NotificationsScreen(),
   Routes.boardMindMap: (context) => BoardMindMapScreen(),
+  Routes.onboarding: (context) => OnBoardingScreen(),
 };
 
 class Routes {
   Routes._();
+  static const onboarding = 'onboarding';
   static const splash = 'splash';
   static const auth = 'auth';
   static const String forgotPassword = 'forgot_password';

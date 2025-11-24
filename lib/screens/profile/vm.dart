@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:navinotes/packages.dart';
 
 class ProfileVm extends ChangeNotifier {
@@ -106,6 +107,185 @@ class ProfileVm extends ChangeNotifier {
 
   Future<void> refreshStats() async {
     await _loadUserStats();
+  }
+
+  Future<void> updateProfilePicture(File imageFile) async {
+    _setLoading(true);
+    try {
+      // TODO: Implement API call
+      // await apiServiceProvider?.updateProfilePicture(imageFile);
+
+      // Simulate API delay
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Mock update local user
+      if (currentUser != null) {
+        debugPrint('Updating profile picture to: ${imageFile.path}');
+
+        // In a real app, we would update the profilePicture field with the URL returned by the API
+        // For local testing without backend, we might want to just save the path if we can handle it
+        // currentUser!.profilePicture = imageFile.path;
+
+        // Update session
+        await sessionManager.updateSession(user: currentUser);
+        notifyListeners();
+
+        if (context.mounted) {
+          MessageDisplayService.showMessage(
+            context,
+            'Profile picture updated successfully',
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Failed to update profile picture: $e',
+        );
+      }
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> updateProfileData({
+    String? name,
+    String? country,
+    String? iam,
+    String? about,
+    String? schoolName,
+    String? schoolField,
+    String? schoolLevel,
+  }) async {
+    _setLoading(true);
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (currentUser != null) {
+        if (name != null) currentUser!.name = name;
+        if (country != null) currentUser!.country = country;
+        if (iam != null) currentUser!.iam = iam;
+        if (about != null) currentUser!.about = about;
+        if (schoolName != null) currentUser!.schoolName = schoolName;
+        if (schoolField != null) currentUser!.schoolField = schoolField;
+        if (schoolLevel != null) currentUser!.schoolLevel = schoolLevel;
+
+        await sessionManager.updateSession(user: currentUser);
+        notifyListeners();
+
+        if (context.mounted) {
+          MessageDisplayService.showMessage(
+            context,
+            'Profile updated successfully',
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Failed to update profile: $e',
+        );
+      }
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> updateEmailPreferences({
+    bool? emailMarketing,
+    bool? emailProductUpdates,
+    bool? emailMarketplaceNotifications,
+  }) async {
+    _setLoading(true);
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (currentUser != null) {
+        if (emailMarketing != null) {
+          currentUser!.emailMarketing = emailMarketing;
+        }
+        if (emailProductUpdates != null) {
+          currentUser!.emailProductUpdates = emailProductUpdates;
+        }
+        if (emailMarketplaceNotifications != null) {
+          currentUser!.emailMarketplaceNotifications =
+              emailMarketplaceNotifications;
+        }
+
+        await sessionManager.updateSession(user: currentUser);
+        notifyListeners();
+
+        if (context.mounted) {
+          MessageDisplayService.showMessage(
+            context,
+            'Email preferences updated',
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Failed to update email preferences: $e',
+        );
+      }
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> updatePushPreferences({
+    bool? pushPomodoroAlerts,
+    bool? pushFlashcardReminders,
+    bool? pushMarketplacePurchaseConfirmations,
+    bool? pushMarketplaceSaleNotifications,
+    bool? pushFeatureAnnouncements,
+  }) async {
+    _setLoading(true);
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (currentUser != null) {
+        if (pushPomodoroAlerts != null) {
+          currentUser!.pushPomodoroAlerts = pushPomodoroAlerts;
+        }
+        if (pushFlashcardReminders != null) {
+          currentUser!.pushFlashcardReminders = pushFlashcardReminders;
+        }
+        if (pushMarketplacePurchaseConfirmations != null) {
+          currentUser!.pushMarketplacePurchaseConfirmations =
+              pushMarketplacePurchaseConfirmations;
+        }
+        if (pushMarketplaceSaleNotifications != null) {
+          currentUser!.pushMarketplaceSaleNotifications =
+              pushMarketplaceSaleNotifications;
+        }
+        if (pushFeatureAnnouncements != null) {
+          currentUser!.pushFeatureAnnouncements = pushFeatureAnnouncements;
+        }
+
+        await sessionManager.updateSession(user: currentUser);
+        notifyListeners();
+
+        if (context.mounted) {
+          MessageDisplayService.showMessage(
+            context,
+            'Push notification preferences updated',
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Failed to update push preferences: $e',
+        );
+      }
+    } finally {
+      _setLoading(false);
+    }
   }
 
   Future<void> logout() async {

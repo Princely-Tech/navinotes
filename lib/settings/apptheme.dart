@@ -72,7 +72,9 @@ class AppTheme {
   static const Color softCoral = Color(0xFFF87171);
   static const Color violet = Color(0xFFA78BFA);
   static const Color lightBlue = Color(0xFF60A5FA);
-  static const Color whiteSmoke = Color(0xFFF9FAFB); //MAY be the default page bg aside white
+  static const Color whiteSmoke = Color(
+    0xFFF9FAFB,
+  ); //MAY be the default page bg aside white
   static const Color burntSienna = Color(0xFFB45309);
   static const Color royalViolet = Color(0xFF6D28D9);
   static const Color blushPink = Color(0xFFFECACA);
@@ -194,4 +196,16 @@ class AppTheme {
     fontFamily: fontFamily,
     fontWeight: getFontWeight(400),
   );
+}
+
+class HexColor extends Color {
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF$hexColor';
+    }
+    return int.parse(hexColor, radix: 16);
+  }
 }

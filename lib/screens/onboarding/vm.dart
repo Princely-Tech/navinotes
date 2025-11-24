@@ -1,10 +1,15 @@
 import 'package:navinotes/packages.dart';
 
 class OnBoardingVM extends ChangeNotifier {
-  final PageController _pageController = PageController();
+  final PageController pageController = PageController();
+
+  void initialize() {
+    animateToNext();
+  }
+
   void animateToNext() {
     Future.delayed(const Duration(seconds: 5), () {
-      _pageController.nextPage(
+      pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -13,8 +18,8 @@ class OnBoardingVM extends ChangeNotifier {
 
   void animateBack() {
     Future.delayed(const Duration(seconds: 5), () {
-      _pageController.animateToPage(
-        2,
+      pageController.animateToPage(
+        0,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
@@ -23,7 +28,7 @@ class OnBoardingVM extends ChangeNotifier {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 }

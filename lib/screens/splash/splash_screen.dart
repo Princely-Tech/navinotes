@@ -53,7 +53,8 @@ class _SplashScreenState extends State<SplashScreen>
     if (mounted) {
       Navigator.of(
         context,
-      ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
+      ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.onboarding);
+      // ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
     }
   }
 

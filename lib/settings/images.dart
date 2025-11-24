@@ -2,6 +2,7 @@ const iconPath = 'assets/icons';
 const delPath = 'assets/images/del';
 const imagePath = 'assets/images';
 const boardsPath = 'assets/images/boards';
+const onboardingPath = 'assets/images/onboarding';
 const boardsDarkAcademiaPath = 'assets/images/boards/dark_academia';
 const boardsLightAcademiaPath = 'assets/images/boards/light_academia';
 const boardsNaturePath = 'assets/images/boards/nature';
@@ -12,8 +13,14 @@ const noteTemplatePath = 'assets/images/boards/note_templates';
 const marketPlacePath = 'assets/images/marketplace';
 const boardsPlainPath = 'assets/images/boards/plain';
 
-class Images {
+class Images { 
   Images._();
+
+  static const String groupLaugh = '$iconPath/group_laugh.svg';
+  static const String studyAlone = '$iconPath/study_alone.svg';
+  static const String studyGroup = '$iconPath/study_group.svg';
+  // static const String group_laugh = '$iconPath/group_laugh.svg';
+
   //icons
 
   //TODO delete this

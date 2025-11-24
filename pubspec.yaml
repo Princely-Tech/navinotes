@@ -81,6 +81,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/boards/
+    - assets/images/onboarding/
     - assets/images/boards/dark_academia/
     - assets/images/boards/nature/
     - assets/images/boards/minimalist/

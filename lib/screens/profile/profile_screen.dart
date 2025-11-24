@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
           // ApiServiceProvider not available in context
           debugPrint('ApiServiceProvider not found in context: $e');
         }
-        
+
         return ProfileVm(
           sessionManager: context.read<SessionManager>(),
           apiServiceProvider: apiServiceProvider,
@@ -69,9 +69,11 @@ class _ProfileScreenBody extends StatelessWidget {
               spacing: 24,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildProfileHeader(vm),
+                _buildProfileHeader(context, vm),
                 _buildStatsSection(vm),
-                _buildPersonalInfoSection(vm),
+                _buildPersonalInfoSection(context, vm),
+                _buildEmailPreferences(vm),
+                _buildPushPreferences(vm),
                 _buildAccountSection(context, vm),
               ],
             ),
@@ -81,30 +83,68 @@ class _ProfileScreenBody extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(ProfileVm vm) {
+  Widget _buildProfileHeader(BuildContext context, ProfileVm vm) {
     return CustomCard(
       addCardShadow: true,
       child: Column(
         children: [
           // Profile Avatar
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: AppTheme.vividRose,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                vm.userName.isNotEmpty ? vm.userName[0].toUpperCase() : 'U',
-                style: TextStyle(
-                  color: AppTheme.white,
-                  fontSize: 32.0,
-                  fontFamily: AppTheme.fontFamily,
-                  fontWeight: getFontWeight(600),
+          Stack(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: AppTheme.vividRose,
+                  shape: BoxShape.circle,
+                  image:
+                      vm.currentUser?.profilePicture != null
+                          ? DecorationImage(
+                            image: NetworkImage(
+                              vm.currentUser!.profilePicture!,
+                            ),
+                            fit: BoxFit.cover,
+                          )
+                          : null,
+                ),
+                child:
+                    vm.currentUser?.profilePicture == null
+                        ? Center(
+                          child: Text(
+                            vm.userName.isNotEmpty
+                                ? vm.userName[0].toUpperCase()
+                                : 'U',
+                            style: TextStyle(
+                              color: AppTheme.white,
+                              fontSize: 32.0,
+                              fontFamily: AppTheme.fontFamily,
+                              fontWeight: getFontWeight(600),
+                            ),
+                          ),
+                        )
+                        : null,
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: InkWell(
+                  onTap: () => _showImagePicker(context, vm),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppTheme.vividRose, width: 1),
+                    ),
+                    child: Icon(
+                      Icons.camera_alt,
+                      size: 16,
+                      color: AppTheme.vividRose,
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
           const SizedBox(height: 16),
           // User Name
@@ -149,6 +189,18 @@ class _ProfileScreenBody extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _showImagePicker(BuildContext context, ProfileVm vm) async {
+    final ImagePicker picker = ImagePicker();
+    try {
+      final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        await vm.updateProfilePicture(File(image.path));
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+    }
   }
 
   Widget _buildStatsSection(ProfileVm vm) {
@@ -218,11 +270,7 @@ class _ProfileScreenBody extends StatelessWidget {
       child: Column(
         spacing: 8,
         children: [
-          SVGImagePlaceHolder(
-            imagePath: icon,
-            size: 24,
-            color: color,
-          ),
+          SVGImagePlaceHolder(imagePath: icon, size: 24, color: color),
           Text(
             value,
             style: TextStyle(
@@ -246,27 +294,37 @@ class _ProfileScreenBody extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonalInfoSection(ProfileVm vm) {
+  Widget _buildPersonalInfoSection(BuildContext context, ProfileVm vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
       children: [
         Row(
-          spacing: 10,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SVGImagePlaceHolder(
-              imagePath: Images.person,
-              size: 20,
-              color: AppTheme.vividRose,
+            Row(
+              spacing: 10,
+              children: [
+                SVGImagePlaceHolder(
+                  imagePath: Images.person,
+                  size: 20,
+                  color: AppTheme.vividRose,
+                ),
+                Text(
+                  'Personal Information',
+                  style: TextStyle(
+                    color: AppTheme.vividRose,
+                    fontSize: 18.0,
+                    fontFamily: AppTheme.fontFamily,
+                    fontWeight: getFontWeight(600),
+                  ),
+                ),
+              ],
             ),
-            Text(
-              'Personal Information',
-              style: TextStyle(
-                color: AppTheme.vividRose,
-                fontSize: 18.0,
-                fontFamily: AppTheme.fontFamily,
-                fontWeight: getFontWeight(600),
-              ),
+            IconButton(
+              icon: Icon(Icons.edit, color: AppTheme.vividRose, size: 20),
+              onPressed: () => _showEditProfileDialog(context, vm),
+              tooltip: 'Edit Profile',
             ),
           ],
         ),
@@ -275,6 +333,8 @@ class _ProfileScreenBody extends StatelessWidget {
           child: Column(
             spacing: 16,
             children: [
+              _buildInfoRow('Name', vm.userName),
+              _buildInfoRow('Email', vm.userEmail),
               _buildInfoRow('School', vm.userSchool),
               _buildInfoRow('Field of Study', vm.userField),
               _buildInfoRow('Level', vm.userLevel),
@@ -288,9 +348,265 @@ class _ProfileScreenBody extends StatelessWidget {
     );
   }
 
+  Widget _buildEmailPreferences(ProfileVm vm) {
+    if (vm.currentUser == null) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
+      children: [
+        Row(
+          spacing: 10,
+          children: [
+            Icon(Icons.email, color: AppTheme.vividRose, size: 20),
+            Text(
+              'Email Preferences',
+              style: TextStyle(
+                color: AppTheme.vividRose,
+                fontSize: 18.0,
+                fontFamily: AppTheme.fontFamily,
+                fontWeight: getFontWeight(600),
+              ),
+            ),
+          ],
+        ),
+        CustomCard(
+          addCardShadow: true,
+          child: Column(
+            spacing: 12,
+            children: [
+              _buildSwitchTile(
+                'Marketing Emails',
+                'Receive marketing and promotional content',
+                vm.currentUser!.emailMarketing,
+                (val) => vm.updateEmailPreferences(emailMarketing: val),
+              ),
+              _buildSwitchTile(
+                'Product Updates',
+                'Receive updates about new features',
+                vm.currentUser!.emailProductUpdates,
+                (val) => vm.updateEmailPreferences(emailProductUpdates: val),
+              ),
+              _buildSwitchTile(
+                'Marketplace Notifications',
+                'Receive notifications about marketplace activity',
+                vm.currentUser!.emailMarketplaceNotifications,
+                (val) => vm.updateEmailPreferences(
+                  emailMarketplaceNotifications: val,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPushPreferences(ProfileVm vm) {
+    if (vm.currentUser == null) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
+      children: [
+        Row(
+          spacing: 10,
+          children: [
+            Icon(Icons.notifications, color: AppTheme.vividRose, size: 20),
+            Text(
+              'Push Notifications',
+              style: TextStyle(
+                color: AppTheme.vividRose,
+                fontSize: 18.0,
+                fontFamily: AppTheme.fontFamily,
+                fontWeight: getFontWeight(600),
+              ),
+            ),
+          ],
+        ),
+        CustomCard(
+          addCardShadow: true,
+          child: Column(
+            spacing: 12,
+            children: [
+              _buildSwitchTile(
+                'Pomodoro Alerts',
+                'Get notified when timer ends',
+                vm.currentUser!.pushPomodoroAlerts,
+                (val) => vm.updatePushPreferences(pushPomodoroAlerts: val),
+              ),
+              _buildSwitchTile(
+                'Flashcard Reminders',
+                'Reminders to review flashcards',
+                vm.currentUser!.pushFlashcardReminders,
+                (val) => vm.updatePushPreferences(pushFlashcardReminders: val),
+              ),
+              _buildSwitchTile(
+                'Marketplace Purchases',
+                'Confirmations for your purchases',
+                vm.currentUser!.pushMarketplacePurchaseConfirmations,
+                (val) => vm.updatePushPreferences(
+                  pushMarketplacePurchaseConfirmations: val,
+                ),
+              ),
+              _buildSwitchTile(
+                'Marketplace Sales',
+                'Notifications when you make a sale',
+                vm.currentUser!.pushMarketplaceSaleNotifications,
+                (val) => vm.updatePushPreferences(
+                  pushMarketplaceSaleNotifications: val,
+                ),
+              ),
+              _buildSwitchTile(
+                'Feature Announcements',
+                'Be the first to know about new features',
+                vm.currentUser!.pushFeatureAnnouncements,
+                (val) =>
+                    vm.updatePushPreferences(pushFeatureAnnouncements: val),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSwitchTile(
+    String title,
+    String subtitle,
+    bool value,
+    Function(bool) onChanged,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: AppTheme.defaultBlack,
+                  fontSize: 14.0,
+                  fontFamily: AppTheme.fontFamily,
+                  fontWeight: getFontWeight(500),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  color: AppTheme.steelMist,
+                  fontSize: 12.0,
+                  fontFamily: AppTheme.fontFamily,
+                  fontWeight: getFontWeight(400),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Switch(
+          value: value,
+          onChanged: onChanged,
+          activeColor: AppTheme.vividRose,
+        ),
+      ],
+    );
+  }
+
+  void _showEditProfileDialog(BuildContext context, ProfileVm vm) {
+    final nameController = TextEditingController(text: vm.userName);
+    final countryController = TextEditingController(text: vm.userCountry);
+    final schoolController = TextEditingController(text: vm.userSchool);
+    final fieldController = TextEditingController(text: vm.userField);
+    final levelController = TextEditingController(text: vm.userLevel);
+    final aboutController = TextEditingController(text: vm.userAbout);
+    final iamController = TextEditingController(
+      text: vm.currentUser?.iam ?? '',
+    );
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              'Edit Profile',
+              style: TextStyle(
+                color: AppTheme.vividRose,
+                fontWeight: getFontWeight(600),
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 16,
+                children: [
+                  _buildTextField('Name', nameController),
+                  _buildTextField('I am (Role)', iamController),
+                  _buildTextField('Country', countryController),
+                  _buildTextField('School Name', schoolController),
+                  _buildTextField('Field of Study', fieldController),
+                  _buildTextField('Level', levelController),
+                  _buildTextField('About', aboutController, maxLines: 3),
+                ],
+              ),
+            ),
+            actions: [
+              AppButton.secondary(
+                text: 'Cancel',
+                onTap: () => Navigator.pop(context),
+                color: AppTheme.steelMist,
+              ),
+              const SizedBox(height: 10),
+              AppButton(
+                text: 'Save',
+                onTap: () {
+                  vm.updateProfileData(
+                    name: nameController.text,
+                    country: countryController.text,
+                    schoolName: schoolController.text,
+                    schoolField: fieldController.text,
+                    schoolLevel: levelController.text,
+                    about: aboutController.text,
+                    iam: iamController.text,
+                  );
+                  Navigator.pop(context);
+                },
+                color: AppTheme.vividRose,
+              ),
+            ],
+          ),
+    );
+  }
+
+  Widget _buildTextField(
+    String label,
+    TextEditingController controller, {
+    int maxLines = 1,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: AppTheme.vividRose),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
+      ),
+    );
+  }
+
   Widget _buildInfoRow(String label, String value, {bool isMultiline = false}) {
     return Row(
-      crossAxisAlignment: isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment:
+          isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         SizedBox(
           width: 120,
@@ -366,11 +682,7 @@ class _ProfileScreenBody extends StatelessWidget {
               AppButton.secondary(
                 text: 'Logout',
                 onTap: () => _showLogoutDialog(context, vm),
-                prefix: Icon(
-                  Icons.logout,
-                  color: AppTheme.steelMist,
-                  size: 18,
-                ),
+                prefix: Icon(Icons.logout, color: AppTheme.steelMist, size: 18),
                 color: AppTheme.steelMist,
               ),
               const SizedBox(height: 8),
@@ -416,11 +728,17 @@ class _ProfileScreenBody extends StatelessWidget {
             ),
           ),
           actions: [
-            AppButton.text(
+            // AppButton.text(
+            //   text: 'Cancel',
+            //   onTap: () => Navigator.of(context).pop(),
+            //   color: AppTheme.steelMist,
+            // ),
+            AppButton.secondary(
               text: 'Cancel',
               onTap: () => Navigator.of(context).pop(),
               color: AppTheme.steelMist,
             ),
+            SizedBox(height: 10),
             AppButton(
               text: 'Logout',
               onTap: () {
@@ -437,7 +755,7 @@ class _ProfileScreenBody extends StatelessWidget {
 
   void _showDeleteAccountDialog(BuildContext context, ProfileVm vm) {
     final TextEditingController reasonController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -493,16 +811,21 @@ class _ProfileScreenBody extends StatelessWidget {
             ],
           ),
           actions: [
-            AppButton.text(
+            AppButton.secondary(
               text: 'Cancel',
               onTap: () => Navigator.of(context).pop(),
               color: AppTheme.steelMist,
             ),
+            SizedBox(height: 10),
             AppButton(
               text: 'Delete Account',
               onTap: () {
                 Navigator.of(context).pop();
-                _showFinalConfirmationDialog(context, vm, reasonController.text);
+                _showFinalConfirmationDialog(
+                  context,
+                  vm,
+                  reasonController.text,
+                );
               },
               color: AppTheme.bloodFire,
             ),
@@ -512,7 +835,11 @@ class _ProfileScreenBody extends StatelessWidget {
     );
   }
 
-  void _showFinalConfirmationDialog(BuildContext context, ProfileVm vm, String reason) {
+  void _showFinalConfirmationDialog(
+    BuildContext context,
+    ProfileVm vm,
+    String reason,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
