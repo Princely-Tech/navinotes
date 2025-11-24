@@ -4,24 +4,22 @@ import 'vm.dart';
 
 List<Widget> onboardingFrames = [
   OnBoardingFrame(
-    title: 'Together for a Malaria-Free Africa.',
-    body:
-        'MalariaX connects communities, health workers, and program managers in one platform.',
+    title: 'Collaborate & Learn Together',
+    body: 'Connect with classmates, share notes, and ace your exams together.',
     image: Images.groupLaugh,
     index: 1,
   ),
   OnBoardingFrame(
-    title: 'Faster Reporting. Stronger Protection.',
+    title: 'Master Your Studies',
     body:
-        'Track cases, report symptoms, and stay informed with real-time updates.',
-    image: Images.groupLaugh,
+        'Organize your notes, track your progress, and stay focused on your goals.',
+    image: Images.studyAlone,
     index: 2,
   ),
   OnBoardingFrame(
-    title: 'Your Role Matters. Be Part of the Solution.',
-    body:
-        'Engage, volunteer, and support vaccination and prevention efforts easily.',
-    image: Images.groupLaugh,
+    title: 'Achieve Academic Excellence',
+    body: 'Access resources, join study groups, and reach your full potential.',
+    image: Images.studyGroup,
     index: 3,
   ),
 ];

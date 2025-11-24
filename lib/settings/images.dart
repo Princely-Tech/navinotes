@@ -16,10 +16,10 @@ const boardsPlainPath = 'assets/images/boards/plain';
 class Images { 
   Images._();
 
-  static const String groupLaugh = '$iconPath/group_laugh.svg';
-  static const String studyAlone = '$iconPath/study_alone.svg';
-  static const String studyGroup = '$iconPath/study_group.svg';
-  // static const String group_laugh = '$iconPath/group_laugh.svg';
+  static const String groupLaugh = '$onboardingPath/group_laugh.png';
+  static const String studyAlone = '$onboardingPath/study_alone.png';
+  static const String studyGroup = '$onboardingPath/study_group.png';
+  // static const String group_laugh = '$onboardingPath/group_laugh.png';
 
   //icons
 

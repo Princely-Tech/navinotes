@@ -94,7 +94,6 @@ class OnBoardingFrame extends StatelessWidget {
                               onTap: () => NavigationHelper.push(Routes.auth),
                               text: 'Let go',
                             ),
-
                           ],
                         ),
                       ),
