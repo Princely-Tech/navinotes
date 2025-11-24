@@ -14,8 +14,26 @@ class ProfileVm extends ChangeNotifier {
     _loadUserStats();
   }
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  bool _isStatsLoading = false;
+  bool get isStatsLoading => _isStatsLoading;
+
+  bool _isProfilePictureLoading = false;
+  bool get isProfilePictureLoading => _isProfilePictureLoading;
+
+  bool _isProfileDataLoading = false;
+  bool get isProfileDataLoading => _isProfileDataLoading;
+
+  bool _isEmailPrefsLoading = false;
+  bool get isEmailPrefsLoading => _isEmailPrefsLoading;
+
+  bool _isPushPrefsLoading = false;
+  bool get isPushPrefsLoading => _isPushPrefsLoading;
+
+  bool _isAccountActionLoading = false;
+  bool get isAccountActionLoading => _isAccountActionLoading;
+
+  // Keep for backward compatibility if needed, or for initial screen load
+  bool get isLoading => _isStatsLoading;
 
   int _totalBoards = 0;
   int get totalBoards => _totalBoards;
@@ -34,13 +52,13 @@ class ProfileVm extends ChangeNotifier {
 
   User? get currentUser => sessionManager.user;
 
-  String get userName => currentUser?.name ?? 'Unknown User';
+  String get userName => currentUser?.name ?? '';
   String get userEmail => currentUser?.email ?? '';
-  String get userSchool => currentUser?.schoolName ?? 'Not specified';
-  String get userField => currentUser?.schoolField ?? 'Not specified';
-  String get userLevel => currentUser?.schoolLevel ?? 'Not specified';
-  String get userCountry => currentUser?.country ?? 'Not specified';
-  String get userAbout => currentUser?.about ?? 'No description available';
+  String get userSchool => currentUser?.schoolName ?? '';
+  String get userField => currentUser?.schoolField ?? '';
+  String get userLevel => currentUser?.schoolLevel ?? '';
+  String get userCountry => currentUser?.country ?? '';
+  String get userAbout => currentUser?.about ?? '';
 
   String get memberSince {
     if (currentUser?.createdAt != null) {
@@ -55,7 +73,8 @@ class ProfileVm extends ChangeNotifier {
   }
 
   Future<void> _loadUserStats() async {
-    _setLoading(true);
+    _isStatsLoading = true;
+    notifyListeners();
     try {
       // Get all boards for the user
       final boards = await DatabaseHelper.instance.getAllBoards();
@@ -96,13 +115,9 @@ class ProfileVm extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error loading user stats: $e');
     } finally {
-      _setLoading(false);
+      _isStatsLoading = false;
+      notifyListeners();
     }
-  }
-
-  void _setLoading(bool loading) {
-    _isLoading = loading;
-    notifyListeners();
   }
 
   Future<void> refreshStats() async {
@@ -110,7 +125,8 @@ class ProfileVm extends ChangeNotifier {
   }
 
   Future<void> updateProfilePicture(File imageFile) async {
-    _setLoading(true);
+    _isProfilePictureLoading = true;
+    notifyListeners();
     try {
       // TODO: Implement API call
       // await apiServiceProvider?.updateProfilePicture(imageFile);
@@ -145,7 +161,8 @@ class ProfileVm extends ChangeNotifier {
         );
       }
     } finally {
-      _setLoading(false);
+      _isProfilePictureLoading = false;
+      notifyListeners();
     }
   }
 
@@ -158,7 +175,8 @@ class ProfileVm extends ChangeNotifier {
     String? schoolField,
     String? schoolLevel,
   }) async {
-    _setLoading(true);
+    _isProfileDataLoading = true;
+    notifyListeners();
     try {
       await Future.delayed(const Duration(seconds: 1));
 
@@ -189,7 +207,8 @@ class ProfileVm extends ChangeNotifier {
         );
       }
     } finally {
-      _setLoading(false);
+      _isProfileDataLoading = false;
+      notifyListeners();
     }
   }
 
@@ -198,7 +217,8 @@ class ProfileVm extends ChangeNotifier {
     bool? emailProductUpdates,
     bool? emailMarketplaceNotifications,
   }) async {
-    _setLoading(true);
+    _isEmailPrefsLoading = true;
+    notifyListeners();
     try {
       await Future.delayed(const Duration(seconds: 1));
 
@@ -232,7 +252,8 @@ class ProfileVm extends ChangeNotifier {
         );
       }
     } finally {
-      _setLoading(false);
+      _isEmailPrefsLoading = false;
+      notifyListeners();
     }
   }
 
@@ -243,7 +264,8 @@ class ProfileVm extends ChangeNotifier {
     bool? pushMarketplaceSaleNotifications,
     bool? pushFeatureAnnouncements,
   }) async {
-    _setLoading(true);
+    _isPushPrefsLoading = true;
+    notifyListeners();
     try {
       await Future.delayed(const Duration(seconds: 1));
 
@@ -284,13 +306,15 @@ class ProfileVm extends ChangeNotifier {
         );
       }
     } finally {
-      _setLoading(false);
+      _isPushPrefsLoading = false;
+      notifyListeners();
     }
   }
 
   Future<void> logout() async {
     try {
-      _setLoading(true);
+      _isAccountActionLoading = true;
+      notifyListeners();
       await sessionManager.clearSession();
       if (context.mounted) {
         NavigationHelper.pushAndRemoveUntil(Routes.auth);
@@ -300,13 +324,15 @@ class ProfileVm extends ChangeNotifier {
         MessageDisplayService.showErrorMessage(context, 'Failed to logout: $e');
       }
     } finally {
-      _setLoading(false);
+      _isAccountActionLoading = false;
+      notifyListeners();
     }
   }
 
   Future<void> deleteAccount(String reason) async {
     try {
-      _setLoading(true);
+      _isAccountActionLoading = true;
+      notifyListeners();
 
       // For now, just clear local data and logout since API endpoint may not be available
       // TODO: Implement actual API call when endpoint is available
@@ -343,7 +369,8 @@ class ProfileVm extends ChangeNotifier {
         );
       }
     } finally {
-      _setLoading(false);
+      _isAccountActionLoading = false;
+      notifyListeners();
     }
   }
 }

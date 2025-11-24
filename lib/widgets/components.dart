@@ -537,7 +537,18 @@ class ProfilePic extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(999),
-              child: SVGImagePlaceHolder(imagePath: Images.avatar, size: size),
+              child:
+                  sessionManager.user?.profilePicture == null
+                      ? SVGImagePlaceHolder(
+                        imagePath: Images.avatar,
+                        size: size,
+                      )
+                      : Image.network(
+                        getRemoteImgPath(sessionManager.user!.profilePicture!),
+                        width: size,
+                        height: size,
+                        fit: BoxFit.cover,
+                      ),
             ),
           ),
         );

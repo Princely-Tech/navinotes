@@ -54,12 +54,6 @@ class _ProfileScreenBody extends StatelessWidget {
       ),
       body: Consumer<ProfileVm>(
         builder: (context, vm, child) {
-          if (vm.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppTheme.vividRose),
-            );
-          }
-
           return ScrollableController(
             mobilePadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -69,12 +63,30 @@ class _ProfileScreenBody extends StatelessWidget {
               spacing: 24,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildProfileHeader(context, vm),
-                _buildStatsSection(vm),
-                _buildPersonalInfoSection(context, vm),
-                _buildEmailPreferences(vm),
-                _buildPushPreferences(vm),
-                _buildAccountSection(context, vm),
+                LoadingIndicator(
+                  loading: vm.isProfilePictureLoading,
+                  child: _buildProfileHeader(context, vm),
+                ),
+                LoadingIndicator(
+                  loading: vm.isStatsLoading,
+                  child: _buildStatsSection(vm),
+                ),
+                LoadingIndicator(
+                  loading: vm.isProfileDataLoading,
+                  child: _buildPersonalInfoSection(context, vm),
+                ),
+                LoadingIndicator(
+                  loading: vm.isEmailPrefsLoading,
+                  child: _buildEmailPreferences(vm),
+                ),
+                LoadingIndicator(
+                  loading: vm.isPushPrefsLoading,
+                  child: _buildPushPreferences(vm),
+                ),
+                LoadingIndicator(
+                  loading: vm.isAccountActionLoading,
+                  child: _buildAccountSection(context, vm),
+                ),
               ],
             ),
           );
@@ -98,15 +110,6 @@ class _ProfileScreenBody extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppTheme.vividRose,
                   shape: BoxShape.circle,
-                  // image:
-                  //     vm.currentUser?.profilePicture == null
-                  //         ? DecorationImage(
-                  //           image: NetworkImage(
-                  //             getRemoteImgPath(vm.currentUser!.profilePicture!),
-                  //           ),
-                  //           fit: BoxFit.cover,
-                  //         )
-                  //         : null,
                 ),
                 child:
                     vm.currentUser?.profilePicture == null
@@ -534,8 +537,10 @@ class _ProfileScreenBody extends StatelessWidget {
 
     showDialog(
       context: context,
+      fullscreenDialog: true,
       builder:
           (context) => AlertDialog(
+            constraints: BoxConstraints(minWidth: screenWidth(context)),
             title: Text(
               'Edit Profile',
               style: TextStyle(
@@ -628,7 +633,7 @@ class _ProfileScreenBody extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            value,
+            stringOrNotSpecified(value),
             style: TextStyle(
               color: AppTheme.defaultBlack,
               fontSize: 14.0,
