@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/auth/login.dart';
 import 'package:navinotes/screens/auth/sign_up.dart';
 import 'package:navinotes/screens/auth/vm.dart';
+import 'package:navinotes/settings/data.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
@@ -51,7 +52,7 @@ class AuthScreen extends StatelessWidget {
                     _testimonial(),
                   ],
                 ),
-                _footerLinks(),
+                _footerLinks(context),
               ],
             ),
           ),
@@ -239,14 +240,68 @@ class AuthScreen extends StatelessWidget {
     );
   }
 
-  Widget _footerLinks() {
+  void _showFooterDialog(
+    BuildContext context, {
+    required String title,
+    required String content,
+  }) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: AppTheme.text.copyWith(
+              color: AppTheme.graphite,
+              fontFamily: AppTheme.fontPoppins,
+              fontWeight: getFontWeight(600),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Text(
+              content,
+              style: AppTheme.text.copyWith(
+                color: AppTheme.stormGray,
+                fontFamily: AppTheme.fontPoppins,
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'Close',
+                style: AppTheme.text.copyWith(
+                  color: AppTheme.vividRose,
+                  fontFamily: AppTheme.fontPoppins,
+                  fontWeight: getFontWeight(500),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _footerLinks(BuildContext context) {
     return ScrollableRow(
       children:
           authFooterLinks
               .map(
-                (str) => Text(
-                  str,
-                  style: AppTheme.text.copyWith(color: AppTheme.vividRose),
+                (str) => GestureDetector(
+                  onTap:
+                      () => _showFooterDialog(
+                        context,
+                        title: str,
+                        content:
+                            authFooterLongTexts[str] ??
+                            'Detailed information about "$str" will be shown here. This dialog is scrollable so longer text can be displayed without overflowing.',
+                      ),
+                  child: Text(
+                    str,
+                    style: AppTheme.text.copyWith(color: AppTheme.vividRose),
+                  ),
                 ),
               )
               .toList(),
