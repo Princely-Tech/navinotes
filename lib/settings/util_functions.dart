@@ -146,7 +146,7 @@ String getNoteCountText(List<Content> contents) {
 }
 
 String stringOrNotSpecified(String? data, {String? nullPrefix}) {
-  if (isNotNull(data)) {
+  if (isNotNull(data) && data != '') {
     return data!;
   }
   if (isNotNull(nullPrefix)) {

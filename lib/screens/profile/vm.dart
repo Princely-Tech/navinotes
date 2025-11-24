@@ -3,12 +3,12 @@ import 'package:navinotes/packages.dart';
 
 class ProfileVm extends ChangeNotifier {
   final SessionManager sessionManager;
-  final ApiServiceProvider? apiServiceProvider;
+  final ApiServiceProvider apiServiceProvider;
   final BuildContext context;
 
   ProfileVm({
     required this.sessionManager,
-    this.apiServiceProvider,
+    required this.apiServiceProvider,
     required this.context,
   }) {
     _loadUserStats();
@@ -128,23 +128,28 @@ class ProfileVm extends ChangeNotifier {
     _isProfilePictureLoading = true;
     notifyListeners();
     try {
-      // TODO: Implement API call
-      // await apiServiceProvider?.updateProfilePicture(imageFile);
+      if (apiServiceProvider != null) {
+        final request = FormDataRequest.post(
+          '/profile/picture',
+          files: {'profile_picture': imageFile},
+        );
 
-      // Simulate API delay
-      await Future.delayed(const Duration(seconds: 1));
+        final response = await apiServiceProvider!.apiService
+            .sendFormDataRequest(request);
 
-      // Mock update local user
-      if (currentUser != null) {
-        debugPrint('Updating profile picture to: ${imageFile.path}');
-
-        // In a real app, we would update the profilePicture field with the URL returned by the API
-        // For local testing without backend, we might want to just save the path if we can handle it
-        // currentUser!.profilePicture = imageFile.path;
-
-        // Update session
-        await sessionManager.updateSession(user: currentUser);
-        notifyListeners();
+        if (response['user'] != null) {
+          final updatedUser = User.fromJson(response['user']);
+          await sessionManager.updateSession(user: updatedUser);
+        } else {
+          // Fallback if API doesn't return user object
+          if (currentUser != null) {
+            // In a real app, we would update the profilePicture field with the URL returned by the API
+            // For local testing without backend, we might want to just save the path if we can handle it
+            // currentUser!.profilePicture = imageFile.path;
+            // For now, since we can't reliably get the URL without the backend response containing it or a way to parse it, we might rely on reloading the profile or trusting the backend return.
+            // Assuming backend returns the updated user object is the standard way.
+          }
+        }
 
         if (context.mounted) {
           MessageDisplayService.showMessage(
@@ -152,6 +157,10 @@ class ProfileVm extends ChangeNotifier {
             'Profile picture updated successfully',
           );
         }
+      } else {
+        // Simulate API delay for non-connected testing if needed, or just error out?
+        // For now, let's throw an error if API is not available as per request "make a call to backend"
+        throw Exception("API Service not available");
       }
     } catch (e) {
       if (context.mounted) {
@@ -178,19 +187,24 @@ class ProfileVm extends ChangeNotifier {
     _isProfileDataLoading = true;
     notifyListeners();
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      if (apiServiceProvider != null) {
+        final Map<String, dynamic> data = {};
+        if (name != null) data['name'] = name;
+        if (country != null) data['country'] = country;
+        if (iam != null) data['iam'] = iam;
+        if (about != null) data['about'] = about;
+        if (schoolName != null) data['school_name'] = schoolName;
+        if (schoolField != null) data['school_field'] = schoolField;
+        if (schoolLevel != null) data['school_level'] = schoolLevel;
 
-      if (currentUser != null) {
-        if (name != null) currentUser!.name = name;
-        if (country != null) currentUser!.country = country;
-        if (iam != null) currentUser!.iam = iam;
-        if (about != null) currentUser!.about = about;
-        if (schoolName != null) currentUser!.schoolName = schoolName;
-        if (schoolField != null) currentUser!.schoolField = schoolField;
-        if (schoolLevel != null) currentUser!.schoolLevel = schoolLevel;
+        final response = await apiServiceProvider!.apiService.sendJsonRequest(
+          JsonRequest.post('/profile', data),
+        );
 
-        await sessionManager.updateSession(user: currentUser);
-        notifyListeners();
+        if (response['user'] != null) {
+          final updatedUser = User.fromJson(response['user']);
+          await sessionManager.updateSession(user: updatedUser);
+        }
 
         if (context.mounted) {
           MessageDisplayService.showMessage(
@@ -198,6 +212,8 @@ class ProfileVm extends ChangeNotifier {
             'Profile updated successfully',
           );
         }
+      } else {
+        throw Exception("API Service not available");
       }
     } catch (e) {
       if (context.mounted) {
@@ -220,22 +236,39 @@ class ProfileVm extends ChangeNotifier {
     _isEmailPrefsLoading = true;
     notifyListeners();
     try {
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (currentUser != null) {
+      if (apiServiceProvider != null) {
+        final Map<String, dynamic> data = {};
         if (emailMarketing != null) {
-          currentUser!.emailMarketing = emailMarketing;
+          data['email_marketing'] = emailMarketing;
         }
         if (emailProductUpdates != null) {
-          currentUser!.emailProductUpdates = emailProductUpdates;
+          data['email_product_updates'] = emailProductUpdates;
         }
         if (emailMarketplaceNotifications != null) {
-          currentUser!.emailMarketplaceNotifications =
+          data['email_marketplace_notifications'] =
               emailMarketplaceNotifications;
         }
 
-        await sessionManager.updateSession(user: currentUser);
-        notifyListeners();
+        final response = await apiServiceProvider!.apiService.sendJsonRequest(
+          JsonRequest.post('/profile/email-preferences', data),
+        );
+
+        // Update local session based on success - optimistically or from response
+        // The docs say it returns "email_preferences" object, not the full user.
+        // So we update the current user manually.
+        if (currentUser != null) {
+          if (emailMarketing != null) {
+            currentUser!.emailMarketing = emailMarketing;
+          }
+          if (emailProductUpdates != null) {
+            currentUser!.emailProductUpdates = emailProductUpdates;
+          }
+          if (emailMarketplaceNotifications != null) {
+            currentUser!.emailMarketplaceNotifications =
+                emailMarketplaceNotifications;
+          }
+          await sessionManager.updateSession(user: currentUser);
+        }
 
         if (context.mounted) {
           MessageDisplayService.showMessage(
@@ -243,6 +276,8 @@ class ProfileVm extends ChangeNotifier {
             'Email preferences updated',
           );
         }
+      } else {
+        throw Exception("API Service not available");
       }
     } catch (e) {
       if (context.mounted) {
@@ -267,29 +302,51 @@ class ProfileVm extends ChangeNotifier {
     _isPushPrefsLoading = true;
     notifyListeners();
     try {
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (currentUser != null) {
+      if (apiServiceProvider != null) {
+        final Map<String, dynamic> data = {};
         if (pushPomodoroAlerts != null) {
-          currentUser!.pushPomodoroAlerts = pushPomodoroAlerts;
+          data['push_pomodoro_alerts'] = pushPomodoroAlerts;
         }
         if (pushFlashcardReminders != null) {
-          currentUser!.pushFlashcardReminders = pushFlashcardReminders;
+          data['push_flashcard_reminders'] = pushFlashcardReminders;
         }
         if (pushMarketplacePurchaseConfirmations != null) {
-          currentUser!.pushMarketplacePurchaseConfirmations =
+          data['push_marketplace_purchase_confirmations'] =
               pushMarketplacePurchaseConfirmations;
         }
         if (pushMarketplaceSaleNotifications != null) {
-          currentUser!.pushMarketplaceSaleNotifications =
+          data['push_marketplace_sale_notifications'] =
               pushMarketplaceSaleNotifications;
         }
         if (pushFeatureAnnouncements != null) {
-          currentUser!.pushFeatureAnnouncements = pushFeatureAnnouncements;
+          data['push_feature_announcements'] = pushFeatureAnnouncements;
         }
 
-        await sessionManager.updateSession(user: currentUser);
-        notifyListeners();
+        await apiServiceProvider!.apiService.sendJsonRequest(
+          JsonRequest.post('/profile/push-notification-preferences', data),
+        );
+
+        // Update local session based on success
+        if (currentUser != null) {
+          if (pushPomodoroAlerts != null) {
+            currentUser!.pushPomodoroAlerts = pushPomodoroAlerts;
+          }
+          if (pushFlashcardReminders != null) {
+            currentUser!.pushFlashcardReminders = pushFlashcardReminders;
+          }
+          if (pushMarketplacePurchaseConfirmations != null) {
+            currentUser!.pushMarketplacePurchaseConfirmations =
+                pushMarketplacePurchaseConfirmations;
+          }
+          if (pushMarketplaceSaleNotifications != null) {
+            currentUser!.pushMarketplaceSaleNotifications =
+                pushMarketplaceSaleNotifications;
+          }
+          if (pushFeatureAnnouncements != null) {
+            currentUser!.pushFeatureAnnouncements = pushFeatureAnnouncements;
+          }
+          await sessionManager.updateSession(user: currentUser);
+        }
 
         if (context.mounted) {
           MessageDisplayService.showMessage(
@@ -297,6 +354,8 @@ class ProfileVm extends ChangeNotifier {
             'Push notification preferences updated',
           );
         }
+      } else {
+        throw Exception("API Service not available");
       }
     } catch (e) {
       if (context.mounted) {

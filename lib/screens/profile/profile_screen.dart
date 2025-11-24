@@ -6,24 +6,17 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        // Try to get ApiServiceProvider, but provide a fallback if not available
-        ApiServiceProvider? apiServiceProvider;
-        try {
-          apiServiceProvider = context.read<ApiServiceProvider>();
-        } catch (e) {
-          // ApiServiceProvider not available in context
-          debugPrint('ApiServiceProvider not found in context: $e');
-        }
-
-        return ProfileVm(
-          sessionManager: context.read<SessionManager>(),
-          apiServiceProvider: apiServiceProvider,
-          context: context,
-        );
-      },
-      child: const _ProfileScreenBody(),
+    return ApiServiceComponent(
+      child: ChangeNotifierProvider(
+        create: (context) {
+          return ProfileVm(
+            sessionManager: context.read<SessionManager>(),
+            apiServiceProvider: context.read<ApiServiceProvider>(),
+            context: context,
+          );
+        },
+        child: const _ProfileScreenBody(),
+      ),
     );
   }
 }

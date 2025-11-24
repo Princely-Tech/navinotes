@@ -93,8 +93,8 @@ class SessionManager extends ChangeNotifier {
   // Update session with new user data and token
   Future<void> updateSession({User? user, String? token}) async {
     await _ensureInitialized();
-    this.user = user;
-    this.token = token;
+    this.user = user ?? this.user;
+    this.token = token ?? this.token;
 
     if (token != null) {
       debugPrint("storing token to prefs");
