@@ -46,7 +46,7 @@ class AuthScreen extends StatelessWidget {
                   children: [
                     AuthHeader(),
                     _authCard(vm),
-                    _freeTrial(),
+                    if (vm.authType != AuthType.signUp) _freeTrial(),
                     _authTypeSwitch(vm),
                     _testimonial(),
                   ],
@@ -75,57 +75,61 @@ class AuthScreen extends StatelessWidget {
   }
 
   Widget _freeTrial() {
-    return Stack(
-      children: [
-        Positioned(
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          child: SvgPicture.asset(Images.authCardBg, fit: BoxFit.fill),
-        ),
-        ResponsivePadding(
-          mobile: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-          laptop: const EdgeInsets.all(30),
-          child: Column(
-            spacing: 15,
-            children: [
-              Text(
-                'New to NaviNotes?',
-                textAlign: TextAlign.center,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.white,
-                  fontSize: 20.0,
-                  fontFamily: AppTheme.fontPoppins,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Text(
-                'Experience everything NaviNotes offers - 7 days free, no commitment',
-                textAlign: TextAlign.center,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.white.withAlpha(229),
-                  fontSize: 16.0,
-                  fontFamily: AppTheme.fontPoppins,
-                ),
-              ),
+    return Consumer<AuthVM>(
+      builder: (_, vm, _) {
+        return Stack(
+          children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              child: SvgPicture.asset(Images.authCardBg, fit: BoxFit.fill),
+            ),
+            ResponsivePadding(
+              mobile: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              laptop: const EdgeInsets.all(30),
+              child: Column(
+                spacing: 15,
+                children: [
+                  Text(
+                    'New to NaviNotes?',
+                    textAlign: TextAlign.center,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.white,
+                      fontSize: 20.0,
+                      fontFamily: AppTheme.fontPoppins,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    'Experience everything NaviNotes offers - 7 days free, no commitment',
+                    textAlign: TextAlign.center,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.white.withAlpha(229),
+                      fontSize: 16.0,
+                      fontFamily: AppTheme.fontPoppins,
+                    ),
+                  ),
 
-              AppButton(
-                mainAxisSize: MainAxisSize.min,
-                text: 'Start Free Trial',
-                onTap: () {},
-                color: AppTheme.white,
-                style: AppTheme.text.copyWith(
-                  color: AppTheme.amber,
-                  fontSize: 16.0,
-                  fontFamily: AppTheme.fontPoppins,
-                  fontWeight: getFontWeight(600),
-                ),
+                  AppButton(
+                    mainAxisSize: MainAxisSize.min,
+                    text: 'Start Free Trial',
+                    onTap: () => vm.updateAuthType(AuthType.signUp),
+                    color: AppTheme.white,
+                    style: AppTheme.text.copyWith(
+                      color: AppTheme.amber,
+                      fontSize: 16.0,
+                      fontFamily: AppTheme.fontPoppins,
+                      fontWeight: getFontWeight(600),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -171,14 +175,14 @@ class AuthScreen extends StatelessWidget {
             body: 'Pick up right where you left off',
           ),
           if (vm.authType == AuthType.login) LoginForm() else SignUpForm(),
-          _continueWith(),
-          Row(
-            spacing: 12,
-            children: [
-              _socialBtn(Images.google, vm),
-              _socialBtn(Images.apple, vm),
-            ],
-          ),
+          // _continueWith(),
+          // Row(
+          //   spacing: 12,
+          //   children: [
+          //     _socialBtn(Images.google, vm),
+          //     _socialBtn(Images.apple, vm),
+          //   ],
+          // ),
         ],
       ),
     );

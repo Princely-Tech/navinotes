@@ -34,9 +34,15 @@ class AuthVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  toggleAuthType() {
-    authType = authType == AuthType.login ? AuthType.signUp : AuthType.login;
+  void updateAuthType(AuthType type) {
+    authType = type;
     notifyListeners();
+  }
+
+  toggleAuthType() {
+    updateAuthType(
+      authType == AuthType.login ? AuthType.signUp : AuthType.login,
+    );
   }
 
   updateIsLoading(bool value) {
