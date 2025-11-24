@@ -94,18 +94,19 @@ class _ProfileScreenBody extends StatelessWidget {
               Container(
                 width: 80,
                 height: 80,
+                clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
                   color: AppTheme.vividRose,
                   shape: BoxShape.circle,
-                  image:
-                      vm.currentUser?.profilePicture != null
-                          ? DecorationImage(
-                            image: NetworkImage(
-                              vm.currentUser!.profilePicture!,
-                            ),
-                            fit: BoxFit.cover,
-                          )
-                          : null,
+                  // image:
+                  //     vm.currentUser?.profilePicture == null
+                  //         ? DecorationImage(
+                  //           image: NetworkImage(
+                  //             getRemoteImgPath(vm.currentUser!.profilePicture!),
+                  //           ),
+                  //           fit: BoxFit.cover,
+                  //         )
+                  //         : null,
                 ),
                 child:
                     vm.currentUser?.profilePicture == null
@@ -122,7 +123,12 @@ class _ProfileScreenBody extends StatelessWidget {
                             ),
                           ),
                         )
-                        : null,
+                        : Image.network(
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                          getRemoteImgPath(vm.currentUser!.profilePicture!),
+                        ),
               ),
               Positioned(
                 bottom: 0,

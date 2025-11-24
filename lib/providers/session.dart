@@ -5,9 +5,11 @@ User? currentUser;
 class SessionManager extends ChangeNotifier {
   static const String _tokenKey = 'user_token';
   static const String _userKey = 'user_data';
+  static const String _onboardingKey = 'onboarding_seen';
 
   User? user;
   String? token;
+  bool _hasSeenOnboarding = false;
   String? email;
   String? otp;
   List<Board> userBoards = [];
@@ -44,6 +46,8 @@ class SessionManager extends ChangeNotifier {
       user = User.fromJson(jsonDecode(userJson));
       email = user?.email;
     }
+
+    _hasSeenOnboarding = _prefs!.getBool(_onboardingKey) ?? false;
     notifyListeners();
   }
 
@@ -60,6 +64,17 @@ class SessionManager extends ChangeNotifier {
       "isLoggedIn check - Token: ${token != null}, User: ${user != null}",
     );
     return loggedIn;
+  }
+
+  bool hasSeenOnboarding() {
+    return _hasSeenOnboarding;
+  }
+
+  Future<void> completeOnboarding() async {
+    await _ensureInitialized();
+    _hasSeenOnboarding = true;
+    await _prefs!.setBool(_onboardingKey, true);
+    notifyListeners();
   }
 
   // Clear all session data

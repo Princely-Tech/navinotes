@@ -79,6 +79,16 @@ class User {
     this.forOther,
   });
 
+  static bool _parseBool(dynamic value, {bool defaultValue = false}) {
+    if (value == null) return defaultValue;
+    if (value is bool) return value;
+    if (value is int) return value == 1;
+    if (value is String) {
+      return value.toLowerCase() == 'true' || value == '1';
+    }
+    return defaultValue;
+  }
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       iam: json['iam'],
@@ -103,22 +113,40 @@ class User {
       createdAt: json['created_at'],
       id: json['id'],
       profilePicture: json['profile_picture'],
-      emailMarketing: json['email_marketing'] ?? true,
-      emailProductUpdates: json['email_product_updates'] ?? true,
-      emailMarketplaceNotifications:
-          json['email_marketplace_notifications'] ?? true,
-      pushPomodoroAlerts: json['push_pomodoro_alerts'] ?? true,
-      pushFlashcardReminders: json['push_flashcard_reminders'] ?? true,
-      pushMarketplacePurchaseConfirmations:
-          json['push_marketplace_purchase_confirmations'] ?? true,
-      pushMarketplaceSaleNotifications:
-          json['push_marketplace_sale_notifications'] ?? true,
-      pushFeatureAnnouncements: json['push_feature_announcements'] ?? true,
-      forExam: json['for_exam'] ?? false,
-      forProject: json['for_project'] ?? false,
-      forResearch: json['for_research'] ?? false,
-      forBrainstorming: json['for_brainstorming'] ?? false,
-      forCourseNote: json['for_course_note'] ?? false,
+      emailMarketing: _parseBool(json['email_marketing'], defaultValue: true),
+      emailProductUpdates: _parseBool(
+        json['email_product_updates'],
+        defaultValue: true,
+      ),
+      emailMarketplaceNotifications: _parseBool(
+        json['email_marketplace_notifications'],
+        defaultValue: true,
+      ),
+      pushPomodoroAlerts: _parseBool(
+        json['push_pomodoro_alerts'],
+        defaultValue: true,
+      ),
+      pushFlashcardReminders: _parseBool(
+        json['push_flashcard_reminders'],
+        defaultValue: true,
+      ),
+      pushMarketplacePurchaseConfirmations: _parseBool(
+        json['push_marketplace_purchase_confirmations'],
+        defaultValue: true,
+      ),
+      pushMarketplaceSaleNotifications: _parseBool(
+        json['push_marketplace_sale_notifications'],
+        defaultValue: true,
+      ),
+      pushFeatureAnnouncements: _parseBool(
+        json['push_feature_announcements'],
+        defaultValue: true,
+      ),
+      forExam: _parseBool(json['for_exam']),
+      forProject: _parseBool(json['for_project']),
+      forResearch: _parseBool(json['for_research']),
+      forBrainstorming: _parseBool(json['for_brainstorming']),
+      forCourseNote: _parseBool(json['for_course_note']),
       forOther: json['for_other'],
     );
   }

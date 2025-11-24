@@ -46,15 +46,24 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _navigateToNextScreen() async {
-    final isLoggedIn = context.read<SessionManager>().isLoggedIn();
+    final sessionManager = context.read<SessionManager>();
+    final isLoggedIn = sessionManager.isLoggedIn();
+    final hasSeenOnboarding = sessionManager.hasSeenOnboarding();
+
     // Small delay to ensure smooth transition
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (mounted) {
-      Navigator.of(
-        context,
-      ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.onboarding);
-      // ).pushReplacementNamed(isLoggedIn ? Routes.dashboard : Routes.auth);
+      String route;
+      if (isLoggedIn) {
+        route = Routes.dashboard;
+      } else if (hasSeenOnboarding) {
+        route = Routes.auth;
+      } else {
+        route = Routes.onboarding;
+      }
+
+      Navigator.of(context).pushReplacementNamed(route);
     }
   }
 
@@ -64,36 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (mounted) {
       //TODO uncomment
       return _navigateToNextScreen();
-      _navigateToDashboard();
     }
-  }
-
-  Future<void> _navigateToDashboard() async {
-    //TODO delete this
-    // await DatabaseHelper.instance.deleteFlashCard(1);
-    return NavigationHelper.pushReplacement(Routes.flashCards);
-    List<Board> boards = await DatabaseHelper.instance.getAllBoards();
-    // Board board = boards[3];
-    Board board = boards.first;
-    // List<Content> contents = await DatabaseHelper.instance.getAllContents(
-    //   board.id,
-    // );
-    //  List<Content> allFiles = await DatabaseHelper.instance.getAllFiles(
-    //   board.id,
-    // );
-    NavigationHelper.navigateToBoard(board);
-    // NavigationHelper.navigateToBoardPopup(board);
-    // NavigationHelper.pushReplacement(
-    //   Routes.noteTemplate,
-    //   arguments: board,
-    // );
-    // NavigationHelper.pushReplacement(
-    //   Routes.noteCreation,
-    //   arguments: NoteCreationProp(
-    //     template: noteTemplateBlank,
-    //     contentId: contents[0].id!,
-    //   ),
-    // );
   }
 
   @override

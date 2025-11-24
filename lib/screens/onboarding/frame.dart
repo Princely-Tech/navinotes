@@ -91,7 +91,12 @@ class OnBoardingFrame extends StatelessWidget {
                             ),
 
                             AppButton(
-                              onTap: () => NavigationHelper.push(Routes.auth),
+                              onTap: () async {
+                                await context
+                                    .read<SessionManager>()
+                                    .completeOnboarding();
+                                NavigationHelper.pushReplacement(Routes.auth);
+                              },
                               text: 'Let go',
                             ),
                           ],

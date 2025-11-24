@@ -4,12 +4,6 @@ import 'vm.dart';
 
 List<Widget> onboardingFrames = [
   OnBoardingFrame(
-    title: 'Collaborate & Learn Together',
-    body: 'Connect with classmates, share notes, and ace your exams together.',
-    image: Images.groupLaugh,
-    index: 1,
-  ),
-  OnBoardingFrame(
     title: 'Master Your Studies',
     body:
         'Organize your notes, track your progress, and stay focused on your goals.',
@@ -21,6 +15,12 @@ List<Widget> onboardingFrames = [
     body: 'Access resources, join study groups, and reach your full potential.',
     image: Images.studyGroup,
     index: 3,
+  ),
+  OnBoardingFrame(
+    title: 'Collaborate & Learn Together',
+    body: 'Share notes, and explore new ideas in marketplace.',
+    image: Images.groupLaugh,
+    index: 1,
   ),
 ];
 

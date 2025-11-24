@@ -218,3 +218,8 @@ double getAverage(List<int> values) {
   double avg = values.reduce((a, b) => a + b) / values.length;
   return double.parse(avg.toStringAsFixed(1));
 }
+
+String getRemoteImgPath(String fileName) {
+  if (fileName.startsWith('http')) return fileName;
+  return '${EnvironmentConfig.fileUrl}/$fileName';
+}
