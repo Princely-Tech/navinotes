@@ -369,7 +369,7 @@ class DarkAcademiaScreen extends StatelessWidget {
                 ),
                 onTap: NavigationHelper.pop,
                 color: AppTheme.oatCream,
-                text: 'Choose Different Style',
+                text: 'Cancel',
               ),
               Text(
                 'Create Your Academic Board',

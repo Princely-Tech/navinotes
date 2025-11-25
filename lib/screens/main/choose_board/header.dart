@@ -78,18 +78,7 @@ class ChooseBoardHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-                  AppIconButton(
-                    onPressed: NavigationHelper.navigateToProfile,
-                    icon: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppTheme.pastelBloom,
-                      ),
-                      child: Icon(Icons.person, color: AppTheme.vividRose),
-                    ),
-                  ),
+                 
                   // Row(
                   //   children: [
 

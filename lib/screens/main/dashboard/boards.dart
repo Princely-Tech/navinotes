@@ -16,16 +16,7 @@ class YourBoards extends StatelessWidget {
       },
     );
   }
-
-  // Widget _boardCard(DashboardVm vm, {required Board board}) {
-  //   // Get the appropriate image based on board type
-
-  //   return InkWell(
-  //     onTap: () => vm.goToBoard(board),
-  //     child: ,
-  //   );
-  // }
-
+  
   Widget _boards(DashboardVm vm) {
     final boards = vm.sessionVm.userBoards;
 

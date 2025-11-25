@@ -433,7 +433,7 @@ class BoardLightAcademiaScreen extends StatelessWidget {
                       size: 18,
                     ),
                     onTap: NavigationHelper.pop,
-                    text: 'Choose Different Style',
+                    text: 'Cancel',
                     style: AppTheme.text.copyWith(
                       color: AppTheme.sepiaBrown,
                       fontSize: 16.0,

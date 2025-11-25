@@ -378,7 +378,7 @@ class BoardPlainScreen extends StatelessWidget {
                       size: 18,
                     ),
                     onTap: NavigationHelper.pop,
-                    text: 'Choose Different Style',
+                    text: 'Cancel',
                     style: AppTheme.text.copyWith(
                       color: AppTheme.steelMist,
                       fontSize: 16.0,

@@ -139,6 +139,9 @@ class DataErrorInterceptor extends Interceptor {
         exception = ForbiddenResourceException(errorMessage: message);
       } else if (err.isUnauthorisedError) {
         exception = UnauthorisedException(errorMessage: message);
+        
+        // Handle 401 Unauthorized - Clear session and navigate to login
+        _handleUnauthorized();
       } else {
         exception = InputException(errorMessage: message);
       }
@@ -146,6 +149,22 @@ class DataErrorInterceptor extends Interceptor {
         DioException(requestOptions: err.requestOptions, error: exception),
       );
     }
+  }
+
+  /// Handle 401 Unauthorized error by clearing session and navigating to login
+  void _handleUnauthorized() {
+    debugPrint('401 Unauthorized - Logging out user');
+    
+    // Clear session data
+    final sessionManager = NavigationHelper.navigatorKey.currentContext?.read<SessionManager>();
+    if (sessionManager != null) {
+      sessionManager.clearSession();
+    }
+    
+    // Navigate to login screen and clear navigation stack
+    Future.microtask(() {
+      NavigationHelper.logOut();
+    });
   }
 }
 

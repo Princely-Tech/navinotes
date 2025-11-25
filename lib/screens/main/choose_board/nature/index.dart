@@ -495,7 +495,7 @@ class BoardNatureScreen extends StatelessWidget {
                               onTap: NavigationHelper.pop,
                               color: AppTheme.mossGreen,
                               suffix: _leafSvg(),
-                              text: 'Choose Different Style',
+                              text: 'Cancel',
                             ),
                             ProfilePic(),
                           ],

@@ -66,7 +66,7 @@ class ChooseBoardVm extends ChangeNotifier {
 
   void goNext() {
     if (selectedBoard.route.isNotEmpty) {
-      NavigationHelper.push(selectedBoard.route);
+      NavigationHelper.pushReplacement(selectedBoard.route);
     }
   }
 }
