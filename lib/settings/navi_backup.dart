@@ -98,6 +98,103 @@ class NaviBackupService {
     }
   }
 
+  static Future<File?> exportUserData({
+    required BuildContext context,
+    required User? user,
+  }) async {
+    try {
+      final db = DatabaseHelper.instance;
+      final boards = await db.getAllBoards();
+
+      final allContents = <Content>[];
+      final filesInfo = <Map<String, dynamic>>[];
+      final fileContents = <String, List<int>>{};
+
+      for (final board in boards) {
+        final contents = await db.getAllContents(board.id);
+        allContents.addAll(contents);
+
+        for (final content in contents) {
+          final filePath = content.file;
+          if (filePath != null && filePath.isNotEmpty) {
+            final file = File(filePath);
+            if (await file.exists()) {
+              final fileName = path.basename(file.path);
+              filesInfo.add({
+                'board_id': board.id,
+                'content_id': content.id,
+                'file_name': fileName,
+                'original_path': file.path,
+              });
+              final archivePath = 'files/${board.id}/${content.id}_$fileName';
+              fileContents[archivePath] = await file.readAsBytes();
+            }
+          }
+        }
+      }
+
+      final metadata = {
+        'schema_version': currentSchemaVersion,
+        'exported_at': DateTime.now().toIso8601String(),
+        'user': user?.toJson(),
+        'boards': boards.map((b) => b.toMap()).toList(),
+        'contents': allContents.map((c) => c.toMap()).toList(),
+        'files': filesInfo,
+      };
+
+      final archive = Archive();
+
+      final metadataBytes = utf8.encode(jsonEncode(metadata));
+      archive.addFile(
+        ArchiveFile('metadata.json', metadataBytes.length, metadataBytes),
+      );
+
+      fileContents.forEach((relativePath, bytes) {
+        archive.addFile(ArchiveFile(relativePath, bytes.length, bytes));
+      });
+
+      final zipEncoder = ZipEncoder();
+      final encoded = zipEncoder.encode(archive);
+
+      if (encoded == null) {
+        throw Exception('Failed to encode data export archive');
+      }
+
+      final appDocDir = await getApplicationDocumentsDirectory();
+      final exportDir = Directory(path.join(appDocDir.path, 'exports'));
+      if (!await exportDir.exists()) {
+        await exportDir.create(recursive: true);
+      }
+
+      final userIdPart = user?.id?.toString() ?? 'local_user';
+      final safeName = 'user_${userIdPart}_data';
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final filePath = path.join(exportDir.path, '${safeName}_$timestamp.navi');
+      final exportFile = File(filePath);
+      await exportFile.writeAsBytes(encoded, flush: true);
+
+      await _saveToDownloads(exportFile);
+
+      await handleFileSharing(
+        exportFile,
+        context: context,
+        successMessage: 'Data exported successfully',
+        errorMessage: 'Failed to share exported data',
+      );
+
+      return exportFile;
+    } catch (e) {
+      debugPrint('Error exporting user data: $e');
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Failed to export data: ${e.toString()}',
+        );
+      }
+      return null;
+    }
+  }
+
   static Future<void> _saveToDownloads(File exportFile) async {
     try {
       if (!Platform.isAndroid) {

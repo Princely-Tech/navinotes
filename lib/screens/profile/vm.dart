@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/navi_backup.dart';
 
 class ProfileVm extends ChangeNotifier {
   final SessionManager sessionManager;
@@ -381,6 +382,28 @@ class ProfileVm extends ChangeNotifier {
     } catch (e) {
       if (context.mounted) {
         MessageDisplayService.showErrorMessage(context, 'Failed to logout: $e');
+      }
+    } finally {
+      _isAccountActionLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> exportUserData() async {
+    try {
+      _isAccountActionLoading = true;
+      notifyListeners();
+
+      await NaviBackupService.exportUserData(
+        context: context,
+        user: currentUser,
+      );
+    } catch (e) {
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Failed to export data: $e',
+        );
       }
     } finally {
       _isAccountActionLoading = false;

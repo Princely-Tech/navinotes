@@ -670,6 +670,17 @@ class _ProfileScreenBody extends StatelessWidget {
           child: Column(
             spacing: 12,
             children: [
+              AppButton.secondary(
+                text: 'Export data',
+                onTap: vm.exportUserData,
+                prefix: Icon(
+                  Icons.file_download,
+                  color: AppTheme.vividBlue,
+                  size: 18,
+                ),
+                color: AppTheme.vividBlue,
+              ),
+              const SizedBox(height: 8),
               // Refresh Stats Button
               AppButton.secondary(
                 text: 'Refresh Statistics',
