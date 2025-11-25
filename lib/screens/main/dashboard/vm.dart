@@ -45,8 +45,9 @@ class DashboardVm extends ChangeNotifier {
       notifyListeners();
 
       final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['navi'],
+        // Some platforms don't support custom filters for unknown extensions
+        // like .navi; use a broader type and validate in Dart instead.
+        type: FileType.any,
       );
 
       if (result == null || result.files.isEmpty) {
@@ -59,6 +60,16 @@ class DashboardVm extends ChangeNotifier {
       }
 
       final file = File(picked.path!);
+      final pathLower = picked.name.toLowerCase();
+      if (!pathLower.endsWith('.navi')) {
+        if (context.mounted) {
+          MessageDisplayService.showErrorMessage(
+            context,
+            'Please select a .navi backup file',
+          );
+        }
+        return;
+      }
 
       await NaviBackupService.importBoard(
         file: file,
