@@ -25,12 +25,30 @@ class DashboardScreen extends StatelessWidget {
                 drawer: CustomDrawer(
                   child: NavigationSideBar(activeRoute: activeRoute),
                 ),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: vm.goToCreateBoard,
-                  backgroundColor:
-                      hasData ? AppTheme.vividRose : AppTheme.tropicalTeal,
-                  shape: CircleBorder(),
-                  child: Icon(Icons.add, color: AppTheme.white),
+                floatingActionButton: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FloatingActionButton.extended(
+                      onPressed: () => vm.importBoard(context),
+                      backgroundColor: AppTheme.vividBlue,
+                      icon: const Icon(
+                        Icons.file_upload,
+                        color: AppTheme.white,
+                      ),
+                      label: const Text(
+                        'Import',
+                        style: TextStyle(color: AppTheme.white),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    FloatingActionButton(
+                      onPressed: vm.goToCreateBoard,
+                      backgroundColor:
+                          hasData ? AppTheme.vividRose : AppTheme.tropicalTeal,
+                      shape: const CircleBorder(),
+                      child: Icon(Icons.add, color: AppTheme.white),
+                    ),
+                  ],
                 ),
                 body: ResponsiveSection(
                   mobile: DashboardMain(),

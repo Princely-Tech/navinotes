@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/date_utils.dart';
+import 'package:navinotes/settings/navi_backup.dart';
 
 class BoardPlainPopupOverview extends StatelessWidget {
   const BoardPlainPopupOverview({super.key});
@@ -928,6 +929,22 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 imagePath: Images.boardPlainImportFiles,
                 onTap: () => vm.importFiles(context),
                 loading: vm.savingFiles,
+              ),
+              buildActionCard(
+                title: 'Export Board',
+                description:
+                    'Export this board and all its notes, files, and settings',
+                buttonText: 'Export',
+                imagePath: Images.boardPlainImportFiles,
+                loading: vm.exportingBoard,
+                onTap: () async {
+                  vm.updateExportingBoard(true);
+                  await NaviBackupService.exportBoard(
+                    board: vm.board,
+                    context: context,
+                  );
+                  vm.updateExportingBoard(false);
+                },
               ),
             ],
           ),

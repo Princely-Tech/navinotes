@@ -9,6 +9,13 @@ class BoardEditVm extends ChangeNotifier {
   // bool _showSuccess = false;
   // String? _successMessage;
 
+  bool exportingBoard = false;
+
+  void updateExportingBoard(bool value) {
+    exportingBoard = value;
+    notifyListeners();
+  }
+
   GlobalKey<ScaffoldState>? scaffoldKey;
   final GlobalKey courseTimelineKey = GlobalKey();
 
