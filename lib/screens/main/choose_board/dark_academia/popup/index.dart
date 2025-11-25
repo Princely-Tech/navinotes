@@ -106,6 +106,9 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                                     _syllabusSection(),
                                     _courseTimeline(),
                                     _footer(),
+                                    const SizedBox(height: 24),
+                                    DeleteBoardButton(),
+                                    const SizedBox(height: 24),
                                   ],
                                 );
                               },

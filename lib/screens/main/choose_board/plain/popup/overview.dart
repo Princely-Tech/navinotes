@@ -1,6 +1,4 @@
 import 'package:navinotes/packages.dart';
-import 'package:navinotes/settings/date_utils.dart';
-import 'package:navinotes/settings/navi_backup.dart';
 
 class BoardPlainPopupOverview extends StatelessWidget {
   const BoardPlainPopupOverview({super.key});
@@ -71,6 +69,9 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     _courseOutline(vm: vm),
                     Divider(height: 1, color: AppTheme.lightGray),
                     _courseDetails(vm: vm),
+                    const SizedBox(height: 24),
+                    DeleteBoardButton(),
+                    const SizedBox(height: 24),
                   ],
                 );
               },
@@ -944,24 +945,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     context: context,
                   );
                   vm.updateExportingBoard(false);
-                },
-              ),
-              buildActionCard(
-                title: 'Delete Board',
-                description:
-                    'Permanently delete this board, its notes, files, and flashcards',
-                buttonText: 'Delete',
-                imagePath: Images.trash,
-                onTap: () async {
-                  final sessionVm = Provider.of<SessionManager>(
-                    context,
-                    listen: false,
-                  );
-                  await NaviBackupService.deleteBoardWithConfirmation(
-                    context: context,
-                    board: vm.board,
-                    sessionVm: sessionVm,
-                  );
                 },
               ),
             ],

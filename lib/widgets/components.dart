@@ -986,3 +986,40 @@ class SettingsButton extends StatelessWidget {
     // );
   }
 }
+
+class DeleteBoardButton extends StatelessWidget {
+  const DeleteBoardButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return Align(
+          alignment: Alignment.center,
+          child: AppButton.text(
+            mainAxisSize: MainAxisSize.min,
+            text: 'Delete board',
+            onTap: () async {
+              final sessionVm = Provider.of<SessionManager>(
+                context,
+                listen: false,
+              );
+              await NaviBackupService.deleteBoardWithConfirmation(
+                context: context,
+                board: vm.board,
+                sessionVm: sessionVm,
+              );
+              NavigationHelper.pushAndRemoveUntil(Routes.dashboard);
+            },
+            prefix: Icon(
+              Icons.delete_forever,
+              color: AppTheme.bloodFire,
+              size: 18,
+            ),
+            color: AppTheme.bloodFire,
+          ),
+        );
+      },
+    );
+  }
+}

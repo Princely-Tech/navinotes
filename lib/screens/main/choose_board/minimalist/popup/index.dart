@@ -52,6 +52,9 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                             ),
                           ),
                           _footer(),
+                          const SizedBox(height: 24),
+                          DeleteBoardButton(),
+                          const SizedBox(height: 24),
                         ],
                       ),
                     ),
@@ -284,24 +287,24 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                 onTap: () => vm.importFiles(context),
                 loading: vm.savingFiles,
               ),
-              _buildActionCard(
-                icon: Images.trash,
-                title: 'Delete Board',
-                description:
-                    'Permanently delete this board, its notes, files, and flashcards',
-                actionText: 'Delete Board →',
-                onTap: () async {
-                  final sessionVm = Provider.of<SessionManager>(
-                    context,
-                    listen: false,
-                  );
-                  await NaviBackupService.deleteBoardWithConfirmation(
-                    context: context,
-                    board: vm.board,
-                    sessionVm: sessionVm,
-                  );
-                },
-              ),
+              // _buildActionCard(
+              //   icon: Images.trash,
+              //   title: 'Delete Board',
+              //   description:
+              //       'Permanently delete this board, its notes, files, and flashcards',
+              //   actionText: 'Delete Board →',
+              //   onTap: () async {
+              //     final sessionVm = Provider.of<SessionManager>(
+              //       context,
+              //       listen: false,
+              //     );
+              //     await NaviBackupService.deleteBoardWithConfirmation(
+              //       context: context,
+              //       board: vm.board,
+              //       sessionVm: sessionVm,
+              //     );
+              //   },
+              // ),
             ],
           ),
         );

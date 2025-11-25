@@ -83,6 +83,9 @@ class BoardNaturePopupScreen extends StatelessWidget {
                         // _studyTemplateSection(),
                         _semesterJourney(),
                         _courseInfo(),
+                        const SizedBox(height: 24),
+                        DeleteBoardButton(),
+                        const SizedBox(height: 24),
                       ],
                     ),
                   ),
@@ -612,25 +615,25 @@ class BoardNaturePopupScreen extends StatelessWidget {
                     onTap: () => vm.importFiles(context),
                     loading: vm.savingFiles,
                   ),
-                  _sectionCard(
-                    title: 'Delete Board',
-                    description:
-                        'Permanently delete this board, its notes, files, and flashcards',
-                    buttonText: 'Delete',
-                    color: const Color(0xFF8B0000),
-                    imageUrl: Images.trash,
-                    onTap: () async {
-                      final sessionVm = Provider.of<SessionManager>(
-                        context,
-                        listen: false,
-                      );
-                      await NaviBackupService.deleteBoardWithConfirmation(
-                        context: context,
-                        board: vm.board,
-                        sessionVm: sessionVm,
-                      );
-                    },
-                  ),
+                  // _sectionCard(
+                  //   title: 'Delete Board',
+                  //   description:
+                  //       'Permanently delete this board, its notes, files, and flashcards',
+                  //   buttonText: 'Delete',
+                  //   color: const Color(0xFF8B0000),
+                  //   imageUrl: Images.trash,
+                  //   onTap: () async {
+                  //     final sessionVm = Provider.of<SessionManager>(
+                  //       context,
+                  //       listen: false,
+                  //     );
+                  //     await NaviBackupService.deleteBoardWithConfirmation(
+                  //       context: context,
+                  //       board: vm.board,
+                  //       sessionVm: sessionVm,
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ],

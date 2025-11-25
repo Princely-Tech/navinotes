@@ -312,8 +312,11 @@ class NaviBackupService {
 
       final metadataString = utf8.decode(metadataFile.content as List<int>);
       final metadata = jsonDecode(metadataString) as Map<String, dynamic>;
+      final db = DatabaseHelper.instance;
 
-      final boardMap = Map<String, dynamic>.from(metadata['board']);
+      final isUserDataExport = metadata.containsKey('boards');
+
+      // Normalize contents and files info
       final contentsList =
           (metadata['contents'] as List)
               .map((e) => Map<String, dynamic>.from(e as Map))
@@ -323,54 +326,121 @@ class NaviBackupService {
               .map((e) => Map<String, dynamic>.from(e as Map))
               .toList();
 
-      final importedBoard = Board.fromMap(boardMap);
+      List<Board> boardsToImport;
 
-      final db = DatabaseHelper.instance;
-      final existingBoards = await db.getAllBoards();
-      final conflictById =
-          existingBoards.where((b) => b.id == importedBoard.id).toList();
-      final conflictByName =
-          existingBoards.where((b) => b.name == importedBoard.name).toList();
+      if (isUserDataExport) {
+        // Profile-level export: multiple boards
+        boardsToImport =
+            (metadata['boards'] as List)
+                .map((e) => Board.fromMap(Map<String, dynamic>.from(e as Map)))
+                .toList();
 
-      if (conflictById.isNotEmpty || conflictByName.isNotEmpty) {
-        final shouldOverwrite = await showDialog<bool>(
-          context: context,
-          builder: (ctx) {
-            return AlertDialog(
-              title: const Text('Import Board'),
-              content: Text(
-                'A board with the same ' +
-                    (conflictById.isNotEmpty ? 'ID' : 'name') +
-                    " already exists. Do you want to overwrite it?",
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(false),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(true),
-                  child: const Text('Overwrite'),
-                ),
-              ],
-            );
-          },
-        );
+        final existingBoards = await db.getAllBoards();
+        final conflictingBoards = <Board>[];
 
-        if (shouldOverwrite != true) {
-          return false;
+        for (final b in boardsToImport) {
+          final conflictById =
+              existingBoards.where((eb) => eb.id == b.id).toList();
+          final conflictByName =
+              existingBoards.where((eb) => eb.name == b.name).toList();
+          if (conflictById.isNotEmpty || conflictByName.isNotEmpty) {
+            conflictingBoards.add(b);
+          }
         }
 
-        await _deleteBoardAndContents(importedBoard.id);
+        if (conflictingBoards.isNotEmpty) {
+          final shouldOverwriteAll = await showDialog<bool>(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: const Text('Import Data'),
+                content: Text(
+                  'This backup contains multiple boards. Some boards with the same ID or name already exist. ' +
+                      'Do you want to overwrite any existing boards with the versions from this backup?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(true),
+                    child: const Text('Overwrite'),
+                  ),
+                ],
+              );
+            },
+          );
+
+          if (shouldOverwriteAll != true) {
+            return false;
+          }
+
+          for (final b in conflictingBoards) {
+            await _deleteBoardAndContents(b.id);
+          }
+        }
+      } else {
+        // Single-board export
+        final boardMap = Map<String, dynamic>.from(metadata['board']);
+        final importedBoard = Board.fromMap(boardMap);
+
+        final existingBoards = await db.getAllBoards();
+        final conflictById =
+            existingBoards.where((b) => b.id == importedBoard.id).toList();
+        final conflictByName =
+            existingBoards.where((b) => b.name == importedBoard.name).toList();
+
+        if (conflictById.isNotEmpty || conflictByName.isNotEmpty) {
+          final shouldOverwrite = await showDialog<bool>(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: const Text('Import Board'),
+                content: Text(
+                  'A board with the same ' +
+                      (conflictById.isNotEmpty ? 'ID' : 'name') +
+                      " already exists. Do you want to overwrite it?",
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(true),
+                    child: const Text('Overwrite'),
+                  ),
+                ],
+              );
+            },
+          );
+
+          if (shouldOverwrite != true) {
+            return false;
+          }
+
+          await _deleteBoardAndContents(importedBoard.id);
+        }
+
+        boardsToImport = [importedBoard];
       }
 
+      // Recreate files referenced by contents
       final filesDir = await getFilesDirectory();
       final filePathByContentId = <String, String>{};
 
       for (final info in filesInfo) {
         final contentId = info['content_id'] as String;
         final fileName = info['file_name'] as String;
-        final archivePath = 'files/$fileName';
+
+        String archivePath;
+        if (info.containsKey('board_id')) {
+          final boardId = info['board_id'] as String;
+          archivePath = 'files/$boardId/${contentId}_$fileName';
+        } else {
+          archivePath = 'files/$fileName';
+        }
 
         final archiveFile = archive.files.firstWhere(
           (f) => f.name == archivePath,
@@ -390,8 +460,10 @@ class NaviBackupService {
         filePathByContentId[contentId] = targetPath;
       }
 
-      final boardToInsert = importedBoard;
-      await db.insertBoard(boardToInsert);
+      // Insert boards and contents
+      for (final board in boardsToImport) {
+        await db.insertBoard(board);
+      }
 
       for (final map in contentsList) {
         final contentId = map['id'] as String;
@@ -407,7 +479,9 @@ class NaviBackupService {
       if (context.mounted) {
         MessageDisplayService.showMessage(
           context,
-          'Board imported successfully',
+          isUserDataExport
+              ? 'Data imported successfully'
+              : 'Board imported successfully',
         );
       }
 

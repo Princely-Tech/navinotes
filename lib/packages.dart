@@ -5,6 +5,9 @@ export 'settings/packages.dart';
 //Widgets
 export 'widgets/index.dart';
 
+export 'package:navinotes/settings/date_utils.dart';
+export 'package:navinotes/settings/navi_backup.dart';
+
 //Screens
 export 'screens/packages.dart';
 export 'screens/main/choose_board/common/board_wrapper.dart';
