@@ -48,6 +48,8 @@
 
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need access to your microphone for voice recording</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>We need access to your calendar to sync study schedules and assignments</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

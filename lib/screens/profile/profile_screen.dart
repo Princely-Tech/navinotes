@@ -1,5 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/profile/vm.dart';
+import 'package:navinotes/services/calendar_service.dart';
+import 'package:navinotes/screens/main/dashboard/calendar_connect_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -76,6 +78,7 @@ class _ProfileScreenBody extends StatelessWidget {
                   loading: vm.isPushPrefsLoading,
                   child: _buildPushPreferences(vm),
                 ),
+                _buildCalendarSection(context),
                 LoadingIndicator(
                   loading: vm.isAccountActionLoading,
                   child: _buildAccountSection(context, vm),
@@ -530,10 +533,10 @@ class _ProfileScreenBody extends StatelessWidget {
 
     showDialog(
       context: context,
-      fullscreenDialog: true,
+      // fullscreenDialog: true,
       builder:
           (context) => AlertDialog(
-            constraints: BoxConstraints(minWidth: screenWidth(context)),
+            // constraints: BoxConstraints(minWidth: screenWidth(context)),
             title: Text(
               'Edit Profile',
               style: TextStyle(
@@ -635,6 +638,107 @@ class _ProfileScreenBody extends StatelessWidget {
             ),
             maxLines: isMultiline ? null : 1,
             overflow: isMultiline ? null : TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCalendarSection(BuildContext context) {
+    final calendarService = CalendarService();
+    final isConnected = calendarService.isDeviceConnected || calendarService.isGoogleConnected;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
+      children: [
+        Row(
+          spacing: 10,
+          children: [
+            Icon(Icons.calendar_today, color: AppTheme.vividRose, size: 20),
+            Text(
+              'Calendar Integration',
+              style: TextStyle(
+                color: AppTheme.vividRose,
+                fontSize: 18.0,
+                fontFamily: AppTheme.fontFamily,
+                fontWeight: getFontWeight(600),
+              ),
+            ),
+          ],
+        ),
+        CustomCard(
+          addCardShadow: true,
+          child: Column(
+            spacing: 16,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    isConnected ? Icons.check_circle : Icons.cancel,
+                    color: isConnected ? AppTheme.vitalGreen : AppTheme.steelMist,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isConnected ? 'Calendar Connected' : 'No Calendar Connected',
+                          style: TextStyle(
+                            color: AppTheme.defaultBlack,
+                            fontSize: 16.0,
+                            fontFamily: AppTheme.fontFamily,
+                            fontWeight: getFontWeight(600),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          isConnected
+                              ? 'Your calendar is synced with NaviNotes'
+                              : 'Connect your calendar to sync study schedules',
+                          style: TextStyle(
+                            color: AppTheme.steelMist,
+                            fontSize: 14.0,
+                            fontFamily: AppTheme.fontFamily,
+                            fontWeight: getFontWeight(400),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (!isConnected)
+                AppButton(
+                  text: 'Connect Calendar',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CalendarConnectScreen(),
+                      ),
+                    );
+                  },
+                  color: AppTheme.vividRose,
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              if (isConnected)
+                AppButton.secondary(
+                  text: 'Manage Calendar',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CalendarConnectScreen(),
+                      ),
+                    );
+                  },
+                  color: AppTheme.vividRose,
+                  mainAxisSize: MainAxisSize.min,
+                ),
+            ],
           ),
         ),
       ],

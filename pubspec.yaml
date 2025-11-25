@@ -59,6 +59,12 @@ dependencies:
   flutter_quill_delta_from_html: ^1.5.3
   pdf: ^3.11.1
   archive: ^3.6.1
+  googleapis: ^13.2.0
+  googleapis_auth: ^2.0.0
+  device_calendar: ^4.3.0
+  flutter_appauth: ^8.0.0+1
+  timezone: ^0.9.4
+  http: ^1.4.0
 
   flutter_pdf_annotations:
     path: flutter_pdf_annotations

@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'vm.dart';
 import 'widgets.dart';
+import 'calendar_connect_screen.dart';
 
 class EmptyDashboardMain extends StatelessWidget {
   const EmptyDashboardMain({super.key});
@@ -121,54 +122,58 @@ class EmptyDashboardMain extends StatelessWidget {
     required String title,
     required String body,
     required Widget icon,
-    void Function()? onTap,
+    void Function(BuildContext)? onTap,
   }) {
-    return ExpandableController(
-      mobile: false,
-      desktop: true,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minWidth: 300),
-        child: InkWell(
-          onTap: onTap,
-          child: CustomCard(
-            width: null,
-            padding: EdgeInsets.all(10),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 15,
-              children: [
-                icon,
-                ExpandableController(
-                  mobile: false,
-                  desktop: true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: AppTheme.text.copyWith(
-                          color: AppTheme.graphite,
-                          fontSize: 14.86,
-                          fontWeight: getFontWeight(500),
-                          height: 1.50,
-                        ),
+    return Builder(
+      builder: (context) {
+        return ExpandableController(
+          mobile: false,
+          desktop: true,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: 300),
+            child: InkWell(
+              onTap: () => onTap?.call(context),
+              child: CustomCard(
+                width: null,
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 15,
+                  children: [
+                    icon,
+                    ExpandableController(
+                      mobile: false,
+                      desktop: true,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.graphite,
+                              fontSize: 14.86,
+                              fontWeight: getFontWeight(500),
+                              height: 1.50,
+                            ),
+                          ),
+                          Text(
+                            body,
+                            style: AppTheme.text.copyWith(
+                              color: AppTheme.steelMist,
+                              fontSize: 11.15,
+                              height: 1.33,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        body,
-                        style: AppTheme.text.copyWith(
-                          color: AppTheme.steelMist,
-                          fontSize: 11.15,
-                          height: 1.33,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -198,7 +203,7 @@ class EmptyDashboardMain extends StatelessWidget {
       ),
       body: 'Learn NaviNotes features',
       title: 'Take a Tour',
-      onTap: () async {
+      onTap: (BuildContext context) async {
         final Uri url = Uri.parse(
           'https://youtu.be/zEFIyCFumiA?si=E3hOHldq50k6dDsM',
         );
@@ -208,7 +213,12 @@ class EmptyDashboardMain extends StatelessWidget {
       },
     );
     Widget connectCalender = _actionItem(
-      onTap: () {},
+      onTap: (BuildContext context) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CalendarConnectScreen()),
+        );
+      },
       icon: OutlinedChild(
         decoration: BoxDecoration(
           color: AppTheme.mintWhisper,
@@ -235,7 +245,15 @@ class EmptyDashboardMain extends StatelessWidget {
         ScrollableController(
           desktop: false,
           scrollDirection: Axis.horizontal,
-          child: Row(spacing: 10, children: [takeTour, connectCalender]),
+          child: Builder(
+            builder: (context) => Row(
+              spacing: 10, 
+              children: [
+                takeTour, 
+                connectCalender
+              ],
+            ),
+          ),
         ),
       ],
     );
