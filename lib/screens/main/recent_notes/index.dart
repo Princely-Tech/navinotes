@@ -24,6 +24,7 @@ class RecentNotesScreen extends StatelessWidget {
             scaffoldKey: _scaffoldKey,
             drawer: CustomDrawer(child: sideBar),
             floatingActionButton: FloatingActionButton(
+              heroTag: "recent_notes_fab",
               onPressed: () {},
               backgroundColor: AppTheme.jungleTeal,
               shape: CircleBorder(),

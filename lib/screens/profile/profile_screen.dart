@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 import 'package:navinotes/screens/profile/vm.dart';
 import 'package:navinotes/services/calendar_service.dart';
 import 'package:navinotes/screens/main/dashboard/calendar_connect_screen.dart';
+import 'package:navinotes/screens/profile/preferences_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -70,14 +71,7 @@ class _ProfileScreenBody extends StatelessWidget {
                   loading: vm.isProfileDataLoading,
                   child: _buildPersonalInfoSection(context, vm),
                 ),
-                LoadingIndicator(
-                  loading: vm.isEmailPrefsLoading,
-                  child: _buildEmailPreferences(vm),
-                ),
-                LoadingIndicator(
-                  loading: vm.isPushPrefsLoading,
-                  child: _buildPushPreferences(vm),
-                ),
+                _buildPreferencesSection(context, vm),
                 _buildCalendarSection(context),
                 LoadingIndicator(
                   loading: vm.isAccountActionLoading,
@@ -353,9 +347,7 @@ class _ProfileScreenBody extends StatelessWidget {
     );
   }
 
-  Widget _buildEmailPreferences(ProfileVm vm) {
-    if (vm.currentUser == null) return const SizedBox.shrink();
-
+  Widget _buildPreferencesSection(BuildContext context, ProfileVm vm) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 16,
@@ -363,9 +355,9 @@ class _ProfileScreenBody extends StatelessWidget {
         Row(
           spacing: 10,
           children: [
-            Icon(Icons.email, color: AppTheme.vividRose, size: 20),
+            Icon(Icons.tune, color: AppTheme.vividRose, size: 20),
             Text(
-              'Email Preferences',
+              'Preferences',
               style: TextStyle(
                 color: AppTheme.vividRose,
                 fontSize: 18.0,
@@ -378,143 +370,42 @@ class _ProfileScreenBody extends StatelessWidget {
         CustomCard(
           addCardShadow: true,
           child: Column(
-            spacing: 12,
             children: [
-              _buildSwitchTile(
-                'Marketing Emails',
-                'Receive marketing and promotional content',
-                vm.currentUser!.emailMarketing,
-                (val) => vm.updateEmailPreferences(emailMarketing: val),
+              _buildMenuTile(
+                context,
+                icon: Icons.email_outlined,
+                iconColor: AppTheme.vividBlue,
+                iconBgColor: AppTheme.paleBlue,
+                title: 'Email Preferences',
+                subtitle: 'Marketing, updates, and notifications',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PreferencesScreen(vm: vm),
+                    ),
+                  );
+                },
               ),
-              _buildSwitchTile(
-                'Product Updates',
-                'Receive updates about new features',
-                vm.currentUser!.emailProductUpdates,
-                (val) => vm.updateEmailPreferences(emailProductUpdates: val),
-              ),
-              _buildSwitchTile(
-                'Marketplace Notifications',
-                'Receive notifications about marketplace activity',
-                vm.currentUser!.emailMarketplaceNotifications,
-                (val) => vm.updateEmailPreferences(
-                  emailMarketplaceNotifications: val,
-                ),
+              Divider(height: 1, color: AppTheme.lightGray),
+              _buildMenuTile(
+                context,
+                icon: Icons.notifications_outlined,
+                iconColor: AppTheme.spicedAmber,
+                iconBgColor: Color(0xFFFFF8E1),
+                title: 'Push Notifications',
+                subtitle: 'Pomodoro, flashcards, and reminders',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PreferencesScreen(vm: vm),
+                    ),
+                  );
+                },
               ),
             ],
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPushPreferences(ProfileVm vm) {
-    if (vm.currentUser == null) return const SizedBox.shrink();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 16,
-      children: [
-        Row(
-          spacing: 10,
-          children: [
-            Icon(Icons.notifications, color: AppTheme.vividRose, size: 20),
-            Text(
-              'Push Notifications',
-              style: TextStyle(
-                color: AppTheme.vividRose,
-                fontSize: 18.0,
-                fontFamily: AppTheme.fontFamily,
-                fontWeight: getFontWeight(600),
-              ),
-            ),
-          ],
-        ),
-        CustomCard(
-          addCardShadow: true,
-          child: Column(
-            spacing: 12,
-            children: [
-              _buildSwitchTile(
-                'Pomodoro Alerts',
-                'Get notified when timer ends',
-                vm.currentUser!.pushPomodoroAlerts,
-                (val) => vm.updatePushPreferences(pushPomodoroAlerts: val),
-              ),
-              _buildSwitchTile(
-                'Flashcard Reminders',
-                'Reminders to review flashcards',
-                vm.currentUser!.pushFlashcardReminders,
-                (val) => vm.updatePushPreferences(pushFlashcardReminders: val),
-              ),
-              _buildSwitchTile(
-                'Marketplace Purchases',
-                'Confirmations for your purchases',
-                vm.currentUser!.pushMarketplacePurchaseConfirmations,
-                (val) => vm.updatePushPreferences(
-                  pushMarketplacePurchaseConfirmations: val,
-                ),
-              ),
-              _buildSwitchTile(
-                'Marketplace Sales',
-                'Notifications when you make a sale',
-                vm.currentUser!.pushMarketplaceSaleNotifications,
-                (val) => vm.updatePushPreferences(
-                  pushMarketplaceSaleNotifications: val,
-                ),
-              ),
-              _buildSwitchTile(
-                'Feature Announcements',
-                'Be the first to know about new features',
-                vm.currentUser!.pushFeatureAnnouncements,
-                (val) =>
-                    vm.updatePushPreferences(pushFeatureAnnouncements: val),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSwitchTile(
-    String title,
-    String subtitle,
-    bool value,
-    Function(bool) onChanged,
-  ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: AppTheme.defaultBlack,
-                  fontSize: 14.0,
-                  fontFamily: AppTheme.fontFamily,
-                  fontWeight: getFontWeight(500),
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color: AppTheme.steelMist,
-                  fontSize: 12.0,
-                  fontFamily: AppTheme.fontFamily,
-                  fontWeight: getFontWeight(400),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-          activeColor: AppTheme.vividRose,
         ),
       ],
     );
@@ -669,23 +560,41 @@ class _ProfileScreenBody extends StatelessWidget {
         ),
         CustomCard(
           addCardShadow: true,
-          child: Column(
-            spacing: 16,
-            children: [
-              Row(
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CalendarConnectScreen(),
+                ),
+              );
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
                 children: [
-                  Icon(
-                    isConnected ? Icons.check_circle : Icons.cancel,
-                    color: isConnected ? AppTheme.vitalGreen : AppTheme.steelMist,
-                    size: 24,
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isConnected 
+                          ? AppTheme.mintWhisper 
+                          : AppTheme.lavenderBlush,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      isConnected ? Icons.check_circle : Icons.calendar_month,
+                      color: isConnected ? AppTheme.vitalGreen : AppTheme.vividRose,
+                      size: 20,
+                    ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isConnected ? 'Calendar Connected' : 'No Calendar Connected',
+                          isConnected ? 'Calendar Connected' : 'Connect Calendar',
                           style: TextStyle(
                             color: AppTheme.defaultBlack,
                             fontSize: 16.0,
@@ -696,11 +605,11 @@ class _ProfileScreenBody extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           isConnected
-                              ? 'Your calendar is synced with NaviNotes'
-                              : 'Connect your calendar to sync study schedules',
+                              ? 'Tap to manage calendar settings'
+                              : 'Sync study schedules and assignments',
                           style: TextStyle(
                             color: AppTheme.steelMist,
-                            fontSize: 14.0,
+                            fontSize: 13.0,
                             fontFamily: AppTheme.fontFamily,
                             fontWeight: getFontWeight(400),
                           ),
@@ -708,37 +617,14 @@ class _ProfileScreenBody extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: AppTheme.steelMist,
+                    size: 16,
+                  ),
                 ],
               ),
-              if (!isConnected)
-                AppButton(
-                  text: 'Connect Calendar',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CalendarConnectScreen(),
-                      ),
-                    );
-                  },
-                  color: AppTheme.vividRose,
-                  mainAxisSize: MainAxisSize.min,
-                ),
-              if (isConnected)
-                AppButton.secondary(
-                  text: 'Manage Calendar',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CalendarConnectScreen(),
-                      ),
-                    );
-                  },
-                  color: AppTheme.vividRose,
-                  mainAxisSize: MainAxisSize.min,
-                ),
-            ],
+            ),
           ),
         ),
       ],
@@ -759,7 +645,7 @@ class _ProfileScreenBody extends StatelessWidget {
               color: AppTheme.vividRose,
             ),
             Text(
-              'Account Settings',
+              'Account',
               style: TextStyle(
                 color: AppTheme.vividRose,
                 fontSize: 18.0,
@@ -772,52 +658,118 @@ class _ProfileScreenBody extends StatelessWidget {
         CustomCard(
           addCardShadow: true,
           child: Column(
-            spacing: 20,
             children: [
-              // Refresh Stats Button
-              AppButton.secondary(
-                text: 'Refresh Statistics',
+              _buildMenuTile(
+                context,
+                icon: Icons.refresh,
+                iconColor: AppTheme.vividRose,
+                iconBgColor: AppTheme.lavenderBlush,
+                title: 'Refresh Statistics',
+                subtitle: 'Update your boards and notes count',
                 onTap: vm.refreshStats,
-                prefix: Icon(
-                  Icons.refresh,
-                  color: AppTheme.vividRose,
-                  size: 18,
-                ),
-                color: AppTheme.vividRose,
               ),
-
-              // Logout Button
-              AppButton.secondary(
-                text: 'Logout',
-                onTap: () => _showLogoutDialog(context, vm),
-                prefix: Icon(Icons.logout, color: AppTheme.steelMist, size: 18),
-                color: AppTheme.steelMist,
-              ),
-              AppButton.secondary(
-                text: 'Export data',
+              Divider(height: 1, color: AppTheme.lightGray),
+              _buildMenuTile(
+                context,
+                icon: Icons.file_download_outlined,
+                iconColor: AppTheme.vividBlue,
+                iconBgColor: AppTheme.paleBlue,
+                title: 'Export Data',
+                subtitle: 'Download your account information',
                 onTap: vm.exportUserData,
-                prefix: Icon(
-                  Icons.file_download,
-                  color: AppTheme.vividBlue,
-                  size: 18,
-                ),
-                color: AppTheme.vividBlue,
               ),
-              // Delete Account Button
-              AppButton.secondary(
-                text: 'Delete Account',
+              Divider(height: 1, color: AppTheme.lightGray),
+              _buildMenuTile(
+                context,
+                icon: Icons.logout,
+                iconColor: AppTheme.steelMist,
+                iconBgColor: AppTheme.whiteSmoke,
+                title: 'Logout',
+                subtitle: 'Sign out of your account',
+                onTap: () => _showLogoutDialog(context, vm),
+              ),
+              Divider(height: 1, color: AppTheme.lightGray),
+              _buildMenuTile(
+                context,
+                icon: Icons.delete_forever_outlined,
+                iconColor: AppTheme.bloodFire,
+                iconBgColor: Color(0xFFFFEBEE),
+                title: 'Delete Account',
+                subtitle: 'Permanently remove your account',
                 onTap: () => _showDeleteAccountDialog(context, vm),
-                prefix: Icon(
-                  Icons.delete_forever,
-                  color: AppTheme.bloodFire,
-                  size: 18,
-                ),
-                color: AppTheme.bloodFire,
+                showArrow: false,
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildMenuTile(
+    BuildContext context, {
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBgColor,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    bool showArrow = true,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: iconBgColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                icon,
+                color: iconColor,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: AppTheme.defaultBlack,
+                      fontSize: 15.0,
+                      fontFamily: AppTheme.fontFamily,
+                      fontWeight: getFontWeight(500),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: AppTheme.steelMist,
+                      fontSize: 12.0,
+                      fontFamily: AppTheme.fontFamily,
+                      fontWeight: getFontWeight(400),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (showArrow)
+              Icon(
+                Icons.arrow_forward_ios,
+                color: AppTheme.steelMist,
+                size: 14,
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -850,13 +802,17 @@ class _ProfileScreenBody extends StatelessWidget {
             //   onTap: () => Navigator.of(context).pop(),
             //   color: AppTheme.steelMist,
             // ),
-            AppButton.secondary(
-              text: 'Cancel',
-              onTap: () => Navigator.of(context).pop(),
-              color: AppTheme.steelMist,
-            ),
-            SizedBox(height: 10),
-            AppButton(
+           Row(children:[
+             Expanded(
+               child: AppButton.secondary(
+                text: 'Cancel',
+                onTap: () => Navigator.of(context).pop(),
+                color: AppTheme.steelMist,
+                           ),
+             ),
+            SizedBox(width: 10),
+            Expanded(
+              child: AppButton(
               text: 'Logout',
               onTap: () {
                 Navigator.of(context).pop();
@@ -864,6 +820,8 @@ class _ProfileScreenBody extends StatelessWidget {
               },
               color: AppTheme.vividRose,
             ),
+            ),
+           ]),
           ],
         );
       },
@@ -891,7 +849,7 @@ class _ProfileScreenBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'This action cannot be undone. All your data will be permanently deleted.',
+                'This action cannot be undone. All your data will be permanently deleted.\nnsure you have exported your data before deleting your account.',
                 style: TextStyle(
                   color: AppTheme.steelMist,
                   fontSize: 14.0,
@@ -901,7 +859,7 @@ class _ProfileScreenBody extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Please tell us why you\'re leaving (optional):',
+                'Please tell us why you\'re leaving:',
                 style: TextStyle(
                   color: AppTheme.defaultBlack,
                   fontSize: 14.0,
@@ -912,7 +870,7 @@ class _ProfileScreenBody extends StatelessWidget {
               const SizedBox(height: 8),
               TextField(
                 controller: reasonController,
-                maxLines: 3,
+                maxLines: 2,
                 decoration: InputDecoration(
                   hintText: 'Your feedback helps us improve...',
                   border: OutlineInputBorder(
@@ -928,13 +886,19 @@ class _ProfileScreenBody extends StatelessWidget {
             ],
           ),
           actions: [
-            AppButton.secondary(
-              text: 'Cancel',
-              onTap: () => Navigator.of(context).pop(),
-              color: AppTheme.steelMist,
-            ),
-            SizedBox(height: 10),
-            AppButton(
+            Row(
+            
+              children: [
+             Expanded(
+               child: AppButton.secondary(
+                text: 'Cancel',
+                onTap: () => Navigator.of(context).pop(),
+                color: AppTheme.steelMist,
+                           ),
+             ),
+            SizedBox(width: 10),
+            Expanded(
+              child: AppButton(
               text: 'Delete Account',
               onTap: () {
                 Navigator.of(context).pop();
@@ -945,7 +909,8 @@ class _ProfileScreenBody extends StatelessWidget {
                 );
               },
               color: AppTheme.bloodFire,
-            ),
+            ),),
+            ]),
           ],
         );
       },

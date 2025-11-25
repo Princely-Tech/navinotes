@@ -17,6 +17,8 @@ PODS:
     - ComPDFKit_Tools
     - Flutter
   - ComPDFKit_Tools (2.4.3)
+  - device_calendar (0.0.1):
+    - Flutter
   - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.9):
@@ -87,6 +89,9 @@ PODS:
   - FirebaseCoreInternal (11.13.0):
     - "GoogleUtilities/NSData+zlib (~> 8.1)"
   - Flutter (1.0.0)
+  - flutter_appauth (0.0.1):
+    - AppAuth (= 1.7.6)
+    - Flutter
   - flutter_image_compress_common (1.0.0):
     - Flutter
     - Mantle
@@ -210,12 +215,14 @@ DEPENDENCIES:
   - ComPDFKit (from `https://file.compdf.com/cocoapods/ios/compdfkit_pdf_sdk/2.4.3/ComPDFKit.podspec`)
   - compdfkit_flutter (from `.symlinks/plugins/compdfkit_flutter/ios`)
   - ComPDFKit_Tools (from `https://file.compdf.com/cocoapods/ios/compdfkit_pdf_sdk/2.4.3/ComPDFKit_Tools.podspec`)
+  - device_calendar (from `.symlinks/plugins/device_calendar/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - external_path (from `.symlinks/plugins/external_path/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
+  - flutter_appauth (from `.symlinks/plugins/flutter_appauth/ios`)
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_keyboard_visibility_temp_fork (from `.symlinks/plugins/flutter_keyboard_visibility_temp_fork/ios`)
@@ -273,6 +280,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/compdfkit_flutter/ios"
   ComPDFKit_Tools:
     :podspec: https://file.compdf.com/cocoapods/ios/compdfkit_pdf_sdk/2.4.3/ComPDFKit_Tools.podspec
+  device_calendar:
+    :path: ".symlinks/plugins/device_calendar/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   external_path:
@@ -285,6 +294,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
+  flutter_appauth:
+    :path: ".symlinks/plugins/flutter_appauth/ios"
   flutter_image_compress_common:
     :path: ".symlinks/plugins/flutter_image_compress_common/ios"
   flutter_keyboard_visibility:
@@ -335,6 +346,7 @@ SPEC CHECKSUMS:
   ComPDFKit: 3e8399f49791924299a1b5e9fd973d05c67e292e
   compdfkit_flutter: 986cb335a64fccc03d25883b9855ba53e7e34943
   ComPDFKit_Tools: f10b7af3fbe9f7c61e32e96ea653659baabaff62
+  device_calendar: b55b2c5406cfba45c95a59f9059156daee1f74ed
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
@@ -350,6 +362,7 @@ SPEC CHECKSUMS:
   FirebaseCoreExtension: c048485c347616dba6165358dbef765c5197597b
   FirebaseCoreInternal: 29d7b3af4aaf0b8f3ed20b568c13df399b06f68c
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_appauth: 914057fda669db5073d3ca9d94ea932e7df3c964
   flutter_image_compress_common: 1697a328fd72bfb335507c6bca1a65fa5ad87df1
   flutter_keyboard_visibility: 4625131e43015dbbe759d9b20daaf77e0e3f6619
   flutter_keyboard_visibility_temp_fork: 95b2d534bacf6ac62e7fcbe5c2a9e2c2a17ce06f

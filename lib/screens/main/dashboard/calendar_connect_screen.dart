@@ -235,7 +235,7 @@ class _CalendarConnectScreenState extends State<CalendarConnectScreen> {
         Text(
           'Google Calendar',
           style: AppTheme.text.copyWith(
-            fontSize: 18,
+            fontSize: 18.0,
             fontWeight: FontWeight.bold,
             color: AppTheme.graphite,
           ),
@@ -244,7 +244,7 @@ class _CalendarConnectScreenState extends State<CalendarConnectScreen> {
         Text(
           'Sync your study schedules with Google Calendar',
           style: AppTheme.text.copyWith(
-            fontSize: 14,
+            fontSize: 14.0,
             color: AppTheme.steelMist,
           ),
         ),
@@ -289,7 +289,7 @@ class _CalendarConnectScreenState extends State<CalendarConnectScreen> {
         Text(
           'Device Calendar',
           style: AppTheme.text.copyWith(
-            fontSize: 18,
+            fontSize: 18.0,
             fontWeight: FontWeight.bold,
             color: AppTheme.graphite,
           ),
@@ -298,7 +298,7 @@ class _CalendarConnectScreenState extends State<CalendarConnectScreen> {
         Text(
           'Sync with your device\'s built-in calendar app',
           style: AppTheme.text.copyWith(
-            fontSize: 14,
+            fontSize: 14.0,
             color: AppTheme.steelMist,
           ),
         ),
@@ -341,7 +341,7 @@ class _CalendarConnectScreenState extends State<CalendarConnectScreen> {
             Text(
               'Select a calendar:',
               style: AppTheme.text.copyWith(
-                fontSize: 16,
+                fontSize: 16.0,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -377,7 +377,7 @@ class _CalendarConnectScreenState extends State<CalendarConnectScreen> {
         Text(
           'Calendar Sync',
           style: AppTheme.text.copyWith(
-            fontSize: 18,
+            fontSize: 18.0,
             fontWeight: FontWeight.bold,
             color: AppTheme.graphite,
           ),
@@ -386,7 +386,7 @@ class _CalendarConnectScreenState extends State<CalendarConnectScreen> {
         Text(
           'Your syllabus and assignments will be synced to your connected calendar',
           style: AppTheme.text.copyWith(
-            fontSize: 14,
+            fontSize: 14.0,
             color: AppTheme.steelMist,
           ),
         ),
@@ -405,7 +405,7 @@ class _CalendarConnectScreenState extends State<CalendarConnectScreen> {
                 child: Text(
                   'Calendar sync is now enabled. Go to your boards to sync syllabus and assignments.',
                   style: AppTheme.text.copyWith(
-                    fontSize: 12,
+                    fontSize: 12.0,
                     color: AppTheme.graphite,
                   ),
                 ),

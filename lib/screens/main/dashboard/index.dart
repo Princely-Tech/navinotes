@@ -29,6 +29,7 @@ class DashboardScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     FloatingActionButton.extended(
+                      heroTag: "import_board_fab",
                       onPressed: () => vm.importBoard(context),
                       backgroundColor: AppTheme.vividBlue,
                       icon: const Icon(
@@ -42,6 +43,7 @@ class DashboardScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     FloatingActionButton(
+                      heroTag: "create_board_fab",
                       onPressed: vm.goToCreateBoard,
                       backgroundColor:
                           hasData ? AppTheme.vividRose : AppTheme.tropicalTeal,

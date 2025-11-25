@@ -183,6 +183,9 @@ Future<bool> handleFileSharing(
       MessageDisplayService.showMessage(context, successMessage);
     }
     return true;
+  } else if (result.status == ShareResultStatus.dismissed) {
+    debugPrint('File sharing canceled');
+    return false;
   } else {
     debugPrint('File shared failed');
     if (errorMessage != null) {
