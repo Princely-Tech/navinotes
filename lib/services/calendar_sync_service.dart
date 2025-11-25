@@ -94,7 +94,15 @@ class CalendarSyncService {
         return false;
       }
 
-      final dueDate = DateTime.parse(timeline.due!);
+      // Safely parse the due date
+      DateTime? dueDate;
+      try {
+        dueDate = DateTime.parse(timeline.due!);
+      } catch (e) {
+        debugPrint('Failed to parse due date "${timeline.due}": $e');
+        return false;
+      }
+
       final event = Event(
         selectedCalendarId,
         title: 'Assignment: ${timeline.assignment}',

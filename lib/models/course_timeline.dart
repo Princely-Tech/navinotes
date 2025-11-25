@@ -35,6 +35,23 @@ class CourseTimeline {
     );
   }
 
+  /// Create a copy of this CourseTimeline with some fields replaced
+  CourseTimeline copyWith({
+    String? week,
+    String? title,
+    String? description,
+    String? assignment,
+    String? due,
+  }) {
+    return CourseTimeline(
+      week: week ?? this.week,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      assignment: assignment ?? this.assignment,
+      due: due ?? this.due,
+    );
+  }
+
   @override
   String toString() {
     return 'CourseTimeline(week: $week, title: $title, description: $description, assignment: $assignment, due: $due)';
