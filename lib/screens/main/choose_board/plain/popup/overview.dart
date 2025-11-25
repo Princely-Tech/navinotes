@@ -70,6 +70,8 @@ class BoardPlainPopupOverview extends StatelessWidget {
                     Divider(height: 1, color: AppTheme.lightGray),
                     _courseDetails(vm: vm),
                     const SizedBox(height: 24),
+                    ExportBoardButton(),
+                    const SizedBox(height: 24),
                     DeleteBoardButton(),
                     const SizedBox(height: 24),
                   ],
@@ -914,7 +916,6 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 imagePath: Images.boardPlainCreateNote,
                 onTap: vm.createNoteHandler,
               ),
-
               buildActionCard(
                 title: 'Import PDF',
                 description: 'Add research papers and reference materials',
@@ -931,22 +932,22 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 onTap: () => vm.importFiles(context),
                 loading: vm.savingFiles,
               ),
-              buildActionCard(
-                title: 'Export Board',
-                description:
-                    'Export this board and all its notes, files, and settings',
-                buttonText: 'Export',
-                imagePath: Images.boardPlainImportFiles,
-                loading: vm.exportingBoard,
-                onTap: () async {
-                  vm.updateExportingBoard(true);
-                  await NaviBackupService.exportBoard(
-                    board: vm.board,
-                    context: context,
-                  );
-                  vm.updateExportingBoard(false);
-                },
-              ),
+              // buildActionCard(
+              //   title: 'Export Board',
+              //   description:
+              //       'Export this board and all its notes, files, and settings',
+              //   buttonText: 'Export',
+              //   imagePath: Images.boardPlainImportFiles,
+              //   loading: vm.exportingBoard,
+              //   onTap: () async {
+              //     vm.updateExportingBoard(true);
+              //     await NaviBackupService.exportBoard(
+              //       board: vm.board,
+              //       context: context,
+              //     );
+              //     vm.updateExportingBoard(false);
+              //   },
+              // ),
             ],
           ),
         );

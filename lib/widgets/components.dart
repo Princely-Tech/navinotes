@@ -1023,3 +1023,45 @@ class DeleteBoardButton extends StatelessWidget {
     );
   }
 }
+
+class ExportBoardButton extends StatefulWidget {
+  const ExportBoardButton({super.key});
+
+  @override
+  State<ExportBoardButton> createState() => _ExportBoardButtonState();
+}
+
+class _ExportBoardButtonState extends State<ExportBoardButton> {
+  bool loading = false;
+
+  void updateLoading(bool value) {
+    setState(() {
+      loading = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<BoardEditVm>(
+      builder: (context, vm, _) {
+        return Align(
+          alignment: Alignment.center,
+          child: AppButton.secondary(
+            loading: loading,
+            mainAxisSize: MainAxisSize.min,
+            text: 'Export board',
+            onTap: () async {
+              updateLoading(true);
+              await NaviBackupService.exportBoard(
+                board: vm.board,
+                context: context,
+              );
+              updateLoading(false);
+            },
+            prefix: Icon(Icons.download, color: AppTheme.royalBlue, size: 18),
+          ),
+        );
+      },
+    );
+  }
+}
