@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/navi_backup.dart';
 
 class BoardLightAcadPopupOverview extends StatelessWidget {
   const BoardLightAcadPopupOverview({super.key});
@@ -542,6 +543,24 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                 actionText: 'Upload files',
                 onTap: () => vm.importFiles(context),
                 loading: vm.savingFiles,
+              ),
+              _buildActionCard(
+                icon: Images.trash,
+                title: 'Delete Board',
+                description:
+                    'Permanently delete this board, its notes, files, and flashcards.',
+                actionText: 'Delete board',
+                onTap: () async {
+                  final sessionVm = Provider.of<SessionManager>(
+                    context,
+                    listen: false,
+                  );
+                  await NaviBackupService.deleteBoardWithConfirmation(
+                    context: context,
+                    board: vm.board,
+                    sessionVm: sessionVm,
+                  );
+                },
               ),
             ],
           ),

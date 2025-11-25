@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/date_utils.dart';
+import 'package:navinotes/settings/navi_backup.dart';
 
 class BoardMinimalistPopupScreen extends StatelessWidget {
   BoardMinimalistPopupScreen({super.key});
@@ -282,6 +283,24 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
                 actionText: 'Add Files →',
                 onTap: () => vm.importFiles(context),
                 loading: vm.savingFiles,
+              ),
+              _buildActionCard(
+                icon: Images.trash,
+                title: 'Delete Board',
+                description:
+                    'Permanently delete this board, its notes, files, and flashcards',
+                actionText: 'Delete Board →',
+                onTap: () async {
+                  final sessionVm = Provider.of<SessionManager>(
+                    context,
+                    listen: false,
+                  );
+                  await NaviBackupService.deleteBoardWithConfirmation(
+                    context: context,
+                    board: vm.board,
+                    sessionVm: sessionVm,
+                  );
+                },
               ),
             ],
           ),

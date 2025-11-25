@@ -946,6 +946,24 @@ class BoardPlainPopupOverview extends StatelessWidget {
                   vm.updateExportingBoard(false);
                 },
               ),
+              buildActionCard(
+                title: 'Delete Board',
+                description:
+                    'Permanently delete this board, its notes, files, and flashcards',
+                buttonText: 'Delete',
+                imagePath: Images.trash,
+                onTap: () async {
+                  final sessionVm = Provider.of<SessionManager>(
+                    context,
+                    listen: false,
+                  );
+                  await NaviBackupService.deleteBoardWithConfirmation(
+                    context: context,
+                    board: vm.board,
+                    sessionVm: sessionVm,
+                  );
+                },
+              ),
             ],
           ),
         );

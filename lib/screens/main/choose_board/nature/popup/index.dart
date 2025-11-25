@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/settings/navi_backup.dart';
 
 class BoardNaturePopupScreen extends StatelessWidget {
   BoardNaturePopupScreen({super.key});
@@ -58,7 +59,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
                                               AppContentType.note,
                                         )
                                         .toList();
-                               
+
                                 final flashCardDecks =
                                     allContents
                                         .where(
@@ -610,6 +611,25 @@ class BoardNaturePopupScreen extends StatelessWidget {
                     imageUrl: Images.boardNatureImportFiles,
                     onTap: () => vm.importFiles(context),
                     loading: vm.savingFiles,
+                  ),
+                  _sectionCard(
+                    title: 'Delete Board',
+                    description:
+                        'Permanently delete this board, its notes, files, and flashcards',
+                    buttonText: 'Delete',
+                    color: const Color(0xFF8B0000),
+                    imageUrl: Images.trash,
+                    onTap: () async {
+                      final sessionVm = Provider.of<SessionManager>(
+                        context,
+                        listen: false,
+                      );
+                      await NaviBackupService.deleteBoardWithConfirmation(
+                        context: context,
+                        board: vm.board,
+                        sessionVm: sessionVm,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -1372,6 +1392,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
       },
     );
   }
+
   Widget _flashCardsDeckSection(List<Content> flashCardDecks) {
     // Sort by updated date (most recent first)
     flashCardDecks.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
@@ -1495,7 +1516,6 @@ class BoardNaturePopupScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildFlashCardDeckItem(Content deck) {
     return InkWell(

@@ -327,6 +327,58 @@ class NaviBackupService {
     }
   }
 
+  static Future<void> deleteBoardWithConfirmation({
+    required BuildContext context,
+    required Board board,
+    required SessionManager sessionVm,
+  }) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Delete Board'),
+          content: Text(
+            "This will permanently delete '${board.name}' including all its notes, files, and flashcards. This action cannot be undone.\n\nAre you sure you want to continue?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) return;
+
+    try {
+      await _deleteBoardAndContents(board.id);
+      await sessionVm.getAllBoard();
+
+      if (context.mounted) {
+        MessageDisplayService.showMessage(
+          context,
+          'Board deleted successfully',
+        );
+        NavigationHelper.pop();
+      }
+    } catch (e) {
+      debugPrint('Error deleting board: $e');
+      if (context.mounted) {
+        MessageDisplayService.showErrorMessage(
+          context,
+          'Failed to delete board: ${e.toString()}',
+        );
+      }
+    }
+  }
+
   static Future<void> _deleteBoardAndContents(String boardId) async {
     final db = DatabaseHelper.instance;
     final contents = await db.getAllContents(boardId);
