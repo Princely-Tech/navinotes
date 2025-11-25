@@ -668,19 +668,8 @@ class _ProfileScreenBody extends StatelessWidget {
         CustomCard(
           addCardShadow: true,
           child: Column(
-            spacing: 12,
+            spacing: 20,
             children: [
-              AppButton.secondary(
-                text: 'Export data',
-                onTap: vm.exportUserData,
-                prefix: Icon(
-                  Icons.file_download,
-                  color: AppTheme.vividBlue,
-                  size: 18,
-                ),
-                color: AppTheme.vividBlue,
-              ),
-              const SizedBox(height: 8),
               // Refresh Stats Button
               AppButton.secondary(
                 text: 'Refresh Statistics',
@@ -692,7 +681,7 @@ class _ProfileScreenBody extends StatelessWidget {
                 ),
                 color: AppTheme.vividRose,
               ),
-              const SizedBox(height: 8),
+
               // Logout Button
               AppButton.secondary(
                 text: 'Logout',
@@ -700,7 +689,16 @@ class _ProfileScreenBody extends StatelessWidget {
                 prefix: Icon(Icons.logout, color: AppTheme.steelMist, size: 18),
                 color: AppTheme.steelMist,
               ),
-              const SizedBox(height: 8),
+              AppButton.secondary(
+                text: 'Export data',
+                onTap: vm.exportUserData,
+                prefix: Icon(
+                  Icons.file_download,
+                  color: AppTheme.vividBlue,
+                  size: 18,
+                ),
+                color: AppTheme.vividBlue,
+              ),
               // Delete Account Button
               AppButton.secondary(
                 text: 'Delete Account',
