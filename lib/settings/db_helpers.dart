@@ -7,7 +7,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 6; // Increment this number
+  static const int _databaseVersion = 7; // Increment this number
 
   DatabaseHelper._init();
 
@@ -63,7 +63,8 @@ class DatabaseHelper {
       mind_map_data TEXT,
       created_at INTEGER,
       updated_at INTEGER,
-      synced_at INTEGER
+      synced_at INTEGER,
+      last_calendar_sync_at INTEGER
     );
     ''');
 
@@ -205,6 +206,13 @@ class DatabaseHelper {
       await db.execute(
         'UPDATE flashcards SET next_review = ? WHERE next_review = 0;',
         [nextReviewDefault],
+      );
+    }
+
+    if (oldVersion < 7) {
+      // Add last_calendar_sync_at field to boards table
+      await db.execute(
+        'ALTER TABLE boards ADD COLUMN last_calendar_sync_at INTEGER;',
       );
     }
   }

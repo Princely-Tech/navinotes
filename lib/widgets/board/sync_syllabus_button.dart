@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/services/calendar_sync_service.dart';
@@ -103,6 +105,15 @@ class _SyncSyllabusButtonState extends State<SyncSyllabusButton> {
       return;
     }
 
+    // Check if already synced
+    if (widget.board.lastCalendarSyncAt != null) {
+      final lastSyncDate = DateTime.fromMillisecondsSinceEpoch(
+        widget.board.lastCalendarSyncAt! * 1000,
+      );
+      final shouldResync = await _showResyncConfirmationDialog(context, lastSyncDate);
+      if (!shouldResync) return;
+    }
+
     setState(() => _isSyncing = true);
 
     try {
@@ -111,6 +122,13 @@ class _SyncSyllabusButtonState extends State<SyncSyllabusButton> {
       if (!mounted) return;
 
       if (success) {
+        // Update board with sync timestamp
+        final updatedBoard = widget.board.copyWith(
+          lastCalendarSyncAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        );
+        await DatabaseHelper.instance.updateBoard(updatedBoard);
+
         MessageDisplayService.showMessage(
           context,
           'Syllabus synced to calendar successfully!',
@@ -134,6 +152,74 @@ class _SyncSyllabusButtonState extends State<SyncSyllabusButton> {
       if (mounted) {
         setState(() => _isSyncing = false);
       }
+    }
+  }
+
+  Future<bool> _showResyncConfirmationDialog(BuildContext context, DateTime lastSyncDate) async {
+    final timeAgo = _getTimeAgo(lastSyncDate);
+    
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.orange),
+            const SizedBox(width: 12),
+            const Text('Already Synced'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'This syllabus was last synced $timeAgo.',
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Syncing again will create duplicate events in your calendar.',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Do you want to continue?',
+              style: TextStyle(fontSize: 14),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+            ),
+            child: const Text('Sync Anyway'),
+          ),
+        ],
+      ),
+    ) ?? false;
+  }
+
+  String _getTimeAgo(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
+    } else {
+      return 'just now';
     }
   }
 
@@ -182,17 +268,31 @@ class _SyncSyllabusButtonState extends State<SyncSyllabusButton> {
               backgroundColor: AppTheme.vividBlue,
             ),
           ),
-          ElevatedButton.icon(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _connectGoogleCalendar(context);
-            },
-            icon: const Icon(Icons.cloud, size: 18),
-            label: const Text('Google Calendar'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.vividRose,
+          // Only show Google Calendar option on Android and Web
+          if (!kIsWeb && !Platform.isIOS)
+            ElevatedButton.icon(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _connectGoogleCalendar(context);
+              },
+              icon: const Icon(Icons.cloud, size: 18),
+              label: const Text('Google Calendar'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.vividRose,
+              ),
             ),
-          ),
+          if (kIsWeb)
+            ElevatedButton.icon(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _connectGoogleCalendar(context);
+              },
+              icon: const Icon(Icons.cloud, size: 18),
+              label: const Text('Google Calendar'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.vividRose,
+              ),
+            ),
         ],
       ),
     );

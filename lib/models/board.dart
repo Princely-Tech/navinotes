@@ -16,6 +16,7 @@ class Board {
   final int createdAt;
   final int updatedAt;
   final int? syncedAt;
+  final int? lastCalendarSyncAt;
   final List<CourseTimeline>? courseTimeLines;
   final CourseInfo? courseInfo;
   final String? syllabusContentId;
@@ -43,6 +44,7 @@ class Board {
     required this.createdAt,
     required this.updatedAt,
     this.syncedAt,
+    this.lastCalendarSyncAt,
     this.coverImageNeedSync = false,
     this.syllabusContentId,
     // mindMap removed - now using content-based architecture
@@ -63,6 +65,7 @@ class Board {
     int? createdAt,
     int? updatedAt,
     int? syncedAt,
+    int? lastCalendarSyncAt,
     List<CourseTimeline>? courseTimeLines,
     CourseInfo? courseInfo,
     bool? coverImageNeedSync,
@@ -85,6 +88,7 @@ class Board {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       syncedAt: syncedAt ?? this.syncedAt,
+      lastCalendarSyncAt: lastCalendarSyncAt ?? this.lastCalendarSyncAt,
       courseTimeLines: courseTimeLines ?? this.courseTimeLines,
       courseInfo: courseInfo ?? this.courseInfo,
       coverImageNeedSync: coverImageNeedSync ?? this.coverImageNeedSync,
@@ -147,6 +151,7 @@ class Board {
     'created_at': createdAt,
     'updated_at': updatedAt,
     'synced_at': syncedAt,
+    'last_calendar_sync_at': lastCalendarSyncAt,
     'cover_image_need_sync': coverImageNeedSync ? 1 : 0,
     'syllabus_content_id': syllabusContentId,
     // 'mind_map_data': removed - using content-based storage
@@ -210,6 +215,7 @@ class Board {
       createdAt: map['created_at'],
       updatedAt: map['updated_at'],
       syncedAt: map['synced_at'],
+      lastCalendarSyncAt: map['last_calendar_sync_at'],
       coverImageNeedSync: map['cover_image_need_sync'] == 1,
       syllabusContentId: map['syllabus_content_id'],
       courseInfo: courseInfo,
