@@ -476,46 +476,25 @@ class _NotePageContentState extends State<NotePageContent> {
         final textBoxManager = vm.textBoxManager;
 
         return GestureDetector(
-          onTapDown:
+          // Use deferToChild so taps on text boxes are handled by them first
+          behavior: HitTestBehavior.deferToChild,
+          onTap:
               readOnly
                   ? null
-                  : (details) {
-                    // Handle tap to add text box or clear selection (only in interactive mode)
-                    final position = details.localPosition;
-                    final tappedTextBox = textBoxManager.getTextBoxAtPosition(
-                      position,
-                    );
-
-                    debugPrint('TextBoxOverlay: Tap detected at $position');
+                  : () {
+                    // Only triggered if tap was NOT on a text box
+                    // Check if we're in text box mode to add new text box
+                    final selectedTool =
+                        vm.currentMode == NoteMode.drawing
+                            ? _getSelectedTextTool(vm)
+                            : null;
                     debugPrint(
-                      'TextBoxOverlay: Tapped text box: ${tappedTextBox?.id}',
+                      'Canvas tap detected, textBoxMode: ${vm.isTextBoxMode}, selectedTool: $selectedTool',
                     );
-                    debugPrint(
-                      'TextBoxOverlay: Current text boxes count: ${textBoxManager.textBoxes.length}',
-                    );
-
-                    if (tappedTextBox == null) {
-                      // Check if we're in text box mode
-                      final selectedTool =
-                          vm.currentMode == NoteMode.drawing
-                              ? _getSelectedTextTool(vm)
-                              : null;
-                      debugPrint(
-                        'Tap detected at $position, textBoxMode: ${vm.isTextBoxMode}, selectedTool: $selectedTool',
-                      );
-                      if (selectedTool != null) {
-                        // Add new text box
-                        debugPrint('Adding text box at $position');
-                        vm.addTextBox(position);
-                      } else {
-                        // Clear selection
-                        debugPrint('Clearing text box selection');
-                        vm.clearTextBoxSelection();
-                      }
-                    } else {
-                      debugPrint(
-                        'Tapped on existing text box: ${tappedTextBox.id}',
-                      );
+                    if (selectedTool == null) {
+                      // Clear selection when tapping outside text boxes
+                      debugPrint('Clearing text box selection');
+                      vm.clearTextBoxSelection();
                     }
                   },
           child: TextBoxOverlay(

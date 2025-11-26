@@ -162,66 +162,88 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
   }
 
   Widget _buildSelectionOverlay() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue, width: 3.0),
-        borderRadius: widget.textBox.borderRadius,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blue.withOpacity(0.3),
-            blurRadius: 6,
-            offset: const Offset(0, 0),
-          ),
-        ],
-      ),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          // Resize handles
-          Positioned(top: -4, right: -4, child: _buildResizeHandle()),
-          // Delete button
-          Positioned(top: -12, right: -12, child: _buildDeleteButton()),
-          // Format panel
-          Positioned(bottom: -60, left: 0, child: _buildCompactFormatPanel()),
-          // Selection indicator
-          Positioned(
-            top: -20,
-            left: -10,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Text(
-                'SELECTED',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+    return SizedBox(
+      width: widget.textBox.size.width,
+      height: widget.textBox.size.height,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.blue, width: 3.0),
+          borderRadius: widget.textBox.borderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue.withOpacity(0.3),
+              blurRadius: 6,
+              offset: const Offset(0, 0),
             ),
-          ),
-        ],
+          ],
+        ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Spacer to give Stack a size (required for Positioned children)
+            SizedBox(
+              width: widget.textBox.size.width,
+              height: widget.textBox.size.height,
+            ),
+            
+            // Delete button (top-right)
+            Positioned(top: -12, right: -12, child: _buildDeleteButton()),
+            
+            // Edit button (top-left)
+            Positioned(top: -12, left: -12, child: _buildEditButton()),
+            
+            // Drag handle (bottom-right)
+            Positioned(bottom: -12, right: -12, child: _buildDragHandle()),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildResizeHandle() {
+  Widget _buildEditButton() {
     return GestureDetector(
-      onPanStart: (details) {
-        // TODO: Implement resize functionality
-      },
+      onTap: _handleDoubleTap, // Use double tap handler to start editing
       child: Container(
-        width: 16,
-        height: 16,
+        width: 24,
+        height: 24,
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Colors.green,
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 1),
+          border: Border.all(color: Colors.white, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        child: const Icon(Icons.drag_indicator, size: 10, color: Colors.white),
+        child: const Icon(Icons.edit, size: 14, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildDragHandle() {
+    return GestureDetector(
+      onPanStart: _handlePanStart,
+      onPanUpdate: _handlePanUpdate,
+      onPanEnd: _handlePanEnd,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: Colors.blue.shade700,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: const Icon(Icons.drag_indicator, size: 18, color: Colors.white),
       ),
     );
   }
@@ -230,14 +252,21 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
     return GestureDetector(
       onTap: _handleDelete,
       child: Container(
-        width: 20,
-        height: 20,
+        width: 24,
+        height: 24,
         decoration: BoxDecoration(
           color: Colors.red,
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 1),
+          border: Border.all(color: Colors.white, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        child: const Icon(Icons.close, size: 12, color: Colors.white),
+        child: const Icon(Icons.close, size: 14, color: Colors.white),
       ),
     );
   }
@@ -253,9 +282,10 @@ class _TextBoxWidgetState extends State<TextBoxWidget> {
       child: GestureDetector(
         onTap: widget.isEditing ? null : _handleTap,
         onDoubleTap: widget.isEditing ? null : _handleDoubleTap,
-        onPanStart: widget.isEditing ? null : _handlePanStart,
-        onPanUpdate: widget.isEditing ? null : _handlePanUpdate,
-        onPanEnd: widget.isEditing ? null : _handlePanEnd,
+        // Disable pan on main container when selected - use drag handle instead
+        onPanStart: (widget.isEditing || widget.isSelected) ? null : _handlePanStart,
+        onPanUpdate: (widget.isEditing || widget.isSelected) ? null : _handlePanUpdate,
+        onPanEnd: (widget.isEditing || widget.isSelected) ? null : _handlePanEnd,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
