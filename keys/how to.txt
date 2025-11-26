@@ -1,0 +1,61 @@
+Build app store:
+1. Create key.properties in android/
+storePassword=your_password
+keyPassword=your_password
+keyAlias=upload
+storeFile=upload-keystore.jks
+
+2. Move your keystore
+Place this file here:
+android/app/upload-keystore.jks
+
+3. Load the keystore in Kotlin DSL
+
+At the very top of android/app/build.gradle.kts, before android {}, add:
+import java.util.Properties
+import java.io.FileInputStream
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+4. Add signing config (KTS version)
+
+Inside your android {} block, add:
+signingConfigs {
+    create("release") {
+        keyAlias = keystoreProperties["keyAlias"] as String
+        keyPassword = keystoreProperties["keyPassword"] as String
+        storeFile = file(keystoreProperties["storeFile"] as String)
+        storePassword = keystoreProperties["storePassword"] as String
+    }
+}
+
+
+5. Release buildtype:
+buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                file("proguard-rules.pro")
+            )
+        }
+    }
+
+
+
+flutter clean
+flutter pub get
+flutter build appbundle --release
+
+
+/////////
+TO GENERATE UPLOAD KEY:
+
+Run this command:
+keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
