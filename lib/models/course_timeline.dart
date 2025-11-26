@@ -1,5 +1,6 @@
 class CourseTimeline {
   final String week;
+  final String? date;
   final String title;
   final String? description;
   final String? assignment;
@@ -7,6 +8,7 @@ class CourseTimeline {
 
   CourseTimeline({
     required this.week,
+    this.date,
     required this.title,
     this.description,
     this.assignment,
@@ -17,6 +19,7 @@ class CourseTimeline {
   Map<String, dynamic> toMap() {
     return {
       'week': week,
+      'date': date,
       'title': title,
       'description': description,
       'assignment': assignment,
@@ -28,6 +31,7 @@ class CourseTimeline {
   factory CourseTimeline.fromMap(Map<String, dynamic> map) {
     return CourseTimeline(
       week: map['week']??'',
+      date: map['date']??'',
       title: map['title']??'',
       description: map['description']??'',
       assignment: map['assignment']??'',
@@ -38,6 +42,7 @@ class CourseTimeline {
   /// Create a copy of this CourseTimeline with some fields replaced
   CourseTimeline copyWith({
     String? week,
+    String? date,
     String? title,
     String? description,
     String? assignment,
@@ -45,6 +50,7 @@ class CourseTimeline {
   }) {
     return CourseTimeline(
       week: week ?? this.week,
+      date: date ?? this.date,
       title: title ?? this.title,
       description: description ?? this.description,
       assignment: assignment ?? this.assignment,
@@ -54,6 +60,6 @@ class CourseTimeline {
 
   @override
   String toString() {
-    return 'CourseTimeline(week: $week, title: $title, description: $description, assignment: $assignment, due: $due)';
+    return 'CourseTimeline(week: $week, date: $date, title: $title, description: $description, assignment: $assignment, due: $due)';
   }
 }

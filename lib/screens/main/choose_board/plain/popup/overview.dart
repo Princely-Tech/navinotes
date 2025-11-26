@@ -1,4 +1,5 @@
 import 'package:navinotes/packages.dart';
+import 'package:navinotes/widgets/board/timeline_edit_dialog.dart';
 
 class BoardPlainPopupOverview extends StatelessWidget {
   const BoardPlainPopupOverview({super.key});
@@ -66,7 +67,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                       apiServiceProvider: apiServiceProvider,
                       context: context,
                     ),
-                    _courseOutline(vm: vm),
+                    _courseOutline(context: context, vm: vm),
                     Divider(height: 1, color: AppTheme.lightGray),
                     _courseDetails(vm: vm),
                     const SizedBox(height: 24),
@@ -187,7 +188,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _courseOutline({required BoardEditVm vm}) {
+  Widget _courseOutline({required BuildContext context, required BoardEditVm vm}) {
     List<CourseTimeline> courseOutlines = vm.board.courseTimeLines ?? [];
 
     if (courseOutlines.isEmpty) {
@@ -203,7 +204,15 @@ class BoardPlainPopupOverview extends StatelessWidget {
       ),
       child: Column(
         spacing: 25,
-        children: courseOutlines.map((item) => _outlineItem(item)).toList(),
+        children: courseOutlines
+            .asMap()
+            .entries
+            .map((entry) => _outlineItem(
+                  entry.value,
+                  onEdit: () => _editTimelineItem(context, vm, entry.key),
+                  onDelete: () => _deleteTimelineItem(context, vm, entry.key),
+                ))
+            .toList(),
       ),
     );
   }
@@ -304,27 +313,55 @@ class BoardPlainPopupOverview extends StatelessWidget {
     );
   }
 
-  Widget _outlineItem(CourseTimeline courseTimeline) {
+  Widget _outlineItem(
+    CourseTimeline courseTimeline, {
+    VoidCallback? onEdit,
+    VoidCallback? onDelete,
+  }) {
     return Consumer<LayoutProviderVm>(
       builder: (_, layoutVm, _) {
         return CustomCard(
           addBorder: true,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.all(25),
-          child: ResponsiveSection(
-            mobile: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 24,
-              children: [
-                _weekInfo(week: courseTimeline.week),
-                _lessonInfo(
-                  title: courseTimeline.title,
-                  description: courseTimeline.description,
-                  assignment: courseTimeline.assignment,
-                  dueDate: courseTimeline.due,
+          child: Column(
+            children: [
+              if (onEdit != null || onDelete != null)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (onEdit != null)
+                      IconButton(
+                        icon: Icon(Icons.edit, size: 18, color: AppTheme.vividRose),
+                        onPressed: onEdit,
+                        padding: EdgeInsets.all(4),
+                        constraints: const BoxConstraints(),
+                        tooltip: 'Edit',
+                      ),
+                    if (onDelete != null)
+                      IconButton(
+                        icon: Icon(Icons.delete, size: 18, color: Colors.red),
+                        onPressed: onDelete,
+                        padding: EdgeInsets.all(4),
+                        constraints: const BoxConstraints(),
+                        tooltip: 'Delete',
+                      ),
+                  ],
                 ),
-              ],
-            ),
+              ResponsiveSection(
+                mobile: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 24,
+                  children: [
+                    _weekInfo(week: courseTimeline.week, date: courseTimeline.date),
+                    _lessonInfo(
+                      title: courseTimeline.title,
+                      description: courseTimeline.description,
+                      assignment: courseTimeline.assignment,
+                      dueDate: courseTimeline.due,
+                    ),
+                  ],
+                ),
             desktop: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: getDeviceResponsiveValue(
@@ -333,7 +370,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 largeDesktop: 100,
               ),
               children: [
-                _weekInfo(week: courseTimeline.week),
+                _weekInfo(week: courseTimeline.week, date: courseTimeline.date),
                 Expanded(
                   child: _lessonInfo(
                     title: courseTimeline.title,
@@ -344,6 +381,8 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 ),
               ],
             ),
+              ),
+            ],
           ),
         );
       },
@@ -1696,6 +1735,66 @@ class BoardPlainPopupOverview extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  void _editTimelineItem(BuildContext context, BoardEditVm vm, int index) {
+    final timeline = vm.board.courseTimeLines![index];
+    showDialog(
+      context: context,
+      builder: (context) => TimelineEditDialog(
+        timeline: timeline,
+        onSave: (updated) async {
+          final courseOutlines = List<CourseTimeline>.from(vm.board.courseTimeLines ?? []);
+          debugPrint("Old course outline: ${courseOutlines[index]}");
+          courseOutlines[index] = updated;
+          debugPrint("New course outline: ${courseOutlines[index]}");
+
+          final updatedBoard = vm.board.copyWith(
+            courseTimeLines: courseOutlines,
+            updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          );
+          debugPrint("Updated board: outline");
+          debugPrint(updatedBoard.courseTimeLines![index].toString());
+          await DatabaseHelper.instance.updateBoard(updatedBoard);
+          
+        vm.initialize();
+        },
+      ),
+    );
+  }
+
+  void _deleteTimelineItem(BuildContext context, BoardEditVm vm, int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Timeline Item'),
+        content: const Text('Are you sure you want to delete this timeline item? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final courseOutlines = List<CourseTimeline>.from(vm.board.courseTimeLines ?? []);
+              courseOutlines.removeAt(index);
+              final updatedBoard = vm.board.copyWith(
+                courseTimeLines: courseOutlines,
+                updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+              );
+              await DatabaseHelper.instance.updateBoard(updatedBoard);
+              vm.initialize();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/date_utils.dart';
+import 'package:navinotes/widgets/board/timeline_edit_dialog.dart';
 
 class BoardDarkAcadPopupScreen extends StatelessWidget {
   BoardDarkAcadPopupScreen({super.key});
@@ -396,6 +397,8 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                       BoardDarkAcadTimelineItem(
                         courseOutlines[i],
                         isFirst: i == 0,
+                        onEdit: () => _editTimelineItem(context, vm, i),
+                        onDelete: () => _deleteTimelineItem(context, vm, i),
                       ),
                   ],
                 ),
@@ -1781,6 +1784,60 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _editTimelineItem(BuildContext context, BoardEditVm vm, int index) {
+    final timeline = vm.board.courseTimeLines![index];
+    showDialog(
+      context: context,
+      builder: (context) => TimelineEditDialog(
+        timeline: timeline,
+        onSave: (updated) async {
+          final courseOutlines = List<CourseTimeline>.from(vm.board.courseTimeLines ?? []);
+          courseOutlines[index] = updated;
+          final updatedBoard = vm.board.copyWith(
+            courseTimeLines: courseOutlines,
+            updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+          );
+          await DatabaseHelper.instance.updateBoard(updatedBoard);
+          vm.initialize();
+        },
+      ),
+    );
+  }
+
+  void _deleteTimelineItem(BuildContext context, BoardEditVm vm, int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Timeline Item'),
+        content: const Text('Are you sure you want to delete this timeline item? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop();
+              final courseOutlines = List<CourseTimeline>.from(vm.board.courseTimeLines ?? []);
+              courseOutlines.removeAt(index);
+              final updatedBoard = vm.board.copyWith(
+                courseTimeLines: courseOutlines,
+                updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+              );
+              await DatabaseHelper.instance.updateBoard(updatedBoard);
+              vm.initialize();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }

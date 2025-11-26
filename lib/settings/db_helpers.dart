@@ -7,7 +7,7 @@ class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
 
   static Database? _database;
-  static const int _databaseVersion = 5; // Increment this number
+  static const int _databaseVersion = 6; // Increment this number
 
   DatabaseHelper._init();
 
@@ -76,6 +76,12 @@ class DatabaseHelper {
   back TEXT,
   tags TEXT,            -- optional
   sort_order INTEGER DEFAULT 0, -- for card ordering
+  last_reviewed INTEGER DEFAULT 0,
+  next_review INTEGER DEFAULT 0,
+  interval_days INTEGER DEFAULT 1,
+  ease_factor REAL DEFAULT 2.5,
+  review_count INTEGER DEFAULT 0,
+  streak INTEGER DEFAULT 0,
   created_at INTEGER,
   updated_at INTEGER
     )
@@ -172,7 +178,7 @@ class DatabaseHelper {
       );
     }
 
-    if (oldVersion < 5) {
+    if (oldVersion < 6) {
       // Add spaced repetition fields to flashcards table
       await db.execute(
         'ALTER TABLE flashcards ADD COLUMN last_reviewed INTEGER DEFAULT 0;',

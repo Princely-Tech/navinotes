@@ -80,12 +80,29 @@ class SyllabusSection extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    timeline.week,
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w600,
-                      color: primaryColor,
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Text(
+                          timeline.week,
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor,
+                          ),
+                        ),
+                        if (timeline.date != null && timeline.date!.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Text(
+                            '• ${_formatDate(timeline.date!)}',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                   IconButton(
@@ -151,6 +168,17 @@ class SyllabusSection extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Format date string to a readable format
+  String _formatDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      return DateFormat('MMM d, yyyy').format(date);
+    } catch (e) {
+      // If parsing fails, return the original string
+      return dateStr;
+    }
   }
 
   void _editTimeline(BuildContext context, CourseTimeline timeline, int index) {
@@ -270,6 +298,7 @@ class _EditTimelineDialog extends StatefulWidget {
 
 class _EditTimelineDialogState extends State<_EditTimelineDialog> {
   late TextEditingController _weekController;
+  late TextEditingController _dateController;
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late TextEditingController _assignmentController;
@@ -279,6 +308,7 @@ class _EditTimelineDialogState extends State<_EditTimelineDialog> {
   void initState() {
     super.initState();
     _weekController = TextEditingController(text: widget.timeline.week);
+    _dateController = TextEditingController(text: widget.timeline.date ?? '');
     _titleController = TextEditingController(text: widget.timeline.title);
     _descriptionController = TextEditingController(text: widget.timeline.description ?? '');
     _assignmentController = TextEditingController(text: widget.timeline.assignment ?? '');
@@ -288,6 +318,7 @@ class _EditTimelineDialogState extends State<_EditTimelineDialog> {
   @override
   void dispose() {
     _weekController.dispose();
+    _dateController.dispose();
     _titleController.dispose();
     _descriptionController.dispose();
     _assignmentController.dispose();
@@ -311,6 +342,14 @@ class _EditTimelineDialogState extends State<_EditTimelineDialog> {
               decoration: const InputDecoration(
                 labelText: 'Week',
                 hintText: 'e.g., Week 1',
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _dateController,
+              decoration: const InputDecoration(
+                labelText: 'Date (optional)',
+                hintText: 'e.g., 2024-04-30 or April 30',
               ),
             ),
             const SizedBox(height: 16),
@@ -378,6 +417,9 @@ class _EditTimelineDialogState extends State<_EditTimelineDialog> {
   void _save() {
     final updated = widget.timeline.copyWith(
       week: _weekController.text.trim(),
+      date: _dateController.text.trim().isEmpty 
+          ? null 
+          : _dateController.text.trim(),
       title: _titleController.text.trim(),
       description: _descriptionController.text.trim().isEmpty 
           ? null 

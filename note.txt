@@ -1,0 +1,6 @@
+Board files
+lib/screens/main/choose_board/dark_academia/popup/index.dart 
+lib/screens/main/choose_board/light_academia/popup/overview.dart 
+lib/screens/main/choose_board/minimalist/popup/index.dart  
+lib/screens/main/choose_board/nature/popup/index.dart 
+lib/screens/main/choose_board/plain/popup/overview.dart 

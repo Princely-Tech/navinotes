@@ -5,9 +5,13 @@ class BoardDarkAcadTimelineItem extends StatelessWidget {
     this.courseTimeline, {
     super.key,
     this.isFirst = false,
+    this.onEdit,
+    this.onDelete,
   });
   final CourseTimeline courseTimeline;
   final bool isFirst;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
   @override
   Widget build(BuildContext context) {
     final padding = EdgeInsets.only(top: isFirst ? 0 : 40);
@@ -28,6 +32,7 @@ class BoardDarkAcadTimelineItem extends StatelessWidget {
                       description: courseTimeline.description,
                       title: courseTimeline.title,
                       week: courseTimeline.week,
+                      date: courseTimeline.date,
                     ),
                     _timeLineRight(
                       assignment: courseTimeline.assignment,
@@ -50,6 +55,7 @@ class BoardDarkAcadTimelineItem extends StatelessWidget {
                   description: courseTimeline.description,
                   title: courseTimeline.title,
                   week: courseTimeline.week,
+                  date: courseTimeline.date,
                 ),
               ),
             ),
@@ -69,8 +75,18 @@ class BoardDarkAcadTimelineItem extends StatelessWidget {
     );
   }
 
+  String _formatDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      return DateFormat('MMM d, yyyy').format(date);
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
   Widget _timelineLeft({
     required String week,
+    String? date,
     required String title,
     required String? description,
   }) {
@@ -89,15 +105,60 @@ class BoardDarkAcadTimelineItem extends StatelessWidget {
           ),
           spacing: 16,
           children: [
-            Text(
-              week,
-              style: TextStyle(
-                color: const Color(0xFFC19B47),
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w500,
-                height: 1.50,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Text(
+                        week,
+                        style: TextStyle(
+                          color: const Color(0xFFC19B47),
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          height: 1.50,
+                        ),
+                      ),
+                      if (date != null && date.isNotEmpty)
+                        Text(
+                          '• ${_formatDate(date)}',
+                          style: TextStyle(
+                            color: const Color(0x99F7F3E9),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                            height: 1.50,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                if (onEdit != null || onDelete != null)
+                  Row(
+                    spacing: 4,
+                    children: [
+                      if (onEdit != null)
+                        IconButton(
+                          icon: Icon(Icons.edit, size: 16, color: const Color(0xFFC19B47)),
+                          onPressed: onEdit,
+                          padding: EdgeInsets.all(4),
+                          constraints: const BoxConstraints(),
+                          tooltip: 'Edit',
+                        ),
+                      if (onDelete != null)
+                        IconButton(
+                          icon: Icon(Icons.delete, size: 16, color: const Color(0xFFE57373)),
+                          onPressed: onDelete,
+                          padding: EdgeInsets.all(4),
+                          constraints: const BoxConstraints(),
+                          tooltip: 'Delete',
+                        ),
+                    ],
+                  ),
+              ],
             ),
 
             Text(
