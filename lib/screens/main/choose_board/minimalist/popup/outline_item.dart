@@ -1,8 +1,16 @@
 import 'package:navinotes/packages.dart';
 
 class BoardMinimalistOutlineItem extends StatelessWidget {
-  const BoardMinimalistOutlineItem(this.courseTimeline, {super.key});
+  const BoardMinimalistOutlineItem(
+    this.courseTimeline, {
+    super.key,
+    this.onEdit,
+    this.onDelete,
+  });
   final CourseTimeline courseTimeline;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+
   @override
   Widget build(BuildContext context) {
     int? progress = getSessionProgress(courseTimeline);
@@ -19,6 +27,28 @@ class BoardMinimalistOutlineItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (onEdit != null || onDelete != null)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (onEdit != null)
+                  IconButton(
+                    icon: Icon(Icons.edit, size: 18, color: const Color(0xFF00555A)),
+                    onPressed: onEdit,
+                    padding: EdgeInsets.all(4),
+                    constraints: const BoxConstraints(),
+                    tooltip: 'Edit',
+                  ),
+                if (onDelete != null)
+                  IconButton(
+                    icon: Icon(Icons.delete, size: 18, color: Colors.red),
+                    onPressed: onDelete,
+                    padding: EdgeInsets.all(4),
+                    constraints: const BoxConstraints(),
+                    tooltip: 'Delete',
+                  ),
+              ],
+            ),
           Row(
             spacing: 15,
             children: [

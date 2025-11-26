@@ -1,8 +1,16 @@
 import 'package:navinotes/packages.dart';
 
 class BoardNatureOutlineItem extends StatelessWidget {
-  const BoardNatureOutlineItem(this.index, {super.key});
+  const BoardNatureOutlineItem(
+    this.index, {
+    super.key,
+    this.onEdit,
+    this.onDelete,
+  });
   final int index;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BoardEditVm>(
@@ -65,14 +73,36 @@ class BoardNatureOutlineItem extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  '${timelineItem.week}: ${timelineItem.title}',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Crimson Text',
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        '${timelineItem.week}: ${timelineItem.title}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontFamily: 'Crimson Text',
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                    if (onEdit != null)
+                                      IconButton(
+                                        icon: Icon(Icons.edit, size: 18, color: Colors.white),
+                                        onPressed: onEdit,
+                                        padding: EdgeInsets.all(4),
+                                        constraints: const BoxConstraints(),
+                                        tooltip: 'Edit',
+                                      ),
+                                    if (onDelete != null)
+                                      IconButton(
+                                        icon: Icon(Icons.delete, size: 18, color: Colors.white.withValues(alpha: 0.8)),
+                                        onPressed: onDelete,
+                                        padding: EdgeInsets.all(4),
+                                        constraints: const BoxConstraints(),
+                                        tooltip: 'Delete',
+                                      ),
+                                  ],
                                 ),
 
                                 if (isNotNull(timelineItem.description)) ...[

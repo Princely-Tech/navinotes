@@ -1757,8 +1757,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
           debugPrint("Updated board: outline");
           debugPrint(updatedBoard.courseTimeLines![index].toString());
           await DatabaseHelper.instance.updateBoard(updatedBoard);
-          
-        vm.initialize();
+        vm.updateBoard(updatedBoard);
         },
       ),
     );
@@ -1785,7 +1784,7 @@ class BoardPlainPopupOverview extends StatelessWidget {
                 updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
               );
               await DatabaseHelper.instance.updateBoard(updatedBoard);
-              vm.initialize();
+              vm.updateBoard(updatedBoard);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,

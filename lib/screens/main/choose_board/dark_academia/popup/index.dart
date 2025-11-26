@@ -1802,7 +1802,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
             updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
           );
           await DatabaseHelper.instance.updateBoard(updatedBoard);
-          vm.initialize();
+         vm.updateBoard(updatedBoard);
         },
       ),
     );
@@ -1829,7 +1829,7 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                 updatedAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
               );
               await DatabaseHelper.instance.updateBoard(updatedBoard);
-              vm.initialize();
+              vm.updateBoard(updatedBoard);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,

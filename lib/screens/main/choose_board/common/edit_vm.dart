@@ -133,6 +133,12 @@ class BoardEditVm extends ChangeNotifier {
     loadSyllabusContent(board);
   }
 
+  Future<void> updateBoard(Board updatedBoard) async {
+    board = updatedBoard;
+    notifyListeners();
+  }
+
+
   Future<void> importPdfFile(BuildContext context) async {
     return importFiles(context, allowedExtensions: ['pdf']);
   }
