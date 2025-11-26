@@ -1,5 +1,6 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/widgets/board/timeline_edit_dialog.dart';
+import 'package:navinotes/widgets/board/sync_syllabus_button.dart';
 
 class BoardPlainPopupOverview extends StatelessWidget {
   const BoardPlainPopupOverview({super.key});
@@ -204,15 +205,21 @@ class BoardPlainPopupOverview extends StatelessWidget {
       ),
       child: Column(
         spacing: 25,
-        children: courseOutlines
-            .asMap()
-            .entries
-            .map((entry) => _outlineItem(
-                  entry.value,
-                  onEdit: () => _editTimelineItem(context, vm, entry.key),
-                  onDelete: () => _deleteTimelineItem(context, vm, entry.key),
-                ))
-            .toList(),
+        children: [
+          SyncSyllabusButton(
+            board: vm.board,
+            buttonColor: AppTheme.vividBlue,
+          ),
+          ...courseOutlines
+              .asMap()
+              .entries
+              .map((entry) => _outlineItem(
+                    entry.value,
+                    onEdit: () => _editTimelineItem(context, vm, entry.key),
+                    onDelete: () => _deleteTimelineItem(context, vm, entry.key),
+                  ))
+              .toList(),
+        ],
       ),
     );
   }

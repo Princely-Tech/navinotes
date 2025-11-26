@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/date_utils.dart';
 import 'package:navinotes/widgets/board/timeline_edit_dialog.dart';
+import 'package:navinotes/widgets/board/sync_syllabus_button.dart';
 
 class BoardDarkAcadPopupScreen extends StatelessWidget {
   BoardDarkAcadPopupScreen({super.key});
@@ -389,6 +390,13 @@ class BoardDarkAcadPopupScreen extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                     height: 1.50,
                   ),
+                ),
+                SizedBox(height: 16),
+                SyncSyllabusButton(
+                  board: vm.board,
+                  buttonColor: const Color(0xFF8B6F47),
+                  textColor: const Color(0xFFF7F3E9),
+                  iconColor: const Color(0xFFF7F3E9),
                 ),
                 SizedBox(height: 40),
                 Column(

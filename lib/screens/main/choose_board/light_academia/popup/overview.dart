@@ -1,6 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/navi_backup.dart';
 import 'package:navinotes/widgets/board/timeline_edit_dialog.dart';
+import 'package:navinotes/widgets/board/sync_syllabus_button.dart';
 
 class BoardLightAcadPopupOverview extends StatelessWidget {
   const BoardLightAcadPopupOverview({super.key});
@@ -349,7 +350,16 @@ class BoardLightAcadPopupOverview extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(height: 18),
+                    if (courseOutlines.isNotEmpty) ...[
+                      SizedBox(height: 18),
+                      SyncSyllabusButton(
+                        board: vm.board,
+                        buttonColor: const Color(0xFF8B4513),
+                        textColor: const Color(0xFFF5F5DC),
+                        iconColor: const Color(0xFFF5F5DC),
+                      ),
+                      SizedBox(height: 18),
+                    ],
                     if (courseOutlines.isNotEmpty)
                       ConstrainedBox(
                         constraints: BoxConstraints(maxHeight: maxHeight),

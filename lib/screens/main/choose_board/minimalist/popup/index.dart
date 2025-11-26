@@ -2,6 +2,7 @@ import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/date_utils.dart';
 import 'package:navinotes/settings/navi_backup.dart';
 import 'package:navinotes/widgets/board/timeline_edit_dialog.dart';
+import 'package:navinotes/widgets/board/sync_syllabus_button.dart';
 
 class BoardMinimalistPopupScreen extends StatelessWidget {
   BoardMinimalistPopupScreen({super.key});
@@ -167,16 +168,21 @@ class BoardMinimalistPopupScreen extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 50),
               child: Column(
                 spacing: 40,
-                children:
-                    courseOutlines
-                        .asMap()
-                        .entries
-                        .map((entry) => BoardMinimalistOutlineItem(
-                              entry.value,
-                              onEdit: () => _editTimelineItem(context, vm, entry.key),
-                              onDelete: () => _deleteTimelineItem(context, vm, entry.key),
-                            ))
-                        .toList(),
+                children: [
+                  SyncSyllabusButton(
+                    board: vm.board,
+                    buttonColor: const Color(0xFF00555A),
+                  ),
+                  ...courseOutlines
+                      .asMap()
+                      .entries
+                      .map((entry) => BoardMinimalistOutlineItem(
+                            entry.value,
+                            onEdit: () => _editTimelineItem(context, vm, entry.key),
+                            onDelete: () => _deleteTimelineItem(context, vm, entry.key),
+                          ))
+                      .toList(),
+                ],
               ),
             ),
           ),

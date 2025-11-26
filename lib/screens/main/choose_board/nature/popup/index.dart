@@ -1,6 +1,7 @@
 import 'package:navinotes/packages.dart';
 import 'package:navinotes/settings/navi_backup.dart';
 import 'package:navinotes/widgets/board/timeline_edit_dialog.dart';
+import 'package:navinotes/widgets/board/sync_syllabus_button.dart';
 
 class BoardNaturePopupScreen extends StatelessWidget {
   BoardNaturePopupScreen({super.key});
@@ -404,7 +405,12 @@ class BoardNaturePopupScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 24),
-                    if (courseOutlines.isNotEmpty)
+                    if (courseOutlines.isNotEmpty) ...[
+                      SyncSyllabusButton(
+                        board: vm.board,
+                        buttonColor: const Color(0xFF4A7C59),
+                      ),
+                      SizedBox(height: 24),
                       Column(
                         children: [
                           for (int i = 0; i < courseOutlines.length; i++)
@@ -415,6 +421,7 @@ class BoardNaturePopupScreen extends StatelessWidget {
                             ),
                         ],
                       ),
+                    ],
                   ],
                 ),
               ),
